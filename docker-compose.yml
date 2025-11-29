@@ -1,6 +1,5 @@
 services:
   invokeai:
-    container_name: invokeai
     image: 'ghcr.io/invoke-ai/invokeai:${IMAGE_TAG:-main-rocm}'
     extends:
       file: 'gpu-support.yml'
@@ -8,8 +7,8 @@ services:
     ports:
       - '${BIND_ADDRESS:-127.0.0.1}:${BIND_PORT:-9090}:9090'
     volumes:
-      - '${DATA_DIR:-./data}:/invokeai'
-      - '${HF_CACHE_DIR:-./cache/huggingface}:/invokeai/.cache/huggingface'
+      - '${DATA_DIR:-./data}:/invokeai:Z,U'
+      - '${HF_CACHE_DIR:-./cache/huggingface}:/invokeai/.cache/huggingface:Z,U'
       - '/etc/localtime:/etc/localtime:ro'
     env_file: '.env'
     restart: unless-stopped
