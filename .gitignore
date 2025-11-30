@@ -1,2 +1,5 @@
 .env
 invokeai/*
+data/*
+data/
+cache/
