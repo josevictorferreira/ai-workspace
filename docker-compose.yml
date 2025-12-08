@@ -17,3 +17,23 @@ services:
       options:
         max-size: '${LOG_MAX_SIZE:-5m}'
         max-file: '${LOG_MAX_FILE:-5}'
+  comfyui:
+    image: corundex/comfyui-rocm:latest
+    extends:
+      file: 'gpu-support.yml'
+      service: '${GPU_DRIVER:-rocm}'
+    group_add:
+      - video
+    ports:
+      - "8188:8188"
+    volumes:
+      - ./data/comfyui/models:/workspace/ComfyUI/models
+      - ./data/comfyui/output:/workspace/ComfyUI/output
+      - ./data/comfyui/input:/workspace/ComfyUI/input
+      - ./data/comfyui/custom_nodes:/workspace/ComfyUI/custom_nodes
+      - ./data/comfyui/user:/workspace/ComfyUI/user
+    environment:
+      - MODEL_DOWNLOAD=default
+      - HIP_VISIBLE_DEVICES=0
+      - CUDA_VISIBLE_DEVICES=""
+    restart: unless-stopped
