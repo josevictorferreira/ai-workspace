@@ -18,7 +18,9 @@ services:
         max-size: '${LOG_MAX_SIZE:-5m}'
         max-file: '${LOG_MAX_FILE:-5}'
   comfyui:
-    image: corundex/comfyui-rocm:latest
+    build:
+      context: ./comfyui/
+      dockerfile: Containerfile.comfyui-rocm
     extends:
       file: 'gpu-support.yml'
       service: '${GPU_DRIVER:-rocm}'
@@ -27,11 +29,11 @@ services:
     ports:
       - "8188:8188"
     volumes:
-      - ./data/comfyui/models:/workspace/ComfyUI/models
-      - ./data/comfyui/output:/workspace/ComfyUI/output
-      - ./data/comfyui/input:/workspace/ComfyUI/input
-      - ./data/comfyui/custom_nodes:/workspace/ComfyUI/custom_nodes
-      - ./data/comfyui/user:/workspace/ComfyUI/user
+      - ./comfyui/data/models:/workspace/ComfyUI/models
+      - ./comfyui/data/output:/workspace/ComfyUI/output
+      - ./comfyui/data/input:/workspace/ComfyUI/input
+      - ./comfyui/data/custom_nodes:/workspace/ComfyUI/custom_nodes
+      - ./comfyui/data/user:/workspace/ComfyUI/user
     environment:
       - MODEL_DOWNLOAD=default
       - HIP_VISIBLE_DEVICES=0

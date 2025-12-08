@@ -1,0 +1,78 @@
+models:
+  default:
+    - name: "Stable Diffusion 1.5"
+      url: "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors"
+      path: "checkpoints/v1-5-pruned-emaonly.safetensors"
+      min_size: 4000000000
+
+  common:
+    - name: "Stable Diffusion 1.5"
+      url: "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors"
+      path: "checkpoints/v1-5-pruned-emaonly.safetensors"
+      min_size: 4000000000
+    - name: "SD 1.5 VAE"
+      url: "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+      path: "vae/vae-ft-mse-840000-ema-pruned.safetensors"
+      min_size: 300000000
+    - name: "SDXL Base 1.0"
+      url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+      path: "checkpoints/sd_xl_base_1.0.safetensors"
+      min_size: 6000000000
+    - name: "SDXL Refiner 1.0"
+      url: "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+      path: "checkpoints/sd_xl_refiner_1.0.safetensors"
+      min_size: 6000000000
+    - name: "ControlNet Canny"
+      url: "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_canny.pth"
+      path: "controlnet/control_v11p_sd15_canny.pth"
+      min_size: 1400000000
+    - name: "ControlNet Depth"
+      url: "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1p_sd15_depth.pth"
+      path: "controlnet/control_v11f1p_sd15_depth.pth"
+      min_size: 1400000000
+    - name: "ControlNet OpenPose"
+      url: "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_openpose.pth"
+      path: "controlnet/control_v11p_sd15_openpose.pth"
+      min_size: 1400000000
+    - name: "Real-ESRGAN 4x Upscaler"
+      url: "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
+      path: "upscale_models/RealESRGAN_x4plus.pth"
+      min_size: 60000000
+    - name: "Real-ESRGAN 4x Anime"
+      url: "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth"
+      path: "upscale_models/RealESRGAN_x4plus_anime_6B.pth"
+      min_size: 15000000
+    - name: "EasyNegative Embedding"
+      url: "https://huggingface.co/datasets/gsdf/EasyNegative/resolve/main/EasyNegative.safetensors"
+      path: "embeddings/EasyNegative.safetensors"
+      min_size: 20000
+
+  realistic:
+    - name: "Realistic Vision v5.1"
+      url: "https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE/resolve/main/Realistic_Vision_V5.1.safetensors"
+      path: "checkpoints/Realistic_Vision_V5.1.safetensors"
+      min_size: 2000000000
+    - name: "DreamShaper 8"
+      url: "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors"
+      path: "checkpoints/DreamShaper_8_pruned.safetensors"
+      min_size: 2000000000
+    - name: "Realistic VAE"
+      url: "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+      path: "vae/vae-ft-mse-840000-ema-pruned.safetensors"
+      min_size: 300000000
+
+  photorealistic:
+    - name: "Juggernaut XL"
+      url: "https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/resolve/main/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors"
+      path: "checkpoints/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors"
+      min_size: 6000000000
+    - name: "RealVisXL V4.0"
+      url: "https://huggingface.co/SG161222/RealVisXL_V4.0/resolve/main/RealVisXL_V4.0.safetensors"
+      path: "checkpoints/RealVisXL_V4.0.safetensors"
+      min_size: 6000000000
+
+  artistic:
+    - name: "Deliberate v2"
+      url: "https://huggingface.co/XpucT/Deliberate/resolve/main/Deliberate_v2.safetensors"
+      path: "checkpoints/Deliberate_v2.safetensors"
+      min_size: 2000000000
