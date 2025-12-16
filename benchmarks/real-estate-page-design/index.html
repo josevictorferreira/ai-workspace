@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Benchmark Navigation - Real Estate Page Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --fg-black: #000000;
+      --muted-gray: #F2F2F2;
+      --accent-red: #FF3000;
+      --spacing-xs: 8px;
+      --spacing-sm: 16px;
+      --spacing-md: 24px;
+      --spacing-lg: 32px;
+      --spacing-xl: 48px;
+      --border-thin: 2px;
+      --border-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      background-color: var(--bg-white);
+      color: var(--fg-black);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-sm);
+    }
+
+    header {
+      border-bottom: var(--border-thick) solid var(--fg-black);
+      padding: var(--spacing-lg) 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .subtitle {
+      font-size: clamp(0.875rem, 2vw, 1.125rem);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fg-black);
+    }
+
+    main {
+      padding: var(--spacing-xl) 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 var(--spacing-lg);
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .card {
+      display: block;
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+      padding: var(--spacing-md);
+      text-decoration: none;
+      color: var(--fg-black);
+      transition: all 200ms ease-out;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card:hover {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+      transform: scale(1.05);
+    }
+
+    .card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-red);
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--spacing-xs);
+      line-height: 1.3;
+    }
+
+    .card-meta {
+      font-size: 0.875rem;
+      font-weight: 400;
+      opacity: 0.7;
+      font-family: monospace;
+    }
+
+    .card:hover .card-meta {
+      opacity: 0.9;
+    }
+
+    .prompt-card {
+      border: var(--border-thick) solid var(--fg-black);
+      background-color: var(--muted-gray);
+    }
+
+    .prompt-card:hover {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    .prompt-card .card-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    footer {
+      border-top: var(--border-thick) solid var(--fg-black);
+      padding: var(--spacing-lg) 0;
+      text-align: center;
+    }
+
+    .footer-stats {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .footer-link {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-black);
+      text-decoration: underline;
+      transition: color 200ms ease-out;
+    }
+
+    .footer-link:hover {
+      color: var(--accent-red);
+    }
+
+    .footer-link:focus-visible {
+      outline: 2px solid var(--accent-red);
+      outline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Benchmark Navigation</h1>
+      <p class="subtitle">LLM-Generated Real Estate Pages (Swiss Design)</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <nav aria-label="Benchmark pages navigation">
+        <div class="grid">
+          <a href="pages/web_amazon_nova_2_lite.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Amazon Nova 2 Lite</h2>
+            <p class="card-meta">web_amazon_nova_2_lite.html</p>
+          </a>
+
+          <a href="pages/web_claude_haiku_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Claude Haiku 4.5</h2>
+            <p class="card-meta">web_claude_haiku_4.5.html</p>
+          </a>
+
+          <a href="pages/web_claude_sonnet_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Claude Sonnet 4.5</h2>
+            <p class="card-meta">web_claude_sonnet_4.5.html</p>
+          </a>
+
+          <a href="pages/web_claude_opus_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Claude Opus 4.5</h2>
+            <p class="card-meta">web_claude_opus_4.5.html</p>
+          </a>
+
+          <a href="pages/web_kat_coder.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Kat Coder</h2>
+            <p class="card-meta">web_kat_coder.html</p>
+          </a>
+
+          <a href="pages/web_cojito_2.1.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Cojito 2.1</h2>
+            <p class="card-meta">web_cojito_2.1.html</p>
+          </a>
+
+          <a href="pages/web_rnj_1.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Rnj 1</h2>
+            <p class="card-meta">web_rnj_1.html</p>
+          </a>
+
+          <a href="pages/web_deepseek_3.2_exp.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">DeepSeek 3.2 Exp</h2>
+            <p class="card-meta">web_deepseek_3.2_exp.html</p>
+          </a>
+
+          <a href="pages/web_deepseek_3.2_speciale.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">DeepSeek 3.2 Speciale</h2>
+            <p class="card-meta">web_deepseek_3.2_speciale.html</p>
+          </a>
+
+          <a href="pages/web_deepseek_v3.1_nex_n1.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">DeepSeek 3.1 Nex N1</h2>
+            <p class="card-meta">web_deepseek_v3.1_nex_n1.html</p>
+          </a>
+
+          <a href="pages/web_devstral_2.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Devstral 2</h2>
+            <p class="card-meta">web_devstral_2.html</p>
+          </a>
+
+          <a href="pages/olmo_3_32b_think.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Olmo 3 32b Think</h2>
+            <p class="card-meta">olmo_3_32b_think.html</p>
+          </a>
+
+          <a href="pages/xiaomi_mimo_v2_flash.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Xiaomi Mimo V2 Flash</h2>
+            <p class="card-meta">xiaomi_mimo_v2_flash.html</p>
+          </a>
+
+          <a href="pages/web_gemini_3_pro_preview.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Gemini 3 Pro Preview</h2>
+            <p class="card-meta">web_gemini_3_pro_preview.html</p>
+          </a>
+
+          <a href="pages/web_glm_4.6_exacto.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">GLM 4.6 Exacto</h2>
+            <p class="card-meta">web_glm_4.6_exacto.html</p>
+          </a>
+
+          <a href="pages/web_gpt_5.2.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">GPT 5.2</h2>
+            <p class="card-meta">web_gpt_5.2.html</p>
+          </a>
+
+          <a href="pages/web_gpt_oss_120b.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">GPT OSS 120B</h2>
+            <p class="card-meta">web_gpt_oss_120b.html</p>
+          </a>
+
+          <a href="pages/web_grok_4.1_fast.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Grok 4.1 Fast</h2>
+            <p class="card-meta">web_grok_4.1_fast.html</p>
+          </a>
+
+          <a href="pages/web_intellect_3.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Intellect 3</h2>
+            <p class="card-meta">web_intellect_3.html</p>
+          </a>
+
+          <a href="pages/web_kimi_dev_72b.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Kimi Dev 72B</h2>
+            <p class="card-meta">web_kimi_dev_72b.html</p>
+          </a>
+
+          <a href="pages/web_kimi_k2_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Kimi K2 Thinking</h2>
+            <p class="card-meta">web_kimi_k2_thinking.html</p>
+          </a>
+
+          <a href="pages/web_minimax_m2.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Minimax M2</h2>
+            <p class="card-meta">web_minimax_m2.html</p>
+          </a>
+
+          <a href="pages/web_nemotron_nano_30b.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Nemotron Nano 30B</h2>
+            <p class="card-meta">web_nemotron_nano_30b.html</p>
+          </a>
+
+          <a href="pages/web_qwen_3_80b_next_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Qwen 3 80B Next Thinking</h2>
+            <p class="card-meta">web_qwen_3_80b_next_thinking.html</p>
+          </a>
+
+          <a href="pages/web_qwen_3_coder.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Qwen 3 Coder</h2>
+            <p class="card-meta">web_qwen_3_coder.html</p>
+          </a>
+
+          <a href="pages/web_qwen_3_235b_a22b_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
+            <h2 class="card-title">Qwen 3 235b a22b Thinking</h2>
+            <p class="card-meta">web_qwen_3_235b_a22b_thinking.html</p>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p class="footer-stats">19 Benchmark Pages</p>
+      <a href="PROMPT.md" class="footer-link" target="_blank" rel="noopener noreferrer">View Design Specification</a>
+    </div>
+  </footer>
+</body>
+
+</html>

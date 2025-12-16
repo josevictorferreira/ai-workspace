@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Style Real Estate Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ==================== */
+    /* Design Tokens        */
+    /* ==================== */
+    :root {
+      --bg: #fff;
+      --fg: #000;
+      --muted: #f2f2f2;
+      --accent: #ff3000;
+      --border: #000;
+      --font-sans: 'Inter', sans-serif;
+      --transition: all 0.2s ease-out;
+    }
+
+    /* ==================== */
+    /* Reset & Base         */
+    /* ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--fg);
+      background-color: var(--bg);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* ==================== */
+    /* Patterns             */
+    /* ==================== */
+    .swiss-grid-pattern {
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px);
+      background-size: 24px 24px;
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px);
+      background-size: 10px 10px;
+    }
+
+    .swiss-noise {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+    }
+
+    /* ==================== */
+    /* Header               */
+    /* ==================== */
+    .site-header {
+      border-bottom: 4px solid var(--border);
+      padding: 1rem 0;
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+    }
+
+    .nav ul {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      padding: 0.5rem 0;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-link span {
+      display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-link::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      color: var(--accent);
+      transition: transform 0.2s ease;
+    }
+
+    .nav-link:hover span {
+      transform: translateY(-100%);
+    }
+
+    .nav-link:hover::after {
+      transform: translateY(-100%);
+    }
+
+    @media (max-width: 640px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .nav ul {
+        gap: 1rem;
+      }
+    }
+
+    /* ==================== */
+    /* Main Section         */
+    /* ==================== */
+    .listings-section {
+      padding: 4rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 4px solid var(--border);
+      margin-bottom: 3rem;
+      background-color: var(--bg);
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+      /* dot pattern */
+    }
+
+    .section-number {
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      margin: 0;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: clamp(3rem, 10vw, 6rem);
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+
+    /* ==================== */
+    /* Two‑Column Layout    */
+    /* ==================== */
+    .two-column-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 0;
+    }
+
+    .filters-sidebar {
+      padding: 2rem 2rem 2rem 0;
+      border-right: 4px solid var(--border);
+      background-color: var(--muted);
+      background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px);
+      background-size: 10px 10px;
+      /* diagonal pattern */
+    }
+
+    .listings-grid {
+      padding-left: 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .two-column-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .filters-sidebar {
+        border-right: none;
+        border-bottom: 4px solid var(--border);
+        padding: 2rem;
+      }
+
+      .listings-grid {
+        padding-left: 0;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .listings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==================== */
+    /* Filters              */
+    /* ==================== */
+    .filters-sidebar h2 {
+      font-weight: 900;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group label {
+      display: block;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border);
+      background-color: transparent;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--fg);
+      outline: none;
+      transition: border-color 0.2s ease;
+      border-radius: 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    .price-inputs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .price-inputs input {
+      flex: 1;
+    }
+
+    .price-inputs span {
+      font-weight: 900;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+    }
+
+    select:focus {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ff3000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      font-size: 0.875rem;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      border-radius: 0;
+    }
+
+    .btn-primary {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    form {
+      margin-bottom: 2rem;
+    }
+
+    /* ==================== */
+    /* Geometric Composition */
+    /* ==================== */
+    .geometric-composition {
+      position: relative;
+      height: 200px;
+      margin-top: 4rem;
+    }
+
+    .shape {
+      position: absolute;
+    }
+
+    .shape-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px);
+      background-size: 24px 24px;
+      top: 0;
+      left: 0;
+    }
+
+    .shape-square {
+      width: 80px;
+      height: 80px;
+      background-color: var(--fg);
+      top: 60px;
+      left: 80px;
+    }
+
+    /* ==================== */
+    /* Property Card        */
+    /* ==================== */
+    .property-card {
+      display: block;
+      border: 4px solid var(--border);
+      background-color: var(--bg);
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      color: var(--fg);
+    }
+
+    .property-card:hover {
+      transform: translateY(-4px);
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .card-image {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+    }
+
+    .card-image img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s ease;
+      transition-delay: 0s;
+    }
+
+    .image-primary {
+      opacity: 1;
+      z-index: 0;
+    }
+
+    .image-secondary {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .property-card:hover .card-image img {
+      transition-delay: 1s;
+    }
+
+    .property-card:hover .image-primary {
+      opacity: 0;
+    }
+
+    .property-card:hover .image-secondary {
+      opacity: 1;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .card-content h3 {
+      font-weight: 900;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-content .price {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    /* ==================== */
+    /* Pagination           */
+    /* ==================== */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 4rem;
+    }
+
+    .page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border: 2px solid var(--border);
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 700;
+      font-size: 1rem;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .page-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .page-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    .page-btn.prev,
+    .page-btn.next {
+      font-size: 1.5rem;
+    }
+
+    /* ==================== */
+    /* Footer               */
+    /* ==================== */
+    .site-footer {
+      border-top: 4px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ==================== */
+    /* Focus (accessibility)*/
+    /* ==================== */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body class="swiss-noise">
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="#" class="logo">REAL ESTATE</a>
+        <nav class="nav">
+          <ul>
+            <li><a href="#" class="nav-link" data-text="HOME"><span>HOME</span></a></li>
+            <li><a href="#" class="nav-link" data-text="LISTINGS"><span>LISTINGS</span></a></li>
+            <li><a href="#" class="nav-link" data-text="ABOUT"><span>ABOUT</span></a></li>
+            <li><a href="#" class="nav-link" data-text="CONTACT"><span>CONTACT</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="listings-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">01.</span>
+          <h1>PROPERTIES</h1>
+        </div>
+
+        <div class="two-column-layout">
+          <aside class="filters-sidebar">
+            <h2>FILTERS</h2>
+            <form action="#" method="GET">
+              <div class="filter-group">
+                <label for="search">Search</label>
+                <input type="text" id="search" placeholder="Enter keywords...">
+              </div>
+              <div class="filter-group">
+                <label for="price-min">Price Range</label>
+                <div class="price-inputs">
+                  <input type="number" id="price-min" placeholder="Min">
+                  <span>-</span>
+                  <input type="number" id="price-max" placeholder="Max">
+                </div>
+              </div>
+              <div class="filter-group">
+                <label for="state">State</label>
+                <select id="state">
+                  <option>Paraná</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="city">City</label>
+                <select id="city">
+                  <option>Londrina</option>
+                  <option>Ibiporã</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div class="geometric-composition">
+              <div class="shape shape-circle"></div>
+              <div class="shape shape-square"></div>
+            </div>
+          </aside>
+
+          <div class="listings-grid">
+            <!-- Property Cards -->
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1015/800/600" alt="Luxury Villa in Londrina" class="image-primary">
+                <img src="https://picsum.photos/id/1016/800/600" alt="Luxury Villa alternate" class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Luxury Villa in Londrina</h3>
+                <p class="price">R$ 1,200,000</p>
+              </div>
+            </a>
+
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1024/800/600" alt="Modern Apartment in Ibiporã"
+                  class="image-primary">
+                <img src="https://picsum.photos/id/1025/800/600" alt="Modern Apartment alternate"
+                  class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Modern Apartment in Ibiporã</h3>
+                <p class="price">R$ 750,000</p>
+              </div>
+            </a>
+
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1036/800/600" alt="Cozy House in Londrina" class="image-primary">
+                <img src="https://picsum.photos/id/1039/800/600" alt="Cozy House alternate" class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Cozy House in Londrina</h3>
+                <p class="price">R$ 950,000</p>
+              </div>
+            </a>
+
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1040/800/600" alt="Penthouse in Londrina" class="image-primary">
+                <img src="https://picsum.photos/id/1041/800/600" alt="Penthouse alternate" class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Penthouse in Londrina</h3>
+                <p class="price">R$ 2,500,000</p>
+              </div>
+            </a>
+
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1042/800/600" alt="Country House in Ibiporã" class="image-primary">
+                <img src="https://picsum.photos/id/1043/800/600" alt="Country House alternate" class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Country House in Ibiporã</h3>
+                <p class="price">R$ 1,800,000</p>
+              </div>
+            </a>
+
+            <a href="#" class="property-card">
+              <div class="card-image">
+                <img src="https://picsum.photos/id/1044/800/600" alt="Studio Apartment in Londrina"
+                  class="image-primary">
+                <img src="https://picsum.photos/id/1045/800/600" alt="Studio Apartment alternate"
+                  class="image-secondary">
+              </div>
+              <div class="card-content">
+                <h3>Studio Apartment in Londrina</h3>
+                <p class="price">R$ 550,000</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <a href="#" class="page-btn prev">‹</a>
+          <a href="#" class="page-btn active">1</a>
+          <a href="#" class="page-btn">2</a>
+          <a href="#" class="page-btn">3</a>
+          <a href="#" class="page-btn">4</a>
+          <a href="#" class="page-btn">5</a>
+          <a href="#" class="page-btn next">›</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 Real Estate. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+
+</html>

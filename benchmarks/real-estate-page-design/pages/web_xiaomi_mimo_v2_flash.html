@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Listings - Swiss Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           DESIGN TOKENS - SWISS INTERNATIONAL STYLE
+           ============================================ */
+        :root {
+            /* Colors */
+            --color-bg: #FFFFFF;
+            --color-fg: #000000;
+            --color-muted: #F2F2F2;
+            --color-accent: #FF3000;
+            --color-border: #000000;
+            
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-weight-regular: 400;
+            --font-weight-bold: 700;
+            --font-weight-black: 900;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;    /* 4px */
+            --space-sm: 0.5rem;     /* 8px */
+            --space-md: 1rem;       /* 16px */
+            --space-lg: 1.5rem;     /* 24px */
+            --space-xl: 2rem;       /* 32px */
+            --space-2xl: 3rem;      /* 48px */
+            --space-3xl: 4rem;      /* 64px */
+            
+            /* Borders & Radius */
+            --border-width: 2px;
+            --border-width-thick: 4px;
+            --radius: 0px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease-out;
+            --transition-base: 200ms ease-out;
+            --transition-slow: 300ms ease-out;
+            
+            /* Layout */
+            --max-width: 1400px;
+            --grid-unit: 24px;
+        }
+
+        /* ============================================
+           GLOBAL STYLES & RESET
+           ============================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-fg);
+            line-height: 1.4;
+            overflow-x: hidden;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 4px),
+                repeating-linear-gradient(90deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 4px);
+            background-size: 24px 24px;
+        }
+
+        /* ============================================
+           SWISS STYLE PATTERNS & TEXTURES
+           ============================================ */
+        .swiss-grid-pattern {
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-position: center;
+        }
+
+        .swiss-dots {
+            background-image: radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: center;
+        }
+
+        .swiss-diagonal {
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.02) 10px,
+                rgba(0,0,0,0.02) 11px
+            );
+        }
+
+        .swiss-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
+        }
+
+        /* ============================================
+           TYPOGRAPHY
+           ============================================ */
+        .text-display-9xl { font-size: 8rem; font-weight: var(--font-weight-black); line-height: 0.9; letter-spacing: -0.02em; }
+        .text-display-8xl { font-size: 6rem; font-weight: var(--font-weight-black); line-height: 0.9; letter-spacing: -0.02em; }
+        .text-display-7xl { font-size: 4.5rem; font-weight: var(--font-weight-black); line-height: 0.95; letter-spacing: -0.01em; }
+        .text-display-6xl { font-size: 3.5rem; font-weight: var(--font-weight-black); line-height: 0.95; }
+        .text-display-5xl { font-size: 2.5rem; font-weight: var(--font-weight-black); line-height: 1.1; }
+        
+        .text-heading-xl { font-size: 2rem; font-weight: var(--font-weight-black); text-transform: uppercase; letter-spacing: 0.05em; }
+        .text-heading-lg { font-size: 1.5rem; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.05em; }
+        .text-heading-md { font-size: 1.25rem; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.05em; }
+        .text-heading-sm { font-size: 1rem; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .text-body-lg { font-size: 1.25rem; font-weight: var(--font-weight-regular); line-height: 1.5; }
+        .text-body-md { font-size: 1rem; font-weight: var(--font-weight-regular); line-height: 1.5; }
+        .text-body-sm { font-size: 0.875rem; font-weight: var(--font-weight-regular); line-height: 1.5; }
+
+        .text-accent {
+            color: var(--color-accent);
+            font-weight: var(--font-weight-black);
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        /* ============================================
+           LAYOUT & STRUCTURE
+           ============================================ */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+
+        .section {
+            padding: var(--space-3xl) 0;
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: var(--border-width-thick) solid var(--color-border);
+        }
+
+        .grid {
+            display: grid;
+            gap: var(--space-lg);
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .grid-asymmetric {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        .flex {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .flex-col {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ============================================
+           COMPONENTS - BUTTONS
+           ============================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md) var(--space-xl);
+            font-family: var(--font-family);
+            font-weight: var(--font-weight-bold);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: var(--border-width-thick) solid var(--color-border);
+            background-color: var(--color-bg);
+            color: var(--color-fg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            border-radius: var(--radius);
+            min-height: 44px;
+            line-height: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+            border-color: var(--color-fg);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-bg);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+        }
+
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .btn-full-width {
+            width: 100%;
+        }
+
+        /* ============================================
+           COMPONENTS - INPUTS & FORMS
+           ============================================ */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            width: 100%;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input {
+            padding: var(--space-md);
+            border: var(--border-width-thick) solid var(--color-border);
+            background: var(--color-bg);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            border-radius: var(--radius);
+            transition: border-color var(--transition-base);
+            width: 100%;
+            min-height: 44px;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .input::placeholder {
+            color: var(--color-fg);
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .select {
+            appearance: none;
+            background-image: url(",%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right var(--space-md) center;
+            background-size: 12px;
+            padding-right: var(--space-xl);
+        }
+
+        /* ============================================
+           COMPONENTS - CARDS
+           ============================================ */
+        .card {
+            border: var(--border-width-thick) solid var(--color-border);
+            background-color: var(--color-bg);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+
+        .card:hover {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+            transform: translateY(-2px);
+        }
+
+        .card:hover .card-image {
+            filter: invert(1);
+        }
+
+        .card:hover .text-accent {
+            color: var(--color-bg);
+        }
+
+        .card-header {
+            padding: var(--space-lg);
+            border-bottom: var(--border-width) solid var(--color-border);
+            background-color: var(--color-muted);
+            position: relative;
+            min-height: 240px;
+            overflow: hidden;
+        }
+
+        .card:hover .card-header {
+            background-color: var(--color-accent);
+        }
+
+        .card-body {
+            padding: var(--space-lg);
+        }
+
+        .card-footer {
+            padding: var(--space-lg);
+            border-top: var(--border-width) solid var(--color-border);
+            background-color: var(--color-bg);
+        }
+
+        .card:hover .card-footer {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+        }
+
+        /* Property Card Specific */
+        .property-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .property-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .property-images {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background-color: var(--color-muted);
+        }
+
+        .property-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity var(--transition-slow) 1s; /* 1 second delay on hover */
+        }
+
+        .property-image-1 {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .property-image-2 {
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .property-card:hover .property-image-1 {
+            opacity: 0;
+        }
+
+        .property-card:hover .property-image-2 {
+            opacity: 1;
+        }
+
+        .property-info {
+            padding: var(--space-lg);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            border: var(--border-width-thick) solid var(--color-border);
+            border-top: none;
+        }
+
+        .property-card:hover .property-info {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+            border-color: var(--color-fg);
+        }
+
+        .property-name {
+            font-weight: var(--font-weight-black);
+            text-transform: uppercase;
+            font-size: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .property-price {
+            font-weight: var(--font-weight-black);
+            color: var(--color-accent);
+            font-size: 1.5rem;
+        }
+
+        .property-card:hover .property-price {
+            color: var(--color-bg);
+        }
+
+        .property-location {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        .property-link {
+            margin-top: var(--space-md);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: color var(--transition-base);
+        }
+
+        .card:hover .property-link {
+            color: var(--color-bg);
+        }
+
+        /* ============================================
+           FILTERS SECTION
+           ============================================ */
+        .filters-section {
+            background-color: var(--color-muted);
+            border-bottom: var(--border-width-thick) solid var(--color-border);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--space-lg);
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: var(--font-weight-black);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .search-input {
+            background-color: var(--color-bg);
+            border: var(--border-width-thick) solid var(--color-border);
+            padding: var(--space-md);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-height: 44px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .range-inputs {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .range-input {
+            flex: 1;
+            background-color: var(--color-bg);
+            border: var(--border-width-thick) solid var(--color-border);
+            padding: var(--space-md);
+            font-family: var(--font-family);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            min-height: 44px;
+        }
+
+        /* ============================================
+           PAGINATION
+           ============================================ */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-2xl) 0;
+            border-top: var(--border-width-thick) solid var(--color-border);
+        }
+
+        .page-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: var(--border-width-thick) solid var(--color-border);
+            background: var(--color-bg);
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: var(--color-fg);
+        }
+
+        .page-btn:hover {
+            background-color: var(--color-fg);
+            color: var(--color-bg);
+            transform: translateY(-1px);
+        }
+
+        .page-btn.active {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-bg);
+        }
+
+        .page-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        /* ============================================
+           GEOMETRIC SHAPES & COMPOSITIONS
+           ============================================ */
+        .geometric-shape {
+            position: absolute;
+            border: var(--border-width) solid var(--color-border);
+            pointer-events: none;
+        }
+
+        .shape-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--color-accent);
+            opacity: 0.1;
+        }
+
+        .shape-square {
+            width: 100px;
+            height: 100px;
+            background-color: var(--color-fg);
+            opacity: 0.05;
+        }
+
+        .shape-line {
+            height: var(--border-width-thick);
+            background-color: var(--color-border);
+        }
+
+        .shape-diagonal {
+            width: 80px;
+            height: 80px;
+            transform: rotate(45deg);
+            background-color: var(--color-accent);
+            opacity: 0.08;
+        }
+
+        /* ============================================
+           HEADER & NAVIGATION
+           ============================================ */
+        .header {
+            border-bottom: var(--border-width-thick) solid var(--color-border);
+            padding: var(--space-lg) 0;
+            background-color: var(--color-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: var(--font-weight-black);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            color: var(--color-fg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+        }
+
+        .nav-link {
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            color: var(--color-fg);
+            position: relative;
+            padding: var(--space-xs) 0;
+            overflow: hidden;
+            transition: color var(--transition-base);
+        }
+
+        .nav-link::before,
+        .nav-link::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            width: 100%;
+            transition: transform var(--transition-base);
+        }
+
+        .nav-link::before {
+            top: 0;
+            transform: translateY(0);
+        }
+
+        .nav-link::after {
+            top: 100%;
+            color: var(--color-accent);
+            transform: translateY(100%);
+        }
+
+        .nav-link:hover::before {
+            transform: translateY(-100%);
+        }
+
+        .nav-link:hover::after {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            min-height: 60vh;
+            border-bottom: var(--border-width-thick) solid var(--color-border);
+            background-color: var(--color-muted);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            padding: var(--space-3xl) 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-geometric-composition {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            border-top: var(--border-width-thick) solid var(--color-border);
+            padding: var(--space-2xl) 0;
+            background-color: var(--color-bg);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--space-2xl);
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            font-weight: var(--font-weight-black);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--color-fg);
+            font-weight: var(--font-weight-regular);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color var(--transition-base);
+        }
+
+        .footer-link:hover {
+            color: var(--color-accent);
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1024px) {
+            .text-display-9xl { font-size: 5rem; }
+            .text-display-8xl { font-size: 4rem; }
+            .text-display-7xl { font-size: 3rem; }
+            .text-display-6xl { font-size: 2.5rem; }
+            
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-asymmetric { grid-template-columns: 1fr; }
+            .filters-grid { grid-template-columns: 1fr 1fr; }
+            
+            .hero-geometric-composition {
+                width: 100%;
+                opacity: 0.2;
+                top: auto;
+                bottom: 0;
+                height: 40%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .text-display-9xl { font-size: 3rem; }
+            .text-display-8xl { font-size: 2.5rem; }
+            .text-display-7xl { font-size: 2rem; }
+            .text-display-6xl { font-size: 1.75rem; }
+            
+            .container { padding: 0 var(--space-md); }
+            .section { padding: var(--space-2xl) 0; }
+            
+            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .filters-grid { grid-template-columns: 1fr; }
+            
+            .nav-links { display: none; } /* Mobile menu hidden for simplicity */
+            
+            .footer-content { grid-template-columns: 1fr; gap: var(--space-lg); }
+            
+            .hero-content { padding: var(--space-xl) 0; }
+            
+            .property-images { height: 200px; }
+            
+            .pagination { flex-wrap: wrap; }
+            .page-btn { min-width: 44px; }
+        }
+
+        /* ============================================
+           ACCESSIBILITY & UTILITIES
+           ============================================ */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Focus visible for keyboard navigation */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        /* Clickable areas */
+        .clickable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Imóveis Suíços</a>
+                <nav class="nav-links">
+                    <a href="#" class="nav-link" data-text="Busca">Busca</a>
+                    <a href="#" class="nav-link" data-text="Propriedades">Propriedades</a>
+                    <a href="#" class="nav-link" data-text="Sobre">Sobre</a>
+                    <a href="#" class="nav-link" data-text="Contato">Contato</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="section hero swiss-grid-pattern">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="text-display-8xl text-uppercase">
+                    <span class="text-accent">01.</span> Imóveis<br>
+                    Referência
+                </h1>
+                <p class="text-body-lg" style="max-width: 600px; margin-top: var(--space-lg);">
+                    Encontre seu próximo imóvel com a precisão suíça. Cada propriedade selecionada com cuidado extremo e qualidade atestada.
+                </p>
+            </div>
+            <div class="hero-geometric-composition">
+                <div class="geometric-shape shape-circle" style="top: 20%; left: 10%;"></div>
+                <div class="geometric-shape shape-square" style="top: 50%; right: 15%;"></div>
+                <div class="geometric-shape shape-diagonal" style="bottom: 20%; left: 40%;"></div>
+                <div class="geometric-shape shape-line" style="width: 80%; top: 15%; left: 10%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="section filters-section swiss-dots">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="text-heading-xl text-uppercase">
+                    <span class="text-accent">02.</span> Filtros
+                </h2>
+            </div>
+            
+            <div class="filters-grid">
+                <!-- Text Search -->
+                <div class="filter-group">
+                    <label class="filter-label">Busca</label>
+                    <input type="text" class="search-input" placeholder="Pesquisar propriedades...">
+                </div>
+
+                <!-- Price Range -->
+                <div class="filter-group">
+                    <label class="filter-label">Preço</label>
+                    <div class="range-inputs">
+                        <input type="text" class="range-input" placeholder="Mín">
+                        <input type="text" class="range-input" placeholder="Máx">
+                    </div>
+                </div>
+
+                <!-- State -->
+                <div class="filter-group">
+                    <label class="filter-label">Estado</label>
+                    <div class="select-wrapper">
+                        <select class="input select">
+                            <option>Paraná</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- City -->
+                <div class="filter-group">
+                    <label class="filter-label">Cidade</label>
+                    <div class="select-wrapper">
+                        <select class="input select">
+                            <option>Todas</option>
+                            <option>Londrina</option>
+                            <option>Ibiporã</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Listings -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="text-heading-xl text-uppercase">
+                    <span class="text-accent">03.</span> Propriedades
+                </h2>
+            </div>
+
+            <div class="grid grid-4">
+                <!-- Property Card 1 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Casa Executiva Londrina">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600596542815-2a4f266fb23e?w=400&h=300&fit=crop" 
+                             alt="Casa Executiva Londrina - Vista frontal" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=300&fit=crop" 
+                             alt="Casa Executiva Londrina - Interiors" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Casa Executiva Londrina</div>
+                        <div class="property-price">R$ 850.000</div>
+                        <div class="property-location">Londrina, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 2 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Apartamento Premium Ibiporã">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop" 
+                             alt="Apartamento Premium Ibiporã - Vista" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=300&fit=crop" 
+                             alt="Apartamento Premium Ibiporã - Sala" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Apartamento Premium Ibiporã</div>
+                        <div class="property-price">R$ 520.000</div>
+                        <div class="property-location">Ibiporã, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 3 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Sítio Londrina">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop" 
+                             alt="Sítio Londrina - Externo" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&h=300&fit=crop" 
+                             alt="Sítio Londrina - Paisagem" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Sítio Londrina</div>
+                        <div class="property-price">R$ 1.200.000</div>
+                        <div class="property-location">Londrina, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 4 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Cobertura Londrina">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&h=300&fit=crop" 
+                             alt="Cobertura Londrina - Vista aérea" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=400&h=300&fit=crop" 
+                             alt="Cobertura Londrina - Piscina" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Cobertura Londrina</div>
+                        <div class="property-price">R$ 1.450.000</div>
+                        <div class="property-location">Londrina, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 5 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Casa Campestre Ibiporã">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=400&h=300&fit=crop" 
+                             alt="Casa Campestre Ibiporã - Fachada" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=400&h=300&fit=crop" 
+                             alt="Casa Campestre Ibiporã - Jardim" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Casa Campestre Ibiporã</div>
+                        <div class="property-price">R$ 680.000</div>
+                        <div class="property-location">Ibiporã, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 6 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Flat Executivo Londrina">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=400&h=300&fit=crop" 
+                             alt="Flat Executivo Londrina - Interiors" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop" 
+                             alt="Flat Executivo Londrina - Cozinha" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Flat Executivo Londrina</div>
+                        <div class="property-price">R$ 390.000</div>
+                        <div class="property-location">Londrina, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 7 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Chácara Ibiporã">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=400&h=300&fit=crop" 
+                             alt="Chácara Ibiporã - Área externa" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&h=300&fit=crop" 
+                             alt="Chácara Ibiporã - Paisagem" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Chácara Ibiporã</div>
+                        <div class="property-price">R$ 950.000</div>
+                        <div class="property-location">Ibiporã, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+
+                <!-- Property Card 8 -->
+                <a href="#" class="card property-card clickable" aria-label="Ver detalhes: Mansão Londrina">
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=400&h=300&fit=crop" 
+                             alt="Mansão Londrina - Fachada" 
+                             class="property-image property-image-1">
+                        <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop" 
+                             alt="Mansão Londrina - Piscina" 
+                             class="property-image property-image-2">
+                    </div>
+                    <div class="property-info">
+                        <div class="property-name">Mansão Londrina</div>
+                        <div class="property-price">R$ 2.100.000</div>
+                        <div class="property-location">Londrina, Paraná</div>
+                        <div class="property-link">Ver Detalhes →</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" role="navigation" aria-label="Pagination">
+                <a href="#" class="page-btn clickable" aria-label="Página anterior">←</a>
+                <a href="#" class="page-btn active clickable" aria-label="Página 1" aria-current="page">1</a>
+                <a href="#" class="page-btn clickable" aria-label="Página 2">2</a>
+                <a href="#" class="page-btn clickable" aria-label="Página 3">3</a>
+                <a href="#" class="page-btn clickable" aria-label="Página 4">4</a>
+                <span class="page-btn">...</span>
+                <a href="#" class="page-btn clickable" aria-label="Página 12">12</a>
+                <a href="#" class="page-btn clickable" aria-label="Página próxima">→</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section swiss-diagonal" style="background-color: var(--color-muted);">
+        <div class="container">
+            <div class="grid grid-asymmetric">
+                <div>
+                    <h3 class="text-display-6xl text-uppercase" style="margin-bottom: var(--space-lg);">
+                        Não Encontrou<br>
+                        <span class="text-accent">O Que Procurava?</span>
+                    </h3>
+                    <p class="text-body-lg" style="max-width: 500px; margin-bottom: var(--space-xl);">
+                        Nossa equipe está pronta para encontrar o imóvel perfeito para suas necessidades específicas.
+                    </p>
+                    <div class="flex">
+                        <button class="btn btn-primary">Entre em Contato</button>
+                        <button class="btn btn-secondary">Agende Visita</button>
+                    </div>
+                </div>
+                <div style="position: relative; min-height: 300px;">
+                    <div class="geometric-shape shape-circle" style="top: 10%; left: 20%; width: 150px; height: 150px;"></div>
+                    <div class="geometric-shape shape-square" style="top: 40%; right: 10%; width: 120px; height: 120px;"></div>
+                    <div class="geometric-shape shape-diagonal" style="bottom: 10%; left: 30%; width: 100px; height: 100px;"></div>
+                    <div class="geometric-shape shape-line" style="width: 80%; top: 5%; left: 10%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Imóveis Suíços</h4>
+                    <p class="text-body-sm">
+                        Referência em imóveis de alta qualidade com precisão suíça.
+                    </p>
+                    <div style="margin-top: var(--space-md);">
+                        <div class="geometric-shape shape-line" style="width: 40px; background-color: var(--color-accent);"></div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Busca</a></li>
+                        <li><a href="#" class="footer-link">Propriedades</a></li>
+                        <li><a href="#" class="footer-link">Sobre Nós</a></li>
+                        <li><a href="#" class="footer-link">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <ul class="footer-links">
+                        <li><span class="footer-link">+55 (43) 3322-1100</span></li>
+                        <li><span class="footer-link">contato@imoveissuicos.com.br</span></li>
+                        <li><span class="footer-link">Londrina, PR</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: var(--space-2xl); padding-top: var(--space-lg); border-top: var(--border-width) solid var(--color-border); text-align: center;">
+                <p class="text-body-sm" style="text-transform: uppercase; letter-spacing: 0.05em;">
+                    © 2024 Imóveis Suíços. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Minimal JavaScript for enhanced interactions (CSS handles 95% of interactions) -->
+    <script>
+        // Only JavaScript added: Smooth scroll for anchor links and keyboard navigation enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for all anchor links
+            const anchorLinks = document.querySelectorAll('a[href^="#"]');
+            anchorLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Enhanced keyboard navigation for property cards
+            const cards = document.querySelectorAll('.property-card');
+            cards.forEach(card => {
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // Log interactions for demo purposes (since functional elements don't work)
+            const interactiveElements = document.querySelectorAll('.clickable, button, .btn');
+            interactiveElements.forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('UI Interaction:', this.textContent || this.getAttribute('aria-label') || 'Element clicked');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
