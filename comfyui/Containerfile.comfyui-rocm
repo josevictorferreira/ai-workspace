@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
   git \
   wget \
   curl \
+  portaudio19-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Clone ComfyUI and checkout pinned version
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git \
   && cd ComfyUI \
-  && git checkout v0.3.76
+  && git checkout v0.4.0
 
 # Set ComfyUI as working directory
 WORKDIR /workspace/ComfyUI

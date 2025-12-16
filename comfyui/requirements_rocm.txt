@@ -30,6 +30,7 @@ yarl>=1.18.0
 pyyaml
 Pillow
 scipy
+sounddevice
 tqdm
 psutil
 alembic
