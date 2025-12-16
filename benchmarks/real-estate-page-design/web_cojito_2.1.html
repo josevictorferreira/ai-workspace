@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --swiss-bg: #FFFFFF;
+      --swiss-text: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 2rem;
+      --spacing-xl: 4rem;
+      --border-thin: 2px solid var(--swiss-border);
+      --border-thick: 4px solid var(--swiss-border);
+      --transition-base: all 0.2s ease-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--swiss-text);
+      background-color: var(--swiss-bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Swiss Patterns */
+    .swiss-grid-pattern {
+      background: linear-gradient(var(--swiss-text) 1px, transparent 1px) 0 0 / 24px 24px,
+        linear-gradient(90deg, var(--swiss-text) 1px, transparent 1px) 0 0 / 24px 24px;
+      background-color: var(--swiss-muted);
+      opacity: 0.03;
+    }
+
+    .swiss-noise::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"></rect></svg>');
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+    }
+
+    /* Header */
+    .header {
+      border-bottom: var(--border-thick);
+      position: relative;
+      overflow: hidden;
+      padding: var(--spacing-xl) 0;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--swiss-muted);
+      z-index: -1;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .header-title {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-number {
+      font-size: calc(7vw + 1rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--swiss-accent);
+      letter-spacing: -0.05em;
+      opacity: 1;
+    }
+
+    .header-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: var(--spacing-xs);
+      display: inline-block;
+      padding: 0.5rem;
+      background: var(--swiss-bg);
+    }
+
+    /* Filters */
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-md);
+      border-bottom: var(--border-thick);
+      padding: var(--spacing-lg) 0;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .filter-group {
+      position: relative;
+    }
+
+    .filter-label {
+      position: absolute;
+      top: -0.6rem;
+      left: var(--spacing-md);
+      background: var(--swiss-bg);
+      padding: 0 var(--spacing-xs);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: var(--border-thin);
+      font-family: inherit;
+      font-size: 1rem;
+      background: var(--swiss-bg);
+      transition: var(--transition-base);
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--swiss-accent);
+    }
+
+    .filter-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--spacing-sm) center;
+      padding-right: var(--spacing-xl);
+    }
+
+    .filter-range {
+      -webkit-appearance: none;
+      height: 2px;
+      background: var(--swiss-muted);
+      margin-top: var(--spacing-md);
+      width: 100%;
+    }
+
+    .filter-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: var(--border-thick);
+      background: var(--swiss-bg);
+      cursor: pointer;
+    }
+
+    .filter-range::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border: var(--border-thick);
+      background: var(--swiss-bg);
+      cursor: pointer;
+    }
+
+    /* Property Grid */
+    .property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .property-card {
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      border: var(--border-thin);
+      transition: var(--transition-base);
+      background: var(--swiss-bg);
+    }
+
+    .property-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--swiss-accent);
+    }
+
+    .property-images {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 75%;
+      overflow: hidden;
+    }
+
+    .property-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      will-change: opacity;
+    }
+
+    .property-image:nth-child(1) {
+      opacity: 1;
+    }
+
+    .property-card:hover .property-image:nth-child(1) {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+
+    .property-card:hover .property-image:nth-child(2) {
+      opacity: 1;
+      transition-delay: 0.5s;
+    }
+
+    .property-card:hover .property-image:nth-child(3) {
+      opacity: 1;
+      transition-delay: 1.5s;
+    }
+
+    .property-content {
+      padding: var(--spacing-lg);
+    }
+
+    .property-name {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .property-price {
+      font-size: 1.25rem;
+      font-weight: 400;
+      display: block;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-xl);
+      border-top: var(--border-thin);
+      padding-top: var(--spacing-lg);
+    }
+
+    .pagination-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border: var(--border-thin);
+      background: var(--swiss-bg);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-base);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .pagination-button:hover,
+    .pagination-button.active {
+      background: var(--swiss-accent);
+      border-color: var(--swiss-accent);
+      color: var(--swiss-bg);
+    }
+
+    /* Utilities */
+    .swiss-red {
+      color: var(--swiss-accent);
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      .property-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-number {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="header-title">
+          <div class="header-number">01</div>
+          <h1 class="header-text">Property<br>Listings</h1>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label">Search</label>
+        <input type="text" class="filter-input" placeholder="Enter keywords...">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Price Range</label>
+        <input type="range" class="filter-range" min="0" max="2000000" value="1000000">
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.875rem;">
+          <span>R$ 0</span>
+          <span>R$ 2.000.000</span>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Location</label>
+        <select class="filter-input filter-select">
+          <option value="">Select location</option>
+          <option value="londrina">Londrina, PR</option>
+          <option value="ibipora">Ibiporã, PR</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="property-grid">
+      <!-- Property 1 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern house with large windows" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Living room interior" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1464890100898-a385f744067f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Kitchen interior" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Minimalist Dwelling</h2>
+          <span class="property-price">R$ <span class="swiss-red">1.250.000</span></span>
+        </div>
+      </a>
+
+      <!-- Property 2 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern house" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1497366216546-3750096284c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern living room" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1534349762230-e0bedbb40281?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Contemporary bedroom" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Casa do Sol</h2>
+          <span class="property-price">R$ <span class="swiss-red">895.000</span></span>
+        </div>
+      </a>
+
+      <!-- Property 3 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1456864088100-5612de44e58f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern apartment exterior" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Dining area" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1493809842364-78817add7ff8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Living room" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Urban View</h2>
+          <span class="property-price">R$ <span class="swiss-red">1.750.000</span></span>
+        </div>
+      </a>
+
+      <!-- Property 4 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1516455590571-18256e5a140b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Contemporary house" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Kitchen" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1540518614846-7d97fb7ac587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Bathroom" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Forest Abode</h2>
+          <span class="property-price">R$ <span class="swiss-red">980.000</span></span>
+        </div>
+      </a>
+
+      <!-- Property 5 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1517530818919-3bc8a42c986b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern architecture" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1522708323610-60fbb740c0b6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Living space" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1484155153548-ea7aa73e61ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Bedroom" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Concrete Pavilion</h2>
+          <span class="property-price">R$ <span class="swiss-red">1.450.000</span></span>
+        </div>
+      </a>
+
+      <!-- Property 6 -->
+      <a href="#" class="property-card">
+        <div class="property-images">
+          <img
+            src="https://images.unsplash.com/photo-1566179024147-aebbc56c971b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Modern house with large windows" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1521293835872-ec04d7e7dc4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Living area" class="property-image" loading="lazy">
+          <img
+            src="https://images.unsplash.com/photo-1545062990-4d73643e1d63?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            alt="Kitchen area" class="property-image" loading="lazy">
+        </div>
+        <div class="property-content">
+          <h2 class="property-name">Glass House</h2>
+          <span class="property-price">R$ <span class="swiss-red">2.150.000</span></span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <a href="#" class="pagination-button">1</a>
+      <a href="#" class="pagination-button">2</a>
+      <a href="#" class="pagination-button">3</a>
+      <a href="#" class="pagination-button">4</a>
+      <a href="#" class="pagination-button">→</a>
+    </div>
+  </div>
+
+  <script>
+    // Small script to add active state to pagination
+    document.addEventListener('DOMContentLoaded', function () {
+      // Highlight first page as active
+      const firstPage = document.querySelector('.pagination-button');
+      if (firstPage) {
+        firstPage.classList.add('active');
+      }
+
+      // Add click handler to pagination (non-functional, just UI)
+      document.querySelectorAll('.pagination-button').forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelectorAll('.pagination-button').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

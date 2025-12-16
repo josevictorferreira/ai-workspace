@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMOBILIÁRIA SWISS - IMÓVEIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --swiss-bg: #FFFFFF;
+      --swiss-fg: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.015;
+      z-index: 1;
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0, 0, 0, .02) 35px, rgba(0, 0, 0, .02) 70px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Header */
+    .header {
+      padding: 48px 0;
+      border-bottom: 4px solid var(--swiss-fg);
+      background: var(--swiss-muted);
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(0, 0, 0, .03) 23px, rgba(0, 0, 0, .03) 24px),
+        repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(0, 0, 0, .03) 23px, rgba(0, 0, 0, .03) 24px);
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      color: var(--swiss-accent);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      line-height: 0.9;
+    }
+
+    /* Filters */
+    .filters-section {
+      padding: 48px 0;
+      border-bottom: 2px solid var(--swiss-fg);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 24px;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .filter-input,
+    .filter-select {
+      background: var(--swiss-bg);
+      border: 2px solid var(--swiss-fg);
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.15s ease-out;
+      outline: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: var(--swiss-accent);
+      background: var(--swiss-muted);
+    }
+
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .price-separator {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .btn-filter {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+      border: 2px solid var(--swiss-fg);
+      padding: 16px 32px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      white-space: nowrap;
+    }
+
+    .btn-filter:hover {
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+    }
+
+    /* Properties Grid */
+    .properties-section {
+      padding: 48px 0;
+      background: var(--swiss-muted);
+      position: relative;
+    }
+
+    .properties-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: radial-gradient(circle, rgba(0, 0, 0, .04) 1px, transparent 1px);
+      background-size: 16px 16px;
+      pointer-events: none;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .property-card {
+      background: var(--swiss-bg);
+      border: 4px solid var(--swiss-fg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      position: relative;
+    }
+
+    .property-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--swiss-accent);
+    }
+
+    .property-card:hover .property-image-secondary {
+      opacity: 1;
+    }
+
+    .property-image-container {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      background: var(--swiss-muted);
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 1s ease-out;
+    }
+
+    .property-image-secondary {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    .property-card:hover .property-image-primary {
+      opacity: 0;
+    }
+
+    .property-info {
+      padding: 24px;
+    }
+
+    .property-name {
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .property-location {
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      color: var(--swiss-accent);
+    }
+
+    .property-price {
+      font-size: 24px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    /* Pagination */
+    .pagination-section {
+      padding: 48px 0;
+      border-top: 4px solid var(--swiss-fg);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--swiss-bg);
+      border: 2px solid var(--swiss-fg);
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .page-btn.active {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-btn:disabled:hover {
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .properties-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .page-title {
+        font-size: 3.5rem;
+      }
+
+      .property-image-container {
+        height: 200px;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .properties-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="section-label">01. CATÁLOGO</div>
+        <h1 class="page-title">Imóveis Disponíveis</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">BUSCA</label>
+          <input type="text" class="filter-input" placeholder="DIGITE O ENDEREÇO OU BAIRRO">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">PREÇO</label>
+          <div class="price-range">
+            <input type="text" class="filter-input" placeholder="MÍNIMO">
+            <span class="price-separator">—</span>
+            <input type="text" class="filter-input" placeholder="MÁXIMO">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">LOCALIZAÇÃO</label>
+          <select class="filter-select">
+            <option value="">TODAS AS CIDADES</option>
+            <option value="londrina">LONDRINA</option>
+            <option value="ibipora">IBIPORÃ</option>
+          </select>
+        </div>
+        <button class="btn-filter">FILTRAR</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Grid -->
+  <section class="properties-section">
+    <div class="container">
+      <div class="properties-grid">
+        <!-- Property Card 1 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property1a/400/240" alt="Imóvel 1"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property1b/400/240" alt="Imóvel 1 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Apartamento Centro</h3>
+            <p class="property-location">LONDRINA - PR</p>
+            <p class="property-price">R$ 450.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 2 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property2a/400/240" alt="Imóvel 2"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property2b/400/240" alt="Imóvel 2 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Casa Residencial</h3>
+            <p class="property-location">IBIPORÃ - PR</p>
+            <p class="property-price">R$ 680.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 3 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property3a/400/240" alt="Imóvel 3"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property3b/400/240" alt="Imóvel 3 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Studio Moderno</h3>
+            <p class="property-location">LONDRINA - PR</p>
+            <p class="property-price">R$ 280.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 4 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property4a/400/240" alt="Imóvel 4"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property4b/400/240" alt="Imóvel 4 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Cobertura Luxo</h3>
+            <p class="property-location">LONDRINA - PR</p>
+            <p class="property-price">R$ 1.200.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 5 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property5a/400/240" alt="Imóvel 5"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property5b/400/240" alt="Imóvel 5 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Sobrado Jardim</h3>
+            <p class="property-location">IBIPORÃ - PR</p>
+            <p class="property-price">R$ 520.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 6 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property6a/400/240" alt="Imóvel 6"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property6b/400/240" alt="Imóvel 6 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Flat Comercial</h3>
+            <p class="property-location">LONDRINA - PR</p>
+            <p class="property-price">R$ 380.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 7 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property7a/400/240" alt="Imóvel 7"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property7b/400/240" alt="Imóvel 7 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Casa Condomínio</h3>
+            <p class="property-location">IBIPORÃ - PR</p>
+            <p class="property-price">R$ 750.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 8 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property8a/400/240" alt="Imóvel 8"
+              class="property-image property-image primary">
+            <img src="https://picsum.photos/seed/property8b/400/240" alt="Imóvel 8 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Loft Industrial</h3>
+            <p class="property-location">LONDRINA - PR</p>
+            <p class="property-price">R$ 420.000</p>
+          </div>
+        </article>
+
+        <!-- Property Card 9 -->
+        <article class="property-card">
+          <div class="property-image-container">
+            <img src="https://picsum.photos/seed/property9a/400/240" alt="Imóvel 9"
+              class="property-image property-image-primary">
+            <img src="https://picsum.photos/seed/property9b/400/240" alt="Imóvel 9 - Vista 2"
+              class="property-image property-image-secondary">
+          </div>
+          <div class="property-info">
+            <h3 class="property-name">Kitnet Econômica</h3>
+            <p class="property-location">IBIPORÃ - PR</p>
+            <p class="property-price">R$ 180.000</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <section class="pagination-section">
+    <div class="container">
+      <div class="pagination">
+        <button class="page-btn" disabled>←</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn">→</button>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

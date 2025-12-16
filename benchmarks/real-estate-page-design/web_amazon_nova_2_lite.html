@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --bg-muted: #F2F2F2;
+      --text-black: #000000;
+      --accent-red: #FF3000;
+      --border-black: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-white);
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.05) 1px, transparent 0);
+      background-size: 40px 40px;
+      color: var(--text-black);
+      padding: 2rem;
+      line-height: 1.3;
+    }
+
+    /* GRID PATTERN */
+    .swiss-grid {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* TYPOGRAPHY */
+    h1,
+    h2,
+    h3,
+    h4,
+    label {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 10rem);
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 6rem);
+      margin: 3rem 0 1rem;
+    }
+
+    h3 {
+      font-size: clamp(1.5rem, 4vw, 4rem);
+    }
+
+    p {
+      font-size: 1.125rem;
+      font-weight: 400;
+    }
+
+    /* FILTERS */
+    .filters {
+      border: 4px solid var(--border-black);
+      padding: 2rem;
+      margin-bottom: 3rem;
+      background: var(--bg-muted);
+      background-image:
+        radial-gradient(circle at center, transparent 4px, rgba(0, 0, 0, 0.04) 4px);
+      background-size: 16px 16px;
+    }
+
+    .filter-group {
+      margin-bottom: 2rem;
+    }
+
+    .filter-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.15em;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 2px solid var(--border-black);
+      padding: 1rem;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      font-weight: 700;
+      background: var(--bg-white);
+    }
+
+    /* PROPERTY CARDS */
+    .properties {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .property-card {
+      border: 4px solid var(--border-black);
+      background: var(--bg-white);
+      overflow: hidden;
+      transition: transform 0.2s ease-out, background-color 0.2s;
+      text-decoration: none;
+      color: var(--text-black);
+    }
+
+    .property-card:hover {
+      background: var(--accent-red);
+      color: var(--bg-white);
+      transform: scale(1.02);
+    }
+
+    .image-container {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s;
+    }
+
+    .property-info {
+      padding: 1.5rem;
+    }
+
+    .price {
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      margin-top: 1rem;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .page-btn {
+      border: 2px solid var(--border-black);
+      background: var(--bg-white);
+      padding: 1rem 2rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .page-btn:hover {
+      background: var(--accent-red);
+      color: var(--bg-white);
+    }
+
+    /* ASYMMETRIC LAYOUT */
+    .content-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 3rem;
+    }
+
+    .main-content {
+      padding-right: 2rem;
+    }
+
+    .sidebar {
+      background: var(--bg-muted);
+      padding: 2rem;
+      border: 4px solid var(--border-black);
+      background-image:
+        linear-gradient(45deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, 0.02) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, 0.02) 75%);
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content-wrapper">
+    <div class="main-content">
+      <h1 class="section-title">Premium Properties</h1>
+
+      <div class="properties">
+        <a href="#" class="property-card">
+          <div class="image-container">
+            <img src="https://picsum.photos/400/300?random=1" class="property-image" alt="Property">
+          </div>
+          <div class="property-info">
+            <h3>Modern Downtown Loft</h3>
+            <p>Londrina, Paraná</p>
+            <div class="price">$450,000</div>
+          </div>
+        </a>
+
+        <a href="#" class="property-card">
+          <div class="image-container">
+            <img src="https://picsum.photos/400/300?random=2" class="property-image" alt="Property">
+          </div>
+          <div class="property-info">
+            <h3>Lake View Villa</h3>
+            <p>Ibipora, Paraná</p>
+            <div class="price">$780,000</div>
+          </div>
+        </a>
+
+        <a href="#" class="property-card">
+          <div class="image-container">
+            <img src="https://picsum.photos/400/300?random=3" class="property-image" alt="Property">
+          </div>
+          <div class="property-info">
+            <h3>Historic Center Apartment</h3>
+            <p>Londrina, Paraná</p>
+            <div class="price">$320,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn">Previous</button>
+        <button class="page-btn">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">Next</button>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <h2>Filters</h2>
+
+      <div class="filter-group">
+        <label>Search Properties</label>
+        <input type="text" placeholder="Enter keywords...">
+      </div>
+
+      <div class="filter-group">
+        <label>Price Range</label>
+        <input type="range" min="0" max="1000000" step="100000">
+      </div>
+
+      <div class="filter-group">
+        <label>Location</label>
+        <select>
+          <option>Paraná State</option>
+          <option>Londrina</option>
+          <option>Ibipora</option>
+        </select>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // Image cycling on hover
+    document.querySelectorAll('.property-card').forEach(card => {
+      const img = card.querySelector('.property-image');
+      const images = [
+        img.src.replace('=1', '=1'),
+        img.src.replace('=1', '=4'),
+        img.src.replace('=1', '=5')
+      ];
+      let current = 0;
+
+      card.addEventListener('mouseenter', () => {
+        const interval = setInterval(() => {
+          current = (current + 1) % images.length;
+          img.src = images[current];
+        }, 1000);
+        card.dataset.interval = interval;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        clearInterval(parseInt(card.dataset.interval));
+        img.src = images[0];
+      });
+    });
+  </script>
+</body>
+
+</html>

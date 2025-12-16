@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property Listings — Swiss International Style</title>
+  <style>
+    :root {
+      --swiss-bg: #ffffff;
+      --swiss-ink: #000000;
+      --swiss-muted: #f2f2f2;
+      --swiss-accent: #ff3000;
+      --space-xs: 8px;
+      --space-s: 12px;
+      --space: 16px;
+      --space-l: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --radius: 0px;
+      --border: 4px;
+      --border-2: 2px;
+      --transition: 150ms ease-out;
+    }
+
+    /* Reset and base */
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      color: var(--swiss-ink);
+      background:
+        /* global paper-like noise */
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.015'/></feComponentTransfer></filter><rect width='100%%' height='100%%' filter='url(%23n)'/></svg>") repeat,
+        var(--swiss-bg);
+      font-family: Inter, "Helvetica Neue", Helvetica, Arial, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", Ubuntu, Cantarell, "Liberation Sans", sans-serif;
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    img {
+      display: block;
+      max-width: 100%
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      color: inherit
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-xl);
+    }
+
+    /* Swiss texture patterns */
+    .swiss-grid-pattern {
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 24px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 24px);
+    }
+
+    .swiss-dots {
+      background-image:
+        radial-gradient(currentColor 1px, transparent 1.5px);
+      background-size: 16px 16px;
+      opacity: .12;
+    }
+
+    .swiss-diagonal {
+      background-image:
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 10px);
+    }
+
+    /* Type scale */
+    .display {
+      font-weight: 900;
+      letter-spacing: -.02em;
+      text-transform: uppercase;
+    }
+
+    h1.display {
+      font-size: clamp(2.8rem, 9vw, 8rem);
+      line-height: .95;
+      margin: 0 0 var(--space-l)
+    }
+
+    h2.section-number {
+      font-weight: 800;
+      font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--swiss-accent);
+      margin: 0 0 var(--space);
+    }
+
+    h3 {
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin: 0 0 var(--space-xs);
+    }
+
+    .kicker {
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: .875rem;
+    }
+
+    p {
+      margin: 0 0 var(--space-s)
+    }
+
+    /* Header */
+    .site-header {
+      border-bottom: var(--border) solid var(--swiss-ink);
+      background: var(--swiss-bg);
+    }
+
+    .brand {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space);
+    }
+
+    .brand-left .wordmark {
+      font-weight: 900;
+      font-size: clamp(1.6rem, 4vw, 2.75rem);
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .brand-left .tagline {
+      font-size: .9rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    /* Hero with asymmetrical composition */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: var(--space-xl);
+      border-bottom: var(--border) solid var(--swiss-ink);
+      position: relative;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-art .swiss-grid-pattern {
+      position: absolute;
+      inset: 0;
+    }
+
+    .shapes {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .shape {
+      position: absolute;
+      border: var(--border) solid var(--swiss-ink);
+      background: var(--swiss-muted);
+    }
+
+    .circle {
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: 0 0 0 10px rgba(255, 48, 0, .08) inset;
+    }
+
+    .stripe {
+      background: var(--swiss-accent);
+    }
+
+    .line {
+      height: var(--border);
+      background: var(--swiss-ink);
+    }
+
+    .rect-1 {
+      width: 75%;
+      height: 48%
+    }
+
+    .rect-2 {
+      width: 46%;
+      height: 36%;
+      top: 10%;
+      left: 52%
+    }
+
+    .rect-3 {
+      width: 30%;
+      height: 30%;
+      bottom: 8%;
+      left: 10%
+    }
+
+    .circle-1 {
+      width: 88px;
+      height: 88px;
+      right: 12%;
+      top: 18%
+    }
+
+    .circle-2 {
+      width: 44px;
+      height: 44px;
+      right: 4%;
+      bottom: 18%
+    }
+
+    .stripe-1 {
+      width: 18px;
+      height: 72%;
+      left: 6%;
+      top: 14%
+    }
+
+    .line-1 {
+      width: 52%;
+      height: var(--border);
+      left: 28%;
+      top: 62%
+    }
+
+    /* Filters */
+    .filters {
+      margin: var(--space-xl) 0;
+      border: var(--border) solid var(--swiss-ink);
+      background: var(--swiss-muted);
+    }
+
+    .filters .swiss-grid-pattern {
+      position: absolute;
+      inset: 0
+    }
+
+    .filters-inner {
+      position: relative;
+      padding: var(--space-xl);
+      display: grid;
+      gap: var(--space-xl);
+    }
+
+    .filters form {
+      display: grid;
+      gap: var(--space-xl);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr 1fr auto;
+      gap: var(--space-xl);
+      align-items: end;
+    }
+
+    @media (max-width: 1000px) {
+      .filters-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media (max-width: 560px) {
+      .filters-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .field {
+      display: grid;
+      gap: 6px
+    }
+
+    .label {
+      font-size: .75rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      background: transparent;
+      color: var(--swiss-ink);
+      border: var(--border-2) solid var(--swiss-ink);
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition), color var(--transition);
+    }
+
+    .input::placeholder {
+      color: #555
+    }
+
+    .input:hover {
+      border-color: #111
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--swiss-accent);
+      box-shadow: none;
+    }
+
+    .price-row {
+      display: flex;
+      gap: var(--space);
+      align-items: center
+    }
+
+    .price-row .input {
+      flex: 1
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: var(--border) solid var(--swiss-ink);
+      padding: 12px 18px;
+      background: var(--swiss-ink);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-weight: 800;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--swiss-accent);
+      transform: translateY(-1px);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--swiss-ink);
+    }
+
+    .btn.secondary:hover {
+      background: var(--swiss-accent);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--swiss-ink);
+    }
+
+    .btn.ghost:hover {
+      background: var(--swiss-ink);
+      color: #fff;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 2px;
+    }
+
+    /* Listings grid */
+    .listings {
+      display: grid;
+      gap: var(--space-xl);
+      border-top: var(--border) solid var(--swiss-ink);
+      padding-top: var(--space-xl);
+    }
+
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+
+    @media (max-width: 1100px) {
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media (max-width: 640px) {
+      .listings-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border: var(--border) solid var(--swiss-ink);
+      background: var(--swiss-bg);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+
+    .property-card:hover {
+      background: var(--swiss-accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .card-media {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: var(--swiss-muted);
+      overflow: hidden;
+      border-bottom: var(--border) solid var(--swiss-ink);
+    }
+
+    .card-media .swiss-grid-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: .12
+    }
+
+    .img-stack {
+      position: absolute;
+      inset: 0
+    }
+
+    .img-stack img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1;
+      transition: opacity 1s ease-out 1s;
+      /* delay=1s so second image fades in after 1s hover */
+    }
+
+    .img-stack img.second {
+      opacity: 0
+    }
+
+    .property-card:hover .img-stack img.first {
+      opacity: 0
+    }
+
+    .property-card:hover .img-stack img.second {
+      opacity: 1
+    }
+
+    .card-body {
+      padding: var(--space-xl)
+    }
+
+    .price {
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      margin-top: 6px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .card-link {
+      display: block;
+      position: relative;
+      z-index: 1
+    }
+
+    .card-link:focus-visible {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 2px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space);
+      border-top: var(--border) solid var(--swiss-ink);
+      padding: var(--space-xl) 0;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      min-width: 44px;
+      height: 44px;
+      padding: 0 12px;
+      border: var(--border) solid var(--swiss-ink);
+      background: transparent;
+      color: var(--swiss-ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+      border-radius: var(--radius);
+    }
+
+    .page-btn:hover {
+      background: var(--swiss-accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .page-btn.current {
+      background: var(--swiss-ink);
+      color: #fff;
+    }
+
+    /* Footer */
+    .site-footer {
+      border-top: var(--border) solid var(--swiss-ink);
+      padding: var(--space-xl) 0;
+      display: grid;
+      gap: var(--space);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+
+    @media (max-width: 800px) {
+      .footer-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Utility */
+    .muted {
+      color: #555
+    }
+
+    .accent {
+      color: var(--swiss-accent)
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container brand">
+      <div class="brand-left">
+        <div class="wordmark">ESTATES</div>
+        <div class="tagline">OBJECTIVE LISTINGS</div>
+      </div>
+      <div class="kicker">Paraná • Brazil</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h2 class="section-number">01. Inventory</h2>
+        <h1 class="display">Property Listings</h1>
+        <p class="muted">A structured, legible catalog of real estate inventory. Filters are illustrative. Interaction
+          is immediate and precise.</p>
+      </div>
+      <div class="hero-art">
+        <div class="swiss-grid-pattern"></div>
+        <div class="shapes">
+          <div class="shape rect-1"></div>
+          <div class="shape rect-2 swiss-diagonal"></div>
+          <div class="shape rect-3"></div>
+          <div class="shape circle circle-1"></div>
+          <div class="shape circle circle-2"></div>
+          <div class="shape stripe stripe-1"></div>
+          <div class="shape line line-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="filters">
+      <div class="filters-inner">
+        <h2 class="section-number">02. Method</h2>
+        <form>
+          <div class="filters-grid">
+            <label class="field">
+              <span class="label">Search</span>
+              <input class="input" type="text" placeholder="Neighborhood, keyword, features…">
+            </label>
+
+            <label class="field">
+              <span class="label">Location</span>
+              <div class="price-row">
+                <select class="select" aria-label="State">
+                  <option>Paraná</option>
+                </select>
+                <select class="select" aria-label="City">
+                  <option>Londrina</option>
+                  <option>Ibiporã</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <span class="label">Price Range (BRL)</span>
+              <div class="price-row">
+                <input class="input" type="number" placeholder="Min" min="0" step="1000">
+                <span>—</span>
+                <input class="input" type="number" placeholder="Max" min="0" step="1000">
+              </div>
+            </label>
+
+            <div class="field" style="align-self:end">
+              <button type="button" class="btn ghost" aria-label="Apply filters (mock)">Apply</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="listings">
+      <div class="listings-head"
+        style="display:flex; align-items:baseline; justify-content:space-between; gap:var(--space); flex-wrap:wrap">
+        <h2 class="section-number">03. Catalog</h2>
+        <div class="kicker">12 items • page 1/4</div>
+      </div>
+
+      <div class="listings-grid">
+
+        <!-- Card 1 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Alta Vista Residence">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house1a/800/500"
+                  alt="Alta Vista Residence exterior by day">
+                <img class="second" src="https://picsum.photos/seed/house1b/800/500"
+                  alt="Alta Vista Residence exterior dusk">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Alta Vista Residence</h3>
+              <div class="price">R$ 1.250.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Ibiporã Garden House">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house2a/800/500"
+                  alt="Ibiporã Garden House front view">
+                <img class="second" src="https://picsum.photos/seed/house2b/800/500"
+                  alt="Ibiporã Garden House backyard">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Ibiporã Garden House</h3>
+              <div class="price">R$ 890.000</div>
+              <div class="meta">Ibiporã • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Londrina Loft 304">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house3a/800/500"
+                  alt="Londrina Loft interior daylight">
+                <img class="second" src="https://picsum.photos/seed/house3b/800/500"
+                  alt="Londrina Loft interior evening">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Loft 304 — Centro</h3>
+              <div class="price">R$ 640.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Ibiporã Side Unit">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house4a/800/500" alt="Ibiporã Side Unit street">
+                <img class="second" src="https://picsum.photos/seed/house4b/800/500" alt="Ibiporã Side Unit garden">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Side Unit — Ibiporã</h3>
+              <div class="price">R$ 720.000</div>
+              <div class="meta">Ibiporã • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Londrina Corner Home">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house5a/800/500" alt="Londrina Corner Home facade">
+                <img class="second" src="https://picsum.photos/seed/house5b/800/500" alt="Londrina Corner Home aerial">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Corner Home — South</h3>
+              <div class="price">R$ 1.050.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View North Park Villa">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house6a/800/500" alt="North Park Villa approach">
+                <img class="second" src="https://picsum.photos/seed/house6b/800/500" alt="North Park Villa terrace">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>North Park Villa</h3>
+              <div class="price">R$ 1.780.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 7 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Ibiporã Studio">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house7a/800/500" alt="Ibiporã Studio exterior">
+                <img class="second" src="https://picsum.photos/seed/house7b/800/500" alt="Ibiporã Studio interior">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Studio — Ibiporã</h3>
+              <div class="price">R$ 410.000</div>
+              <div class="meta">Ibiporã • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 8 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View CBD Penthouse">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house8a/800/500" alt="CBD Penthouse skyline view">
+                <img class="second" src="https://picsum.photos/seed/house8b/800/500" alt="CBD Penthouse terrace">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Penthouse — CBD</h3>
+              <div class="price">R$ 2.150.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 9 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Eastside Townhouse">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house9a/800/500" alt="Eastside Townhouse row">
+                <img class="second" src="https://picsum.photos/seed/house9b/800/500" alt="Eastside Townhouse interior">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Townhouse — Eastside</h3>
+              <div class="price">R$ 960.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 10 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Ibiporã Courtyard House">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house10a/800/500"
+                  alt="Ibiporã Courtyard House entrance">
+                <img class="second" src="https://picsum.photos/seed/house10b/800/500"
+                  alt="Ibiporã Courtyard House courtyard">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Courtyard House</h3>
+              <div class="price">R$ 1.100.000</div>
+              <div class="meta">Ibiporã • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 11 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View West End Flat">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house11a/800/500"
+                  alt="West End Flat building facade">
+                <img class="second" src="https://picsum.photos/seed/house11b/800/500" alt="West End Flat living room">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Flat — West End</h3>
+              <div class="price">R$ 540.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 12 -->
+        <article class="property-card">
+          <a class="card-link" href="#" aria-label="View Industrial Loft">
+            <div class="card-media">
+              <div class="swiss-grid-pattern"></div>
+              <div class="img-stack">
+                <img class="first" src="https://picsum.photos/seed/house12a/800/500" alt="Industrial Loft exterior">
+                <img class="second" src="https://picsum.photos/seed/house12b/800/500" alt="Industrial Loft interior">
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>Industrial Loft</h3>
+              <div class="price">R$ 780.000</div>
+              <div class="meta">Londrina • Paraná</div>
+            </div>
+          </a>
+        </article>
+
+      </div>
+
+      <nav class="pagination" aria-label="Pagination">
+        <button type="button" class="page-btn" aria-label="Previous page">Prev</button>
+        <button type="button" class="page-btn current" aria-current="page">1</button>
+        <button type="button" class="page-btn">2</button>
+        <button type="button" class="page-btn">3</button>
+        <button type="button" class="page-btn">4</button>
+        <button type="button" class="page-btn" aria-label="Next page">Next</button>
+      </nav>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <h3>Contact</h3>
+          <p class="muted">+55 (43) 3333-0000</p>
+          <p class="muted">listings@estates.br</p>
+        </div>
+        <div>
+          <h3>Locations</h3>
+          <p class="muted">Paraná</p>
+          <p class="muted">Londrina • Ibiporã</p>
+        </div>
+        <div>
+          <h3>System</h3>
+          <p class="muted">Grid-first. Objective. Timeless.</p>
+        </div>
+      </div>
+      <div class="kicker">© 2025 ESTATES — Swiss International</div>
+    </footer>
+  </main>
+</body>
+
+</html>

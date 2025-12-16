@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Style Real Estate Listings</title>
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --radius: 0px;
+      --space-8: 0.5rem;
+      --space-12: 0.75rem;
+      --space-16: 1rem;
+      --space-24: 1.5rem;
+      --space-48: 3rem;
+      --font: 'Inter', sans-serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--fg);
+      font-family: var(--font);
+      line-height: 1.4;
+      min-height: 100vh;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.015' fill='%23000' filter='url(%23noise)'/%3E%3C/svg%3E") repeat;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: var(--space-24);
+      background: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M0 12H24M12 0V24' stroke='%23000' stroke-width='0.5' stroke-opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 24px 24px;
+      box-sizing: border-box;
+    }
+
+    /* Swiss Style Patterns */
+    .swiss-grid-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M0 12H24M12 0V24' stroke='%23000' stroke-width='0.5' stroke-opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 24px 24px;
+    }
+
+    .swiss-dots {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='2' fill='%23000000' fill-opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background: repeating-linear-gradient(45deg, #000 0, #000 0.5px, transparent 0.5px, transparent 10px);
+      opacity: 0.02;
+    }
+
+    .section-title {
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      font-size: 4rem;
+      margin-bottom: var(--space-24);
+      line-height: 1.1;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -0.5em;
+      left: 0;
+      width: 50%;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .filters-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      padding: var(--space-16);
+      background: var(--muted);
+      border: 2px solid var(--fg);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    label {
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+    }
+
+    input,
+    select {
+      border: 2px solid var(--fg);
+      background: var(--bg);
+      padding: var(--space-8) var(--space-12);
+      font-family: var(--font);
+      font-size: 1rem;
+      width: 100%;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .property-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+    }
+
+    .property-card {
+      position: relative;
+      border: 2px solid var(--fg);
+      background: var(--bg);
+      padding: var(--space-16);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      box-shadow: none;
+    }
+
+    .image-container {
+      position: relative;
+      height: 260px;
+      overflow: hidden;
+      margin-bottom: var(--space-16);
+    }
+
+    .main-image,
+    .alt-image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 1s;
+    }
+
+    .alt-image {
+      opacity: 0;
+    }
+
+    .image-container:hover .main-image {
+      opacity: 0;
+    }
+
+    .image-container:hover .alt-image {
+      opacity: 1;
+    }
+
+    .property-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .property-title {
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      font-size: 1.25rem;
+    }
+
+    .property-price {
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      font-size: 1.5rem;
+    }
+
+    .property-link {
+      display: block;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      margin-top: var(--space-8);
+    }
+
+    .property-link:hover {
+      color: var(--accent);
+    }
+
+    .pagination {
+      margin-top: var(--space-24);
+      display: flex;
+      justify-content: center;
+      gap: var(--space-12);
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: var(--space-8) var(--space-16);
+      border: 2px solid var(--fg);
+      color: var(--fg);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      width: fit-content;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .pagination a:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .pagination a.active {
+      background: var(--fg);
+      color: var(--bg);
+      border: none;
+    }
+
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .filters-container {
+        width: 25%;
+        border-right: 2px solid var(--fg);
+      }
+
+      .property-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-title {
+        font-size: 5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .filters-container {
+        width: 30%;
+      }
+
+      .property-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .section-title {
+        font-size: 6rem;
+        margin-bottom: var(--space-24);
+      }
+
+      .pagination {
+        gap: var(--space-16);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .filters-container {
+        width: 25%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1 class="section-title">01. PROPERTIES</h1>
+    </header>
+
+    <main class="grid-container">
+      <aside class="filters-container">
+        <div class="control-group">
+          <label for="search">Search properties</label>
+          <input type="text" id="search" placeholder="e.g. Villa, Lakefront">
+        </div>
+
+        <div class="control-group">
+          <label for="price-min">Price range</label>
+          <div style="display: flex; gap: var(--space-8);">
+            <input type="number" id="price-min" placeholder="Min" min="0" step="1000">
+            <input type="number" id="price-max" placeholder="Max" min="0" step="1000">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="state">State</label>
+          <select id="state">
+            <option>Paraná</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="city">City</label>
+          <select id="city">
+            <option>Londrina</option>
+            <option>Ibiporã</option>
+          </select>
+        </div>
+      </aside>
+
+      <section class="property-grid">
+        <!-- Property Cards -->
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1564501980169-640c5f9ca8f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Modern Lakeside Villa</h2>
+            <p class="property-price">$490,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1520156367396-6267a4a3d2d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1575144826559-c0b0d3d7b5f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Urban Loft Downtown</h2>
+            <p class="property-price">$325,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1501658500722-6ab84d50b780?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1512917774080-994b93d23c89?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Mountain Retreat</h2>
+            <p class="property-price">$875,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1570055761931-af6d2c2e936e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1581579515594-51ee1e9b37b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Coastal Executive Home</h2>
+            <p class="property-price">$1,250,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1501701403251-b020e02b0b64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1543755657-8c43c5a32e80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Heritage Country Estate</h2>
+            <p class="property-price">$2,150,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="image-container">
+            <img
+              src="https://images.unsplash.com/photo-1535243363719-035b02dab206?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="main-image">
+            <img
+              src="https://images.unsplash.com/photo-1502602898647-35bd82022b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              alt="Property" class="alt-image">
+          </div>
+          <div class="property-details">
+            <h2 class="property-title">Penthouse Condo</h2>
+            <p class="property-price">$975,000</p>
+            <a href="#" class="property-link">view details</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pagination">
+      <a href="#" class="active">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">4</a>
+      <a href="#">Next</a>
+    </footer>
+  </div>
+</body>
+
+</html>
