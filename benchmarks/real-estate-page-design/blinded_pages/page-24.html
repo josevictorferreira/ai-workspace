@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist Real Estate | Swiss Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Swiss Design Tokens */
+      --background: #FFFFFF;
+      --foreground: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+
+      /* Spacing Scale */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+      --space-xxl: 4rem;
+
+      /* Typography Scale */
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.5rem;
+      --font-size-2xl: 2rem;
+      --font-size-3xl: 2.5rem;
+      --font-size-4xl: 3rem;
+      --font-size-5xl: 4rem;
+      --font-size-6xl: 5rem;
+
+      /* Border */
+      --border-width: 4px;
+      --radius: 0px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.4;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.015) 1px, transparent 0);
+      background-size: 16px 16px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+
+    /* Header */
+    header {
+      padding: var(--space-lg) 0;
+      border-bottom: var(--border-width) solid var(--border);
+      margin-bottom: var(--space-xl);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: var(--font-size-2xl);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .logo-accent {
+      color: var(--accent);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: var(--space-lg);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--foreground);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      margin-bottom: var(--space-xxl);
+      padding: var(--space-xl) 0;
+      position: relative;
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: var(--space-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-text {
+      font-size: var(--font-size-lg);
+      max-width: 600px;
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Filters Section */
+    .filters {
+      margin-bottom: var(--space-xxl);
+      padding: var(--space-lg);
+      border: var(--border-width) solid var(--border);
+      background-color: var(--muted);
+    }
+
+    .filters-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .filter-group {
+      margin-bottom: var(--space-sm);
+    }
+
+    .filter-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: var(--font-size-xs);
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: var(--space-sm);
+      border: var(--border-width) solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: var(--font-size-base);
+      transition: border-color 0.2s ease;
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: var(--space-sm);
+      border: var(--border-width) solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-size: var(--font-size-base);
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+    }
+
+    .filter-button {
+      background: var(--foreground);
+      color: var(--background);
+      border: none;
+      padding: var(--space-sm) var(--space-md);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: var(--space-sm);
+    }
+
+    .filter-button:hover {
+      background: var(--accent);
+    }
+
+    /* Property Listings */
+    .listings-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xl);
+      letter-spacing: -0.02em;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xxl);
+    }
+
+    .property-card {
+      border: var(--border-width) solid var(--border);
+      position: relative;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .property-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 8px 8px 0 0 rgba(255, 48, 0, 0.2);
+    }
+
+    .property-image-container {
+      position: relative;
+      overflow: hidden;
+      height: 250px;
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .property-card:hover .property-image {
+      transform: scale(1.05);
+    }
+
+    .property-image-slider {
+      position: absolute;
+      bottom: var(--space-sm);
+      right: var(--space-sm);
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .image-indicator {
+      width: 8px;
+      height: 8px;
+      border: 2px solid var(--background);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .image-indicator.active {
+      background: var(--accent);
+    }
+
+    .property-content {
+      padding: var(--space-md);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .property-price {
+      font-weight: 900;
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--space-xs);
+    }
+
+    .property-name {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-xs);
+      flex-grow: 1;
+    }
+
+    .property-location {
+      font-size: var(--font-size-sm);
+      color: #666;
+      margin-bottom: var(--space-md);
+    }
+
+    .property-link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--foreground);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: var(--font-size-xs);
+      position: relative;
+      padding-right: 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .property-link::after {
+      content: "→";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.2s ease;
+    }
+
+    .property-link:hover {
+      color: var(--accent);
+    }
+
+    .property-link:hover::after {
+      transform: translateY(-50%) translateX(4px);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-xxl);
+    }
+
+    .pagination-button {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: var(--border-width) solid var(--border);
+      background: var(--background);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pagination-button:hover,
+    .pagination-button.active {
+      background: var(--foreground);
+      color: var(--background);
+    }
+
+    /* Footer */
+    footer {
+      padding: var(--space-xl) 0;
+      border-top: var(--border-width) solid var(--border);
+      margin-top: var(--space-xl);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-lg);
+    }
+
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .footer-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: var(--space-xs);
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: var(--foreground);
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--border);
+      margin-top: var(--space-lg);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: var(--space-md);
+      }
+
+      nav ul {
+        gap: var(--space-sm);
+      }
+
+      .hero-title {
+        font-size: var(--font-size-5xl);
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="header-content">
+        <div class="logo">Minimal<span class="logo-accent">Estate</span></div>
+        <nav>
+          <ul>
+            <li><a href="#">Properties</a></li>
+            <li><a href="#">Agents</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="section-label">01. Properties</div>
+        <h1 class="hero-title">Minimalist Living Spaces</h1>
+        <p class="hero-text">Discover premium properties designed with Swiss precision and attention to detail. Each
+          listing represents the perfect fusion of functionality and timeless aesthetics.</p>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+      <h2 class="filters-title">Search Properties</h2>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Location</label>
+          <select class="filter-select">
+            <option disabled selected>Select Location</option>
+            <option>Paraná</option>
+            <option>Londrina</option>
+            <option>Ibipora</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Price Range</label>
+          <select class="filter-select">
+            <option disabled selected>Select Price Range</option>
+            <option>$100,000 - $250,000</option>
+            <option>$250,000 - $500,000</option>
+            <option>$500,000 - $1,000,000</option>
+            <option>$1,000,000+</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Search</label>
+          <input type="text" class="filter-input" placeholder="Property name or keyword">
+        </div>
+
+        <div>
+          <button class="filter-button">Apply Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Property Listings -->
+    <h2 class="listings-title">Featured Properties</h2>
+
+    <div class="properties-grid">
+      <!-- Property Card 1 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="Modern Apartment" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$750,000</div>
+          <h3 class="property-name">Modern Apartment</h3>
+          <div class="property-location">Londrina, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 2 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="Suburban House" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$1,200,000</div>
+          <h3 class="property-name">Suburban House</h3>
+          <div class="property-location">Ibipora, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 3 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="City Loft" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$890,000</div>
+          <h3 class="property-name">City Loft</h3>
+          <div class="property-location">Londrina, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 4 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="Luxury Villa" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$2,500,000</div>
+          <h3 class="property-name">Luxury Villa</h3>
+          <div class="property-location">Ibipora, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 5 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="Contemporary Flat" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$650,000</div>
+          <h3 class="property-name">Contemporary Flat</h3>
+          <div class="property-location">Londrina, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 6 -->
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            src="https://images.unsplash.com/photo-1605276374990-7050d0e2d9a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+            alt="Minimalist Home" class="property-image">
+          <div class="property-image-slider">
+            <div class="image-indicator active"></div>
+            <div class="image-indicator"></div>
+            <div class="image-indicator"></div>
+          </div>
+        </div>
+        <div class="property-content">
+          <div class="property-price">$1,100,000</div>
+          <h3 class="property-name">Minimalist Home</h3>
+          <div class="property-location">Ibipora, Paraná</div>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="pagination-button">1</button>
+      <button class="pagination-button">2</button>
+      <button class="pagination-button">3</button>
+      <button class="pagination-button">→</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">MinimalEstate</h3>
+          <p>Precision property listings with Swiss minimalist design principles.</p>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Properties</h3>
+          <ul class="footer-links">
+            <li><a href="#">Residential</a></li>
+            <li><a href="#">Commercial</a></li>
+            <li><a href="#">Luxury</a></li>
+            <li><a href="#">New Developments</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Company</h3>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Agents</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; 2023 MinimalEstate. All rights reserved.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Simple image hover effect for property cards
+    document.querySelectorAll('.property-card').forEach(card => {
+      const image = card.querySelector('.property-image');
+      const indicators = card.querySelectorAll('.image-indicator');
+      let isHovering = false;
+      let currentIndex = 0;
+      let interval;
+
+      // Array of sample images for each property
+      const images = [
+        image.src,
+        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1575517111839-3a3843ee7f5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80'
+      ];
+
+      // Update image indicators
+      function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentIndex);
+        });
+      }
+
+      // Change image
+      function changeImage() {
+        if (isHovering) {
+          currentIndex = (currentIndex + 1) % images.length;
+          image.src = images[currentIndex];
+          updateIndicators();
+        }
+      }
+
+      // Start interval when hovering
+      card.addEventListener('mouseenter', () => {
+        isHovering = true;
+        clearInterval(interval);
+        interval = setInterval(changeImage, 1000);
+      });
+
+      // Clear interval when not hovering
+      card.addEventListener('mouseleave', () => {
+        isHovering = false;
+        clearInterval(interval);
+        // Reset to first image
+        currentIndex = 0;
+        image.src = images[0];
+        updateIndicators();
+      });
+    });
+  </script>
+</body>
+
+</html>

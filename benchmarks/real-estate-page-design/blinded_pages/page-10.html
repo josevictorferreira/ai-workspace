@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBJECTIVE REALTY | Swiss Design System</title>
+
+  <!-- Design System: Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Transform icons functionality handled via SVG direct embedding for zero-dependency -->
+
+  <style>
+    /* 
+         * SWISS INTERNATIONAL STYLE DESIGN SYSTEM 
+         * Tokenization & Global Styles
+         */
+    :root {
+      /* Colors */
+      --c-white: #FFFFFF;
+      --c-black: #000000;
+      --c-muted: #F2F2F2;
+      --c-accent: #FF3000;
+      /* Swiss Red */
+
+      /* Spacing Scale (Base 4px) */
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-6: 24px;
+      --s-8: 32px;
+      --s-12: 48px;
+      --s-16: 64px;
+
+      /* Borders */
+      --border-width: 2px;
+      --border-base: var(--border-width) solid var(--c-black);
+      --border-thick: 4px solid var(--c-black);
+
+      /* Typography */
+      --font-stack: 'Inter', Helvetica, Arial, sans-serif;
+
+      /* Transitions */
+      --ease-snap: cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    /* RESET & BASE */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--c-muted);
+      /* Fallback */
+      color: var(--c-black);
+      line-height: 1.4;
+      min-height: 100vh;
+      /* Global Noise Texture */
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Active Negative Space Pattern (CSS Generated Noise) */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.03;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    }
+
+    /* UTILITIES */
+    .uppercase {
+      text-transform: uppercase;
+    }
+
+    .tracking-tight {
+      letter-spacing: -0.04em;
+    }
+
+    .tracking-wide {
+      letter-spacing: 0.05em;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    .font-black {
+      font-weight: 900;
+    }
+
+    /* LAYOUT PRIMITIVES */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      border-left: var(--border-width) solid var(--c-black);
+      border-right: var(--border-width) solid var(--c-black);
+      background: var(--c-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: var(--border-thick);
+      padding: var(--s-6) var(--s-6);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      background: var(--c-white);
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+    }
+
+    h1.brand-title {
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.9;
+    }
+
+    .header-meta {
+      text-align: right;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .accent-text {
+      color: var(--c-accent);
+    }
+
+    /* GRID BACKGROUND PATTERN UTILITY */
+    .bg-grid {
+      background-size: 24px 24px;
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+
+    /* MAIN LAYOUT (SIDEBAR + CONTENT) */
+    .layout-grid {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    @media (min-width: 1024px) {
+      .layout-grid {
+        flex-direction: row;
+      }
+    }
+
+    /* FILTER SIDEBAR */
+    aside.filters-area {
+      width: 100%;
+      border-bottom: var(--border-thick);
+      background: var(--c-muted);
+      padding: var(--s-6);
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      aside.filters-area {
+        width: 320px;
+        flex-shrink: 0;
+        border-bottom: none;
+        border-right: var(--border-thick);
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        /* Approximate */
+        overflow-y: auto;
+      }
+    }
+
+    .filter-section {
+      margin-bottom: var(--s-8);
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: var(--s-2);
+      color: var(--c-accent);
+    }
+
+    /* FORM ELEMENTS (Swiss Style) */
+    .swiss-input {
+      width: 100%;
+      background: var(--c-white);
+      border: var(--border-width) solid var(--c-black);
+      padding: var(--s-3);
+      font-family: var(--font-stack);
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-radius: 0;
+      /* Strict */
+      outline: none;
+      transition: all 0.2s var(--ease-snap);
+    }
+
+    .swiss-input:focus {
+      border-color: var(--c-accent);
+      background: var(--c-white);
+      box-shadow: 4px 4px 0 var(--c-accent);
+    }
+
+    .range-wrapper {
+      margin-top: var(--s-2);
+    }
+
+    /* Custom Range Slider Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      background: var(--c-black);
+      cursor: pointer;
+      border: none;
+      margin-top: -7px;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 2px;
+      background: var(--c-black);
+    }
+
+    input[type=range]:focus::-webkit-slider-thumb {
+      background: var(--c-accent);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .swiss-checkbox {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .swiss-checkbox input {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--c-black);
+      border-radius: 0;
+      display: grid;
+      place-content: center;
+    }
+
+    .swiss-checkbox input::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      transform: scale(0);
+      background-color: var(--c-accent);
+      transition: 120ms transform ease-in-out;
+    }
+
+    .swiss-checkbox input:checked::before {
+      transform: scale(1);
+    }
+
+    .swiss-checkbox:hover input {
+      border-color: var(--c-accent);
+    }
+
+    /* LISTINGS GRID */
+    main.listings-area {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .listings-header {
+      padding: var(--s-6);
+      border-bottom: var(--border-base);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--c-white);
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* PROPERTY CARD (The Core Component) */
+    .property-card {
+      border-bottom: var(--border-base);
+      border-right: var(--border-base);
+      /* Creating the grid visually */
+      position: relative;
+      background: var(--c-white);
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--c-black);
+      transition: transform 0.2s linear;
+      cursor: default;
+      /* Since the link is the hover */
+    }
+
+    /* Last item in row logic handled by CSS grid usually, 
+           but for simplicity with borders, we keep right borders 
+           and wrap container has expected borders. */
+
+    .card-image-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-bottom: var(--border-base);
+      background: #ddd;
+    }
+
+    .card-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.3s ease;
+      filter: grayscale(100%);
+      /* Objective look */
+    }
+
+    /* Interactive State */
+    .property-card:hover .card-image-container img {
+      filter: grayscale(0%);
+    }
+
+    .card-content {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .card-meta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding-bottom: var(--s-2);
+      margin-bottom: var(--s-2);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      line-height: 1.1;
+      margin-bottom: var(--s-1);
+    }
+
+    .card-location {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: var(--s-4);
+    }
+
+    .card-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: block;
+      margin-top: auto;
+    }
+
+    /* HOVER EFFECTS - SWISS INVERSION */
+    .property-card:hover .card-content {
+      background-color: var(--c-black);
+      color: var(--c-white);
+    }
+
+    .property-card:hover .card-meta {
+      border-bottom-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .property-card:hover .card-price {
+      color: var(--c-accent);
+    }
+
+    /* Plus Icon Animation */
+    .swiss-plus {
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .property-card:hover .swiss-plus {
+      transform: rotate(90deg);
+      color: var(--c-accent);
+    }
+
+    /* PAGINATION */
+    .pagination-area {
+      padding: var(--s-8) var(--s-6);
+      border-top: var(--border-base);
+      display: flex;
+      justify-content: center;
+      gap: var(--s-2);
+      background: var(--c-white);
+    }
+
+    .page-btn {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: var(--border-width) solid var(--c-black);
+      background: var(--c-white);
+      font-family: var(--font-stack);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.1s linear;
+    }
+
+    .page-btn:hover {
+      background: var(--c-accent);
+      border-color: var(--c-accent);
+      color: var(--c-white);
+    }
+
+    .page-btn.active {
+      background: var(--c-black);
+      color: var(--c-white);
+    }
+
+    /* SVG ICONS */
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="brand-block">
+        <span class="uppercase tracking-wide font-bold" style="font-size: 0.8rem;">Real Estate System</span>
+        <h1 class="brand-title font-black uppercase tracking-tight">Objective<br>Realty<span
+            style="color:var(--c-accent)">.</span></h1>
+      </div>
+      <div class="header-meta">
+        <div class="uppercase tracking-wide">Paraná Region</div>
+        <div class="uppercase tracking-wide accent-text">Ibiporã / Londrina</div>
+        <!-- Visual Decoration: Dot Matrix -->
+        <div
+          style="margin-top: 8px; width: 100%; height: 16px; background-image: radial-gradient(#000 20%, transparent 20%); background-size: 4px 4px; opacity: 0.2;">
+        </div>
+      </div>
+    </header>
+
+    <div class="layout-grid">
+
+      <!-- SIDEBAR FILTERS -->
+      <aside class="filters-area">
+        <div class="uppercase tracking-wide font-black"
+          style="font-size: 3rem; opacity: 0.1; line-height: 1; margin-bottom: var(--s-6);">Filter</div>
+
+        <!-- Text Search -->
+        <div class="filter-section">
+          <label class="filter-label uppercase tracking-wide">01. Search Properties</label>
+          <input type="text" class="swiss-input uppercase" placeholder="ENTER ID OR KEYWORD">
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-section">
+          <label class="filter-label uppercase tracking-wide">02. Price Range (BRL)</label>
+          <div
+            style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px;">
+            <span>R$ 0</span>
+            <span>R$ 5M+</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" class="swiss-range" min="0" max="100" value="40">
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="filter-section">
+          <label class="filter-label uppercase tracking-wide">03. Location (PR)</label>
+          <div class="checkbox-group">
+            <label class="swiss-checkbox uppercase">
+              <input type="checkbox" checked>
+              All Locations
+            </label>
+            <label class="swiss-checkbox uppercase">
+              <input type="checkbox">
+              Londrina, PR
+            </label>
+            <label class="swiss-checkbox uppercase">
+              <input type="checkbox">
+              Ibiporã, PR
+            </label>
+          </div>
+        </div>
+
+        <button class="swiss-input uppercase font-bold"
+          style="background: var(--c-black); color: white; cursor: pointer; margin-top: var(--s-8);">
+          Update View
+        </button>
+      </aside>
+
+      <!-- LISTINGS GRID -->
+      <main class="listings-area bg-grid">
+        <div class="listings-header">
+          <span class="uppercase font-bold tracking-wide">Available Listings (06)</span>
+          <span class="uppercase font-bold tracking-wide accent-text">Sort: Newest</span>
+        </div>
+
+        <div class="grid-container">
+
+          <!-- Property Card 1 -->
+          <!-- Note: href is placeholder as requested -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <!-- Helper images for slideshow -->
+              <!-- Primary -->
+              <img src="https://images.unsplash.com/photo-1600596542815-27b88e35eabd?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <!-- Secondary (Hidden initially) -->
+              <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 0842</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Concrete Villa <br>Alpha</h3>
+              <div class="card-location uppercase font-bold">Londrina, Gleba Palhano</div>
+              <span class="card-price uppercase">R$ 2.450.000</span>
+            </div>
+          </a>
+
+          <!-- Property Card 2 -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 0911</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Brutalist Loft <br>Complex</h3>
+              <div class="card-location uppercase font-bold">Ibiporã, Centro</div>
+              <span class="card-price uppercase">R$ 980.000</span>
+            </div>
+          </a>
+
+          <!-- Property Card 3 -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <img src="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 1024</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Modernist <br>Case Study</h3>
+              <div class="card-location uppercase font-bold">Londrina, Royal Forest</div>
+              <span class="card-price uppercase">R$ 3.100.000</span>
+            </div>
+          </a>
+
+          <!-- Property Card 4 -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 1150</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Minimalist <br>Horizon</h3>
+              <div class="card-location uppercase font-bold">Ibiporã, Jd. Éden</div>
+              <span class="card-price uppercase">R$ 850.000</span>
+            </div>
+          </a>
+
+          <!-- Property Card 5 -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <img src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <img src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 2001</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Glass House <br>Pavilion</h3>
+              <div class="card-location uppercase font-bold">Londrina, Bela Suíça</div>
+              <span class="card-price uppercase">R$ 4.800.000</span>
+            </div>
+          </a>
+
+          <!-- Property Card 6 -->
+          <a href="#" class="property-card" data-gallery>
+            <div class="card-image-container">
+              <img src="https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?q=80&w=800&auto=format&fit=crop"
+                style="z-index: 10;">
+              <img src="https://images.unsplash.com/photo-1628744877542-7fa34ae5a452?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 9;">
+              <img src="https://images.unsplash.com/photo-1593696140813-c9d300d8f5eb?q=80&w=800&auto=format&fit=crop"
+                style="opacity: 0; z-index: 8;">
+            </div>
+            <div class="card-content">
+              <div class="card-meta">
+                <span class="uppercase">Ref. 2049</span>
+                <span class="swiss-plus font-bold">+</span>
+              </div>
+              <h3 class="card-title font-black uppercase">Industrial <br>Grid Lot</h3>
+              <div class="card-location uppercase font-bold">Londrina, Ind. District</div>
+              <span class="card-price uppercase">R$ 1.200.000</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- PAGINATION -->
+        <nav class="pagination-area">
+          <button class="page-btn active">01</button>
+          <button class="page-btn">02</button>
+          <button class="page-btn">03</button>
+          <button class="page-btn">
+            <!-- Arrow Right Icon -->
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+              stroke-linejoin="miter">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </nav>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Minimal JS for Image Slideshow on Hover -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('[data-gallery]');
+
+      cards.forEach(card => {
+        const images = card.querySelectorAll('.card-image-container img');
+        let interval;
+        let currentIndex = 0;
+
+        card.addEventListener('mouseenter', () => {
+          if (images.length <= 1) return;
+
+          // Reset index just in case, though keeping flow is also nice
+          // currentIndex = 0; 
+
+          interval = setInterval(() => {
+            // Current image opacity 0
+            images[currentIndex].style.opacity = '0';
+
+            // Increment index
+            currentIndex = (currentIndex + 1) % images.length;
+
+            // Next image opacity 1
+            images[currentIndex].style.opacity = '1';
+          }, 1000); // 1 second interval as requested
+        });
+
+        card.addEventListener('mouseleave', () => {
+          clearInterval(interval);
+
+          // Reset to first image
+          images.forEach((img, idx) => {
+            img.style.opacity = idx === 0 ? '1' : '0';
+          });
+          currentIndex = 0;
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

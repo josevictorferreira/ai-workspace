@@ -1,0 +1,865 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Real Estate Listings — Swiss Minimalist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: 2px solid var(--fg);
+      --radius: 0;
+      --ease: 200ms ease-out;
+      --shadow: 0 0 0 8px rgba(255, 48, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .swiss-noise {
+      background-image:
+        radial-gradient(#000 0.5px, transparent 0.5px),
+        radial-gradient(#000 0.5px, transparent 0.5px);
+      background-size: 120px 120px, 120px 120px;
+      background-position: 0 0, 60px 60px;
+      background-blend-mode: screen;
+      opacity: .015;
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px
+    }
+
+    header {
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 50;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      font-weight: 900;
+      letter-spacing: .02em;
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px
+    }
+
+    .nav-links a {
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      position: relative;
+      transition: color var(--ease);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent)
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 2px;
+      width: 0;
+      background: var(--accent);
+      transition: width var(--ease);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%
+    }
+
+    .hero {
+      border-top: 4px solid var(--fg);
+      border-bottom: 4px solid var(--fg);
+      background: var(--bg);
+      position: relative;
+      padding: 80px 0 40px;
+    }
+
+    .hero .title {
+      font-weight: 900;
+      font-size: clamp(48px, 8vw, 120px);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin: 0 0 8px;
+    }
+
+    .hero .subtitle {
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .8
+    }
+
+    .swiss-grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, .03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .hero .grid-bg {
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero .shapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero .circle {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 4px solid var(--fg);
+      border-radius: 50%;
+      opacity: .08;
+    }
+
+    .hero .circle.c1 {
+      top: 16px;
+      left: 16px
+    }
+
+    .hero .circle.c2 {
+      top: 140px;
+      right: 120px
+    }
+
+    .hero .circle.c3 {
+      bottom: 16px;
+      left: 160px
+    }
+
+    .hero .rect {
+      position: absolute;
+      width: 160px;
+      height: 120px;
+      border: 4px solid var(--fg);
+      background: transparent;
+      opacity: .08;
+    }
+
+    .hero .rect.r1 {
+      top: 80px;
+      left: 420px
+    }
+
+    .hero .rect.r2 {
+      top: 220px;
+      left: 20px
+    }
+
+    .hero .line {
+      position: absolute;
+      width: 2px;
+      background: var(--fg);
+      opacity: .08;
+    }
+
+    .hero .line.l1 {
+      height: 220px;
+      left: 320px;
+      top: 20px
+    }
+
+    .hero .line.l2 {
+      height: 160px;
+      left: 540px;
+      top: 120px
+    }
+
+    .section {
+      padding: 64px 0;
+      border-bottom: 4px solid var(--fg);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-weight: 900;
+      font-size: clamp(32px, 5.5vw, 80px);
+      letter-spacing: -.03em;
+      margin: 0
+    }
+
+    .section-label {
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent)
+    }
+
+    .section-subtitle {
+      font-weight: 400;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .7;
+      margin-top: 4px
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr auto;
+      gap: 16px;
+      margin-bottom: 24px
+    }
+
+    .swiss-dots {
+      background-image:
+        radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: linear-gradient(45deg, rgba(0, 0, 0, .02) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(0, 0, 0, .02) 25%, transparent 25%);
+      background-size: 10px 10px;
+    }
+
+    .filters .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .field label {
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--fg)
+    }
+
+    .field input[type="text"],
+    .field select {
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      padding: 12px 12px;
+      font-weight: 700;
+      letter-spacing: .02em
+    }
+
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px
+    }
+
+    .price-range input[type="number"] {
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      padding: 12px 12px;
+      font-weight: 700
+    }
+
+    .swiss-dots .field label {
+      color: #000
+    }
+
+    .swiss-diagonal .field label {
+      color: #000
+    }
+
+    .filters .actions {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px
+    }
+
+    .btn {
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      padding: 12px 16px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      background: var(--fg);
+      color: var(--bg);
+      cursor: pointer;
+      transition: background var(--ease), transform var(--ease), color var(--ease)
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--fg)
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      transform: translateY(-2px)
+    }
+
+    .btn.secondary:hover {
+      background: var(--accent);
+      color: var(--bg)
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 32px
+    }
+
+    @media (max-width:1024px) {
+      .filters {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .list {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media (max-width:768px) {
+      .filters {
+        grid-template-columns: 1fr
+      }
+
+      .list {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .card {
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      overflow: hidden;
+      background: var(--bg);
+      position: relative;
+      transition: background var(--ease), color var(--ease), transform var(--ease)
+    }
+
+    .card:hover {
+      background: var(--fg);
+      color: var(--bg)
+    }
+
+    .card:hover .price {
+      color: var(--accent)
+    }
+
+    .card:hover .cta {
+      background: var(--bg);
+      color: var(--fg);
+      border-color: var(--fg)
+    }
+
+    .card .media {
+      position: relative;
+      aspect-ratio: 16/10;
+      background: #eaeaea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden
+    }
+
+    .card .media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .card .media .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(0, 0, 0, .2));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--ease)
+    }
+
+    .card:hover .overlay {
+      opacity: 1
+    }
+
+    .card .content {
+      padding: 20px
+    }
+
+    .card .meta {
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--fg)
+    }
+
+    .card:hover .meta {
+      color: var(--bg)
+    }
+
+    .card .name {
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: -.02em;
+      margin: 6px 0 0
+    }
+
+    .card:hover .name {
+      color: var(--bg)
+    }
+
+    .card .price {
+      font-weight: 900;
+      font-size: 20px;
+      margin-top: 10px;
+      color: var(--fg)
+    }
+
+    .card:hover .price {
+      color: var(--accent)
+    }
+
+    .card .cta {
+      margin-top: 16px;
+      border: 2px solid var(--fg);
+      border-radius: 0;
+      padding: 10px 14px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+      transition: all var(--ease)
+    }
+
+    .card:hover .cta {
+      background: var(--bg);
+      color: var(--fg);
+      border-color: var(--fg)
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px
+    }
+
+    .pagination .btn {
+      padding: 10px 14px;
+      border-radius: 0;
+      border: 2px solid var(--fg);
+      background: transparent;
+      color: var(--fg)
+    }
+
+    .pagination .btn:hover {
+      background: var(--accent);
+      color: var(--bg)
+    }
+
+    .pagination .current {
+      background: var(--fg);
+      color: var(--bg)
+    }
+
+    /* Image rotation on hover /
+.media .img-stack{display:none;position:absolute;inset:0}
+.media .img-stack img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity .2s ease-in-out}
+.media .img-stack img:first-child{opacity:1}
+.media:hover .img-stack{display:block}
+.media:hover .img-stack img{
+animation:rotateImages 4s steps(3) infinite;
+}
+@keyframes rotateImages{
+0%{opacity:1}
+33.33%{opacity:1}
+33.34%{opacity:0}
+100%{opacity:0}
+}
+/ Crossfade for first image */
+    .media .img-stack img:nth-child(1) {
+      animation-delay: 0s
+    }
+
+    .media .img-stack img:nth-child(2) {
+      animation-delay: -1.333s
+    }
+
+    .media .img-stack img:nth-child(3) {
+      animation-delay: -2.666s
+    }
+
+    footer {
+      padding: 48px 0;
+      border-top: 4px solid var(--fg)
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px
+    }
+
+    .footer-col h4 {
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin: 0 0 12px
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .footer-col a {
+      font-weight: 700;
+      letter-spacing: .08em
+    }
+
+    @media (max-width:768px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="swiss-noise" aria-hidden="true"></div>
+
+  <header>
+    <div class="container nav">
+      <div class="brand">Real Estate</div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#">Home</a>
+        <a href="#">Listings</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero grid-bg">
+      <div class="swiss-grid-pattern"></div>
+      <div class="container">
+        <h1 class="title">Properties</h1>
+        <p class="subtitle">Discover timeless living in every corner</p>
+      </div>
+      <div class="shapes">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+        <div class="rect r1"></div>
+        <div class="rect r2"></div>
+        <div class="line l1"></div>
+        <div class="line l2"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Filter Properties</h2>
+          <p class="section-subtitle">Refine your search</p>
+        </div>
+        <div class="section-label">01. Filters</div>
+      </div>
+
+      <form class="filters" onsubmit="event.preventDefault()">
+        <div class="field swiss-dots">
+          <label for="search">Search</label>
+          <input type="text" id="search" placeholder="Search by name or keyword" />
+        </div>
+        <div class="field swiss-dots">
+          <label for="state">State</label>
+          <select id="state" aria-label="State">
+            <option value="Paraná">Paraná</option>
+          </select>
+        </div>
+        <div class="field swiss-dots">
+          <label for="city">City</label>
+          <select id="city" aria-label="City">
+            <option value="Londrina">Londrina</option>
+            <option value="Ibipora">Ibipora</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" type="button">Reset</button>
+          <button class="btn" type="submit">Apply</button>
+        </div>
+      </form>
+
+      <div class="filters" style="grid-template-columns:1fr 1fr;align-items:end">
+        <div class="field swiss-diagonal">
+          <label for="minPrice">Min Price</label>
+          <input type="number" id="minPrice" placeholder="0" />
+        </div>
+        <div class="field swiss-diagonal">
+          <label for="maxPrice">Max Price</label>
+          <input type="number" id="maxPrice" placeholder="5000000" />
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:40px">
+        <div>
+          <h2 class="section-title">Results</h2>
+          <p class="section-subtitle">Showing 6 properties</p>
+        </div>
+        <div class="section-label">02. Listings</div>
+      </div>
+
+      <div class="list">
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop"
+                alt="Property 1" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop"
+                  alt="Property 1" />
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop"
+                  alt="Property 1" />
+                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop"
+                  alt="Property 1" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Londrina • 3 Beds • 2 Baths</div>
+            <h3 class="name">Modern Loft Downtown</h3>
+            <div class="price">R$ 1.200.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&auto=format&fit=crop"
+                alt="Property 2" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&auto=format&fit=crop"
+                  alt="Property 2" />
+                <img src="https://images.unsplash.com/photo-1516156008620-5ecf71b75676?w=800&auto=format&fit=crop"
+                  alt="Property 2" />
+                <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=800&auto=format&fit=crop"
+                  alt="Property 2" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Londrina • 4 Beds • 3 Baths</div>
+            <h3 class="name">Family House with Garden</h3>
+            <div class="price">R$ 2.500.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1540518614846-7eded433c458?w=800&auto=format&fit=crop"
+                alt="Property 3" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1540518614846-7eded433c458?w=800&auto=format&fit=crop"
+                  alt="Property 3" />
+                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop"
+                  alt="Property 3" />
+                <img src="https://images.unsplash.com/photo-1578895401083-2566C890f286?w=800&auto=format&fit=crop"
+                  alt="Property 3" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Ibipora • 2 Beds • 1 Bath</div>
+            <h3 class="name">Cozy Cottage</h3>
+            <div class="price">R$ 850.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop"
+                alt="Property 4" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop"
+                  alt="Property 4" />
+                <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800&auto=format&fit=crop"
+                  alt="Property 4" />
+                <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&auto=format&fit=crop"
+                  alt="Property 4" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Londrina • 5 Beds • 4 Baths</div>
+            <h3 class="name">Luxury Villa</h3>
+            <div class="price">R$ 4.800.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop"
+                alt="Property 5" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop"
+                  alt="Property 5" />
+                <img src="https://images.unsplash.com/photo-1572120360602-9f139458a997?w=800&auto=format&fit=crop"
+                  alt="Property 5" />
+                <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&auto=format&fit=crop"
+                  alt="Property 5" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Ibipora • 3 Beds • 2 Baths</div>
+            <h3 class="name">Rural Retreat</h3>
+            <div class="price">R$ 1.600.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <a href="#">
+            <div class="media">
+              <img src="https://images.unsplash.com/photo-1499955085727-3b3dbb2c4dbe?w=800&auto=format&fit=crop"
+                alt="Property 6" />
+              <div class="overlay"></div>
+              <div class="img-stack" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1499955085727-3b3dbb2c4dbe?w=800&auto=format&fit=crop"
+                  alt="Property 6" />
+                <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop"
+                  alt="Property 6" />
+                <img src="https://images.unsplash.com/photo-1529375452379-25a0c81c42af?w=800&auto=format&fit=crop"
+                  alt="Property 6" />
+              </div>
+            </div>
+          </a>
+          <div class="content">
+            <div class="meta">Londrina • 4 Beds • 2 Baths</div>
+            <h3 class="name">Penthouse Downtown</h3>
+            <div class="price">R$ 3.900.000</div>
+            <a class="cta" href="#">View Details</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="pagination" aria-label="Pagination">
+        <button class="btn">Previous</button>
+        <button class="btn current" aria-current="page">1</button>
+        <button class="btn">2</button>
+        <button class="btn">3</button>
+        <button class="btn">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Real Estate</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Sell</h4>
+          <ul>
+            <li><a href="#">List a Property</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Agents</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Buy</h4>
+          <ul>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">Favorites</a></li>
+            <li><a href="#">Financing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

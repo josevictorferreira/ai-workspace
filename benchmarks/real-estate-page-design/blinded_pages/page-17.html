@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate Listings</title>
+  <style>
+    /* Font import */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+    :root {
+      --font-family: 'Inter', sans-serif;
+      --color-background: #FFFFFF;
+      --color-foreground: #000000;
+      --color-muted: #F2F2F2;
+      --color-accent: #FF3000;
+      --border-width: 4px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    /* Body texture (noise) */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"%3E%3Cpolyline fill="none" stroke="%23000" stroke-opacity="0.015" stroke-width="0.5" points="0,4 4,0" /%3E%3C/polyline%3E%3C/svg%3E');
+      background-size: 4px 4px;
+      z-index: -1;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .filters {
+      background-color: var(--color-background);
+      border: var(--border-width) solid var(--color-foreground);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .filters input[type="text"],
+    .filters input[type="range"],
+    .filters select {
+      padding: 8px;
+      border: var(--border-width) solid var(--color-foreground);
+      background-color: transparent;
+      color: var(--color-foreground);
+      outline: 0;
+      transition: border-color 0.3s;
+    }
+
+    .filters input[type="text"]::placeholder {
+      color: var(--color-foreground);
+    }
+
+    .filters label {
+      margin-right: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .property-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      border: var(--border-width) solid var(--color-foreground);
+      background-color: var(--color-background);
+      padding: 24px;
+      text-align: left;
+      transition: background-color 0.3s, color 0.3s;
+      position: relative;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-top: 16px;
+    }
+
+    .card p {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: var(--color-accent);
+    }
+
+    .card:hover {
+      background-color: var(--color-accent);
+      color: var(--color-background);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 16px;
+      transition: transform 0.3s, filter 0.3s;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+      filter: brightness(90%);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding: 24px 0;
+    }
+
+    .pagination button {
+      border: var(--border-width) solid var(--color-foreground);
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      padding: 12px 24px;
+      margin: 0 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination button:hover {
+      background-color: var(--color-accent);
+      color: var(--color-background);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Filters Section -->
+    <div class="filters">
+      <div>
+        <label for="search">Search</label>
+        <input type="text" id="search" placeholder="Search properties">
+      </div>
+      <div>
+        <label for="price">Price</label>
+        <input type="range" id="price" name="price" min="0" max="1000000" step="1000" value="0">
+      </div>
+      <div>
+        <label for="location">Location</label>
+        <select name="location" id="location">
+          <option value="parana">Parana</option>
+          <option value="londrina">Londrina</option>
+          <option value="ibipora">Ibipora</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Property Cards -->
+    <div class="property-cards">
+      <div class="card">
+        <a href="#">
+          <img src="https://via.placeholder.com/600x400?text=View" alt="Property 1"
+            data-next-src="https://via.placeholder.com/600x400?text=Hover">
+          <h2>Property 1</h2>
+          <p>$150,000</p>
+        </a>
+      </div>
+      <div class="card">
+        <a href="#">
+          <img src="https://via.placeholder.com/600x400?text=View" alt="Property 2"
+            data-next-src="https://via.placeholder.com/600x400?text=Hover">
+          <h2>Property 2</h2>
+          <p>$200,000</p>
+        </a>
+      </div>
+      <div class="card">
+        <a href="#">
+          <img src="https://via.placeholder.com/600x400?text=View" alt="Property 3"
+            data-next-src="https://via.placeholder.com/600x400?text=Hover">
+          <h2>Property 3</h2>
+          <p>$180,000</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button>&laquo; Prev</button>
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>Next &raquo;</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const images = document.querySelectorAll('.card img');
+      images.forEach(img => {
+        let originalSrc = img.src;
+        let nextSrc = img.getAttribute('data-next-src');
+        img.setAttribute('data-original-src', originalSrc);
+
+        let timer;
+        img.addEventListener('mouseover', function () {
+          timer = setTimeout(() => {
+            img.src = nextSrc || originalSrc;
+          }, 1000);
+        });
+        img.addEventListener('mouseout', function () {
+          clearTimeout(timer);
+          img.src = originalSrc;
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWISS PROPERTIES — OBJECTIVE REAL ESTATE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.4;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* PATTERNS */
+    .pattern-grid {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .pattern-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .pattern-diagonal {
+      background-image: repeating-linear-gradient(45deg,
+          transparent,
+          transparent 10px,
+          rgba(0, 0, 0, 0.02) 10px,
+          rgba(0, 0, 0, 0.02) 11px);
+    }
+
+    /* HEADER */
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 4px solid var(--border);
+      z-index: 100;
+      padding: 24px 0;
+    }
+
+    .site-header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      color: var(--accent);
+    }
+
+    .nav {
+      display: flex;
+      gap: 48px;
+    }
+
+    .nav a {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg);
+      text-decoration: none;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.2s ease;
+    }
+
+    .nav a:hover::after {
+      width: 100%;
+    }
+
+    .nav a:hover {
+      color: var(--accent);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 120px 0 80px;
+      text-align: left;
+    }
+
+    .hero h1 {
+      font-size: clamp(4rem, 12vw, 10rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--fg);
+      opacity: 0.6;
+    }
+
+    /* FILTERS */
+    .filters-section {
+      padding: 80px 0;
+      background: var(--muted);
+      border-top: 4px solid var(--border);
+      border-bottom: 4px solid var(--border);
+    }
+
+    .filters-section .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 48px;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .filter-group label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--fg);
+    }
+
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 4px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      transition: all 0.2s ease;
+      appearance: none;
+      border-radius: 0;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .filter-group input::placeholder {
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    .price-inputs {
+      display: flex;
+      gap: 16px;
+    }
+
+    .price-inputs input {
+      flex: 1;
+    }
+
+    /* PROPERTIES GRID */
+    .properties-section {
+      padding: 120px 0;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 64px;
+    }
+
+    .property-card {
+      position: relative;
+      background: var(--bg);
+      border: 4px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      background: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .property-card:hover .property-name,
+    .property-card:hover .property-location {
+      color: var(--bg);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--bg);
+    }
+
+    .property-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--muted);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .property-card:hover::before {
+      opacity: 0.1;
+    }
+
+    .property-link {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    .property-image-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      border-bottom: 4px solid var(--border);
+    }
+
+    .property-image-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease 1s;
+      /* 1 second delay */
+    }
+
+    .property-image-wrapper .image-primary {
+      opacity: 1;
+    }
+
+    .property-image-wrapper .image-secondary {
+      opacity: 0;
+    }
+
+    .property-card:hover .image-primary {
+      opacity: 0;
+    }
+
+    .property-card:hover .image-secondary {
+      opacity: 1;
+    }
+
+    .property-details {
+      padding: 32px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .property-name {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+
+    .property-location {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      opacity: 0.6;
+      transition: color 0.3s ease;
+    }
+
+    /* PAGINATION */
+    .pagination-section {
+      padding: 80px 0;
+      border-top: 4px solid var(--border);
+      background: var(--muted);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 64px;
+      height: 64px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      color: var(--fg);
+      background: var(--bg);
+      border: 4px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .page-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      padding: 80px 0 40px;
+      background: var(--fg);
+      color: var(--bg);
+      border-top: 4px solid var(--border);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 64px;
+      margin-bottom: 64px;
+    }
+
+    .footer-column h3 {
+      font-size: 1.125rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+
+    .footer-column p,
+    .footer-column a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      text-decoration: none;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .footer-column a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    .footer-bottom p {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      opacity: 0.6;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 80px 0 48px;
+      }
+
+      .hero h1 {
+        font-size: 4rem;
+      }
+
+      .filters-section .container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .properties-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .properties-section {
+        padding: 80px 0;
+      }
+
+      .property-name {
+        font-size: 1.5rem;
+      }
+
+      .property-price {
+        font-size: 1.25rem;
+      }
+
+      .page-btn {
+        min-width: 48px;
+        height: 48px;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .properties-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .properties-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo">01. SWISS PROPERTIES</div>
+      <nav class="nav">
+        <a href="#">LISTINGS</a>
+        <a href="#">ABOUT</a>
+        <a href="#">CONTACT</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Premium Listings</h1>
+        <p>Objective Architecture for Discerning Clients</p>
+      </div>
+    </section>
+
+    <section class="filters-section pattern-grid">
+      <div class="container">
+        <div class="filter-group">
+          <label>02. Search</label>
+          <input type="text" placeholder="Enter Keywords">
+        </div>
+        <div class="filter-group">
+          <label>03. Price Range</label>
+          <div class="price-inputs">
+            <input type="number" placeholder="MIN">
+            <input type="number" placeholder="MAX">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>04. Location</label>
+          <select>
+            <option>PARANÁ: LONDRINA</option>
+            <option>PARANÁ: IBIPORÃ</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="properties-section">
+      <div class="container">
+        <div class="properties-grid">
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=1" alt="Property 1">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=2" alt="Property 1 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Residencial Alpha</h2>
+              <div class="property-price">R$ 850.000</div>
+              <div class="property-location">Londrina, Paraná</div>
+            </div>
+          </article>
+
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=3" alt="Property 2">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=4" alt="Property 2 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Condomínio Beta</h2>
+              <div class="property-price">R$ 1.200.000</div>
+              <div class="property-location">Ibiporã, Paraná</div>
+            </div>
+          </article>
+
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=5" alt="Property 3">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=6" alt="Property 3 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Casa Delta</h2>
+              <div class="property-price">R$ 650.000</div>
+              <div class="property-location">Londrina, Paraná</div>
+            </div>
+          </article>
+
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=7" alt="Property 4">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=8" alt="Property 4 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Loft Gamma</h2>
+              <div class="property-price">R$ 420.000</div>
+              <div class="property-location">Londrina, Paraná</div>
+            </div>
+          </article>
+
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=9" alt="Property 5">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=10" alt="Property 5 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Villa Epsilon</h2>
+              <div class="property-price">R$ 2.100.000</div>
+              <div class="property-location">Ibiporã, Paraná</div>
+            </div>
+          </article>
+
+          <article class="property-card">
+            <a href="#" class="property-link"></a>
+            <div class="property-image-wrapper">
+              <img class="image-primary" src="https://picsum.photos/800/500?random=11" alt="Property 6">
+              <img class="image-secondary" src="https://picsum.photos/800/500?random=12" alt="Property 6 Alt">
+            </div>
+            <div class="property-details">
+              <h2 class="property-name">Edifício Zeta</h2>
+              <div class="property-price">R$ 780.000</div>
+              <div class="property-location">Londrina, Paraná</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <nav class="pagination-section">
+      <div class="container">
+        <div class="pagination">
+          <a href="#" class="page-btn prev">←</a>
+          <a href="#" class="page-btn active">01</a>
+          <a href="#" class="page-btn">02</a>
+          <a href="#" class="page-btn">03</a>
+          <a href="#" class="page-btn next">→</a>
+        </div>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3>05. Contact</h3>
+          <p>Rua Haddock Lobo, 595</p>
+          <p>Londrina, PR 86010-390</p>
+          <p>+55 43 1234-5678</p>
+        </div>
+        <div class="footer-column">
+          <h3>06. Legal</h3>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+        <div class="footer-column">
+          <h3>07. Connect</h3>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Newsletter</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 SWISS PROPERTIES. OBJECTIVE ARCHITECTURE FOR MODERN LIVING.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

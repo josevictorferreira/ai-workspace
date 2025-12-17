@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --swiss-white: #FFFFFF;
+      --swiss-black: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--swiss-white);
+      color: var(--swiss-black);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Swiss Patterns */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, 0.02),
+          rgba(0, 0, 0, 0.02) 10px,
+          transparent 10px,
+          transparent 20px);
+    }
+
+    .swiss-noise {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOCIgbnVtT2N0YXZlcz0iNCIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiLz48L3N2Zz4=');
+      opacity: 0.015;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Header */
+    header {
+      padding: 2rem 0;
+      border-bottom: 4px solid var(--swiss-black);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .logo span {
+      color: var(--swiss-accent);
+    }
+
+    /* Filters Section */
+    .filters {
+      padding: 3rem 0;
+      border-bottom: 4px solid var(--swiss-black);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .filter-input {
+      border: none;
+      border-bottom: 2px solid var(--swiss-black);
+      padding: 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 500;
+      background: transparent;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .filter-input:focus {
+      border-bottom-color: var(--swiss-accent);
+    }
+
+    .price-range {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .price-range input {
+      flex: 1;
+    }
+
+    .location-select {
+      position: relative;
+    }
+
+    .location-select select {
+      appearance: none;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--swiss-black);
+      padding: 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .location-select::after {
+      content: '▼';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+    }
+
+    /* Properties Section */
+    .properties {
+      padding: 4rem 0;
+    }
+
+    .properties-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--swiss-black);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .properties-count {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Property Card */
+    .property-card {
+      border: 2px solid var(--swiss-black);
+      background-color: var(--swiss-white);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-white);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--swiss-white);
+    }
+
+    .property-image-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+
+    .property-image.secondary {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    .property-card:hover .property-image.primary {
+      opacity: 0;
+    }
+
+    .property-card:hover .property-image.secondary {
+      opacity: 1;
+    }
+
+    .property-info {
+      padding: 1.5rem;
+    }
+
+    .property-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--swiss-accent);
+      transition: color 0.2s ease;
+    }
+
+    .property-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem 0;
+      border-top: 2px solid var(--swiss-black);
+    }
+
+    .page-btn {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--swiss-black);
+      background-color: var(--swiss-white);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .page-btn:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-white);
+    }
+
+    .page-btn.active {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="swiss-noise">
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="logo">SWISS<span>RE</span></div>
+        <nav>
+          <a href="#" class="nav-link">ABOUT</a>
+          <a href="#" class="nav-link">CONTACT</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="filters">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Search</label>
+          <input type="text" class="filter-input" placeholder="Property name or keyword">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Price Range</label>
+          <div class="price-range">
+            <input type="text" class="filter-input" placeholder="Min">
+            <input type="text" class="filter-input" placeholder="Max">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Location</label>
+          <div class="location-select">
+            <select class="filter-input">
+              <option value="">All Cities</option>
+              <option value="londrina">Londrina</option>
+              <option value="ibipora">Ibiporã</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="properties">
+      <div class="properties-header">
+        <h1 class="section-title">Available Properties</h1>
+        <span class="properties-count">12 Results</span>
+      </div>
+
+      <div class="properties-grid">
+        <!-- Property Card 1 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Modern apartment exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Modern apartment interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Downtown Loft</h2>
+              <div class="property-price">R$ 1.2M</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Property Card 2 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Luxury house exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Luxury house interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Lakeside Villa</h2>
+              <div class="property-price">R$ 2.8M</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Property Card 3 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Penthouse exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1567496898669-ee935f5f647a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Penthouse interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Skyview Penthouse</h2>
+              <div class="property-price">R$ 3.5M</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Property Card 4 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Townhouse exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Townhouse interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Historic Townhouse</h2>
+              <div class="property-price">R$ 1.8M</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Property Card 5 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Country house exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Country house interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Country Estate</h2>
+              <div class="property-price">R$ 2.1M</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Property Card 6 -->
+        <div class="property-card">
+          <a href="#" class="property-link">
+            <div class="property-image-container">
+              <img
+                src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Modern apartment exterior" class="property-image primary">
+              <img
+                src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Modern apartment interior" class="property-image secondary">
+            </div>
+            <div class="property-info">
+              <h2 class="property-name">Urban Oasis</h2>
+              <div class="property-price">R$ 1.5M</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn">←</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">→</button>
+      </div>
+    </section>
+  </div>
+</body>
+
+</html>

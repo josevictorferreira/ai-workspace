@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #FFFFFF;
+      --black: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: 2px solid var(--black);
+      --pattern-grid: repeating-linear-gradient(0deg,
+          transparent,
+          transparent 23px,
+          rgba(0, 0, 0, 0.03) 23px,
+          rgba(0, 0, 0, 0.03) 24px);
+      --pattern-dots: radial-gradient(circle, var(--black) 1px, transparent 1px) repeat;
+      --pattern-diagonal: repeating-linear-gradient(45deg,
+          transparent,
+          transparent 10px,
+          rgba(0, 0, 0, 0.02) 10px,
+          rgba(0, 0, 0, 0.02) 20px);
+      --pattern-noise: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.03"/></svg>');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--black);
+      background-color: var(--white);
+      background-image: var(--pattern-noise);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Styles */
+    header {
+      border-bottom: var(--border);
+      padding: 24px 0;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 32px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: 500;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform: translateY(4px);
+      transition: transform 0.2s ease;
+    }
+
+    nav a:hover::after {
+      transform: translateY(0);
+    }
+
+    /* Main Layout */
+    .main-content {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      padding: 48px 0;
+    }
+
+    /* Filters Section */
+    .filters {
+      background: var(--muted);
+      border: var(--border);
+      padding: 32px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+    }
+
+    .filter-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .filter-group {
+      margin-bottom: 32px;
+    }
+
+    .filter-label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: var(--border);
+      background: var(--white);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: var(--border);
+      background: var(--white);
+      font-family: inherit;
+      font-size: 14px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+      padding-right: 36px;
+    }
+
+    .price-range {
+      display: flex;
+      gap: 12px;
+    }
+
+    .price-input {
+      flex: 1;
+    }
+
+    .filter-button {
+      width: 100%;
+      padding: 16px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-button:hover {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    /* Property Grid */
+    .properties {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 48px;
+    }
+
+    .property-card {
+      border: var(--border);
+      background: var(--white);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .property-card:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .property-images {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      background: var(--pattern-grid);
+    }
+
+    .property-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .property-image:first-child {
+      opacity: 1;
+    }
+
+    .property-card:hover .property-image:first-child {
+      opacity: 0;
+    }
+
+    .property-card:hover .property-image:nth-child(2) {
+      opacity: 1;
+    }
+
+    .property-info {
+      padding: 24px;
+    }
+
+    .property-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .property-price {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--white);
+    }
+
+    .property-link {
+      display: inline-block;
+      text-decoration: none;
+      color: inherit;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .property-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .property-card:hover .property-link::after {
+      transform: scaleX(1);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 48px;
+      padding: 32px 0;
+    }
+
+    .pagination-button {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: var(--border);
+      background: var(--white);
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .pagination-button:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .pagination-button.active {
+      background: var(--accent);
+      color: var(--white);
+      border-color: var(--accent);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 240px 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        position: static;
+        order: 2;
+      }
+
+      .properties {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .properties {
+        grid-template-columns: 1fr;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      nav ul {
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-content">
+      <div class="logo">Swiss Estates</div>
+      <nav>
+        <ul>
+          <li><a href="#">Properties</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <aside class="filters">
+      <h2 class="filter-title">Search Properties</h2>
+
+      <div class="filter-group">
+        <label class="filter-label">Keyword Search</label>
+        <input type="text" class="filter-input" placeholder="Search by name, city...">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Price Range (BRL)</label>
+        <div class="price-range">
+          <input type="number" class="filter-input price-input" placeholder="Min">
+          <input type="number" class="filter-input price-input" placeholder="Max">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Location</label>
+        <select class="filter-select">
+          <option value="">All States</option>
+          <option value="pr">Paraná</option>
+        </select>
+
+        <select class="filter-select" style="margin-top: 12px;">
+          <option value="">All Cities</option>
+          <option value="londrina">Londrina</option>
+          <option value="ibipora">Ibiporã</option>
+        </select>
+      </div>
+
+      <button class="filter-button">Search Properties</button>
+    </aside>
+
+    <section class="properties">
+      <!-- Property Card 1 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop1a/400/300" alt="Property 1" class="property-image">
+          <img src="https://picsum.photos/seed/prop1b/400/300" alt="Property 1" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Modern Loft</h3>
+          <p class="property-price">R$ 850.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 2 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop2a/400/300" alt="Property 2" class="property-image">
+          <img src="https://picsum.photos/seed/prop2b/400/300" alt="Property 2" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Urban Penthouse</h3>
+          <p class="property-price">R$ 1.200.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 3 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop3a/400/300" alt="Property 3" class="property-image">
+          <img src="https://picsum.photos/seed/prop3b/400/300" alt="Property 3" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Family Villa</h3>
+          <p class="property-price">R$ 950.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 4 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop4a/400/300" alt="Property 4" class="property-image">
+          <img src="https://picsum.photos/seed/prop4b/400/300" alt="Property 4" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Downtown Apartment</h3>
+          <p class="property-price">R$ 680.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 5 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop5a/400/300" alt="Property 5" class="property-image">
+          <img src="https://picsum.photos/seed/prop5b/400/300" alt="Property 5" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Luxury Condo</h3>
+          <p class="property-price">R$ 1.500.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+
+      <!-- Property Card 6 -->
+      <div class="property-card">
+        <div class="property-images">
+          <img src="https://picsum.photos/seed/prop6a/400/300" alt="Property 6" class="property-image">
+          <img src="https://picsum.photos/seed/prop6b/400/300" alt="Property 6" class="property-image">
+        </div>
+        <div class="property-info">
+          <h3 class="property-name">Garden Residence</h3>
+          <p class="property-price">R$ 1.100.000</p>
+          <a href="#" class="property-link">View Details</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="pagination">
+      <button class="pagination-button">‹</button>
+      <button class="pagination-button active">1</button>
+      <button class="pagination-button">2</button>
+      <button class="pagination-button">3</button>
+      <button class="pagination-button">›</button>
+    </div>
+  </main>
+</body>
+
+</html>

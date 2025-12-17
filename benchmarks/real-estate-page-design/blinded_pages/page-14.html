@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imóveis - Estilo Suíço Internacional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.4;
+      overflow-x: hidden;
+      font-feature-settings: 'kern' 1, 'liga' 1;
+    }
+
+    /* Patterns */
+    .swiss-noise {
+      background-image:
+        radial-gradient(0.5px 0.5px at 20px 30px, rgba(0, 0, 0, 0.015) 1px, transparent 0),
+        radial-gradient(0.5px 0.5px at 40px 70px, rgba(0, 0, 0, 0.015) 1px, transparent 0),
+        radial-gradient(0.5px 0.5px at 90px 30px, rgba(0, 0, 0, 0.015) 1px, transparent 0),
+        radial-gradient(0.5px 0.5px at 130px 80px, rgba(0, 0, 0, 0.015) 1px, transparent 0);
+      background-size: 200px 100px;
+    }
+
+    .swiss-grid {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .swiss-dots {
+      background-image:
+        radial-gradient(circle closest-side at 8px 8px, rgba(0, 0, 0, 0.04) 1px, transparent 0),
+        radial-gradient(circle closest-side at 24px 24px, rgba(0, 0, 0, 0.04) 1px, transparent 0);
+      background-size: 32px 32px;
+    }
+
+    .swiss-diagonal {
+      background-image:
+        repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, 0.02),
+          rgba(0, 0, 0, 0.02) 10px,
+          transparent 10px,
+          transparent 20px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-left: 3rem;
+      padding-right: 3rem;
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+
+    h1 {
+      font-size: clamp(4rem, 12vw, 12rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      border-bottom: 4px solid var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 6rem;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    h3 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 1.125rem;
+    }
+
+    input,
+    button {
+      font-family: inherit;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      border-bottom: 4px solid var(--border);
+      padding: 1rem 0;
+      font-size: 1.25rem;
+      width: 100%;
+      transition: border-color 0.2s ease-out;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    input[type="checkbox"] {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 1rem;
+      accent-color: var(--accent);
+      border: 2px solid var(--border);
+      border-radius: 0;
+    }
+
+    /* Layout */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      margin-bottom: 6rem;
+    }
+
+    @media (min-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr 3fr;
+      }
+    }
+
+    .filters {
+      background: var(--muted);
+      border: 4px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .filter-group {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 2rem;
+    }
+
+    .filter-group:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .price-inputs {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .price-inputs input {
+      flex: 1;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .properties-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .properties-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border: 4px solid var(--border);
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
+
+    .property-card:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: scale(1.02) translateY(-4px);
+    }
+
+    .property-card:hover .property-name,
+    .property-card:hover .property-price {
+      color: var(--bg) !important;
+    }
+
+    .property-img-container {
+      height: 24rem;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .property-img-container {
+        height: 28rem;
+      }
+    }
+
+    .property-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .property-content {
+      padding: 3rem;
+    }
+
+    .property-name {
+      margin-bottom: 1rem;
+      color: var(--fg);
+      transition: color 0.3s ease-out;
+    }
+
+    .property-price {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--fg);
+      transition: color 0.3s ease-out;
+    }
+
+    .property-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* Paginator */
+    .paginator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      border-radius: 0;
+    }
+
+    .page-btn:hover,
+    .page-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .page-info {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Focus & Accessibility */
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Responsive Spacing */
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+      }
+
+      .filters {
+        padding: 1.5rem;
+      }
+
+      .property-content {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="swiss-noise">
+  <div class="container">
+    <section class="swiss-grid mb-[6rem]">
+      <h1>01. IMÓVEIS</h1>
+    </section>
+
+    <div class="layout">
+      <aside class="filters swiss-dots">
+        <div class="filter-group">
+          <h2>FILTROS</h2>
+        </div>
+
+        <div class="filter-group">
+          <label class="block mb-4">BUSCA</label>
+          <input type="text" placeholder="Digite o imóvel...">
+        </div>
+
+        <div class="filter-group">
+          <label class="block mb-4">PREÇO</label>
+          <div class="price-inputs">
+            <input type="number" placeholder="Mín">
+            <input type="number" placeholder="Máx">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="block mb-4">LOCALIZAÇÃO</label>
+          <label class="flex items-center cursor-pointer mb-2">
+            <input type="checkbox"> <span>PARANÁ</span>
+          </label>
+          <label class="flex items-center cursor-pointer mb-2 pl-6">
+            <input type="checkbox"> <span>LONDRINA</span>
+          </label>
+          <label class="flex items-center cursor-pointer pl-6">
+            <input type="checkbox"> <span>IBIPORÃ</span>
+          </label>
+        </div>
+      </aside>
+
+      <main>
+        <div class="properties-grid">
+          <!-- Property 1 -->
+          <article class="property-card">
+            <a href="javascript:void(0)" class="property-link">
+              <div class="property-img-container">
+                <img class="property-img"
+                  src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                  data-images='["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1600566752355-357084dbf53a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1600607687939-dd1cd6e62b4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"]'
+                  alt="Apartamento Moderno em Londrina">
+              </div>
+              <div class="property-content">
+                <h3 class="property-name">Apartamento Moderno Londrina</h3>
+                <div class="property-price">R$ 450.000</div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Property 2 -->
+          <article class="property-card">
+            <a href="javascript:void(0)" class="property-link">
+              <div class="property-img-container">
+                <img class="property-img"
+                  src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  data-images='["https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1445019980597-93faee0b0760?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"]'
+                  alt="Casa em Ibiporã">
+              </div>
+              <div class="property-content">
+                <h3 class="property-name">Casa em Ibiporã</h3>
+                <div class="property-price">R$ 750.000</div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Property 3 -->
+          <article class="property-card">
+            <a href="javascript:void(0)" class="property-link">
+              <div class="property-img-container">
+                <img class="property-img"
+                  src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  data-images='["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1578943492763-47d0f25ba717?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1602940659805-678a62a9a9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"]'
+                  alt="Cobertura Londrina">
+              </div>
+              <div class="property-content">
+                <h3 class="property-name">Cobertura Londrina</h3>
+                <div class="property-price">R$ 1.200.000</div>
+              </div>
+            </a>
+          </article>
+
+          <!-- Property 4 -->
+          <article class="property-card">
+            <a href="javascript:void(0)" class="property-link">
+              <div class="property-img-container">
+                <img class="property-img"
+                  src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  data-images='["https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1593798904-9f1bd2c65575?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80","https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"]'
+                  alt="Terreno Ibiporã">
+              </div>
+              <div class="property-content">
+                <h3 class="property-name">Terreno Ibiporã</h3>
+                <div class="property-price">R$ 300.000</div>
+              </div>
+            </a>
+          </article>
+        </div>
+      </main>
+    </div>
+
+    <div class="paginator swiss-diagonal py-12">
+      <button class="page-btn">Anterior</button>
+      <div class="flex gap-2">
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+      </div>
+      <button class="page-btn">Próxima</button>
+      <span class="page-info">Página 1 de 5</span>
+    </div>
+  </div>
+
+  <script>
+    // Minimal JS for image hover cycle (1s delay to next image, reset on leave)
+    document.querySelectorAll('.property-img').forEach(img => {
+      const images = JSON.parse(img.dataset.images);
+      let timeoutId;
+      let currentIndex = 0;
+
+      img.addEventListener('mouseenter', () => {
+        timeoutId = setTimeout(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          img.src = images[currentIndex];
+        }, 1000);
+      });
+
+      img.addEventListener('mouseleave', () => {
+        clearTimeout(timeoutId);
+        currentIndex = 0;
+        img.src = images[0];
+      });
+    });
+  </script>
+</body>
+
+</html>

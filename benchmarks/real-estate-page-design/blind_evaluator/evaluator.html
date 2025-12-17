@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blind Evaluation System - Swiss Real Estate Pages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --fg-black: #000000;
+      --muted-gray: #F2F2F2;
+      --accent-red: #FF3000;
+      --border-thin: 2px;
+      --border-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-white);
+      color: var(--fg-black);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      border-bottom: var(--border-thick) solid var(--fg-black);
+      padding: 32px 0;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+    }
+
+    .progress-bar {
+      background-color: var(--muted-gray);
+      border: var(--border-thin) solid var(--fg-black);
+      height: 48px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background-color: var(--accent-red);
+      height: 100%;
+      transition: width 200ms ease-out;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+      z-index: 10;
+      mix-blend-mode: difference;
+      color: var(--bg-white);
+    }
+
+    .eval-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    @media (min-width: 1024px) {
+      .eval-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .preview-panel {
+      border: var(--border-thick) solid var(--fg-black);
+      background-color: var(--muted-gray);
+      padding: 16px;
+      min-height: 600px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: var(--border-thin) solid var(--fg-black);
+    }
+
+    .preview-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 1.125rem;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-button {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+      border: none;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+    }
+
+    .action-button:hover {
+      background-color: var(--accent-red);
+    }
+
+    .preview-frame {
+      width: 100%;
+      height: 500px;
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+    }
+
+    .scoring-panel {
+      border: var(--border-thick) solid var(--fg-black);
+      padding: 24px;
+      background-color: var(--bg-white);
+    }
+
+    .scoring-header {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: var(--border-thick) solid var(--fg-black);
+    }
+
+    .section-header {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+      padding: 8px 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+      margin-bottom: 16px;
+      margin-top: 24px;
+    }
+
+    .section-header:first-of-type {
+      margin-top: 0;
+    }
+
+    .criterion {
+      margin-bottom: 24px;
+    }
+
+    .criterion-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+
+    .criterion-question {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    /* Binary Pass/Fail Toggles */
+    .binary-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .binary-option {
+      flex: 1;
+      position: relative;
+    }
+
+    .binary-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .binary-option label {
+      display: block;
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+      padding: 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      user-select: none;
+    }
+
+    .binary-option input[type="radio"]:checked + label {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    .binary-option input[type="radio"]:hover + label {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+    }
+
+    /* 1-5 Likert Scales */
+    .likert-scale {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .likert-option {
+      flex: 1;
+      position: relative;
+    }
+
+    .likert-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .likert-option label {
+      display: block;
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+      padding: 16px 8px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      user-select: none;
+    }
+
+    .likert-option input[type="radio"]:checked + label {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    .likert-option input[type="radio"]:hover + label {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+    }
+
+    .likert-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.5;
+      margin-top: 4px;
+    }
+
+    /* Image Hover 0/3/5/7 Scale */
+    .hover-scale {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .hover-option {
+      position: relative;
+    }
+
+    .hover-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .hover-option label {
+      display: block;
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+      padding: 16px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      user-select: none;
+    }
+
+    .hover-option .score {
+      font-weight: 900;
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .hover-option .desc {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hover-option input[type="radio"]:checked + label {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    .hover-option input[type="radio"]:hover + label {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+    }
+
+    .final-score {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+      padding: 24px;
+      text-align: center;
+      margin-top: 24px;
+      border: var(--border-thick) solid var(--fg-black);
+    }
+
+    .final-score-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+
+    .final-score-value {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent-red);
+    }
+
+    .score-breakdown {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .notes-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: var(--border-thin) solid var(--fg-black);
+    }
+
+    .notes-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+
+    .notes-input {
+      width: 100%;
+      border: var(--border-thin) solid var(--fg-black);
+      padding: 12px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--accent-red);
+    }
+
+    .navigation {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: var(--border-thick) solid var(--fg-black);
+    }
+
+    .nav-button {
+      flex: 1;
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+      border: none;
+      padding: 20px;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+    }
+
+    .nav-button:hover:not(:disabled) {
+      background-color: var(--accent-red);
+      transform: scale(1.02);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .export-section {
+      margin-top: 32px;
+      padding: 24px;
+      border: var(--border-thick) solid var(--fg-black);
+      background-color: var(--muted-gray);
+    }
+
+    .export-header {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+    }
+
+    .export-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .export-button {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+      border: none;
+      padding: 16px;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+    }
+
+    .export-button:hover {
+      background-color: var(--accent-red);
+    }
+
+    .warning-box {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+      padding: 16px;
+      margin-top: 16px;
+      border: var(--border-thick) solid var(--fg-black);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+    }
+
+    .reset-button {
+      width: 100%;
+      margin-top: 16px;
+      background-color: var(--bg-white);
+      color: var(--fg-black);
+      border: var(--border-thick) solid var(--fg-black);
+      padding: 16px;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+    }
+
+    .reset-button:hover {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Blind Evaluation System</h1>
+      <p class="subtitle">Swiss International Typographic Style Real Estate Pages - 5-Question Scorecard</p>
+    </header>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-text" id="progressText">0 / 26 COMPLETED</div>
+    </div>
+
+    <div class="eval-grid">
+      <div class="preview-panel">
+        <div class="preview-header">
+          <div class="preview-title" id="currentPageLabel">Evaluation Page 01</div>
+          <div class="preview-actions">
+            <button class="action-button" id="viewSourceButton">View Source (Ctrl+U)</button>
+            <button class="action-button" id="openNewTab">Open in New Tab ↗</button>
+          </div>
+        </div>
+        <iframe class="preview-frame" id="previewFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+      </div>
+
+      <div class="scoring-panel">
+        <h2 class="scoring-header">The Scorecard</h2>
+
+        <!-- PASS/FAIL QUESTION -->
+        <div class="section-header">Pass/Fail Check</div>
+
+        <div class="criterion">
+          <div class="criterion-label">1. Specific Locations</div>
+          <div class="criterion-question">Did it include the specific locations: Paraná, Londrina, and Ibiporã?</div>
+          <div class="binary-toggle">
+            <div class="binary-option">
+              <input type="radio" name="locations" value="0" id="locations-0">
+              <label for="locations-0">NO (0)</label>
+            </div>
+            <div class="binary-option">
+              <input type="radio" name="locations" value="1" id="locations-1">
+              <label for="locations-1">YES (1)</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1-5 SCALE QUESTIONS -->
+        <div class="section-header">1-5 Rating Scales</div>
+
+        <div class="criterion">
+          <div class="criterion-label">2. Swiss Aesthetic</div>
+          <div class="criterion-question">DOES it feel cluttered? (1 = Cluttered/Ugly, 5 = High use of negative space/Grid alignment)</div>
+          <div class="likert-scale">
+            <div class="likert-option">
+              <input type="radio" name="swiss" value="1" id="swiss-1">
+              <label for="swiss-1">1</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="swiss" value="2" id="swiss-2">
+              <label for="swiss-2">2</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="swiss" value="3" id="swiss-3">
+              <label for="swiss-3">3</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="swiss" value="4" id="swiss-4">
+              <label for="swiss-4">4</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="swiss" value="5" id="swiss-5">
+              <label for="swiss-5">5</label>
+            </div>
+          </div>
+          <div class="likert-labels">
+            <span>Cluttered/Ugly</span>
+            <span>High Negative Space</span>
+          </div>
+        </div>
+
+        <div class="criterion">
+          <div class="criterion-label">3. Property Cards</div>
+          <div class="criterion-question">Would I click this on a real site? (1 = Looks like a wireframe/broken, 5 = Looks like a production Zillow/Airbnb clone)</div>
+          <div class="likert-scale">
+            <div class="likert-option">
+              <input type="radio" name="cards" value="1" id="cards-1">
+              <label for="cards-1">1</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="cards" value="2" id="cards-2">
+              <label for="cards-2">2</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="cards" value="3" id="cards-3">
+              <label for="cards-3">3</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="cards" value="4" id="cards-4">
+              <label for="cards-4">4</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="cards" value="5" id="cards-5">
+              <label for="cards-5">5</label>
+            </div>
+          </div>
+          <div class="likert-labels">
+            <span>Wireframe/Broken</span>
+            <span>Production Quality</span>
+          </div>
+        </div>
+
+        <div class="criterion">
+          <div class="criterion-label">4. Micro-interactions</div>
+          <div class="criterion-question">When I hover over buttons or paginators, is there visual feedback? (1 = Static/Dead, 5 = Responsive/Alive)</div>
+          <div class="likert-scale">
+            <div class="likert-option">
+              <input type="radio" name="interactions" value="1" id="interactions-1">
+              <label for="interactions-1">1</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="interactions" value="2" id="interactions-2">
+              <label for="interactions-2">2</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="interactions" value="3" id="interactions-3">
+              <label for="interactions-3">3</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="interactions" value="4" id="interactions-4">
+              <label for="interactions-4">4</label>
+            </div>
+            <div class="likert-option">
+              <input type="radio" name="interactions" value="5" id="interactions-5">
+              <label for="interactions-5">5</label>
+            </div>
+          </div>
+          <div class="likert-labels">
+            <span>Static/Dead</span>
+            <span>Responsive/Alive</span>
+          </div>
+        </div>
+
+        <!-- IMAGE HOVER SPECIAL SCALE -->
+        <div class="section-header">Image Hover Feature (0/3/5/7)</div>
+
+        <div class="criterion">
+          <div class="criterion-label">5. Image Hover Implementation</div>
+          <div class="criterion-question">Is it there? Does it work visually? View Source (Ctrl+U): CSS :hover or &lt;script&gt; logic?</div>
+          <div class="hover-scale">
+            <div class="hover-option">
+              <input type="radio" name="hover" value="0" id="hover-0">
+              <label for="hover-0">
+                <span class="score">0</span>
+                <span class="desc">Missing</span>
+              </label>
+            </div>
+            <div class="hover-option">
+              <input type="radio" name="hover" value="3" id="hover-3">
+              <label for="hover-3">
+                <span class="score">3</span>
+                <span class="desc">Works Poorly</span>
+              </label>
+            </div>
+            <div class="hover-option">
+              <input type="radio" name="hover" value="5" id="hover-5">
+              <label for="hover-5">
+                <span class="score">5</span>
+                <span class="desc">Works w/ JS</span>
+              </label>
+            </div>
+            <div class="hover-option">
+              <input type="radio" name="hover" value="7" id="hover-7">
+              <label for="hover-7">
+                <span class="score">7</span>
+                <span class="desc">CSS Only</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="final-score">
+          <div class="final-score-label">Total Score</div>
+          <div class="final-score-value" id="finalScore">0</div>
+          <div class="score-breakdown" id="scoreBreakdown"></div>
+        </div>
+
+        <div class="notes-section">
+          <div class="notes-label">Optional Notes</div>
+          <textarea class="notes-input" id="notesInput" placeholder="Quick observations (optional)..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button class="nav-button" id="prevButton">← Previous</button>
+      <button class="nav-button" id="nextButton">Next →</button>
+    </div>
+
+    <div class="export-section">
+      <h3 class="export-header">Export Results</h3>
+      <div class="export-buttons">
+        <button class="export-button" id="exportCSV">Export CSV</button>
+        <button class="export-button" id="exportJSON">Export JSON</button>
+      </div>
+      <div class="warning-box">
+        ⚠ Model identities will be revealed only in exported files after evaluation is complete
+      </div>
+      <button class="reset-button" id="resetButton">Reset All Evaluations</button>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // FILE MAPPING - ALPHABETICALLY SORTED
+    // ========================================
+    const FILE_MAPPING = [
+      { original: 'web_amazon_nova_2_lite.html', blinded: 'page-01.html' },
+      { original: 'web_claude_haiku_4.5.html', blinded: 'page-02.html' },
+      { original: 'web_claude_opus_4.5.html', blinded: 'page-03.html' },
+      { original: 'web_claude_sonnet_4.5.html', blinded: 'page-04.html' },
+      { original: 'web_cojito_2.1.html', blinded: 'page-05.html' },
+      { original: 'web_deepseek_3.2_exp.html', blinded: 'page-06.html' },
+      { original: 'web_deepseek_3.2_speciale.html', blinded: 'page-07.html' },
+      { original: 'web_deepseek_v3.1_nex_n1.html', blinded: 'page-08.html' },
+      { original: 'web_devstral_2.html', blinded: 'page-09.html' },
+      { original: 'web_gemini_3_pro_preview.html', blinded: 'page-10.html' },
+      { original: 'web_glm_4.6_exacto.html', blinded: 'page-11.html' },
+      { original: 'web_gpt_5.2.html', blinded: 'page-12.html' },
+      { original: 'web_gpt_oss_120b.html', blinded: 'page-13.html' },
+      { original: 'web_grok_4.1_fast.html', blinded: 'page-14.html' },
+      { original: 'web_intellect_3.html', blinded: 'page-15.html' },
+      { original: 'web_kat_coder.html', blinded: 'page-16.html' },
+      { original: 'web_kimi_dev_72b.html', blinded: 'page-17.html' },
+      { original: 'web_kimi_k2_thinking.html', blinded: 'page-18.html' },
+      { original: 'web_minimax_m2.html', blinded: 'page-19.html' },
+      { original: 'web_nemotron_nano_30b.html', blinded: 'page-20.html' },
+      { original: 'web_olmo_3_32b_think.html', blinded: 'page-21.html' },
+      { original: 'web_qwen_3_235b_a22b_thinking.html', blinded: 'page-22.html' },
+      { original: 'web_qwen_3_80b_next_thinking.html', blinded: 'page-23.html' },
+      { original: 'web_qwen_3_coder.html', blinded: 'page-24.html' },
+      { original: 'web_rnj_1.html', blinded: 'page-25.html' },
+      { original: 'web_xiaomi_mimo_v2_flash.html', blinded: 'page-26.html' }
+    ];
+
+    // ========================================
+    // STATE MANAGEMENT
+    // ========================================
+    let evaluationOrder = [];
+    let currentIndex = 0;
+    let scores = {};
+
+    // Initialize or load state
+    function initState() {
+      const savedOrder = localStorage.getItem('evaluationOrder');
+      const savedScores = localStorage.getItem('evaluationScores');
+      const savedIndex = localStorage.getItem('currentIndex');
+
+      if (savedOrder) {
+        evaluationOrder = JSON.parse(savedOrder);
+        scores = savedScores ? JSON.parse(savedScores) : {};
+        currentIndex = savedIndex ? parseInt(savedIndex) : 0;
+      } else {
+        // Create randomized order on first load
+        evaluationOrder = FILE_MAPPING.map((_, idx) => idx);
+        shuffleArray(evaluationOrder);
+        localStorage.setItem('evaluationOrder', JSON.stringify(evaluationOrder));
+        scores = {};
+        currentIndex = 0;
+      }
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('evaluationScores', JSON.stringify(scores));
+      localStorage.setItem('currentIndex', currentIndex.toString());
+    }
+
+    // ========================================
+    // SCORING LOGIC - UPDATED FORMULA (5 questions)
+    // ========================================
+    function getScore(criterion) {
+      const selected = document.querySelector(`input[name="${criterion}"]:checked`);
+      return selected ? parseInt(selected.value) : 0;
+    }
+
+    function calculateTotalScore() {
+      // Updated scoring system (Single File question removed):
+      // Pass/Fail: Locations (C2) weighted 5x
+      // Likert 1-5: Swiss (L3), Cards (L4), Interactions (L5) weighted 3x, 3x, 2x
+      // Image Hover (W6): 0/3/5/7 weighted 1x
+      
+      const locations = getScore('locations');        // 0 or 1
+      const swiss = getScore('swiss');                // 1-5
+      const cards = getScore('cards');                // 1-5
+      const interactions = getScore('interactions');  // 1-5
+      const hover = getScore('hover');                // 0/3/5/7
+
+      return (5 * locations) + (3 * swiss) + (3 * cards) + (2 * interactions) + (1 * hover);
+    }
+
+    function updateFinalScore() {
+      const score = calculateTotalScore();
+      document.getElementById('finalScore').textContent = score;
+      
+      // Show breakdown
+      const locations = getScore('locations');
+      const swiss = getScore('swiss');
+      const cards = getScore('cards');
+      const interactions = getScore('interactions');
+      const hover = getScore('hover');
+      
+      const breakdown = `
+        Locations: ${locations} × 5 = ${locations * 5}<br>
+        Swiss: ${swiss} × 3 = ${swiss * 3}<br>
+        Cards: ${cards} × 3 = ${cards * 3}<br>
+        Interactions: ${interactions} × 2 = ${interactions * 2}<br>
+        Hover: ${hover} × 1 = ${hover * 1}
+      `;
+      document.getElementById('scoreBreakdown').innerHTML = breakdown;
+    }
+
+    function saveCurrentPageScore() {
+      const pageIndex = evaluationOrder[currentIndex];
+      const pageId = FILE_MAPPING[pageIndex].blinded;
+
+      scores[pageId] = {
+        locations: getScore('locations'),
+        swiss: getScore('swiss'),
+        cards: getScore('cards'),
+        interactions: getScore('interactions'),
+        hover: getScore('hover'),
+        notes: document.getElementById('notesInput').value,
+        totalScore: calculateTotalScore()
+      };
+
+      saveState();
+    }
+
+    function loadPageScore() {
+      const pageIndex = evaluationOrder[currentIndex];
+      const pageId = FILE_MAPPING[pageIndex].blinded;
+      const pageScore = scores[pageId];
+
+      // Clear all selections
+      document.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+      document.getElementById('notesInput').value = '';
+
+      if (pageScore) {
+        // Load saved scores
+        if (pageScore.locations !== undefined) document.getElementById(`locations-${pageScore.locations}`).checked = true;
+        if (pageScore.swiss) document.getElementById(`swiss-${pageScore.swiss}`).checked = true;
+        if (pageScore.cards) document.getElementById(`cards-${pageScore.cards}`).checked = true;
+        if (pageScore.interactions) document.getElementById(`interactions-${pageScore.interactions}`).checked = true;
+        if (pageScore.hover !== undefined) document.getElementById(`hover-${pageScore.hover}`).checked = true;
+        document.getElementById('notesInput').value = pageScore.notes || '';
+      }
+
+      updateFinalScore();
+    }
+
+    // ========================================
+    // PAGE NAVIGATION
+    // ========================================
+    function loadPage() {
+      const pageIndex = evaluationOrder[currentIndex];
+      const fileMapping = FILE_MAPPING[pageIndex];
+      
+      // Update preview - use blinded filename
+      const iframe = document.getElementById('previewFrame');
+      iframe.src = `../blinded_pages/${fileMapping.blinded}`;
+      
+      // Update labels (blinded - showing evaluation order position, not actual page number)
+      const evalPosition = currentIndex + 1;
+      document.getElementById('currentPageLabel').textContent = `Evaluation Page ${evalPosition.toString().padStart(2, '0')}`;
+      
+      // Load scores
+      loadPageScore();
+      
+      // Update progress
+      updateProgress();
+      
+      // Update navigation buttons
+      document.getElementById('prevButton').disabled = currentIndex === 0;
+      document.getElementById('nextButton').disabled = currentIndex === evaluationOrder.length - 1;
+    }
+
+    function updateProgress() {
+      const completed = Object.keys(scores).length;
+      const total = FILE_MAPPING.length;
+      const percentage = (completed / total) * 100;
+      
+      document.getElementById('progressFill').style.width = `${percentage}%`;
+      document.getElementById('progressText').textContent = `${completed} / ${total} COMPLETED`;
+    }
+
+    function nextPage() {
+      if (currentIndex < evaluationOrder.length - 1) {
+        saveCurrentPageScore();
+        currentIndex++;
+        saveState();
+        loadPage();
+      }
+    }
+
+    function prevPage() {
+      if (currentIndex > 0) {
+        saveCurrentPageScore();
+        currentIndex--;
+        saveState();
+        loadPage();
+      }
+    }
+
+    // ========================================
+    // EXPORT FUNCTIONALITY
+    // ========================================
+    function exportToCSV() {
+      let csv = 'Evaluation Order,Blinded ID,Original Filename,Locations,Swiss,Cards,Interactions,Hover,Total Score,Notes\n';
+      
+      evaluationOrder.forEach((pageIndex, evalIndex) => {
+        const fileMapping = FILE_MAPPING[pageIndex];
+        const pageScore = scores[fileMapping.blinded] || {};
+        
+        csv += `${evalIndex + 1},`;
+        csv += `${fileMapping.blinded},`;
+        csv += `${fileMapping.original},`;
+        csv += `${pageScore.locations !== undefined ? pageScore.locations : ''},`;
+        csv += `${pageScore.swiss || ''},`;
+        csv += `${pageScore.cards || ''},`;
+        csv += `${pageScore.interactions || ''},`;
+        csv += `${pageScore.hover !== undefined ? pageScore.hover : ''},`;
+        csv += `${pageScore.totalScore || '0'},`;
+        csv += `"${(pageScore.notes || '').replace(/"/g, '""')}"\n`;
+      });
+
+      downloadFile(csv, 'evaluation-results.csv', 'text/csv');
+    }
+
+    function exportToJSON() {
+      const results = {
+        metadata: {
+          timestamp: new Date().toISOString(),
+          totalPages: FILE_MAPPING.length,
+          completedPages: Object.keys(scores).length,
+          scoringFormula: 'S = (5 × C2) + (3 × L3) + (3 × L4) + (2 × L5) + (1 × W6)'
+        },
+        evaluationOrder: evaluationOrder.map((pageIndex, evalIndex) => {
+          const fileMapping = FILE_MAPPING[pageIndex];
+          return {
+            evaluationPosition: evalIndex + 1,
+            blindedId: fileMapping.blinded,
+            originalFilename: fileMapping.original,
+            scores: scores[fileMapping.blinded] || null
+          };
+        }),
+        rawMapping: FILE_MAPPING
+      };
+
+      downloadFile(JSON.stringify(results, null, 2), 'evaluation-results.json', 'application/json');
+    }
+
+    function downloadFile(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetEvaluation() {
+      if (confirm('Are you sure you want to reset all evaluations? This cannot be undone.')) {
+        localStorage.removeItem('evaluationOrder');
+        localStorage.removeItem('evaluationScores');
+        localStorage.removeItem('currentIndex');
+        location.reload();
+      }
+    }
+
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initState();
+      loadPage();
+
+      // Scoring inputs
+      document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', updateFinalScore);
+      });
+
+      // Navigation
+      document.getElementById('prevButton').addEventListener('click', prevPage);
+      document.getElementById('nextButton').addEventListener('click', nextPage);
+
+      // View Source
+      document.getElementById('viewSourceButton').addEventListener('click', () => {
+        const pageIndex = evaluationOrder[currentIndex];
+        const fileMapping = FILE_MAPPING[pageIndex];
+        window.open(`../blinded_pages/${fileMapping.blinded}`, '_blank');
+      });
+
+      // Open in new tab
+      document.getElementById('openNewTab').addEventListener('click', () => {
+        const pageIndex = evaluationOrder[currentIndex];
+        const fileMapping = FILE_MAPPING[pageIndex];
+        window.open(`../blinded_pages/${fileMapping.blinded}`, '_blank');
+      });
+
+      // Export
+      document.getElementById('exportCSV').addEventListener('click', exportToCSV);
+      document.getElementById('exportJSON').addEventListener('click', exportToJSON);
+      document.getElementById('resetButton').addEventListener('click', resetEvaluation);
+
+      // Auto-save on input change
+      document.getElementById('notesInput').addEventListener('input', saveCurrentPageScore);
+    });
+
+    // Auto-save before page unload
+    window.addEventListener('beforeunload', () => {
+      saveCurrentPageScore();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate | Objective Property Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --swiss-bg: #FFFFFF;
+      --swiss-fg: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+      --grid-size: 24px;
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 1rem;
+      --spacing-md: 2rem;
+      --spacing-lg: 4rem;
+      --spacing-xl: 8rem;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: var(--swiss-bg);
+      color: var(--swiss-fg);
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Swiss Noise Texture - Applied globally */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Swiss Patterns */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: var(--grid-size) var(--grid-size);
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg,
+          transparent,
+          transparent 5px,
+          rgba(0, 0, 0, 0.02) 5px,
+          rgba(0, 0, 0, 0.02) 10px);
+    }
+
+    /* Typography System */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .text-display {
+      font-size: clamp(3.5rem, 10vw, 10rem);
+      letter-spacing: -0.1em;
+    }
+
+    .text-headline {
+      font-size: clamp(2rem, 5vw, 4rem);
+    }
+
+    .text-title {
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .text-label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .text-body {
+      font-size: 1rem;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      line-height: 1.6;
+    }
+
+    .text-small {
+      font-size: 0.875rem;
+    }
+
+    /* Layout Components */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+    }
+
+    .section {
+      padding: var(--spacing-xl) 0;
+      border-bottom: 4px solid var(--swiss-border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 2px solid var(--swiss-border);
+    }
+
+    .section-number {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--swiss-accent);
+      margin-right: var(--spacing-sm);
+      letter-spacing: 0.2em;
+    }
+
+    /* Header */
+    .header {
+      padding: var(--spacing-md) 0;
+      border-bottom: 4px solid var(--swiss-border);
+      position: sticky;
+      top: 0;
+      background-color: var(--swiss-bg);
+      z-index: 100;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      color: var(--swiss-fg);
+      position: relative;
+      padding: var(--spacing-xs) 0;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--swiss-accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.2s ease-out;
+    }
+
+    .logo:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .nav {
+      display: flex;
+      gap: var(--spacing-lg);
+    }
+
+    .nav-link {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--swiss-fg);
+      text-decoration: none;
+      position: relative;
+      padding: var(--spacing-xs) 0;
+      overflow: hidden;
+    }
+
+    .nav-link::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      color: var(--swiss-accent);
+      transition: transform 0.2s ease-out;
+    }
+
+    .nav-link:hover {
+      transform: translateY(-100%);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: var(--spacing-xl) 0;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: var(--swiss-muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100%;
+      background-color: var(--swiss-accent);
+      clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: var(--spacing-md);
+      max-width: 60%;
+    }
+
+    /* Filters Section */
+    .filters {
+      background-color: var(--swiss-muted);
+      padding: var(--spacing-lg) 0;
+      position: sticky;
+      top: 84px;
+      z-index: 90;
+      border-bottom: 4px solid var(--swiss-border);
+    }
+
+    .filters-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-md);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: var(--spacing-xs);
+      font-size: 0.875rem;
+    }
+
+    .filter-input {
+      background-color: var(--swiss-bg);
+      border: 2px solid var(--swiss-border);
+      padding: 0.75rem 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: var(--swiss-fg);
+      transition: all 0.15s ease-out;
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--swiss-accent);
+    }
+
+    .filter-select {
+      appearance: none;
+      background-color: var(--swiss-bg);
+      border: 2px solid var(--swiss-border);
+      padding: 0.75rem 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: var(--swiss-fg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 16px;
+      transition: all 0.15s ease-out;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--swiss-accent);
+    }
+
+    .price-range {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .price-range-input {
+      flex: 1;
+    }
+
+    .price-range-separator {
+      font-weight: 700;
+    }
+
+    /* Property Cards */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .property-card {
+      background-color: var(--swiss-bg);
+      border: 4px solid var(--swiss-border);
+      transition: all 0.2s ease-out;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--swiss-fg);
+      display: block;
+    }
+
+    .property-card:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-bg);
+      transform: translateY(-4px);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--swiss-bg);
+    }
+
+    .property-card:hover .property-image-container::after {
+      opacity: 0;
+    }
+
+    .property-image-container {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      background-color: var(--swiss-muted);
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease-out;
+    }
+
+    .property-card:hover .property-image {
+      transform: scale(1.05);
+    }
+
+    /* Image hover effect using CSS only */
+    .property-image-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 48, 0, 0);
+      transition: background-color 1s ease-out;
+      pointer-events: none;
+    }
+
+    .property-card:hover .property-image-container::after {
+      background-color: rgba(255, 48, 0, 0.2);
+    }
+
+    .property-content {
+      padding: var(--spacing-md);
+    }
+
+    .property-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .property-location {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: var(--spacing-md);
+      opacity: 0.8;
+    }
+
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--swiss-accent);
+      transition: color 0.2s ease-out;
+    }
+
+    .property-features {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-sm);
+      font-size: 0.875rem;
+    }
+
+    .property-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) 0;
+      border-top: 2px solid var(--swiss-border);
+    }
+
+    .pagination-button {
+      background-color: var(--swiss-bg);
+      border: 2px solid var(--swiss-border);
+      padding: 0.75rem 1.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--swiss-fg);
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .pagination-button:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-bg);
+      border-color: var(--swiss-accent);
+    }
+
+    .pagination-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination-button:disabled:hover {
+      background-color: var(--swiss-bg);
+      color: var(--swiss-fg);
+      border-color: var(--swiss-border);
+    }
+
+    .pagination-info {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 0.875rem;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: var(--swiss-fg);
+      color: var(--swiss-bg);
+      padding: var(--spacing-xl) 0;
+      border-top: 4px solid var(--swiss-border);
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-xl);
+    }
+
+    .footer-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: var(--spacing-md);
+      color: var(--swiss-bg);
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-link {
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .footer-link a {
+      color: var(--swiss-bg);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease-out;
+    }
+
+    .footer-link a:hover {
+      color: var(--swiss-accent);
+    }
+
+    .copyright {
+      margin-top: var(--spacing-xl);
+      padding-top: var(--spacing-md);
+      border-top: 2px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .hero::before {
+        width: 50%;
+      }
+
+      .properties-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+      }
+
+      .nav {
+        width: 100%;
+        justify-content: space-between;
+        gap: var(--spacing-sm);
+      }
+
+      .hero::before {
+        width: 100%;
+        height: 30%;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        top: auto;
+        bottom: 0;
+      }
+
+      .hero-subtitle {
+        max-width: 100%;
+      }
+
+      .filters {
+        top: 140px;
+      }
+
+      .filters-container {
+        grid-template-columns: 1fr;
+      }
+
+      .pagination {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+      }
+
+      .pagination-button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .text-display {
+        font-size: 2.5rem;
+      }
+
+      .section {
+        padding: var(--spacing-lg) 0;
+      }
+    }
+
+    /* Utility Classes */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-sm {
+      margin-top: var(--spacing-sm);
+    }
+
+    .mt-md {
+      margin-top: var(--spacing-md);
+    }
+
+    .mt-lg {
+      margin-top: var(--spacing-lg);
+    }
+
+    .mb-sm {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .mb-md {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .mb-lg {
+      margin-bottom: var(--spacing-lg);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="#" class="logo">SWISS ESTATE</a>
+      <nav class="nav">
+        <a href="#" class="nav-link" data-text="LISTINGS">LISTINGS</a>
+        <a href="#" class="nav-link" data-text="ABOUT">ABOUT</a>
+        <a href="#" class="nav-link" data-text="CONTACT">CONTACT</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero swiss-grid-pattern">
+    <div class="container hero-content">
+      <h1 class="text-display">OBJECTIVE<br>PROPERTY<br>LISTINGS</h1>
+      <p class="hero-subtitle">Mathematically precise real estate selection in Paraná. Filter by location, price, and
+        specifications. No ornamentation, only function.</p>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="filters swiss-dots">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="text-headline">FILTERS</h2>
+      </div>
+      <div class="filters-container">
+        <div class="filter-group">
+          <label for="search" class="filter-label">Text Search</label>
+          <input type="text" id="search" class="filter-input" placeholder="Enter keywords...">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Price Range</label>
+          <div class="price-range">
+            <input type="number" id="price-min" class="filter-input price-range-input" placeholder="Min">
+            <span class="price-range-separator">—</span>
+            <input type="number" id="price-max" class="filter-input price-range-input" placeholder="Max">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label for="state" class="filter-label">State</label>
+          <select id="state" class="filter-select">
+            <option value="">Select State</option>
+            <option value="parana" selected>Paraná</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="city" class="filter-label">City</label>
+          <select id="city" class="filter-select">
+            <option value="">All Cities</option>
+            <option value="londrina">Londrina</option>
+            <option value="ibipora">Ibiporã</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="text-headline">PROPERTIES</h2>
+      </div>
+      <div class="properties-grid">
+        <!-- Property Card 1 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Modern house with geometric architecture" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">GEOMETRIC RESIDENCE</h3>
+            <p class="property-location">Londrina, Paraná</p>
+            <div class="property-price">R$ 850.000</div>
+            <div class="property-features">
+              <div class="property-feature">4 BED</div>
+              <div class="property-feature">3 BATH</div>
+              <div class="property-feature">280 m²</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 2 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Minimalist apartment interior" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">URBAN LOFT</h3>
+            <p class="property-location">Ibiporã, Paraná</p>
+            <div class="property-price">R$ 420.000</div>
+            <div class="property-features">
+              <div class="property-feature">2 BED</div>
+              <div class="property-feature">2 BATH</div>
+              <div class="property-feature">95 m²</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 3 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Contemporary house with large windows" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">GLASS PAVILION</h3>
+            <p class="property-location">Londrina, Paraná</p>
+            <div class="property-price">R$ 1.200.000</div>
+            <div class="property-features">
+              <div class="property-feature">5 BED</div>
+              <div class="property-feature">4 BATH</div>
+              <div class="property-feature">350 m²</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 4 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Modern apartment building" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">CONCRETE TOWER</h3>
+            <p class="property-location">Londrina, Paraná</p>
+            <div class="property-price">R$ 650.000</div>
+            <div class="property-features">
+              <div class="property-feature">3 BED</div>
+              <div class="property-feature">2 BATH</div>
+              <div class="property-feature">120 m²</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 5 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Minimalist house with clean lines" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">LINEAR HOUSE</h3>
+            <p class="property-location">Ibiporã, Paraná</p>
+            <div class="property-price">R$ 720.000</div>
+            <div class="property-features">
+              <div class="property-feature">3 BED</div>
+              <div class="property-feature">3 BATH</div>
+              <div class="property-feature">210 m²</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 6 -->
+        <a href="#" class="property-card">
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1487956382158-bb926046304a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              alt="Architectural detail of a modern building" class="property-image">
+          </div>
+          <div class="property-content">
+            <h3 class="property-title">BRUTALIST APARTMENT</h3>
+            <p class="property-location">Londrina, Paraná</p>
+            <div class="property-price">R$ 380.000</div>
+            <div class="property-features">
+              <div class="property-feature">1 BED</div>
+              <div class="property-feature">1 BATH</div>
+              <div class="property-feature">75 m²</div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="pagination-button" disabled>PREVIOUS</button>
+        <span class="pagination-info">PAGE 1 OF 3</span>
+        <button class="pagination-button">NEXT</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-container">
+        <div>
+          <h3 class="footer-section-title">SWISS ESTATE</h3>
+          <p class="text-body">Objective real estate listings based on mathematical precision and functional design. No
+            ornamentation, only clarity.</p>
+        </div>
+        <div>
+          <h3 class="footer-section-title">LOCATIONS</h3>
+          <ul class="footer-links">
+            <li class="footer-link"><a href="#">Londrina</a></li>
+            <li class="footer-link"><a href="#">Ibiporã</a></li>
+            <li class="footer-link"><a href="#">Curitiba</a></li>
+            <li class="footer-link"><a href="#">Maringá</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-section-title">CONTACT</h3>
+          <ul class="footer-links">
+            <li class="footer-link"><a href="#">+55 (43) 99999-9999</a></li>
+            <li class="footer-link"><a href="#">info@swissestate.com</a></li>
+            <li class="footer-link"><a href="#">Av. Higienópolis, 1000</a></li>
+            <li class="footer-link"><a href="#">Londrina - PR</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>© 2023 SWISS ESTATE. ALL RIGHTS RESERVED. DESIGNED WITH OBJECTIVE PRECISION.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Minimal JavaScript for UI interactions
+    document.addEventListener('DOMContentLoaded', function () {
+      // Pagination button interactions
+      const paginationButtons = document.querySelectorAll('.pagination-button');
+
+      paginationButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          // Visual feedback only - no actual pagination
+          this.style.backgroundColor = '#000';
+          this.style.color = '#fff';
+
+          setTimeout(() => {
+            this.style.backgroundColor = '';
+            this.style.color = '';
+          }, 150);
+        });
+      });
+
+      // Filter interactions
+      const filterInputs = document.querySelectorAll('.filter-input, .filter-select');
+
+      filterInputs.forEach(input => {
+        input.addEventListener('focus', function () {
+          this.parentElement.style.borderLeft = '4px solid #FF3000';
+          this.parentElement.style.paddingLeft = '0.5rem';
+        });
+
+        input.addEventListener('blur', function () {
+          this.parentElement.style.borderLeft = '';
+          this.parentElement.style.paddingLeft = '';
+        });
+      });
+
+      // Property card image hover effect simulation
+      // Note: For a real implementation with multiple images per property,
+      // we would need to preload images and swap them on hover.
+      // This is a visual simulation of the effect.
+      const propertyCards = document.querySelectorAll('.property-card');
+
+      propertyCards.forEach(card => {
+        card.addEventListener('mouseenter', function () {
+          const imgContainer = this.querySelector('.property-image-container');
+
+          // Create a visual effect to simulate image change
+          imgContainer.style.position = 'relative';
+
+          // Add a pseudo-element overlay to simulate the "next image" effect
+          const overlay = document.createElement('div');
+          overlay.style.position = 'absolute';
+          overlay.style.top = '0';
+          overlay.style.left = '0';
+          overlay.style.width = '100%';
+          overlay.style.height = '100%';
+          overlay.style.backgroundColor = 'rgba(255, 48, 0, 0.1)';
+          overlay.style.transition = 'opacity 0.3s';
+          overlay.style.opacity = '0';
+
+          imgContainer.appendChild(overlay);
+
+          // Fade in the overlay after 1 second
+          setTimeout(() => {
+            overlay.style.opacity = '1';
+          }, 1000);
+        });
+
+        card.addEventListener('mouseleave', function () {
+          const imgContainer = this.querySelector('.property-image-container');
+          const overlay = imgContainer.querySelector('div');
+
+          if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+              if (overlay.parentNode === imgContainer) {
+                imgContainer.removeChild(overlay);
+              }
+            }, 300);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

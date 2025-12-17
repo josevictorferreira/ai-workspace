@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROPRIEDADES — Sistema Imobiliário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ===============================================
+           SWISS INTERNATIONAL STYLE — RESET & BASE
+           =============================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Noise Texture Overlay — Simulates Paper Grain */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.015;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ===============================================
+           PATTERN TEXTURES (Critical for Depth)
+           =============================================== */
+    .swiss-grid-pattern {
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 24px);
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.02) 10px, rgba(0, 0, 0, 0.02) 11px);
+    }
+
+    /* ===============================================
+           TYPOGRAPHY SYSTEM
+           =============================================== */
+    .heading-massive {
+      font-size: clamp(3rem, 12vw, 8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+    }
+
+    .heading-large {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .heading-medium {
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .label-small {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .body-text {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    /* ===============================================
+           LAYOUT CONTAINER
+           =============================================== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ===============================================
+           HEADER
+           =============================================== */
+    .header {
+      border-bottom: 4px solid var(--border);
+      padding: 3rem 0 2rem;
+      background: var(--bg);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .logo {
+      margin: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    .nav-link a {
+      color: var(--fg);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: block;
+      padding: 0.5rem 0;
+      position: relative;
+    }
+
+    /* Vertical Slide Animation on Nav Links */
+    .nav-link a::before {
+      content: attr(data-text);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      color: var(--accent);
+      transition: transform 200ms ease-out;
+    }
+
+    .nav-link a:hover {
+      transform: translateY(-100%);
+      transition: transform 200ms ease-out;
+    }
+
+    /* ===============================================
+           SECTION LABEL (Red Accent Numbers)
+           =============================================== */
+    .section-label {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    /* ===============================================
+           01. FILTERS SECTION
+           =============================================== */
+    .filters-section {
+      background: var(--muted);
+      border-bottom: 4px solid var(--border);
+      padding: 3rem 0;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .filter-label {
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-input,
+    .filter-select {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      padding: 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--fg);
+      transition: border-color 200ms ease-out;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .filter-input::placeholder {
+      color: rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+    }
+
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ===============================================
+           BUTTONS (Strict Rectangles, Color Inversion)
+           =============================================== */
+    .btn {
+      background: var(--border);
+      color: var(--bg);
+      border: 2px solid var(--border);
+      padding: 1rem 2rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+      color: var(--bg);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* ===============================================
+           02. PROPERTIES SECTION
+           =============================================== */
+    .properties-section {
+      padding: 4rem 0;
+    }
+
+    .properties-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 4px solid var(--border);
+    }
+
+    .properties-count {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    /* ===============================================
+           PROPERTY CARD (The Core Interactive Element)
+           =============================================== */
+    .property-card {
+      border: 4px solid var(--border);
+      background: var(--bg);
+      text-decoration: none;
+      color: var(--fg);
+      display: block;
+      transition: all 200ms ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Bold Hover State: Full Color Inversion */
+    .property-card:hover {
+      background: var(--border);
+      color: var(--bg);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--accent);
+    }
+
+    /* ===============================================
+           IMAGE HOVER EFFECT (Pure CSS, 1s Delay)
+           =============================================== */
+    .property-image-container {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+      background: var(--muted);
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 1;
+      transition: opacity 300ms ease-out;
+    }
+
+    .property-image.image-2 {
+      opacity: 0;
+    }
+
+    /* Trigger fade-out on first image after 1s hover */
+    .property-card:hover .property-image.image-1 {
+      animation: fadeOutImage 1s ease-out forwards;
+    }
+
+    /* Trigger fade-in on second image after 1s hover */
+    .property-card:hover .property-image.image-2 {
+      animation: fadeInImage 1s ease-out forwards;
+    }
+
+    @keyframes fadeOutImage {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInImage {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ===============================================
+           PROPERTY CARD INFO
+           =============================================== */
+    .property-info {
+      padding: 1.5rem;
+    }
+
+    .property-location {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      opacity: 0.6;
+    }
+
+    .property-card:hover .property-location {
+      opacity: 1;
+    }
+
+    .property-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .property-details {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .property-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      transition: color 200ms ease-out;
+    }
+
+    /* ===============================================
+           03. PAGINATION
+           =============================================== */
+    .pagination-section {
+      border-top: 4px solid var(--border);
+      padding: 3rem 0;
+      background: var(--muted);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .pagination-btn,
+    .pagination-page {
+      min-width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      text-decoration: none;
+      color: var(--fg);
+    }
+
+    .pagination-btn:hover:not(:disabled),
+    .pagination-page:hover {
+      background: var(--border);
+      color: var(--bg);
+    }
+
+    .pagination-page.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .pagination-btn:disabled:hover {
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    /* ===============================================
+           FOOTER
+           =============================================== */
+    .footer {
+      border-top: 4px solid var(--border);
+      padding: 3rem 0 2rem;
+      background: var(--bg);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+    }
+
+    .footer-section h3 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-links a {
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 200ms ease-out;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--border);
+      text-align: center;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 500;
+    }
+
+    /* ===============================================
+           RESPONSIVE DESIGN
+           =============================================== */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .pagination {
+        gap: 0.5rem;
+      }
+    }
+
+    /* ===============================================
+           ACCESSIBILITY: Respect Motion Preferences
+           =============================================== */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===============================================
+         HEADER
+         =============================================== -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo heading-large">PROPRIEDADES</h1>
+        <nav>
+          <ul class="nav-links">
+            <li class="nav-link"><a href="#comprar" data-text="COMPRAR">COMPRAR</a></li>
+            <li class="nav-link"><a href="#alugar" data-text="ALUGAR">ALUGAR</a></li>
+            <li class="nav-link"><a href="#vender" data-text="VENDER">VENDER</a></li>
+            <li class="nav-link"><a href="#contato" data-text="CONTATO">CONTATO</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===============================================
+         01. FILTERS SECTION
+         =============================================== -->
+  <section class="filters-section swiss-grid-pattern">
+    <div class="container">
+      <p class="section-label label-small">01. FILTROS</p>
+      <h2 class="heading-medium">Encontre seu im��vel</h2>
+
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label" for="search">Buscar</label>
+          <input type="text" id="search" class="filter-input" placeholder="Digite sua busca...">
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Faixa de preço</label>
+          <div class="price-range">
+            <select class="filter-select">
+              <option>MIN</option>
+              <option>R$ 100.000</option>
+              <option>R$ 200.000</option>
+              <option>R$ 300.000</option>
+              <option>R$ 400.000</option>
+              <option>R$ 500.000</option>
+            </select>
+            <select class="filter-select">
+              <option>MAX</option>
+              <option>R$ 300.000</option>
+              <option>R$ 500.000</option>
+              <option>R$ 700.000</option>
+              <option>R$ 1.000.000</option>
+              <option>R$ 2.000.000</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="state">Estado</label>
+          <select id="state" class="filter-select">
+            <option>SELECIONE</option>
+            <option selected>PARANÁ</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="city">Cidade</label>
+          <select id="city" class="filter-select">
+            <option>SELECIONE</option>
+            <option>LONDRINA</option>
+            <option>IBIPORÃ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn">Aplicar Filtros</button>
+        <button class="btn btn-secondary">Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===============================================
+         02. PROPERTIES SECTION
+         =============================================== -->
+  <section class="properties-section">
+    <div class="container">
+      <div class="properties-header">
+        <div>
+          <p class="section-label label-small">02. IMÓVEIS</p>
+          <h2 class="heading-medium">Propriedades disponíveis</h2>
+        </div>
+        <p class="properties-count">24 RESULTADOS</p>
+      </div>
+
+      <div class="properties-grid">
+        <!-- Property Card 1 -->
+        <a href="#property-1" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop"
+              alt="Casa Moderna" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop"
+              alt="Casa Moderna Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Casa Moderna em Condomínio Fechado</h3>
+            <div class="property-details">
+              <span class="property-detail">3 QUARTOS</span>
+              <span class="property-detail">2 VAGAS</span>
+              <span class="property-detail">180M²</span>
+            </div>
+            <p class="property-price">R$ 850.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 2 -->
+        <a href="#property-2" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"
+              alt="Apartamento" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop"
+              alt="Apartamento Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">IBIPORÃ — PR</p>
+            <h3 class="property-name">Apartamento Central com Vista</h3>
+            <div class="property-details">
+              <span class="property-detail">2 QUARTOS</span>
+              <span class="property-detail">1 VAGA</span>
+              <span class="property-detail">95M²</span>
+            </div>
+            <p class="property-price">R$ 420.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 3 -->
+        <a href="#property-3" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop"
+              alt="Casa de Campo" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop"
+              alt="Casa de Campo Exterior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Casa de Campo com Piscina</h3>
+            <div class="property-details">
+              <span class="property-detail">4 QUARTOS</span>
+              <span class="property-detail">3 VAGAS</span>
+              <span class="property-detail">320M²</span>
+            </div>
+            <p class="property-price">R$ 1.250.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 4 -->
+        <a href="#property-4" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop"
+              alt="Casa Minimalista" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop"
+              alt="Casa Minimalista Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Residência Minimalista Design</h3>
+            <div class="property-details">
+              <span class="property-detail">3 QUARTOS</span>
+              <span class="property-detail">2 VAGAS</span>
+              <span class="property-detail">210M²</span>
+            </div>
+            <p class="property-price">R$ 980.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 5 -->
+        <a href="#property-5" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop" alt="Casa Luxo"
+              class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop"
+              alt="Casa Luxo Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">IBIPORÃ — PR</p>
+            <h3 class="property-name">Casa em Condomínio de Luxo</h3>
+            <div class="property-details">
+              <span class="property-detail">5 QUARTOS</span>
+              <span class="property-detail">4 VAGAS</span>
+              <span class="property-detail">450M²</span>
+            </div>
+            <p class="property-price">R$ 2.100.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 6 -->
+        <a href="#property-6" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&h=600&fit=crop" alt="Sobrado"
+              class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop"
+              alt="Sobrado Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Sobrado Contemporâneo Zona Norte</h3>
+            <div class="property-details">
+              <span class="property-detail">4 QUARTOS</span>
+              <span class="property-detail">3 VAGAS</span>
+              <span class="property-detail">280M²</span>
+            </div>
+            <p class="property-price">R$ 1.150.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 7 -->
+        <a href="#property-7" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop"
+              alt="Apartamento Moderno" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&h=600&fit=crop"
+              alt="Apartamento Living" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Apartamento Alto Padrão Centro</h3>
+            <div class="property-details">
+              <span class="property-detail">3 QUARTOS</span>
+              <span class="property-detail">2 VAGAS</span>
+              <span class="property-detail">140M²</span>
+            </div>
+            <p class="property-price">R$ 720.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 8 -->
+        <a href="#property-8" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800&h=600&fit=crop"
+              alt="Casa Térrea" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop"
+              alt="Casa Térrea Jardim" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">IBIPORÃ — PR</p>
+            <h3 class="property-name">Casa Térrea com Amplo Terreno</h3>
+            <div class="property-details">
+              <span class="property-detail">3 QUARTOS</span>
+              <span class="property-detail">2 VAGAS</span>
+              <span class="property-detail">250M²</span>
+            </div>
+            <p class="property-price">R$ 650.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 9 -->
+        <a href="#property-9" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800&h=600&fit=crop" alt="Cobertura"
+              class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=800&h=600&fit=crop"
+              alt="Cobertura Terraço" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Cobertura Duplex com Terraço</h3>
+            <div class="property-details">
+              <span class="property-detail">4 QUARTOS</span>
+              <span class="property-detail">3 VAGAS</span>
+              <span class="property-detail">350M²</span>
+            </div>
+            <p class="property-price">R$ 1.850.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 10 -->
+        <a href="#property-10" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop" alt="Loft"
+              class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop"
+              alt="Loft Interior" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Loft Industrial Centro Histórico</h3>
+            <div class="property-details">
+              <span class="property-detail">1 SUÍTE</span>
+              <span class="property-detail">1 VAGA</span>
+              <span class="property-detail">75M²</span>
+            </div>
+            <p class="property-price">R$ 380.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 11 -->
+        <a href="#property-11" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop"
+              alt="Casa Colonial" class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=800&h=600&fit=crop"
+              alt="Casa Colonial Jardim" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">IBIPORÃ — PR</p>
+            <h3 class="property-name">Casa Clássica com Jardim Extenso</h3>
+            <div class="property-details">
+              <span class="property-detail">4 QUARTOS</span>
+              <span class="property-detail">3 VAGAS</span>
+              <span class="property-detail">380M²</span>
+            </div>
+            <p class="property-price">R$ 1.420.000</p>
+          </div>
+        </a>
+
+        <!-- Property Card 12 -->
+        <a href="#property-12" class="property-card">
+          <div class="property-image-container">
+            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop" alt="Duplex"
+              class="property-image image-1">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop"
+              alt="Duplex Escada" class="property-image image-2">
+          </div>
+          <div class="property-info">
+            <p class="property-location">LONDRINA — PR</p>
+            <h3 class="property-name">Duplex Moderno Zona Sul</h3>
+            <div class="property-details">
+              <span class="property-detail">3 QUARTOS</span>
+              <span class="property-detail">2 VAGAS</span>
+              <span class="property-detail">165M²</span>
+            </div>
+            <p class="property-price">R$ 795.000</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===============================================
+         03. PAGINATION
+         =============================================== -->
+  <section class="pagination-section swiss-dots">
+    <div class="container">
+      <p class="section-label label-small">03. NAVEGAÇÃO</p>
+      <div class="pagination">
+        <button class="pagination-btn" disabled>←</button>
+        <a href="#page-1" class="pagination-page active">1</a>
+        <a href="#page-2" class="pagination-page">2</a>
+        <a href="#page-3" class="pagination-page">3</a>
+        <a href="#page-4" class="pagination-page">4</a>
+        <a href="#page-5" class="pagination-page">5</a>
+        <button class="pagination-btn">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===============================================
+         FOOTER
+         =============================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Sistema</h3>
+          <ul class="footer-links">
+            <li><a href="#sobre">Sobre nós</a></li>
+            <li><a href="#funciona">Como funciona</a></li>
+            <li><a href="#anunciar">Anuncie seu imóvel</a></li>
+            <li><a href="#parceiros">Parceiros</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Suporte</h3>
+          <ul class="footer-links">
+            <li><a href="#ajuda">Central de ajuda</a></li>
+            <li><a href="#termos">Termos de uso</a></li>
+            <li><a href="#privacidade">Política de privacidade</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Contato</h3>
+          <ul class="footer-links">
+            <li><a href="tel:+554333334444">(43) 3333-4444</a></li>
+            <li><a href="mailto:contato@propriedades.com">contato@propriedades.com</a></li>
+            <li><a href="#localizacao">Londrina — Paraná</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Siga-nos</h3>
+          <ul class="footer-links">
+            <li><a href="#instagram">Instagram</a></li>
+            <li><a href="#facebook">Facebook</a></li>
+            <li><a href="#linkedin">LinkedIn</a></li>
+            <li><a href="#youtube">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 PROPRIEDADES — Sistema Imobiliário. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

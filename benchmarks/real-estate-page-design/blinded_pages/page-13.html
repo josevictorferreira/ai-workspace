@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Swiss‑Style Real Estate Listings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* -------------------------------------------------
+   Design Tokens
+   ------------------------------------------------- */
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-muted: #f2f2f2;
+      --color-fg: #000000;
+      --color-accent: #ff3000;
+      /* Swiss Red */
+      --color-border: #000000;
+      --font-sans: 'Inter', sans-serif;
+      --border-thick: 4px;
+      --transition-fast: 0.2s;
+    }
+
+    /* -------------------------------------------------
+   Global Styles & Layout
+   ------------------------------------------------- */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 6rem;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: 4rem;
+      letter-spacing: -0.03em;
+    }
+
+    h3 {
+      font-size: 2.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* -------------------------------------------------
+   Text‑style helpers
+   ------------------------------------------------- */
+    .uppercase {
+      text-transform: uppercase;
+    }
+
+    .tracking-tighter {
+      letter-spacing: -0.04em;
+    }
+
+    .tracking-wide {
+      letter-spacing: 0.08em;
+    }
+
+    .tracking-widest {
+      letter-spacing: 0.15em;
+    }
+
+    /* -------------------------------------------------
+   Patterns (grid, dots, diagonal, noise)
+   ------------------------------------------------- */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        /* 24 × 24 px subtle grid */
+        repeating-linear-gradient(0deg,
+          rgba(0, 0, 0, .03) 0,
+          rgba(0, 0, 0, .03) 1px,
+          transparent 1px,
+          transparent 24px),
+        repeating-linear-gradient(90deg,
+          rgba(0, 0, 0, .03) 0,
+          rgba(0, 0, 0, .03) 1px,
+          transparent 1px,
+          transparent 24px),
+        /* Dot matrix (16 px) */
+        radial-gradient(circle at 8px 8px, rgba(0, 0, 0, .04) 1px, transparent 0),
+        /* Diagonal lines (45°) */
+        repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, .02) 0,
+          rgba(0, 0, 0, .02) 1px,
+          transparent 1px,
+          transparent 10px);
+      background-size: 24px 24px, 24px 24px, 16px 16px, 10px 10px;
+      z-index: -1;
+    }
+
+    /* -------------------------------------------------
+   Layout Grid
+   ------------------------------------------------- */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 3rem;
+      padding: 3rem 5vw;
+      min-height: 100vh;
+    }
+
+    @media (max-width:1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* -------------------------------------------------
+   Header
+   ------------------------------------------------- */
+    header {
+      grid-column: 1/-1;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 10rem;
+      line-height: 1;
+    }
+
+    /* -------------------------------------------------
+   Filters (aside)
+   ------------------------------------------------- */
+    aside.filters {
+      border: var(--border-thick) solid var(--color-border);
+      padding: 2rem;
+      background: var(--color-bg);
+    }
+
+    aside.filters label {
+      display: block;
+      margin-top: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    aside.filters input,
+    aside.filters select {
+      width: 100%;
+      margin-top: .5rem;
+      padding: .5rem;
+      border: var(--border-thick) solid var(--color-border);
+      background: #fff;
+      font-weight: 500;
+    }
+
+    aside.filters input:focus,
+    aside.filters select:focus {
+      outline: 2px solid var(--color-accent);
+    }
+
+    /* -------------------------------------------------
+   Cards Section
+   ------------------------------------------------- */
+    section.cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Card component */
+    article.card {
+      border: var(--border-thick) solid var(--color-border);
+      background: #fff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background var(--transition-fast) ease,
+        color var(--transition-fast) ease,
+        border-color var(--transition-fast) ease;
+    }
+
+    article.card:hover {
+      background: var(--color-fg);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+
+    article.card:hover a {
+      background: #fff;
+      color: var(--color-fg);
+      border-color: var(--color-fg);
+    }
+
+    article.card .image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    article.card .image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity .5s ease;
+    }
+
+    article.card .image img.secondary {
+      opacity: 0;
+      transition-delay: .5s;
+    }
+
+    article.card .image:hover img.primary {
+      opacity: 0;
+    }
+
+    article.card .image:hover img.secondary {
+      opacity: 1;
+    }
+
+    article.card .content {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    article.card h3 {
+      font-size: 2.2rem;
+      margin-bottom: .5rem;
+    }
+
+    article.card .price {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* -------------------------------------------------
+   Buttons & Links
+   ------------------------------------------------- */
+    .btn {
+      display: inline-block;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: var(--border-thick) solid var(--color-fg);
+      padding: .75rem 1.5rem;
+      cursor: pointer;
+      transition: background var(--transition-fast) ease,
+        color var(--transition-fast) ease,
+        border-color var(--transition-fast) ease;
+    }
+
+    .btn-primary {
+      background: var(--color-fg);
+      color: #fff;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 4px;
+    }
+
+    /* -------------------------------------------------
+   Pagination
+   ------------------------------------------------- */
+    footer.pagination {
+      grid-column: 1/-1;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    footer.pagination .btn {
+      margin: 0 .25rem;
+    }
+
+    /* -------------------------------------------------
+   Responsive tweaks
+   ------------------------------------------------- */
+    @media (max-width:768px) {
+      header h1 {
+        font-size: 6rem;
+      }
+
+      aside.filters {
+        margin-bottom: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 class="tracking-widest">REAL ESTATE LISTINGS</h1>
+  </header>
+
+  <div class="container">
+    <!-- Filters -->
+    <aside class="filters">
+      <form>
+        <label for="search">SEARCH</label>
+        <input type="text" id="search" placeholder="e.g. “villa”, “downtown”">
+
+        <label for="price">PRICE RANGE</label>
+        <input type="range" id="price" min="0" max="10000000" step="50000">
+
+        <label for="location">LOCATION</label>
+        <select id="location">
+          <option>Paraná – Londrina</option>
+          <option>Paraná – Ibiporã</option>
+        </select>
+      </form>
+    </aside>
+
+    <!-- Property Cards -->
+    <section class="cards">
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/1/400/300" alt="Property 1" class="primary">
+          <img src="https://picsum.photos/seed/1b/400/300" alt="Property 1 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">LUXE VILLA</h3>
+          <p class="price">R$ 1 250 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/2/400/300" alt="Property 2" class="primary">
+          <img src="https://picsum.photos/seed/2b/400/300" alt="Property 2 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">CITY APARTMENT</h3>
+          <p class="price">R$ 780 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/3/400/300" alt="Property 3" class="primary">
+          <img src="https://picsum.photos/seed/3b/400/300" alt="Property 3 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">SUBURBAN HOUSE</h3>
+          <p class="price">R$ 540 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/4/400/300" alt="Property 4" class="primary">
+          <img src="https://picsum.photos/seed/4b/400/300" alt="Property 4 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">RIVERSIDE LOFT</h3>
+          <p class="price">R$ 1 020 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/5/400/300" alt="Property 5" class="primary">
+          <img src="https://picsum.photos/seed/5b/400/300" alt="Property 5 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">MOUNTAIN COTTAGE</h3>
+          <p class="price">R$ 665 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="image">
+          <img src="https://picsum.photos/seed/6/400/300" alt="Property 6" class="primary">
+          <img src="https://picsum.photos/seed/6b/400/300" alt="Property 6 – alt view" class="secondary">
+        </div>
+        <div class="content">
+          <h3 class="uppercase tracking-tighter">URBAN STUDIO</h3>
+          <p class="price">R$ 420 000</p>
+          <a href="#" class="btn btn-primary">VIEW DETAILS</a>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <footer class="pagination">
+    <button class="btn btn-primary">← PREV</button>
+    <button class="btn btn-primary">1</button>
+    <button class="btn btn-primary">2</button>
+    <button class="btn btn-primary">3</button>
+    <button class="btn btn-primary">NEXT →</button>
+  </footer>
+</body>
+
+</html>

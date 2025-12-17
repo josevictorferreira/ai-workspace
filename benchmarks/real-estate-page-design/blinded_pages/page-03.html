@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMÓVEIS | Swiss Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+           SWISS DESIGN SYSTEM - DESIGN TOKENS
+           ═══════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* Colors */
+      --swiss-bg: #FFFFFF;
+      --swiss-fg: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+
+      /* Typography */
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Spacing */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      --space-4xl: 6rem;
+
+      /* Borders */
+      --border-thin: 2px;
+      --border-thick: 4px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease-out;
+      --transition-base: 200ms ease-out;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════════ */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--swiss-bg);
+      color: var(--swiss-fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           TEXTURE PATTERNS
+           ═══════════════════════════════════════════════════════════════ */
+
+    /* Noise texture overlay on body */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.015;
+      background-image: url("3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg,
+          transparent,
+          transparent 9px,
+          rgba(0, 0, 0, 0.02) 9px,
+          rgba(0, 0, 0, 0.02) 10px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           TYPOGRAPHY
+           ═══════════════════════════════════════════════════════════════ */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+    }
+
+    .text-massive {
+      font-size: clamp(3rem, 15vw, 12rem);
+      letter-spacing: -0.05em;
+    }
+
+    .text-display {
+      font-size: clamp(2rem, 8vw, 6rem);
+    }
+
+    .text-headline {
+      font-size: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .text-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .text-body {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .section-number {
+      color: var(--swiss-accent);
+      font-weight: 900;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════ */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--swiss-bg);
+      border-bottom: var(--border-thick) solid var(--swiss-border);
+    }
+
+    .header__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-lg) var(--space-xl);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--swiss-fg);
+      display: flex;
+      align-items: center;
+      gap: 0.1em;
+    }
+
+    .logo__dot {
+      color: var(--swiss-accent);
+      font-size: 1.8em;
+      line-height: 0;
+    }
+
+    .nav {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        gap: var(--space-xl);
+      }
+    }
+
+    .nav__link {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      height: 1.2em;
+      text-decoration: none;
+      color: var(--swiss-fg);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .nav__link-inner {
+      display: block;
+      transition: transform var(--transition-base);
+    }
+
+    .nav__link-inner::after {
+      content: attr(data-text);
+      display: block;
+      color: var(--swiss-accent);
+    }
+
+    .nav__link:hover .nav__link-inner {
+      transform: translateY(-50%);
+    }
+
+    .nav-toggle {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .nav-toggle__line {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--swiss-fg);
+      transition: all var(--transition-base);
+    }
+
+    .nav-toggle:hover .nav-toggle__line {
+      background: var(--swiss-accent);
+    }
+
+    @media (min-width: 768px) {
+      .nav-toggle {
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           PAGE HERO
+           ═══════════════════════════════════════════════════════════════ */
+
+    .page-hero {
+      padding: var(--space-3xl) var(--space-xl);
+      border-bottom: var(--border-thick) solid var(--swiss-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero__content {
+      max-width: 1600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-hero__label {
+      display: inline-block;
+      margin-bottom: var(--space-lg);
+    }
+
+    .page-hero__title {
+      position: relative;
+    }
+
+    .page-hero__accent {
+      position: absolute;
+      top: -20%;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      border: var(--border-thick) solid var(--swiss-accent);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    @media (min-width: 1024px) {
+      .page-hero {
+        padding: var(--space-4xl) var(--space-xl);
+      }
+
+      .page-hero__accent {
+        width: 400px;
+        height: 400px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           FILTERS SECTION
+           ═══════════════════════════════════════════════════════════════ */
+
+    .filters {
+      background: var(--swiss-muted);
+      border-bottom: var(--border-thick) solid var(--swiss-border);
+      padding: var(--space-xl);
+    }
+
+    .filters__inner {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .filters__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+
+    @media (min-width: 768px) {
+      .filters__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .filters__grid {
+        grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+        align-items: end;
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .filter-group__label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      padding: var(--space-md) var(--space-lg);
+      border: var(--border-thin) solid var(--swiss-border);
+      background: var(--swiss-bg);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: border-color var(--transition-fast);
+      appearance: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--swiss-accent);
+    }
+
+    .filter-input::placeholder {
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    .filter-select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    .price-range {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .price-range .filter-input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .price-range__separator {
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           BUTTONS
+           ═══════════════════════════════════════════════════════════════ */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-xl);
+      min-height: 52px;
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+      border: var(--border-thin) solid var(--swiss-fg);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn:hover {
+      background: var(--swiss-accent);
+      border-color: var(--swiss-accent);
+    }
+
+    .btn--secondary {
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+    }
+
+    .btn--secondary:hover {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .btn--full {
+      width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      .btn--full {
+        width: auto;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           RESULTS BAR
+           ═══════════════════════════════════════════════════════════════ */
+
+    .results-bar {
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: var(--border-thin) solid var(--swiss-border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 768px) {
+      .results-bar {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .results-bar__inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 768px) {
+      .results-bar__inner {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .results-count {
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .results-count__number {
+      font-weight: 900;
+      color: var(--swiss-accent);
+    }
+
+    .sort-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .sort-group__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .sort-select {
+      padding: var(--space-sm) var(--space-md);
+      padding-right: 2rem;
+      border: var(--border-thin) solid var(--swiss-border);
+      background: var(--swiss-bg);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23000' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           PROPERTIES GRID
+           ═══════════════════════════════════════════════════════════════ */
+
+    .properties {
+      padding: var(--space-xl);
+    }
+
+    .properties__inner {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .properties__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    @media (min-width: 640px) {
+      .properties__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .properties__grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2xl);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           PROPERTY CARD
+           ═══════════════════════════════════════════════════════════════ */
+
+    .property-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: var(--border-thick) solid var(--swiss-border);
+      background: var(--swiss-bg);
+      transition: all var(--transition-base);
+      position: relative;
+    }
+
+    .property-card::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border: var(--border-thick) solid transparent;
+      transition: border-color var(--transition-base);
+      pointer-events: none;
+    }
+
+    .property-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .property-card:hover::before {
+      border-color: var(--swiss-accent);
+    }
+
+    .property-card:focus-visible {
+      outline: none;
+    }
+
+    .property-card:focus-visible::before {
+      border-color: var(--swiss-accent);
+    }
+
+    /* Card Image Container */
+    .property-card__image-wrap {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-bottom: var(--border-thick) solid var(--swiss-border);
+      background: var(--swiss-muted);
+    }
+
+    .property-card:hover .property-card__image-wrap {
+      border-bottom-color: var(--swiss-accent);
+    }
+
+    /* Image Stack for Cycling */
+    .property-card__images {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .property-card__image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: scale(1);
+    }
+
+    .property-card__image:first-child {
+      opacity: 1;
+    }
+
+    .property-card:hover .property-card__image {
+      transform: scale(1.02);
+    }
+
+    /* Image Cycling Animation - starts after 1s delay */
+    .property-card:hover .property-card__image:nth-child(1) {
+      animation: cycleImage1 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__image:nth-child(2) {
+      animation: cycleImage2 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__image:nth-child(3) {
+      animation: cycleImage3 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__image:nth-child(4) {
+      animation: cycleImage4 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    @keyframes cycleImage1 {
+
+      0%,
+      25% {
+        opacity: 1;
+      }
+
+      25.01%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes cycleImage2 {
+
+      0%,
+      25% {
+        opacity: 0;
+      }
+
+      25.01%,
+      50% {
+        opacity: 1;
+      }
+
+      50.01%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes cycleImage3 {
+
+      0%,
+      50% {
+        opacity: 0;
+      }
+
+      50.01%,
+      75% {
+        opacity: 1;
+      }
+
+      75.01%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes cycleImage4 {
+
+      0%,
+      75% {
+        opacity: 0;
+      }
+
+      75.01%,
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Image Indicators */
+    .property-card__indicators {
+      position: absolute;
+      bottom: var(--space-md);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: var(--space-sm);
+      z-index: 10;
+    }
+
+    .property-card__indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--swiss-bg);
+      border: 2px solid var(--swiss-fg);
+      transition: all var(--transition-fast);
+    }
+
+    .property-card__indicator:first-child {
+      background: var(--swiss-accent);
+      border-color: var(--swiss-accent);
+    }
+
+    /* Indicator Animation */
+    .property-card:hover .property-card__indicator:nth-child(1) {
+      animation: dot1 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__indicator:nth-child(2) {
+      animation: dot2 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__indicator:nth-child(3) {
+      animation: dot3 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    .property-card:hover .property-card__indicator:nth-child(4) {
+      animation: dot4 4s steps(1, end) infinite;
+      animation-delay: 1s;
+    }
+
+    @keyframes dot1 {
+
+      0%,
+      25% {
+        background: var(--swiss-accent);
+        border-color: var(--swiss-accent);
+      }
+
+      25.01%,
+      100% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+    }
+
+    @keyframes dot2 {
+
+      0%,
+      25% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+
+      25.01%,
+      50% {
+        background: var(--swiss-accent);
+        border-color: var(--swiss-accent);
+      }
+
+      50.01%,
+      100% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+    }
+
+    @keyframes dot3 {
+
+      0%,
+      50% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+
+      50.01%,
+      75% {
+        background: var(--swiss-accent);
+        border-color: var(--swiss-accent);
+      }
+
+      75.01%,
+      100% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+    }
+
+    @keyframes dot4 {
+
+      0%,
+      75% {
+        background: var(--swiss-bg);
+        border-color: var(--swiss-fg);
+      }
+
+      75.01%,
+      100% {
+        background: var(--swiss-accent);
+        border-color: var(--swiss-accent);
+      }
+    }
+
+    /* Property Tags */
+    .property-card__tag {
+      position: absolute;
+      top: var(--space-md);
+      left: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--swiss-accent);
+      color: var(--swiss-bg);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      z-index: 10;
+    }
+
+    /* Card Content */
+    .property-card__content {
+      padding: var(--space-lg);
+    }
+
+    .property-card__location {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--swiss-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .property-card__title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      margin-bottom: var(--space-md);
+      transition: color var(--transition-fast);
+    }
+
+    .property-card:hover .property-card__title {
+      color: var(--swiss-accent);
+    }
+
+    .property-card__details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .property-card__detail {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .property-card__detail::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--swiss-fg);
+    }
+
+    .property-card__price-wrap {
+      margin-bottom: var(--space-md);
+    }
+
+    .property-card__price {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .property-card__price-type {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(0, 0, 0, 0.5);
+      margin-top: 2px;
+    }
+
+    .property-card__cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: var(--space-md);
+      border-top: var(--border-thin) solid var(--swiss-border);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: border-color var(--transition-fast);
+    }
+
+    .property-card:hover .property-card__cta {
+      border-top-color: var(--swiss-accent);
+    }
+
+    .property-card__arrow {
+      display: inline-block;
+      transition: transform var(--transition-base);
+      font-size: 1.2em;
+    }
+
+    .property-card:hover .property-card__arrow {
+      transform: translateX(8px);
+      color: var(--swiss-accent);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           PAGINATION
+           ═══════════════════════════════════════════════════════════════ */
+
+    .pagination {
+      padding: var(--space-xl);
+      border-top: var(--border-thick) solid var(--swiss-border);
+    }
+
+    .pagination__inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .pagination__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      height: 48px;
+      padding: 0 var(--space-md);
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+      border: var(--border-thin) solid var(--swiss-border);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .pagination__btn:hover {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .pagination__btn--active {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .pagination__btn--active:hover {
+      background: var(--swiss-accent);
+      border-color: var(--swiss-accent);
+    }
+
+    .pagination__btn--nav {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      padding: 0 var(--space-lg);
+    }
+
+    .pagination__btn--nav:hover {
+      background: var(--swiss-accent);
+      border-color: var(--swiss-accent);
+    }
+
+    .pagination__ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      height: 48px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+
+    .footer {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+      border-top: var(--border-thick) solid var(--swiss-border);
+    }
+
+    .footer__inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl);
+    }
+
+    @media (min-width: 768px) {
+      .footer__grid {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+      }
+    }
+
+    .footer__brand {
+      max-width: 320px;
+    }
+
+    .footer__logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-md);
+    }
+
+    .footer__logo-dot {
+      color: var(--swiss-accent);
+    }
+
+    .footer__tagline {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+
+    .footer__section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--swiss-accent);
+      margin-bottom: var(--space-lg);
+    }
+
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .footer__link {
+      color: var(--swiss-bg);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color var(--transition-fast);
+    }
+
+    .footer__link:hover {
+      color: var(--swiss-accent);
+    }
+
+    .footer__bottom {
+      margin-top: var(--space-3xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 768px) {
+      .footer__bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .footer__copyright {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.5;
+    }
+
+    .footer__legal {
+      display: flex;
+      gap: var(--space-lg);
+    }
+
+    .footer__legal-link {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--swiss-bg);
+      text-decoration: none;
+      opacity: 0.5;
+      transition: opacity var(--transition-fast);
+    }
+
+    .footer__legal-link:hover {
+      opacity: 1;
+      color: var(--swiss-accent);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           ACCESSIBILITY
+           ═══════════════════════════════════════════════════════════════ */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Focus states */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+           DECORATIVE ELEMENTS
+           ═══════════════════════════════════════════════════════════════ */
+
+    .deco-circle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .deco-line {
+      position: absolute;
+      background: var(--swiss-border);
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ═══════════════════════════════════════════════════════════════
+         HEADER
+         ═══════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="#" class="logo">
+        SWISS<span class="logo__dot">.</span>IMÓVEIS
+      </a>
+
+      <nav class="nav">
+        <a href="#" class="nav__link">
+          <span class="nav__link-inner" data-text="COMPRAR">COMPRAR</span>
+        </a>
+        <a href="#" class="nav__link">
+          <span class="nav__link-inner" data-text="ALUGAR">ALUGAR</span>
+        </a>
+        <a href="#" class="nav__link">
+          <span class="nav__link-inner" data-text="VENDER">VENDER</span>
+        </a>
+        <a href="#" class="nav__link">
+          <span class="nav__link-inner" data-text="SOBRE">SOBRE</span>
+        </a>
+        <a href="#" class="nav__link">
+          <span class="nav__link-inner" data-text="CONTATO">CONTATO</span>
+        </a>
+      </nav>
+
+      <button class="nav-toggle" aria-label="Abrir menu">
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         PAGE HERO
+         ═══════════════════════════════════════════════════════════════ -->
+  <section class="page-hero swiss-grid-pattern">
+    <div class="page-hero__content">
+      <p class="text-label page-hero__label">
+        <span class="section-number">01.</span> CATÁLOGO
+      </p>
+      <h1 class="text-massive page-hero__title">IMÓVEIS</h1>
+    </div>
+    <div class="page-hero__accent"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         FILTERS
+         ═══════════════════════════════════════════════════════════════ -->
+  <section class="filters swiss-dots">
+    <div class="filters__inner">
+      <div class="filters__grid">
+        <div class="filter-group">
+          <label class="filter-group__label" for="search">Buscar Imóvel</label>
+          <input type="text" id="search" class="filter-input" placeholder="Digite o nome, código ou endereço...">
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-group__label">Faixa de Preço (R$)</label>
+          <div class="price-range">
+            <input type="text" class="filter-input" placeholder="Mínimo">
+            <span class="price-range__separator">—</span>
+            <input type="text" class="filter-input" placeholder="Máximo">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-group__label" for="state">Estado</label>
+          <select id="state" class="filter-select">
+            <option value="">Selecione</option>
+            <option value="pr" selected>Paraná</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-group__label" for="city">Cidade</label>
+          <select id="city" class="filter-select">
+            <option value="">Todas as Cidades</option>
+            <option value="londrina">Londrina</option>
+            <option value="ibipora">Ibiporã</option>
+          </select>
+        </div>
+
+        <button class="btn btn--full">
+          Filtrar →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         RESULTS BAR
+         ═══════════════════════════════════════════════════════════════ -->
+  <div class="results-bar">
+    <div class="results-bar__inner">
+      <p class="results-count">
+        <span class="results-count__number">24</span> imóveis encontrados
+      </p>
+      <div class="sort-group">
+        <label class="sort-group__label" for="sort">Ordenar:</label>
+        <select id="sort" class="sort-select">
+          <option value="recent">Mais Recentes</option>
+          <option value="price-asc">Menor Preço</option>
+          <option value="price-desc">Maior Preço</option>
+          <option value="area">Maior Área</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         PROPERTIES GRID
+         ═══════════════════════════════════════════════════════════════ -->
+  <section class="properties swiss-diagonal">
+    <div class="properties__inner">
+      <div class="properties__grid">
+
+        <!-- Property Card 1 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <span class="property-card__tag">Destaque</span>
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=450&fit=crop"
+                alt="Fachada moderna" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=450&fit=crop"
+                alt="Sala de estar" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&h=450&fit=crop"
+                alt="Cozinha gourmet" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=450&fit=crop"
+                alt="Área externa" class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Casa Alto Padrão Gleba Palhano</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">4 Quartos</span>
+              <span class="property-card__detail">380 m²</span>
+              <span class="property-card__detail">4 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 2.850.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 2 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=450&fit=crop"
+                alt="Apartamento luxo fachada" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=450&fit=crop"
+                alt="Living amplo" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=450&fit=crop"
+                alt="Cozinha integrada" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=600&h=450&fit=crop"
+                alt="Suite master" class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Apartamento Centro Histórico</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">3 Quartos</span>
+              <span class="property-card__detail">145 m²</span>
+              <span class="property-card__detail">2 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 890.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 3 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <span class="property-card__tag">Novo</span>
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=450&fit=crop"
+                alt="Casa térrea moderna" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=600&h=450&fit=crop"
+                alt="Área gourmet" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=450&fit=crop" alt="Piscina"
+                class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&h=450&fit=crop" alt="Jardim"
+                class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Ibiporã, PR</p>
+            <h3 class="property-card__title">Casa Térrea Condomínio Royal Park</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">3 Quartos</span>
+              <span class="property-card__detail">220 m²</span>
+              <span class="property-card__detail">3 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 1.450.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 4 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=450&fit=crop"
+                alt="Sobrado contemporâneo" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&h=450&fit=crop"
+                alt="Sala com pé direito alto" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=600&h=450&fit=crop" alt="Suite"
+                class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=600&h=450&fit=crop"
+                alt="Varanda gourmet" class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Sobrado Residencial Quebec</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">4 Quartos</span>
+              <span class="property-card__detail">310 m²</span>
+              <span class="property-card__detail">4 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 2.100.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 5 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <span class="property-card__tag">Aluguel</span>
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=600&h=450&fit=crop"
+                alt="Studio moderno" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=600&h=450&fit=crop"
+                alt="Cozinha americana" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&h=450&fit=crop"
+                alt="Ambiente integrado" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=600&h=450&fit=crop"
+                alt="Banheiro" class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Studio Compacto Vila Brasil</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">1 Quarto</span>
+              <span class="property-card__detail">42 m²</span>
+              <span class="property-card__detail">1 Vaga</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 2.800/mês</p>
+              <p class="property-card__price-type">Aluguel</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 6 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <span class="property-card__tag">Exclusivo</span>
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=600&h=450&fit=crop"
+                alt="Cobertura duplex" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&h=450&fit=crop"
+                alt="Terraço panorâmico" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&h=450&fit=crop"
+                alt="Vista da cidade" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=600&h=450&fit=crop"
+                alt="Sala de jantar" class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Cobertura Duplex Ed. Plaza</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">5 Quartos</span>
+              <span class="property-card__detail">450 m²</span>
+              <span class="property-card__detail">6 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 4.500.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 7 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600573472591-ee6c563aaec9?w=600&h=450&fit=crop"
+                alt="Chácara vista aérea" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=600&h=450&fit=crop"
+                alt="Casa sede" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=600&h=450&fit=crop"
+                alt="Área verde" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?w=600&h=450&fit=crop" alt="Lago"
+                class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Ibiporã, PR</p>
+            <h3 class="property-card__title">Chácara Recanto Araucárias</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">4 Quartos</span>
+              <span class="property-card__detail">5.000 m²</span>
+              <span class="property-card__detail">10 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 1.800.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 8 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=450&fit=crop"
+                alt="Apartamento garden" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&h=450&fit=crop"
+                alt="Jardim privativo" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&h=450&fit=crop" alt="Living"
+                class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1600566752229-250ed79470f8?w=600&h=450&fit=crop" alt="Quarto"
+                class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Londrina, PR</p>
+            <h3 class="property-card__title">Apartamento Garden Aeroporto</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">2 Quartos</span>
+              <span class="property-card__detail">95 m²</span>
+              <span class="property-card__detail">2 Vagas</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 620.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Property Card 9 -->
+        <a href="#property-detail" class="property-card">
+          <div class="property-card__image-wrap">
+            <span class="property-card__tag">Oportunidade</span>
+            <div class="property-card__images">
+              <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=450&fit=crop"
+                alt="Terreno comercial" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&h=450&fit=crop"
+                alt="Vista do lote" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1595521624992-48a59aef95e3?w=600&h=450&fit=crop"
+                alt="Localização" class="property-card__image">
+              <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=450&fit=crop" alt="Acesso"
+                class="property-card__image">
+            </div>
+            <div class="property-card__indicators">
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+              <span class="property-card__indicator"></span>
+            </div>
+          </div>
+          <div class="property-card__content">
+            <p class="property-card__location">Ibiporã, PR</p>
+            <h3 class="property-card__title">Terreno Comercial BR-369</h3>
+            <div class="property-card__details">
+              <span class="property-card__detail">—</span>
+              <span class="property-card__detail">2.500 m²</span>
+              <span class="property-card__detail">—</span>
+            </div>
+            <div class="property-card__price-wrap">
+              <p class="property-card__price">R$ 750.000</p>
+              <p class="property-card__price-type">Venda</p>
+            </div>
+            <div class="property-card__cta">
+              <span>Ver Detalhes</span>
+              <span class="property-card__arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         PAGINATION
+         ═══════════════════════════════════════════════════════════════ -->
+  <nav class="pagination" aria-label="Paginação de imóveis">
+    <div class="pagination__inner">
+      <a href="#" class="pagination__btn pagination__btn--nav">← Anterior</a>
+      <a href="#" class="pagination__btn pagination__btn--active" aria-current="page">1</a>
+      <a href="#" class="pagination__btn">2</a>
+      <a href="#" class="pagination__btn">3</a>
+      <span class="pagination__ellipsis">...</span>
+      <a href="#" class="pagination__btn">8</a>
+      <a href="#" class="pagination__btn pagination__btn--nav">Próximo →</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">
+            SWISS<span class="footer__logo-dot">.</span>IMÓVEIS
+          </p>
+          <p class="footer__tagline">
+            Design Suíço aplicado ao mercado imobiliário. Precisão, clareza e objetividade em cada imóvel.
+          </p>
+        </div>
+
+        <div class="footer__section">
+          <h4 class="footer__section-title">Navegação</h4>
+          <ul class="footer__links">
+            <li><a href="#" class="footer__link">Início</a></li>
+            <li><a href="#" class="footer__link">Comprar</a></li>
+            <li><a href="#" class="footer__link">Alugar</a></li>
+            <li><a href="#" class="footer__link">Vender</a></li>
+            <li><a href="#" class="footer__link">Sobre</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__section">
+          <h4 class="footer__section-title">Regiões</h4>
+          <ul class="footer__links">
+            <li><a href="#" class="footer__link">Londrina</a></li>
+            <li><a href="#" class="footer__link">Ibiporã</a></li>
+            <li><a href="#" class="footer__link">Cambé</a></li>
+            <li><a href="#" class="footer__link">Rolândia</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__section">
+          <h4 class="footer__section-title">Contato</h4>
+          <ul class="footer__links">
+            <li><a href="#" class="footer__link">contato@swiss.imoveis</a></li>
+            <li><a href="#" class="footer__link">+55 (43) 3000-0000</a></li>
+            <li><a href="#" class="footer__link">Londrina, PR</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">
+          © 2024 SWISS IMÓVEIS. TODOS OS DIREITOS RESERVADOS.
+        </p>
+        <div class="footer__legal">
+          <a href="#" class="footer__legal-link">Privacidade</a>
+          <a href="#" class="footer__legal-link">Termos</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
