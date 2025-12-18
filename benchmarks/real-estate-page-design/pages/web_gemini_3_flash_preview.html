@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTATE/SYSTEM — International Typographic Property Index</title>
+  <!-- Typography: Inter (Grotesque Sans-Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border-width: 4px;
+      --grid-size: 24px;
+      --dot-size: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--fg);
+      line-height: 1.2;
+      overflow-x: hidden;
+    }
+
+    /* --- TEXTURE PATTERNS --- */
+    .swiss-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.015;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-size: var(--grid-size) var(--grid-size);
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+      background-size: var(--dot-size) var(--dot-size);
+    }
+
+    /* --- LAYOUT PRIMITIVES --- */
+    .container-swiss {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 0;
+      border-left: var(--border-width) solid var(--fg);
+      border-right: var(--border-width) solid var(--fg);
+      max-width: 1600px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    header,
+    section,
+    footer {
+      grid-column: span 12;
+      border-bottom: var(--border-width) solid var(--fg);
+    }
+
+    .border-r {
+      border-right: var(--border-width) solid var(--fg);
+    }
+
+    .p-main {
+      padding: 48px;
+    }
+
+    .p-sm {
+      padding: 24px;
+    }
+
+    /* --- TYPOGRAPHY --- */
+    h1,
+    h2,
+    h3,
+    .label {
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .massive-text {
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.85;
+    }
+
+    .section-label {
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      display: block;
+    }
+
+    /* --- COMPONENTS --- */
+    /* Navigation Vertical Slide */
+    nav a {
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      height: 1.2em;
+      vertical-align: top;
+    }
+
+    nav a span {
+      display: block;
+      transition: transform 0.2s ease-out;
+    }
+
+    nav a span::after {
+      content: attr(data-hover);
+      display: block;
+      color: var(--accent);
+    }
+
+    nav a:hover span {
+      transform: translateY(-50%);
+    }
+
+    /* Listing Grid */
+    .listing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      .listing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .listing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border-right: var(--border-width) solid var(--fg);
+      border-bottom: var(--border-width) solid var(--fg);
+      background: var(--bg);
+      cursor: pointer;
+      transition: background 0.15s steps(1);
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .property-card:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .property-card:nth-child(3n) {
+      border-right: none;
+    }
+
+    .card-image-content {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      border-bottom: var(--border-width) solid var(--fg);
+    }
+
+    /* Image Swap on Hover (1s delay) */
+    .card-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease-out;
+      transition-delay: 0s;
+    }
+
+    .card-image.secondary {
+      opacity: 0;
+    }
+
+    .property-card:hover .card-image.secondary {
+      opacity: 1;
+      transition-delay: 1s;
+      /* YouTube-style hover preview delay */
+    }
+
+    /* Filters */
+    .filter-input {
+      width: 100%;
+      border: var(--border-width) solid var(--fg);
+      background: transparent;
+      padding: 1rem;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .filter-input:focus {
+      border-color: var(--accent);
+    }
+
+    select.filter-input {
+      appearance: none;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    .btn-swiss {
+      background: var(--fg);
+      color: var(--bg);
+      border: none;
+      padding: 1.5rem 2rem;
+      text-transform: uppercase;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s ease-out;
+    }
+
+    .btn-swiss:hover {
+      background: var(--accent);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      border-top: var(--border-width) solid var(--fg);
+    }
+
+    .page-node {
+      flex: 1;
+      padding: 2rem;
+      text-align: center;
+      font-weight: 900;
+      border-right: var(--border-width) solid var(--fg);
+      cursor: pointer;
+    }
+
+    .page-node:last-child {
+      border-right: none;
+    }
+
+    .page-node:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .page-node.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-right: var(--border-width) solid var(--fg);
+    }
+
+    .plus-icon {
+      transition: transform 0.2s ease-out;
+    }
+
+    .property-card:hover .plus-icon {
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="swiss-noise"></div>
+
+  <div class="container-swiss">
+    <!-- HEADER -->
+    <header class="p-main swiss-grid-pattern">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4rem;">
+        <div class="label" style="font-size: 1.5rem;">[ ESTATE / SYSTEM ]</div>
+        <nav style="display: flex; gap: 2rem;">
+          <a href="#" data-hover="INDEX"><span>INDEX</span></a>
+          <a href="#" data-hover="METHOD"><span>METHOD</span></a>
+          <a href="#" data-hover="ARCHIVE"><span>ARCHIVE</span></a>
+          <a href="#" data-hover="CONTACT"><span>CONTACT</span></a>
+        </nav>
+      </div>
+      <h1 class="massive-text">OBJECTIVE<br>HABITAT</h1>
+    </header>
+
+    <!-- FILTERS BAR -->
+    <section class="swiss-dots"
+      style="display: grid; grid-template-columns: repeat(4, 1fr); background-color: var(--muted);">
+      <div class="p-sm border-r">
+        <span class="section-label">01. SEARCH</span>
+        <input type="text" class="filter-input" placeholder="KEYWORD / TYPE">
+      </div>
+      <div class="p-sm border-r">
+        <span class="section-label">02. LOCATION</span>
+        <select class="filter-input">
+          <option>PARANÁ // ALL</option>
+          <option>LONDRINA</option>
+          <option>IBIPORÃ</option>
+        </select>
+      </div>
+      <div class="p-sm border-r">
+        <span class="section-label">03. SCALE (PRICE)</span>
+        <select class="filter-input">
+          <option>R$ 500k — 1M</option>
+          <option>R$ 1M — 5M</option>
+          <option>R$ 5M+</option>
+        </select>
+      </div>
+      <div class="p-sm" style="display: flex; align-items: flex-end;">
+        <button class="btn-swiss">
+          APPLY FILTERS <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- LISTINGS -->
+    <section style="grid-column: span 12;">
+      <div class="listing-grid">
+        <!-- Card 1 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">CASA-LONDRINA 01</h3>
+                <p class="label" style="opacity: 0.7;">LONDRINA / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 2.450.000</div>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1600607687940-4e7a6a3b44b8?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">CASA-IBIPORÃ 04</h3>
+                <p class="label" style="opacity: 0.7;">IBIPORÃ / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 1.120.000</div>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1613490900233-141c5520d75a?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">VILA-GLEBA 09</h3>
+                <p class="label" style="opacity: 0.7;">LONDRINA / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 4.800.000</div>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1494526508130-4c8b7838110d?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">LOFT-MODERNO</h3>
+                <p class="label" style="opacity: 0.7;">LONDRINA / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 890.000</div>
+          </div>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1512918766775-d227974413e1?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">ESTRUTURA-H3</h3>
+                <p class="label" style="opacity: 0.7;">IBIPORÃ / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 3.100.000</div>
+          </div>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="#" class="property-card">
+          <div class="card-image-content">
+            <img class="card-image"
+              src="https://images.unsplash.com/photo-1600585154526-990dcea4fc0a?auto=format&fit=crop&w=800&q=80"
+              alt="Property">
+            <img class="card-image secondary"
+              src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80"
+              alt="Interior">
+          </div>
+          <div class="p-sm">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">RESIDÊNCIA-GRID</h3>
+                <p class="label" style="opacity: 0.7;">LONDRINA / PR</p>
+              </div>
+              <i data-lucide="plus" class="plus-icon"></i>
+            </div>
+            <div style="margin-top: 2rem; font-size: 2rem; font-weight: 900;">R$ 1.950.000</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- PAGINATION -->
+    <footer style="grid-column: span 12;">
+      <div class="pagination">
+        <div class="page-node label">PREV</div>
+        <div class="page-node active">01</div>
+        <div class="page-node">02</div>
+        <div class="page-node">03</div>
+        <div class="page-node label">NEXT</div>
+      </div>
+      <div class="p-main" style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <span class="section-label" style="margin-bottom: 0.5rem;">ARCHITECTURE & INDEX</span>
+          <p class="label" style="max-width: 400px; line-height: 1.4;">PROVIDING OBJECTIVE REAL ESTATE SOLUTIONS THROUGH
+            GEOMETRIC PRECISION. ALL RIGHTS RESERVED © 1957 – 2024.</p>
+        </div>
+        <div class="massive-text" style="font-size: 4rem; margin-bottom: -1rem;">EST.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>

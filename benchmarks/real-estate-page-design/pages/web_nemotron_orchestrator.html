@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate Listings</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #000000;
+      background-color: #FFFFFF;
+      padding: 24px;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* Design Tokens */
+    :root {
+      --swiss-red: #FF3000;
+      --swiss-gray: #F2F2F2;
+      --border-width: 4px;
+      --grid-size: 24px;
+    }
+
+    /* Global Styles */
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Filters Section */
+    .filters {
+      background-color: var(--swiss-gray);
+      border: var(--border-width) solid #000000;
+      padding: 24px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filters::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, 0.03),
+          rgba(0, 0, 0, 0.03) 1px,
+          transparent 1px,
+          transparent 2px);
+      z-index: -1;
+    }
+
+    .filters input[type="text"] {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      background-color: #FFFFFF;
+      margin-bottom: 24px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filters input[type="range"] {
+      width: 100%;
+      padding: 16px 0;
+      border: none;
+      background-color: #FFFFFF;
+      margin-bottom: 24px;
+    }
+
+    .filters select {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      background-color: #FFFFFF;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Property Cards */
+    .property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .property-card {
+      background-color: #FFFFFF;
+      border: var(--border-width) solid #000000;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-card::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, 0.03),
+          rgba(0, 0, 0, 0.03) 1px,
+          transparent 1px,
+          transparent 2px);
+      z-index: -1;
+    }
+
+    .property-card img {
+      width: 100%;
+      height: auto;
+      transition: all 0.5s ease;
+      display: block;
+    }
+
+    .property-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .property-card h3 {
+      margin-top: 24px;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .property-card p.price {
+      margin-top: 8px;
+      font-weight: bold;
+      color: var(--swiss-red);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .pagination button {
+      background-color: #FFFFFF;
+      border: var(--border-width) solid #000000;
+      padding: 12px 24px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    .pagination button:hover {
+      background-color: var(--swiss-red);
+      color: #FFFFFF;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .filters input[type="range"] {
+        height: 10px;
+        background: #E0E0E0;
+        border-radius: 2px;
+      }
+
+      .filters input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: var(--swiss-red);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    }
+
+    /* Hover Effects */
+    .property-card:hover {
+      box-shadow: 0 0 0 8px rgba(255, 48, 0, 0.1);
+    }
+
+    /* Image Cycle Animation */
+    .image-cycle {
+      animation: cycleImages 6s infinite;
+    }
+
+    @keyframes cycleImages {
+      0% {
+        background-image: url('https://via.placeholder.com/300x200?text=Property+1');
+      }
+
+      33% {
+        background-image: url('https://via.placeholder.com/300x200?text=Property+2');
+      }
+
+      66% {
+        background-image: url('https://via.placeholder.com/300x200?text=Property+3');
+      }
+
+      100% {
+        background-image: url('https://via.placeholder.com/300x200?text=Property+1');
+      }
+    }
+
+    /* Section Headers */
+    h2 {
+      margin-top: 48px;
+      font-size: 2rem;
+      color: var(--swiss-red);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Filters -->
+  <section class="filters">
+    <h2>01. Search</h2>
+    <input type="text" placeholder="Text search..." />
+    <input type="range" min="0" max="1000000" />
+    <select>
+      <option value="">All Locations</option>
+      <option value="parana">Paraná</option>
+      <option value="londrina">Londrina</option>
+      <option value="ibipora">Ibipora</option>
+    </select>
+  </section>
+
+  <!-- Property Grid -->
+  <section class="property-grid">
+    <!-- Property Card 1 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+1" alt="Property Image">
+      <h3>Modern Apartment</h3>
+      <p class="price">$250,000</p>
+    </a>
+
+    <!-- Property Card 2 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+2" alt="Property Image">
+      <h3>Historic Villa</h3>
+      <p class="price">$450,000</p>
+    </a>
+
+    <!-- Property Card 3 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+3" alt="Property Image">
+      <h3>Spacious House</h3>
+      <p class="price">$650,000</p>
+    </a>
+
+    <!-- Property Card 4 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+4" alt="Property Image">
+      <h3>Cozy Cottage</h3>
+      <p class="price">$150,000</p>
+    </a>
+
+    <!-- Property Card 5 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+5" alt="Property Image">
+      <h3>Urban Loft</h3>
+      <p class="price">$350,000</p>
+    </a>
+
+    <!-- Property Card 6 -->
+    <a href="#" class="property-card image-cycle">
+      <img src="https://via.placeholder.com/300x200?text=Property+6" alt="Property Image">
+      <h3>Mountain Retreat</h3>
+      <p class="price">$850,000</p>
+    </a>
+  </section>
+
+  <!-- Pagination -->
+  <section class="pagination">
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>4</button>
+  </section>
+
+  <!-- JavaScript for Image Cycle -->
+  <script>
+    // Simple image cycle with delay
+    const images = document.querySelectorAll('.image-cycle');
+
+    let currentIndex = 0;
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+      images.forEach((img, index) => {
+        if (index === currentIndex) {
+          img.style.backgroundImage = `url('https://via.placeholder.com/300x200?text=Property+${index + 1}')`;
+        }
+      });
+    }
+
+    // Trigger image change every 1 second
+    setInterval(nextImage, 1000);
+  </script>
+
+</body>
+
+</html>

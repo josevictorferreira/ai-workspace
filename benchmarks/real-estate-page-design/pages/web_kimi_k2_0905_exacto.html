@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMÓVEIS • SWISS REAL ESTATE</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+    :root {
+      /* Swiss design tokens */
+      --bg: #FFFFFF;
+      --fg: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+      --gray-2: #F8F9FA;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+      margin: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    input,
+    select {
+      font: inherit;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    .header {
+      padding-top: 32px;
+      padding-bottom: 32px;
+      background-color: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .header__grid {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+    }
+
+    .header__title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+    }
+
+    @media (min-width: 768px) {
+      .header__title {
+        font-size: 3rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .header__title {
+        font-size: 4rem;
+      }
+    }
+
+    .header__accent {
+      color: var(--accent);
+    }
+
+    .header__nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Filters Section */
+    .filters {
+      padding-top: 32px;
+      padding-bottom: 48px;
+      border-top: 4px solid var(--border);
+      border-bottom: 4px solid var(--border);
+      background-color: var(--muted);
+    }
+
+    .filters__label {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .filters__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .filters__group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filters__group label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filters__input,
+    .filters__select {
+      appearance: none;
+      border: 2px solid var(--border);
+      background-color: var(--bg);
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s, color 0.2s;
+      width: 100%;
+    }
+
+    .filters__input:focus,
+    .filters__select:focus {
+      outline: none;
+      background-color: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .filters__range {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filters__range input {
+      flex: 1;
+    }
+
+    .filters__price {
+      min-width: 100px;
+    }
+
+    .filters__button {
+      background-color: var(--fg);
+      color: var(--bg);
+      padding: 12px 32px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 2px solid var(--border);
+      transition: background-color 0.15s ease-out, color 0.15s ease-out;
+      align-self: flex-end;
+      height: 48px;
+    }
+
+    @media (min-width: 768px) {
+      .filters__button {
+        height: auto;
+      }
+    }
+
+    .filters__button:hover {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Properties Grid Section */
+    .properties {
+      padding-top: 64px;
+      padding-bottom: 64px;
+      background: var(--bg);
+    }
+
+    .properties__grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 640px) {
+      .properties__grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (min-width: 768px) {
+      .properties__grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      }
+    }
+
+    /* Card */
+    .card {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg);
+      border: 4px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      transition: background-color 0.2s, color 0.2s;
+      height: 100%;
+      max-width: 100%;
+    }
+
+    .card:hover {
+      background-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .card__gallery {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+    }
+
+    .card__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Multi-image hover effect */
+    .card__gallery:not(:has(input)) {
+      display: flex;
+    }
+
+    .card__gallery:has(input:nth-of-type(1)) {
+      display: block;
+    }
+
+    .card__gallery input[type="radio"] {
+      display: none;
+    }
+
+    .card__gallery:has(input:checked) input:checked~.card__image {
+      opacity: 0;
+    }
+
+    .card__gallery:has(input:nth-of-type(2)) {
+      position: relative;
+    }
+
+    .card__gallery:has(input:nth-of-type(2)) .card__image:nth-of-type(1) {
+      position: relative;
+      z-index: 8;
+    }
+
+    .card__gallery:has(input:nth-of-type(2)) .card__image:nth-of-type(2) {
+      z-index: 5;
+    }
+
+    .card__gallery:has(input:nth-of-type(2)):hover .card__image:nth-of-type(1) {
+      opacity: 0;
+      transition: opacity 1s ease;
+      transition-delay: 0.2s;
+    }
+
+    /* Fallback for browsers that don't support :has */
+    @supports not selector(:has(+ *)) {
+      .card__gallery .card__image:nth-of-type(1) {
+        z-index: 2;
+      }
+
+      .card__gallery .card__image:nth-of-type(2) {
+        z-index: 1;
+      }
+
+      .card__gallery:hover .card__image:nth-of-type(1) {
+        opacity: 0;
+        transition: opacity 1s ease;
+        transition-delay: 0.2s;
+      }
+    }
+
+    /* Radio inputs for manual cycling */
+    .card__gallery input[type="radio"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .card__indicators {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .card__dot {
+      width: 8px;
+      height: 8px;
+      background: var(--bg);
+      border: 2px solid var(--fg);
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .card__gallery:hover .card__dot {
+      opacity: 0.2;
+    }
+
+    .card__gallery input:nth-of-type(1):checked~.card__indicators .card__dot:nth-of-type(1),
+    .card__gallery input:nth-of-type(2):checked~.card__indicators .card__dot:nth-of-type(2) {
+      opacity: 1;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .card__body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card__title,
+    .card__price {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      word-wrap: break-word;
+    }
+
+    .card__title {
+      font-size: 1.25rem;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      color: var(--fg);
+    }
+
+    .card:hover .card__title {
+      color: var(--bg);
+    }
+
+    .card__price {
+      font-size: 1rem;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      color: var(--accent);
+    }
+
+    .card:hover .card__price {
+      color: var(--bg);
+    }
+
+    .card__price small {
+      font-size: 0.6em;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .card__link {
+      margin-top: 16px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+      text-decoration: underline;
+      align-self: flex-start;
+      transition: color 0.2s;
+    }
+
+    .card:hover .card__link {
+      color: var(--bg);
+    }
+
+    /* Pagination */
+    .pagination {
+      padding-top: 48px;
+      padding-bottom: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pagination__item {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--fg);
+      font-size: 0.875rem;
+      font-weight: 700;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .pagination__item:hover {
+      background-color: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .pagination__item--current {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+
+    .pagination__item--arrow {
+      background-color: var(--fg);
+      color: var(--bg);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 16px;
+    }
+
+    .pagination__item--arrow:hover {
+      background-color: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    /* Footer */
+    .footer {
+      padding-top: 64px;
+      padding-bottom: 64px;
+      background-color: var(--muted);
+      border-top: 4px solid var(--border);
+    }
+
+    .footer__text {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header__grid">
+        <h1 class="header__title">IMÓVEIS<span class="header__accent">.</span></h1>
+
+        <nav class="header__nav">
+          <a href="#">VENDA</a>
+          <a href="#">ALUGUEL</a>
+          <a href="#">LANÇAMENTOS</a>
+          <a href="#">CONTATO</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="filters">
+    <div class="container">
+      <h2 class="filters__label">FILTRAR<span class="header__accent">.</span></h2>
+
+      <form class="filters__grid">
+        <div class="filters__group">
+          <label for="search">BUSCA POR TEXTO</label>
+          <input id="search" class="filters__input" type="text" placeholder="PALETA-CHAVE..." />
+        </div>
+
+        <div class="filters__group">
+          <label for="city">CIDADE</label>
+          <select id="city" class="filters__select">
+            <option>ESCOLHA</option>
+            <option>LONDRINA</option>
+            <option>IBIPORÃ</option>
+          </select>
+        </div>
+
+        <div class="filters__group">
+          <label for="state">ESTADO</label>
+          <select id="state" class="filters__select">
+            <option>PARANÁ</option>
+          </select>
+        </div>
+
+        <div class="filters__group">
+          <label for="price-min">PREÇO MÍNIMO (R$)</label>
+          <input id="price-min" class="filters__input filters__price" type="number" placeholder="0" />
+        </div>
+
+        <div class="filters__group">
+          <label for="price-max">PREÇO MÁXIMO (R$)</label>
+          <input id="price-max" class="filters__input filters__price" type="number" placeholder="999000" />
+        </div>
+
+        <button class="filters__button" type="submit">APLICAR</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="properties">
+    <div class="container">
+      <section class="properties__grid">
+
+        <!-- Property Card 1 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-1" checked />
+            <input type="radio" name="gallery-1" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1512917772648-ce11fca0c37e?auto=format&fit=crop&w=800&q=60"
+              alt="Vista living" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=60"
+              alt="Vista da rua" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">COBERTURA moderna 4 Suítes</h3>
+            <p class="card__price">
+              R$ 1.890.000
+              <small>À vista</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 2 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-2" checked />
+            <input type="radio" name="gallery-2" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=60"
+              alt="Lounge da cobertura" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1523978591478-c753949ff84b?auto=format&fit=crop&w=800&q=60"
+              alt="Infra piscina" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">APARTAMENTO COND. ATLÂNTICO</h3>
+            <p class="card__price">
+              R$ 670.000
+              <small>Financie</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 3 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-3" checked />
+            <input type="radio" name="gallery-3" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=60"
+              alt="Fachada Casa" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=60"
+              alt="Área gourmet" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">CASA 3 QUARTOS LONDRINA</h3>
+            <p class="card__price">
+              R$ 680.000
+              <small>À vista</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 4 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-4" checked />
+            <input type="radio" name="gallery-4" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a2?auto=format&fit=crop&w=800&q=60"
+              alt="Sala de jantar" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=60"
+              alt="Vista externa" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">CHÁCARA 2 ALQUEIRES</h3>
+            <p class="card__price">
+              R$ 2.240.000
+              <small>Entrada</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 5 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-5" checked />
+            <input type="radio" name="gallery-5" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1605153322510-77a3b7a4e85f?auto=format&fit=crop&w=800&q=60"
+              alt="Sala minimalista" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=60"
+              alt="Cozinha" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">FLAT 1 QUARTO • CENTRO</h3>
+            <p class="card__price">
+              R$ 295.000
+              <small>Financia</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 6 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-6" checked />
+            <input type="radio" name="gallery-6" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?auto=format&fit=crop&w=800&q=60"
+              alt="Quintal" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=800&q=60"
+              alt="Piscina" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">SOBRADO IBIPORÃ</h3>
+            <p class="card__price">
+              R$ 420.000
+              <small>Á vista</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 7 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-7" checked />
+            <input type="radio" name="gallery-7" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?auto=format&fit=crop&w=800&q=60"
+              alt="Reception" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=60"
+              alt="Exterior" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">APARTAMENTO CLÁSSICO</h3>
+            <p class="card__price">
+              R$ 580.000
+              <small>Negociável</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+        <!-- Property Card 8 -->
+        <article class="card" tabindex="0">
+          <div class="card__gallery">
+            <input type="radio" name="gallery-8" checked />
+            <input type="radio" name="gallery-8" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1600566594243-7e2b5b3b4a4c?auto=format&fit=crop&w=800&q=60"
+              alt="Lareira" />
+            <img class="card__image"
+              src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=60"
+              alt="Deck" />
+
+            <div class="card__indicators">
+              <div class="card__dot"></div>
+              <div class="card__dot"></div>
+            </div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">CABANA FLORIANÓPOLIS</h3>
+            <p class="card__price">
+              R$ 910.000
+              <small>Entrada</small>
+            </p>
+            <a href="#" class="card__link"> VER DETALHES</a>
+          </div>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+  <nav class="pagination">
+    <button class="pagination__item pagination__item--arrow" aria-label="Anterior">ANTERIOR</button>
+    <button class="pagination__item pagination__item--current">1</button>
+    <button class="pagination__item">2</button>
+    <button class="pagination__item">3</button>
+    <button class="pagination__item">4</button>
+    <button class="pagination__item">5</button>
+    <button class="pagination__item pagination__item--arrow" aria-label="Próxima">PRÓXIMO</button>
+  </nav>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">© 2024 SWISS REAL ESTATE. OBJECTIVITY ABOVE ALL.</p>
+    </div>
+  </footer>
+
+  <style>
+    /* Accessibility focus styles */
+    .card:focus,
+    .pagination__item:focus,
+    input:focus,
+    select:focus,
+    button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Click target for touchscreens */
+    @media (hover: none) {
+      .card__link::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+
+      .card {
+        cursor: pointer;
+      }
+    }
+  </style>
+
+  <!-- (a) manual radio for fallback and (b) auto-cycling hover affect -->
+  <!-- Automatic 20-second card gallery cycling via JS -->
+  <script>
+    /* Automatic 20-second card gallery cycling */
+    document.addEventListener('DOMContentLoaded', () => {
+      // Auto-cycle each gallery every 20 seconds
+      document.querySelectorAll('.card__gallery').forEach(gallery => {
+        const radios = gallery.querySelectorAll('input[type="radio"]');
+        if (!radios.length) return;
+        let index = 0;
+
+        setInterval(() => {
+          index = (index + 1) % radios.length;
+          radios[index].checked = true;
+        }, 20000);
+      });
+
+      /* Kill radio cycling when user hovers the card */
+      const galleries = document.querySelectorAll('.card__gallery');
+      galleries.forEach(gallery => {
+        gallery.addEventListener('mouseenter', () => {
+          clearInterval(gallery.autoInterval);
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>
