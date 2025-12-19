@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Listings - Swiss International Design</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+  </style>
+  <style>
+    /* DESIGN SYSTEM implementation */
+
+    :root {
+      /* Colors */
+      --background-white: #ffffff;
+      --background-muted: #f2f2f2;
+      --foreground-black: #000000;
+      --accent-red: #ff3000;
+      --border-color: #000000;
+
+      /* Typography scales */
+      --base-font-size: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-white);
+      color: var(--foreground-black);
+      min-height: 100vh;
+    }
+
+    /* Grid & Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Header */
+    .swiss-header {
+      text-align: center;
+      padding: 3rem 0;
+      border-bottom: 4px solid var(--border-color);
+    }
+
+    .swiss-header h1 {
+      font-size: clamp(9rem, 5vw, 10rem);
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    /* Filters Section */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 2rem 0;
+      background-color: var(--background-white);
+      border-top: 4px solid var(--border-color);
+    }
+
+    .filter-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-group label {
+      font-size: calc(var(--base-font-size) * 0.9);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    input[type="text"],
+    input[type="range"] {
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      background-color: transparent;
+    }
+
+    .location-btn {
+      display: none;
+    }
+
+    .city-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .city-btn {
+      padding: 0.75rem 2rem;
+      border: 2px solid var(--border-color);
+      background-color: transparent;
+      color: var(--foreground-black);
+      text-transform: uppercase;
+      font-size: calc(var(--base-font-size) * 0.9);
+    }
+
+    /* Listings Grid with Asymmetry */
+    .listings-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .listings-row.two-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .property-card {
+      flex: 1 0 calc(50% - 2rem);
+      background-color: var(--background-white);
+      border: 4px solid var(--border-color);
+      /* Thick black borders */
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-image-container {
+      height: 300px;
+      position: relative;
+    }
+
+    .card-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Image rotation handling */
+    .card-image-container img:not(.active) {
+      opacity: 0;
+    }
+
+    h2 {
+      font-size: clamp(4rem, 3vw, 5rem);
+      margin: 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    p.price {
+      font-size: calc(var(--base-font-size) * 1.2);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 0.5rem 0;
+    }
+
+    .card-link {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background-color: var(--background-white);
+      border: 2px solid var(--border-color);
+      color: var(--foreground-black);
+      text-transform: uppercase;
+      font-size: calc(var(--base-font-size) * 0.9);
+    }
+
+    .card-link:hover {
+      background-color: var(--accent-red);
+      color: var(--background-white);
+      transform: scale(1.05);
+      /* Snappy interaction */
+    }
+
+    /* Pagination */
+    .paginator {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .page-btn {
+      padding: 0.75rem 2rem;
+      border: 2px solid var(--border-color);
+      background-color: transparent;
+      color: var(--foreground-black);
+      text-transform: uppercase;
+      font-size: calc(var(--base-font-size) * 0.9);
+    }
+
+    .page-btn:hover,
+    .page-btn.active {
+      background-color: var(--accent-red);
+      color: var(--background-white);
+    }
+
+    /* Swiss Texture Patterns (applied selectively) */
+    .listings-grid::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - var(--container-padding-top));
+      background-image: linear-gradient(transparent 1px, rgba(0, 0, 0, 0.03) 1px,
+          rgba(0, 0, 0, 0.03) 2px, transparent 2px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="swiss-header">
+      <h1>Real Estate Listings</h1>
+    </header>
+
+    <!-- Filters Section -->
+    <section class="filters">
+      <div class="filter-group">
+        <label for="search">Text Search:</label>
+        <input type="text" id="search" placeholder="">
+      </div>
+      <div class="filter-group">
+        <label>Price Range</label>
+        <input type="range" min="0" max="1000000">
+        <span>Min</span>
+        <input type="range" min="0" max="1000000">
+        <span>Max</span>
+      </div>
+      <div class="filter-group location">
+        <strong>Location:</strong>
+        <button class="location-btn active">Parana State</button>
+        <div class="city-options">
+          <button class="city-btn">Londrina</button>
+          <button class="city-btn">Ibipora</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Listings Grid with Asymmetric Rows -->
+    <main class="listings-grid">
+      <!-- First row: 2-column asymmetric layout -->
+      <div class="listings-row two-columns">
+        <article class="property-card">
+          <div class="card-image-container">
+            <img src="https://picsum.photos/400/300?random=1" alt="Property 1" class="active">
+            <img src="https://picsum.photos/400/300?random=2">
+            <img src="https://picsum.photos/400/300?random=3">
+          </div>
+          <h2>Modern Apartment in Londrina</h2>
+          <p class="price">R$ 500,000.00</p>
+          <a href="#" class="card-link">View Details</a>
+        </article>
+        <article class="property-card">
+          <div class="card-image-container">
+            <img src="https://picsum.photos/400/300?random=4" alt="Property 2" class="active">
+            <img src="https://picsum.photos/400/300?random=5">
+            <img src="https://picsum.photos/400/300?random=6">
+          </div>
+          <h2>Land Plot in Ibipora</h2>
+          <p class="price">R$ 1,200,000.00</p>
+          <a href="#" class="card-link">View Details</a>
+        </article>
+      </div>
+
+      <!-- Second row: 3-column layout for variety -->
+      <div class="listings-row">
+        <article class="property-card">
+          <div class="card-image-container">
+            <img src="https://picsum.photos/400/300?random=7" alt="Property 3" class="active">
+            <img src="https://picsum.photos/400/300?random=8">
+            <img src="https://picsum.photos/400/300?random=9">
+          </div>
+          <h2>House with Garden</h2>
+          <p class="price">R$ 850,000.00</p>
+          <a href="#" class="card-link">View Details</a>
+        </article>
+        <article class="property-card">
+          <div class="card-image-container">
+            <img src="https://picsum.photos/400/300?random=10" alt="Property 4" class="active">
+            <img src="https://picsum.photos/400/300?random=11">
+            <img src="https://picsum.photos/400/300?random=12">
+          </div>
+          <h2>Villa Complex</h2>
+          <p class="price">R$ 2,500,000.00</p>
+          <a href="#" class="card-link">View Details</a>
+        </article>
+      </div>
+    </main>
+
+    <!-- Paginator -->
+    <footer class="paginator">
+      <button class="page-btn">Previous</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">Next</button>
+    </footer>
+  </div>
+
+  <script>
+    // Minimal JavaScript for image rotation on hover
+    document.addEventListener('DOMContentLoaded', function () {
+      const containers = document.querySelectorAll('.card-image-container');
+
+      containers.forEach(container => {
+        let timeoutId;
+
+        container.addEventListener('mouseEnter', () => {
+          // Clear existing timeout to restart timer on new hover
+          if (timeoutId) clearTimeout(timeoutId);
+
+          // Change image after 1 second of continuous hover
+          timeoutId = setTimeout(() => {
+            const images = container.querySelectorAll('img');
+            const currentActiveIndex = Array.from(images).indexOf('active');
+            const nextIndex = (currentActiveIndex + 1) % images.length;
+
+            // Deactivate all, activate next
+            images.forEach(img => img.classList.remove('active'));
+            images[nextIndex].classList.add('active');
+          }, 1000);
+        });
+
+        container.addEventListener('mouseLeave', () => {
+          // Reset to first image on leave
+          if (timeoutId) clearTimeout(timeoutId);
+          const images = container.querySelectorAll('img');
+          images.forEach(img => img.classList.remove('active'));
+          images[0].classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
