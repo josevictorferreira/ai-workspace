@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #FFFFFF;
+      --foreground: #000000;
+      --muted: #F2F2F2;
+      --accent: #FF3000;
+      --border: #000000;
+
+      /* Typography */
+      --heading-font-weight: 900;
+      --body-font-weight: 400;
+      --uppercase: uppercase;
+      --tracking-tighter: -0.05em;
+      --tracking-widest: 0.15em;
+
+      /* Spacing units (in rem) */
+      --spacing-2: 0.5rem;
+      --spacing-4: 1rem;
+      --spacing-6: 1.5rem;
+      --spacing-8: 2rem;
+      --spacing-12: 3rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--foreground);
+      background-color: var(--background);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture pattern (global) */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="4" seed="0"/></filter><rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF" filter="url(#noiseFilter)"/></svg>');
+      background-size: 100%;
+      opacity: 0.015;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Grid pattern for muted backgrounds */
+    .grid-pattern {
+      background-image:
+        repeating-linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Design tokens */
+    .swiss-muted-background {
+      background-color: var(--muted);
+      @apply grid-pattern;
+    }
+
+    .swiss-card {
+      border: 2px solid var(--border);
+      border-radius: 0;
+      padding: var(--spacing-6);
+      transition: all 200ms ease-out;
+      cursor: pointer;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+    }
+
+    .swiss-card:hover {
+      background-color: var(--accent);
+      color: white;
+      box-shadow: 0 0 0 8px rgba(255, 48, 0, 0.1);
+    }
+
+    .property-image {
+      position: relative;
+      height: 260px;
+      overflow: hidden;
+      border-radius: 0;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .property-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 300ms ease-out;
+    }
+
+    h1,
+    .section-title {
+      font-weight: var(--heading-font-weight);
+      text-transform: var(--uppercase);
+      letter-spacing: var(--tracking-tighter);
+      margin-bottom: var(--spacing-6);
+    }
+
+    label {
+      display: block;
+      font-weight: var(--heading-font-weight);
+      text-transform: var(--uppercase);
+      letter-spacing: var(--tracking-widest);
+      margin-bottom: var(--spacing-2);
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      border-width: 2px;
+      border-style: solid;
+      border-color: var(--border);
+      padding: var(--spacing-4) var(--spacing-6);
+      background-color: transparent;
+      color: var(--foreground);
+      font-family: 'Inter', sans-serif;
+      margin-bottom: var(--spacing-4);
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 48, 0, 0.15);
+    }
+
+    .filters-container>* {
+      margin-bottom: var(--spacing-6);
+    }
+
+    /* Asymmetrical grid layout */
+    .properties-grid {
+      display: grid;
+      gap: var(--spacing-8);
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    /* Pagination styling */
+    .pagination {
+      margin-top: var(--spacing-12);
+      text-align: center;
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: var(--spacing-4) var(--spacing-6);
+      border-width: 2px;
+      border-style: solid;
+      border-color: var(--border);
+      margin: 0 var(--spacing-2);
+      text-transform: uppercase;
+      font-weight: var(--heading-font-weight);
+      letter-spacing: var(--tracking-widest);
+    }
+
+    .pagination a:hover {
+      background-color: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 3.5rem;
+      }
+
+      .filters-container>* {
+        grid-column: span 2;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      h1 {
+        font-size: 5rem;
+      }
+
+      .filters-container>* {
+        grid-column: auto;
+      }
+    }
+
+    /* Custom focus indicator */
+    a:focus-visible,
+    button:focus-visible {
+      outline: none;
+    }
+
+    a:focus-visible::after,
+    button:focus-visible::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+
+    /* Header styling */
+    header {
+      padding-top: var(--spacing-12);
+      margin-bottom: var(--spacing-12);
+    }
+
+    .section-number {
+      color: var(--accent);
+      font-weight: 900;
+      display: inline-block;
+      margin-right: var(--spacing-4);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container mx-auto px-4">
+    <h1>Real Estate Listings<span class="section-number">01.</span></h1>
+  </header>
+
+  <main class="container mx-auto px-4 max-w-7xl">
+    <!-- Filters Section -->
+    <section class="swiss-muted-background p-6 md:p-8 rounded border-2 border-black mb-12">
+      <div class="filters-container grid gap-y-6 grid-cols-1 md:grid-cols-3">
+        <div>
+          <label for="search">SEARCH</label>
+          <input type="text" id="search" placeholder="Enter property name or address...">
+        </div>
+
+        <div>
+          <label>PRICE RANGE</label>
+          <div class="flex gap-4 items-center">
+            <input type="number" min="0" value="500000" placeholder="Min">
+            <span class="text-xl">-</span>
+            <input type="number" min="0" value="2000000" placeholder="Max">
+          </div>
+        </div>
+
+        <div>
+          <label>LOCATION</label>
+          <select id="location-state">
+            <option value="">State (All)</option>
+            <option value="parana">Paraná</option>
+          </select>
+          <select id="location-city" disabled>
+            <option value="">City (All)</option>
+            <option value="londrina">Londrina</option>
+            <option value="ibipora">Ibiporã</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Property Listings -->
+    <section class="properties-grid">
+      <!-- First property card (with hover effect) -->
+      <article class="swiss-card" style="height: 480px;">
+        <div class="property-image" id="property-1">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'><rect fill='#f2f2f2' x='0' y='0' width='100%' height='100%'/><text x='50%' y='80%' font-size='32' text-anchor='middle' fill='#333'>Luxury Villa</text></svg>"
+            alt="Property 1">
+        </div>
+        <h3 class="font-black tracking-tighter text-2xl">Londrina Luxury Condo</h3>
+        <p class="font-medium">$1,500,000</p>
+      </article>
+
+      <!-- Second property card -->
+      <article class="swiss-card" style="height: 480px;">
+        <div class="property-image" id="property-2">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'><rect fill='#f2f2f2' x='0' y='0' width='100%' height='100%'/><text x='50%' y='80%' font-size='32' text-anchor='middle' fill='#333'>Modern Apartment</text></svg>"
+            alt="Property 2">
+        </div>
+        <h3 class="font-black tracking-tighter text-2xl">Ibiporã Modern Apartment</h3>
+        <p class="font-medium">$850,000</p>
+      </article>
+
+      <!-- Third property card -->
+      <article class="swiss-card" style="height: 480px;">
+        <div class="property-image" id="property-3">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'><rect fill='#f2f2f2' x='0' y='0' width='100%' height='100%'/><text x='50%' y='80%' font-size='32' text-anchor='middle' fill='#333'>Beachfront Condo</text></svg>"
+            alt="Property 3">
+        </div>
+        <h3 class="font-black tracking-tighter text-2xl">Londrina Beachfront</h3>
+        <p class="font-medium">$2,750,000</p>
+      </article>
+
+      <!-- Fourth property card -->
+      <article class="swiss-card" style="height: 480px;">
+        <div class="property-image" id="property-4">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'><rect fill='#f2f2f2' x='0' y='0' width='100%' height='100%'/><text x='50%' y='80%' font-size='32' text-anchor='middle' fill='#333'>City Center Penthouse</text></svg>"
+            alt="Property 4">
+        </div>
+        <h3 class="font-black tracking-tighter text-2xl">Ibiporã City Center</h3>
+        <p class="font-medium">$1,950,000</p>
+      </article>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="pagination">
+      <a href="#" class="prev">Previous</a>
+      <a href="#">1</a>
+      <a href="#" class="active">2</a>
+      <a href="#">3</a>
+      <a href="#">4</a>
+      <a href="#" class="next">Next</a>
+    </nav>
+  </main>
+
+  <script>
+    // Simple image hover effect (1 second delay)
+    const images = document.querySelectorAll('.property-image');
+
+    images.forEach((imageContainer, index) => {
+      let timer;
+
+      imageContainer.addEventListener('mouseenter', () => {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+          const img = imageContainer.querySelector('img');
+
+          // Change to "Photo 2" version
+          if (index === 0) {
+            img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#4b5563" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#fff">Luxury Villa</text></svg>';
+          } else if (index === 1) {
+            img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#4b5563" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#fff">Modern Apartment</text></svg>';
+          } else if (index === 2) {
+            img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#4b5563" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#fff">Beachfront Condo</text></svg>';
+          } else if (index === 3) {
+            img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#4b5563" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#fff">City Center Penthouse</text></svg>';
+          }
+        }, 1000);
+      });
+
+      imageContainer.addEventListener('mouseleave', () => {
+        clearTimeout(timer);
+
+        // Reset to original image
+        const img = imageContainer.querySelector('img');
+        if (index === 0) {
+          img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#f2f2f2" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#333">Luxury Villa</text></svg>';
+        } else if (index === 1) {
+          img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#f2f2f2" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#333">Modern Apartment</text></svg>';
+        } else if (index === 2) {
+          img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#f2f2f2" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#333">Beachfront Condo</text></svg>';
+        } else if (index === 3) {
+          img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450"><rect fill="#f2f2f2" x="0" y="0" width="100%" height="100%"/><text x="50%" y="80%" font-size="32" text-anchor="middle" fill="#333">City Center Penthouse</text></svg>';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate Listings</title>
+  <link rel="preconnect"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/lucide-react@latest 1.2.9/dist/umd.min.js"></script>
+  <style>
+    :root {
+      /* Design System Tokens */
+      --color-background: #FFFFFF;
+      /* Pure White */
+      --color-foreground: #000000;
+      /* Pure Black */
+      --color-muted: #F2F2F2;
+      /* Light Gray */
+      --color-accent: #FF3000;
+      /* Swiss Red - ONLY for critical signals */
+      --border-width: 4px;
+      /* Thick borders as structural elements */
+      --radius: 0;
+      /* Strictly rectangular shapes */
+      --shadow: none;
+      /* No shadows - depth through texture and structure only */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-xxl: 3rem;
+      --typography-xs: 0.75rem;
+      --typography-sm: 1rem;
+      --typography-md: 1.25rem;
+      --typography-lg: 1.5rem;
+      --typography-xl: 1.875rem;
+      --typography-xxl: 2.25rem;
+      --typography-3xl: 3.125rem;
+      --typography-4xl: 4.125rem;
+      --typography-5xl: 5.25rem;
+      --typography-6xl: 6.25rem;
+      --typography-7xl: 8rem;
+      --typography-8xl: 9.375rem;
+      --typography-9xl: 10.625rem;
+      --font-weight-400: normal;
+      --font-weight-500: 500;
+      --font-weight-600: 600;
+      --font-weight-700: 700;
+      --font-weight-800: 800;
+      --font-weight-900: 900;
+      --border-radius-none: -1px;
+      /* Negative radius creates sharp corners */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      /* Black on white */
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    /* Typography System - Swiss International */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: var(--font-weight-900);
+      /* Bold for headings */
+      text-transform: uppercase;
+      /* Uppercase for hierarchy clarity */
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: var(--typography-8xl) !important;
+    }
+
+    h2 {
+      font-size: var(--typography-7xl) !important;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    h3 {
+      font-size: var(--typography-6xl) !important;
+      margin-left: 10%;
+    }
+
+    /* Asymmetrical alignment */
+    p,
+    .placeholder-text {
+      letter-spacing: tracking-tighter;
+      color: #555;
+    }
+
+    .tracking-wide {
+      text-align: left;
+      font-weight: var(--font-weight-400);
+    }
+
+    /* Tracking adjustments for large headings */
+    h1 {
+      letter-spacing: -8px;
+    }
+
+    h2 {
+      letter-spacing: -6px;
+    }
+
+    h3 {
+      letter-spacing: tracking-tighter;
+    }
+
+    /* Tighten when large */
+    .placeholder-text {
+      font-size: var(--typography-xs);
+      max-width: 10ch;
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Layout System - Asymmetrical Grid with Structure */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .section-number {
+      display: inline-block;
+      background-color: var(--color-accent);
+      /* Functional red accent */
+      color: #fff;
+      font-size: var(--typography-xl) !important;
+      font-weight: var(--font-weight-800);
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      padding: 0.5rem 1rem;
+      border: var(--border-width) solid #000;
+      /* Structural border */
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Navigation & Header */
+    header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      /* Subtle depth layer - not Swiss Red */
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      /* Minimal shadow for header separation */
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: var(--typography-3xl);
+      font-weight: var(--font-weight-900);
+      color: var(--color-accent);
+      /* Functional red accent */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: 8px;
+    }
+
+    /* Search Filters - Muted Backgrounds with Structure */
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+      margin: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
+      /* Generous negative space */
+    }
+
+    .filter-card {
+      background-color: var(--color-muted);
+      /* Muted background for secondary elements */
+      border: var(--border-width) solid #000;
+      /* Structural black border */
+      padding: var(--spacing-lg);
+      text-align: left;
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      /* Swiss feel transition */
+    }
+
+    .filter-card:hover {
+      background-color: var(--color-accent) !important;
+      /* Functional red on hover - color inversion */
+      transform: translateY(-2px);
+      /* Subtle lift for depth (not interactive navigation) */
+      box-shadow: 0 4px 15px rgba(255, 48, 0, 0.3);
+      /* Purposeful shadow as structural element */
+    }
+
+    .filter-card h3 {
+      font-size: var(--typography-md) !important;
+      margin-bottom: var(--spacing-sm);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: tracking-tighter;
+    }
+
+    .filter-card input,
+    .filter-card select {
+      width: 100%;
+      padding: calc(var(--spacing-sm) + 4px);
+      background-color: rgba(255, 255, 255, 0.7);
+      /* Subtle white layer */
+      border: var(--border-width) solid #000;
+      font-family: inherit;
+      transition: border-color 150ms ease;
+    }
+
+    .filter-card input:focus,
+    .filter-card select:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      /* Red accent for focus */
+    }
+
+    /* Property Grid - Asymmetrical Layout with Texture */
+    main {
+      margin: 0 calc(var(--spacing-xl) + var(--spacing-lg)) var(--spacing-lg);
+    }
+
+    .hero-title {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto var(--spacing-lg);
+      /* Generous breathing room */
+    }
+
+    /* Property Grid System - Asymmetric Ratios with Patterns */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: var(--spacing-xl);
+      /* Generous spacing between cards */
+      margin-bottom: var(--spacing-xxl);
+    }
+
+    /* Column Ratios for Asymmetrical Balance (8:4 ratio) */
+    @media (min-width: 992px) {
+      .properties-grid {
+        grid-template-columns: repeat(auto-fill, minmax(375px, 1fr));
+      }
+    }
+
+    /* Property Card Structure - Thick Borders as Structural Elements */
+    .property-card {
+      background-color: var(--color-background);
+      /* Pure white canvas */
+      border: var(--border-width) solid #000;
+      /* Primary structural border */
+      overflow: hidden;
+      position: relative;
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      /* Purposeful transition */
+    }
+
+    /* Hover State - Functional Red Accent with Structural Depth */
+    .property-card:hover {
+      background-color: var(--color-accent) !important;
+      /* Functional red on hover */
+      transform: translateY(-4px);
+      /* Lift for depth (not navigation feedback) */
+      box-shadow: 0 12px 30px rgba(255, 48, 0, 0.4);
+      /* Purposeful shadow as structural element */
+    }
+
+    /* Image Container with Hover Effect System */
+    .property-image-container {
+      position: relative;
+      height: 260px;
+      /* Consistent height for visual rhythm */
+      overflow: hidden;
+      background-color: #f8f8f8;
+      /* Subtle base layer */
+    }
+
+    /* Image Cycling Animation System */
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 150ms ease-out;
+      /* Smooth transition for cycling effect */
+      background-size: contain;
+    }
+
+    /* Pattern Backgrounds - Strategic Application (Muted Areas Only) */
+    .property-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      opacity: 0.05;
+      /* Subtle noise texture */
+    }
+
+    /* Property Content Overlay - Text Alignment and Typography Hierarchy */
+    .card-content {
+      padding: var(--spacing-lg);
+      /* Generous padding for breathing room */
+      position: relative;
+      z-index: 2;
+    }
+
+    .property-title {
+      font-size: var(--typography-4xl) !important;
+      /* Massive headline scale */
+      margin-bottom: var(--spacing-md);
+      line-height: 1.3;
+      text-align: left;
+      /* Strict flush-left alignment per Swiss principle */
+    }
+
+    .property-location {
+      display: block;
+      font-size: var(--typography-sm) !important;
+      color: #666;
+      margin-bottom: var(--spacing-md);
+      text-transform: uppercase;
+      /* Uppercase for labels */
+    }
+
+    .property-price {
+      display: inline-block;
+      background-color: rgba(255, 48, 0, 0.1);
+      /* Red accent overlay on price text */
+      padding: 0.375rem 0.75rem;
+      border-radius: var(--border-width) rounded-none;
+      font-family: 'Inter', sans-serif;
+      font-weight: var(--font-weight-800);
+      /* Bold for price emphasis */
+      letter-spacing: tracking-tighter;
+    }
+
+    .property-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-md);
+      font-weight: var(--font-weight-700);
+      /* Medium weight for secondary text */
+    }
+
+    /* Button System - Functional Color Inversion and Weight */
+    .swiss-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+      /* Black functional state */
+      color: var(--color-accent);
+      /* White text with red accent */
+      border: none;
+      /* No border - pure black outline */
+      font-family: inherit;
+      font-weight: var(--font-weight-800);
+      text-transform: uppercase;
+      padding: 1rem 2rem;
+      border-radius: var(--border-width) rounded-none;
+      /* Sharp corners to black */
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      min-height: 48px;
+      /* Consistent height for touch targets */
+    }
+
+    .swiss-button:hover {
+      background-color: var(--color-accent) !important;
+      /* Functional red on hover */
+      transform: scale(1.03);
+      /* Purposeful scale transform (not decorative) */
+    }
+
+    /* Pagination System - Card Style with Interactive Feedback */
+    footer {
+      padding: 2rem 0 var(--spacing-lg);
+      text-align: center;
+      margin-top: calc(var(--spacing-xl) + var(--spacing-md));
+      /* Generous negative space below content */
+    }
+
+    .pagination-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(24px, 1fr));
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-lg);
+      /* Generous space before pagination */
+    }
+
+    .pagination-btn {
+      width: 36px;
+      height: 36px;
+      border: var(--border-width) solid #000;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.16, 1);
+      /* Purposeful transition */
+    }
+
+    .pagination-btn:hover {
+      background-color: var(--color-accent) !important;
+      /* Functional red on hover */
+      border-color: transparent;
+      /* Remove border during interaction for depth */
+      transform: scale(0.95);
+      /* Subtle lift effect (not decorative) */
+    }
+
+    /* Section Numbers - Red Accent Prefixes with Tracking Control */
+    .section-prefix {
+      display: inline-block;
+      background-color: var(--color-accent);
+      color: white !important;
+      font-size: 1.5rem !important;
+      /* Large for section headers */
+      font-weight: var(--font-weight-800) !important;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      padding: 4px 12px;
+      border: var(--border-width) solid #000;
+      /* Structural black border */
+    }
+
+    /* Responsive System with Swiss Integrity */
+    @media (max-width: 768px) {
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h2 {
+        font-size: var(--typography-5xl);
+        margin-left: auto !important;
+        /* Asymmetrical alignment */
+      }
+
+      .hero-title h1 {
+        max-width: 60ch;
+        line-height: 1.4;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: var(--typography-3xl);
+        margin-left: auto !important;
+        /* Preserve asymmetry on mobile */
+        margin-right: calc(var(--spacing-md) * 1.5);
+      }
+    }
+
+    /* Micro-interactions - Purposeful Motion System */
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 48, 0, 0.3);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(255, 48, 0, 0) center;
+      }
+
+      /* Purposeful pulse for red accents */
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 48, 0, 0);
+      }
+    }
+
+    .pulse-red {
+      animation: pulse 3s infinite;
+    }
+
+    /* Only on critical elements like buttons/cards */
+  </style>
+</head>
+
+<body>
+  <!-- Header with Swiss Red Accent -->
+  <header class="swiss-header">
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">
+          <i data-lucide="building"></i> SWISS PROPERTIES
+        </a>
+        <div class="search-bar" style="display: flex; gap: 8px;">
+          <input type="text" placeholder="Search properties..." aria-label="Search properties">
+          <button class="swiss-button pulse-red">
+            <i data-lucide="magnifyingglass"></i> Search
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section with Functional Red Prefix -->
+  <section class="hero" style="text-align: center; padding: var(--spacing-xxl);">
+    <div class="container">
+      <h1>Swiss International Real Estate Listings <span class="section-number">01.</span></h1>
+      <p class="placeholder-text">Discover properties engineered for precision and clarity</p>
+    </div>
+  </section>
+
+  <!-- Search Filters - Muted Backgrounds with Structural Borders -->
+  <section class="filters" style="max-width: 1440px; margin: 0 auto;">
+    <div class="container">
+      <h2 class="text-center text-lg font-weight-700 tracking-tighter mb-8">Find Your Property</h2>
+      <div class="filters-grid" style="max-width: 1440px; margin: 0 auto;">
+        <!-- Filter Card 1 -->
+        <article class="filter-card">
+          <h3>Text Search</h3>
+          <input type="text" placeholder="Enter location, price range...">
+        </article>
+        <!-- Filter Card 2 -->
+        <article class="filter-card">
+          <h3>Price Range</h3>
+          <select aria-label="Price filter">
+            <option>Any Price</option>
+            <option>$100K - $500K</option>
+            <option>$500K - $1M</option>
+            <option>$1M+</option>
+          </select>
+        </article>
+        <!-- Filter Card 3 -->
+        <article class="filter-card">
+          <h3>Location</h3>
+          <select aria-label="City selection">
+            <option selected>Parana State (Londrina)</option>
+            <option><strong>Ibipora</strong></option>
+            <option><strong>Londrina</strong></option>
+            <option><strong>Other City</strong></option>
+          </select>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Grid - Asymmetrical Layout with Structural Depth -->
+  <main class="container">
+    <h2 class="text-center text-lg font-weight-700 tracking-tighter mb-8" style="margin-bottom: var(--spacing-xl);">
+      Featured Properties in Real Estate</h2>
+
+    <div class="properties-grid" id="propertyGrid">
+      <!-- Property Card 1 - With Image Cycling System -->
+      <article class="property-card"
+        data-images="https://picsum.photos/seed/parana1/400/300, https://picsum.photos/seed/parana2/400/300, https://picsum.photos/seed/parana3/400/300">
+        <div class="property-image-container" style="background-color: #f8f9fa;">
+          <!-- Image cycling system -->
+          <img src="" alt="Luxury Villa in Londrina" class="property-image" id="card1-img" data-cycle="true">
+        </div>
+        <div class="card-content">
+          <h3 class="property-title text-center py-4 tracking-tighter">Parana State Luxury Villa <span
+              class="section-number">02.</span></h3>
+          <p class="property-location" style="font-size: 1.5rem; margin-bottom: var(--spacing-md);">Londrina, Paraná</p>
+          <div class="property-stats mb-4">
+            <span><i data-lucide="star"></i> 4 Beds</span>
+            <span><i data-lucide="bed"></i> 3 Baths</span>
+          </div>
+          <p style="margin: var(--spacing-md) 0; max-width: 60ch;">Spacious waterfront villa with panoramic views of the
+            Paraná River and modern amenities in prime Londrina location.</p>
+          <div class="property-price">$2,850,000 <span class="section-prefix">03.</span></div>
+          <button class="swiss-button" style="width: 100%; margin-top: var(--spacing-sm);">View Details</button>
+        </div>
+      </article>
+
+      <!-- Property Card 2 -->
+      <article class="property-card">
+        <div class="property-image-container" style="background-color: #f8f9fa;">
+          <img src="" alt="Modern Apartment in Ibipora" class="property-image" id="card2-img" data-cycle="true">
+        </div>
+        <div class="card-content">
+          <h3 class="property-title text-center py-4 tracking-tighter">Ibpora Urban Loft <span
+              class="section-number">04.</span></h3>
+          <p class="property-location" style="font-size: 1.5rem; margin-bottom: var(--spacing-md);">Ibipora, Paraná</p>
+          <div class="property-stats mb-4">
+            <span><i data-lucide="star"></i> 2 Beds</span>
+            <span><i data-lucide="bath"></i> 1.5 Baths</span>
+          </div>
+          <p style="margin: var(--spacing-md) 0; max-width: 60ch;">Trendy urban loft in Ibipora with modern design,
+            rooftop terrace and walking distance to cafes and shops.</p>
+          <div class="property-price">$950,000 <span class="section-prefix">05.</span></div>
+          <button class="swiss-button" style="width: 100%; margin-top: var(--spacing-sm);">View Details</button>
+        </div>
+      </article>
+
+      <!-- Property Card 3 -->
+      <article class="property-card"
+        data-images="https://picsum.photos/seed/parana4/400/300, https://picsum.photos/seed/parana5/400/300, https://picsum.photos/seed/parana6/400/300">
+        <div class="property-image-container" style="background-color: #f8f9fa;">
+          <!-- Image cycling system -->
+          <img src="" alt="Executive Condo in Londrina" class="property-image" id="card3-img" data-cycle="true">
+        </div>
+        <div class="card-content">
+          <h3 class="property-title text-center py-4 tracking-tighter">Londrina Executive Condo <span
+              class="section-number">06.</span></h3>
+          <p class="property-location" style="font-size: 1.5rem; margin-bottom: var(--spacing-md);">Londrina, Paraná</p>
+          <div class="property-stats mb-4">
+            <span><i data-lucide="star"></i> 3 Beds</span>
+            <span><i data-lucide="bath"></i> 2.5 Baths</span>
+          </div>
+          <p style="margin: var(--spacing-md) 0; max-width: 60ch;">Modern executive apartment in prime Londrina location
+            with private elevator and panoramic city views.</p>
+          <div class="property-price">$1,425,000 <span class="section-prefix">07.</span></div>
+          <button class="swiss-button" style="width: 100%; margin-top: var(--spacing-sm);">View Details</button>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Pagination System - Card Style with Interactive Feedback -->
+  <footer class="pagination" style="max-width: 1440px; margin: 2rem auto;">
+    <div class="container">
+      <h3 class="text-lg font-weight-700 mb-8 tracking-tighter text-center">Property Listing Pagination</h3>
+      <div class="pagination-container" style="justify-content: center; max-width: 1440px;">
+        <button class="pagination-btn prev" aria-label="Previous page">
+          <i data-lucide="chevron-left"></i>
+        </button>
+        <button class="pagination-btn active" aria-label="Page 1 of 5">1</button>
+        <button class="pagination-btn" aria-label="Page 2">2</button>
+        <button class="pagination-btn" aria-label="Page 3">3</button>
+        <button class="pagination-btn next" aria-label="Next page">
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Micro-interactions & Utilities -->
+  <style>
+    /* Micro-interaction triggers for buttons and cards */
+    .swiss-button:hover,
+    .property-card:hover {
+      transform: translateY(-4px);
+      /* Purposeful lift effect (not decorative) */
+    }
+
+    /* Icon rotation on interaction - only when needed */
+    [data-lucide="plus"] {
+      transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+
+  <script>
+    // DOM Elements for image cycling system
+    const propertyImages = document.querySelectorAll('.property-image[data-cycle="true"]');
+    let currentCycleIndex = {
+      card1: 0,
+      card2: 0,
+      card3: 0
+    };
+
+    // Image sources configuration (preloaded for performance)
+    const imageSources = {
+      card1: [
+        'https://picsum.photos/seed/parana1/400/300',
+        'https://picsum.photos/seed/parana2/400/300',
+        'https://picsum.photos/seed/parana3/400/300'
+      ],
+      card2: [
+        'https://picsum.photos/seed/ibipora1/400/300',
+        'https://picsum.photos/seed/ibipora2/400/300',
+        'https://picsum.photos/seed/ibipora3/400/300'
+      ],
+      card3: [
+        'https://picsum.photos/seed/parana4/400/300',
+        'https://picsum.photos/seed/parana5/400/300',
+        'https://picsum.photos/seed/parana6/400/300'
+      ]
+    };
+
+    // Initialize image cycling system
+    propertyImages.forEach(img => {
+      const cardId = img.dataset.card;
+      img.addEventListener('mouseenter', () => startCycling(cardId));
+      img.addEventListener('mouseleave', stopCycleAndReset(cardId));
+    });
+
+    // Start cycling animation for a specific image container
+    function startCycling(cardId) {
+      if (currentCycleIndex[cardId]) return; // Prevent duplicate timers
+
+      let cycleInterval = setInterval(() => {
+        const nextIndex = (currentCycleIndex[cardId] + 1) % imageSources[cardId].length;
+        img.src = imageSources[cardId][nextIndex];
+        currentCycleIndex[cardId]++; // Track progress for reset timing
+      }, 800); // Cycle every second with smooth transition between images
+    }
+
+    // Stop cycling and reset to first image after mouse leave or timeout
+    function stopCycleAndReset(cardId) {
+      clearInterval(cycleInterval);
+      setTimeout(() => {
+        const img = document.getElementById(`card${cardId}-img`);
+        if (currentCycleIndex[cardId] > 0 && currentCycleIndex[cardId] % imageSources[cardId].length < imageSources[cardId].length) {
+          // Jump back to first visible state after reset delay
+          const index = Math.floor(Math.min(currentCycleIndex[cardId], imageSources[cardId].length - 1));
+          img.src = imageSources[cardId][index];
+        } else if (currentCycleIndex[cardId] > 0) {
+          // Jump back to first state after full cycle
+          const index = Math.floor(Math.min(currentCycleIndex[cardId], imageSources[cardId].length - 1));
+          img.src = imageSources[cardId][index];
+        } else {
+          // First visible state
+          img.src = imageSources[cardId][0];
+        }
+      }, 800); // Reset after visual reset delay matches cycling speed
+    }
+
+    // Initialize all cards on page load (prevents race condition)
+    window.addEventListener('DOMContentLoaded', () => {
+      Object.keys(currentCycleIndex).forEach(key => {
+        startCycling(parseInt(key)); // Start cycling immediately for demo effect
+      });
+    });
+  </script>
+</body>
+
+</html>
