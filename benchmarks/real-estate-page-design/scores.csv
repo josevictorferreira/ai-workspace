@@ -1,0 +1,36 @@
+Evaluation Order,Blinded ID,Original Filename,Locations,Swiss,Cards,Interactions,Hover,Total Score,Notes
+19,page-04.html,web_claude_sonnet_4.5.html,1,5,5,5,7,52,"Beautiful overall, did the small things right, almost little to no mistakes found"
+21,page-11.html,web_glm_4.6_exacto.html,1,5,5,5,7,52,"Beautiful, very clean, dont do more than what's asked which is good as well. Almost perfect"
+22,page-18.html,web_kimi_k2_thinking.html,1,5,5,5,7,52,"Beautiful, did the filters in the most correct way expected. There's no perception of something wrong when you look to the page. Only 1 small change needed in the pagination back button being active/displayed."
+26,page-03.html,web_claude_opus_4.5.html,1,5,5,5,7,52,"Really beautiful overall, it it did almost everything right, there's no visual uglyness perception at all, only a small changes in the pagination found."
+11,page-10.html,web_gemini_3_pro_preview.html,1,5,5,5,5,50,"Design really beautiful, almost perfect"
+1,page-24.html,web_qwen_3_coder.html,1,5,5,4,7,50,"Beautiful design and clean, maybe the nicest cards designes. But there's a few iteractions(hovers) and pagination that needs to be fixed"
+6,page-02.html,web_claude_haiku_4.5.html,1,5,4,5,7,49,"The only problem is that's missing the maximum price field, and also is missing a few images, but overall is almost perfect."
+20,page-26.html,web_xiaomi_mimo_v2_flash.html,1,5,5,4,5,48,Beautiful design with only 2 or three small changes to be made
+0,none,web_gpt_5.1_codex_max.html,1,5,5,5,3,48,"Beautiful and almost perfect design overall, the price field is not on the swiss style and the hover is not working as expected"
+0,none,web_glm_4.5_air.html,1,5,5,5,3,48,"The page is really clean and well designed, everything appears to be working fine. The only issue was the hover card images."
+5,page-15.html,web_intellect_3.html,1,4,5,4,7,47,"The only problem is the bottom pagination that's missaligned from the rest of the page, but overall is simple but good. The filter is also on the left side(not so much problem)"
+14,page-19.html,web_minimax_m2.html,1,5,4,4,7,47,"Did everything correct, very solid, but found a few fixes. The ui overall is beautiful."
+0,none,web_kimi_k2_0905_exacto.html,1,5,4,3,7,45,"Good design, but the library images didnt appear"
+24,page-12.html,web_gpt_5.2.html,1,4,4,4,7,44,"It did most stuff well, overall is beautiful looking. But it tried to do too much, more than whats asked, and it appears too much information, not minimalist at all."
+18,page-08.html,web_deepseek_v3.1_nex_n1.html,1,4,3,4,7,41,"The overall looking is beautiful, but there are some broken parts"
+0,none,web_grok_4.html,1,3,4,5,3,39,"It appears to be working well and good designed, but the page has a ""fade"" it almost blank you can barelly see anything."
+2,page-07.html,web_deepseek_3.2_speciale.html,1,4,2,4,7,38,"The filters are on the left side, and the visual appears broken"
+17,page-06.html,web_deepseek_3.2_exp.html,1,5,4,3,0,38,"Beautiful design overall, but some fixes are needed, like some inputs overlaping another"
+12,page-22.html,web_qwen_3_235b_a22b_thinking.html,1,3,3,3,7,36,"A bit cluttered visual, but did most things correct"
+16,page-16.html,web_kat_coder.html,1,4,3,3,3,35,"Did some parts right, the overall looking is good, but there a lot of fixes,"
+9,page-13.html,web_gpt_oss_120b.html,1,2,3,4,7,35,
+4,page-23.html,web_qwen_3_80b_next_thinking.html,1,3,2,3,7,33,"Filter is missaligned from the page, most of the images are broken"
+10,page-01.html,web_amazon_nova_2_lite.html,1,2,3,3,5,31,"Fonts too large, even on the card"
+13,page-14.html,web_grok_4.1_fast.html,1,2,2,4,5,30,
+23,page-05.html,web_cojito_2.1.html,1,2,2,3,5,28,
+0,none,web_qwen_3_30b_a3b_thinking_2507 (local) (quantized q3),1,3,2,2,3,27,"The hover are not working 100%, the location filters are not being triggered as well, I marked as 1 but removed points from ""Interactations for that"""
+0,none,web_nemotron_orchestrator.html (local) (quantized q4),1,2,2,2,5,26,
+0,none,web_grok_code_fast.html,1,2,2,2,5,26,"The page is almost blank with a fade, you can barelly see the content, same way as Grok 4, and its not so well design"
+25,page-21.html,web_olmo_3_32b_think.html,1,2,2,3,3,26,
+0,none,web_gpt_oss_20b.html (local) (quantized q4),1,2,2,2,3,24,
+8,page-17.html,web_kimi_dev_72b.html,1,2,1,3,3,23,"ugly cards, filters not working, bad design overall"
+7,page-25.html,web_rnj_1.html,0,1,2,2,3,16,"Really ugly, and almost nothing works(filters missing), no images, pagination barely done."
+3,page-20.html,web_nemotron_nano_30b.html,0,1,1,1,0,8,"Almost no iterations works, and the desing is subpar, even the forms are missing full implementation"
+15,page-09.html,web_devstral_2.html,0,1,1,1,0,8,grey screen
+0,none,web_apriel_1.6_thinker.html (local),0,0,0,0,0,0,Produced a blank page

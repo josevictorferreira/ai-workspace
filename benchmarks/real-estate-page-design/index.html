@@ -138,10 +138,43 @@
       font-weight: 400;
       opacity: 0.7;
       font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-xs);
+    }
+
+    .card-score {
+      font-size: 1rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border: 2px solid var(--fg-black);
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-white);
+      color: var(--fg-black);
+    }
+
+    .score-high {
+      background-color: var(--fg-black);
+      color: var(--bg-white);
+    }
+
+    .score-medium {
+      background-color: var(--accent-red);
+      color: var(--bg-white);
+    }
+
+    .score-low {
+      background-color: var(--muted-gray);
+      color: var(--fg-black);
     }
 
     .card:hover .card-meta {
-      opacity: 0.9;
+      opacity: 1;
+    }
+
+    .card:hover .card-score {
+      transform: scale(1.1);
     }
 
     .prompt-card {
@@ -157,6 +190,84 @@
     .prompt-card .card-title {
       font-size: 1.25rem;
       font-weight: 900;
+    }
+
+    /* Filter Styles */
+    .filter-section {
+      margin-bottom: var(--spacing-xl);
+      padding: var(--spacing-md);
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--muted-gray);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    @media (min-width: 768px) {
+      .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .filter-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .filter-label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-black);
+    }
+
+    .filter-input,
+    .filter-select {
+      border: var(--border-thin) solid var(--fg-black);
+      background-color: var(--bg-white);
+      color: var(--fg-black);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 200ms ease-out;
+      height: 44px;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--accent-red);
+      background-color: var(--muted-gray);
+    }
+
+    .filter-input::placeholder {
+      color: var(--fg-black);
+      opacity: 0.4;
+    }
+
+    .filter-results {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-black);
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     footer {
@@ -215,177 +326,57 @@
 
   <main>
     <div class="container">
+      <!-- Filter Section -->
+      <section class="filter-section" aria-label="Benchmark filters">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="text-filter" class="filter-label">Search</label>
+            <input 
+              type="text" 
+              id="text-filter" 
+              class="filter-input" 
+              placeholder="Filter by model name..."
+              autocomplete="off"
+            >
+          </div>
+          
+          <div class="filter-group">
+            <label for="model-type-filter" class="filter-label">Model Type</label>
+            <select id="model-type-filter" class="filter-select">
+              <option value="all">All Models</option>
+              <option value="open-source">Open Source</option>
+              <option value="closed-source">Closed Source</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="provider-filter" class="filter-label">Run On</label>
+            <select id="provider-filter" class="filter-select">
+              <option value="all">All Locations</option>
+              <option value="local">Local Machine</option>
+              <option value="openrouter">OpenRouter</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="sort-filter" class="filter-label">Sort By</label>
+            <select id="sort-filter" class="filter-select">
+              <option value="score-desc">Score (High to Low)</option>
+              <option value="score-asc">Score (Low to High)</option>
+              <option value="name-asc">Name (A to Z)</option>
+              <option value="name-desc">Name (Z to A)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filter-results">
+          <span id="filtered-count">Loading...</span>
+        </div>
+      </section>
+
       <nav aria-label="Benchmark pages navigation">
-        <div class="grid">
-          <a href="pages/web_amazon_nova_2_lite.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Amazon Nova 2 Lite</h2>
-            <p class="card-meta">web_amazon_nova_2_lite.html</p>
-          </a>
-
-          <a href="pages/web_claude_haiku_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Claude Haiku 4.5</h2>
-            <p class="card-meta">web_claude_haiku_4.5.html</p>
-          </a>
-
-          <a href="pages/web_claude_sonnet_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Claude Sonnet 4.5</h2>
-            <p class="card-meta">web_claude_sonnet_4.5.html</p>
-          </a>
-
-          <a href="pages/web_claude_opus_4.5.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Claude Opus 4.5</h2>
-            <p class="card-meta">web_claude_opus_4.5.html</p>
-          </a>
-
-          <a href="pages/web_kat_coder.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Kat Coder</h2>
-            <p class="card-meta">web_kat_coder.html</p>
-          </a>
-
-          <a href="pages/web_cojito_2.1.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Cojito 2.1</h2>
-            <p class="card-meta">web_cojito_2.1.html</p>
-          </a>
-
-          <a href="pages/web_rnj_1.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Rnj 1</h2>
-            <p class="card-meta">web_rnj_1.html</p>
-          </a>
-
-          <a href="pages/web_deepseek_3.2_exp.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">DeepSeek 3.2 Exp</h2>
-            <p class="card-meta">web_deepseek_3.2_exp.html</p>
-          </a>
-
-          <a href="pages/web_deepseek_3.2_speciale.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">DeepSeek 3.2 Speciale</h2>
-            <p class="card-meta">web_deepseek_3.2_speciale.html</p>
-          </a>
-
-          <a href="pages/web_deepseek_v3.1_nex_n1.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">DeepSeek 3.1 Nex N1</h2>
-            <p class="card-meta">web_deepseek_v3.1_nex_n1.html</p>
-          </a>
-
-          <a href="pages/web_devstral_2.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Devstral 2</h2>
-            <p class="card-meta">web_devstral_2.html</p>
-          </a>
-
-          <a href="pages/web_olmo_3_32b_think.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Olmo 3 32b Think</h2>
-            <p class="card-meta">web_olmo_3_32b_think.html</p>
-          </a>
-
-          <a href="pages/web_xiaomi_mimo_v2_flash.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Xiaomi Mimo V2 Flash</h2>
-            <p class="card-meta">web_xiaomi_mimo_v2_flash.html</p>
-          </a>
-
-          <a href="pages/web_gemini_3_pro_preview.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Gemini 3 Pro Preview</h2>
-            <p class="card-meta">web_gemini_3_pro_preview.html</p>
-          </a>
-
-          <a href="pages/web_gemini_3_flash_preview.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Gemini 3 Flash Preview</h2>
-            <p class="card-meta">web_gemini_3_flash_preview.html</p>
-          </a>
-
-          <a href="pages/web_glm_4.6_exacto.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">GLM 4.6 Exacto</h2>
-            <p class="card-meta">web_glm_4.6_exacto.html</p>
-          </a>
-
-          <a href="pages/web_gpt_5.2.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">GPT 5.2</h2>
-            <p class="card-meta">web_gpt_5.2.html</p>
-          </a>
-
-          <a href="pages/web_gpt_oss_120b.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">GPT OSS 120B</h2>
-            <p class="card-meta">web_gpt_oss_120b.html</p>
-          </a>
-
-          <a href="pages/web_gpt_oss_20b_derestricted.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">GPT OSS 20b derestricted</h2>
-            <p class="card-meta">web_gpt_oss_20b_derestricted.html</p>
-          </a>
-
-          <a href="pages/web_grok_4.1_fast.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Grok 4.1 Fast</h2>
-            <p class="card-meta">web_grok_4.1_fast.html</p>
-          </a>
-
-          <a href="pages/web_intellect_3.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Intellect 3</h2>
-            <p class="card-meta">web_intellect_3.html</p>
-          </a>
-
-          <a href="pages/web_kimi_dev_72b.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Kimi Dev 72B</h2>
-            <p class="card-meta">web_kimi_dev_72b.html</p>
-          </a>
-
-          <a href="pages/web_kimi_k2_0905_exacto.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Kimi K2 0905 Exacto</h2>
-            <p class="card-meta">web_kimi_k2_0905_exacto.html</p>
-          </a>
-
-          <a href="pages/web_kimi_k2_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Kimi K2 Thinking</h2>
-            <p class="card-meta">web_kimi_k2_thinking.html</p>
-          </a>
-
-          <a href="pages/web_minimax_m2.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Minimax M2</h2>
-            <p class="card-meta">web_minimax_m2.html</p>
-          </a>
-
-          <a href="pages/web_nemotron_nano_30b.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Nemotron Nano 30B</h2>
-            <p class="card-meta">web_nemotron_nano_30b.html</p>
-          </a>
-
-          <a href="pages/web_nemotron_orchestrator.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Nemotron Orchestrator 8b</h2>
-            <p class="card-meta">web_nemotron_orchestrator.html</p>
-          </a>
-
-          <a href="pages/web_nemotron_cascade_14b_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Nemotron Cascade 14b Thinking</h2>
-            <p class="card-meta">nemotron_cascade_14b_thinking.html</p>
-          </a>
-
-          <a href="pages/web_qwen_3_80b_next_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Qwen 3 80B Next Thinking</h2>
-            <p class="card-meta">web_qwen_3_80b_next_thinking.html</p>
-          </a>
-
-          <a href="pages/web_qwen_3_coder.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Qwen 3 Coder</h2>
-            <p class="card-meta">web_qwen_3_coder.html</p>
-          </a>
-
-          <a href="pages/web_qwen_3_235b_a22b_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Qwen 3 235b a22b Thinking</h2>
-            <p class="card-meta">web_qwen_3_235b_a22b_thinking.html</p>
-          </a>
-
-          <a href="pages/web_qwen_3_30b_a3b_thinking_2507.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Qwen 3 30b a3b Thinking 2507 Q3_K_S</h2>
-            <p class="card-meta">web_qwen_3_30b_a3b_thinking_2507.html</p>
-          </a>
-
-          <a href="pages/web_nanbeige_4_3b_thinking.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Nanbeige 4 3b Thinking</h2>
-            <p class="card-meta">web_nanbeige_4_3b_thinking.html</p>
-          </a>
-
-          <a href="pages/web_apriel_1.6_15b_thinker.html" class="card" target="_blank" rel="noopener noreferrer">
-            <h2 class="card-title">Apriel 1.6 15b Thinker Q4 quantized</h2>
-            <p class="card-meta">web_apriel_1.6_15b_thinker.html</p>
-          </a>
+        <div class="grid" id="cards-container">
+          <!-- Cards will be dynamically loaded here -->
         </div>
       </nav>
     </div>
@@ -393,10 +384,213 @@
 
   <footer>
     <div class="container">
-      <p class="footer-stats">19 Benchmark Pages</p>
       <a href="PROMPT.md" class="footer-link" target="_blank" rel="noopener noreferrer">View Design Specification</a>
     </div>
   </footer>
+
+  <script>
+    // Model metadata with all data in one place - easier to add new benchmarks
+    const modelMetadata = {
+      'web_amazon_nova_2_lite.html': { type: 'closed-source', provider: 'openrouter', score: '31' },
+      'web_apriel_1.6_15b_thinker.html': { type: 'open-source', provider: 'local', score: '0' },
+      'web_claude_haiku_4.5.html': { type: 'closed-source', provider: 'openrouter', score: '49' },
+      'web_claude_opus_4.5.html': { type: 'closed-source', provider: 'openrouter', score: '52' },
+      'web_claude_sonnet_4.5.html': { type: 'closed-source', provider: 'openrouter', score: '52' },
+      'web_cojito_2.1.html': { type: 'open-source', provider: 'openrouter', score: '28' },
+      'web_deepseek_3.2_exp.html': { type: 'open-source', provider: 'openrouter', score: '38' },
+      'web_deepseek_3.2_speciale.html': { type: 'open-source', provider: 'openrouter', score: '38' },
+      'web_deepseek_v3.1_nex_n1.html': { type: 'open-source', provider: 'openrouter', score: '41' },
+      'web_devstral_2.html': { type: 'open-source', provider: 'openrouter', score: '8' },
+      'web_gemini_3_flash_preview.html': { type: 'closed-source', provider: 'openrouter', score: 'N/A' },
+      'web_gemini_3_pro_preview.html': { type: 'closed-source', provider: 'openrouter', score: '50' },
+      'web_glm_4.6_exacto.html': { type: 'open-source', provider: 'openrouter', score: '52' },
+      'web_gpt_5.2.html': { type: 'closed-source', provider: 'openrouter', score: '44' },
+      'web_gpt_oss_120b.html': { type: 'open-source', provider: 'openrouter', score: '35' },
+      'web_gpt_oss_20b_derestricted.html': { type: 'open-source', provider: 'local', score: '24' },
+      'web_grok_4.1_fast.html': { type: 'closed-source', provider: 'openrouter', score: '30' },
+      'web_intellect_3.html': { type: 'open-source', provider: 'openrouter', score: '47' },
+      'web_kat_coder.html': { type: 'open-source', provider: 'openrouter', score: '35' },
+      'web_kimi_dev_72b.html': { type: 'open-source', provider: 'openrouter', score: '23' },
+      'web_kimi_k2_0905_exacto.html': { type: 'open-source', provider: 'openrouter', score: '45' },
+      'web_kimi_k2_thinking.html': { type: 'open-source', provider: 'openrouter', score: '52' },
+      'web_minimax_m2.html': { type: 'closed-source', provider: 'openrouter', score: '47' },
+      'web_nanbeige_4_3b_thinking.html': { type: 'open-source', provider: 'local', score: 'N/A' },
+      'web_nemotron_cascade_14b_thinking.html': { type: 'open-source', provider: 'local', score: 'N/A' },
+      'web_nemotron_nano_30b.html': { type: 'open-source', provider: 'openrouter', score: '8' },
+      'web_nemotron_orchestrator.html': { type: 'open-source', provider: 'local', score: '26' },
+      'web_olmo_3_32b_think.html': { type: 'open-source', provider: 'openrouter', score: '26' },
+      'web_qwen_3_235b_a22b_thinking.html': { type: 'open-source', provider: 'openrouter', score: '36' },
+      'web_qwen_3_30b_a3b_thinking_2507.html': { type: 'open-source', provider: 'local', score: '27' },
+      'web_qwen_3_80b_next_thinking.html': { type: 'open-source', provider: 'openrouter', score: '33' },
+      'web_qwen_3_coder.html': { type: 'open-source', provider: 'openrouter', score: '50' },
+      'web_rnj_1.html': { type: 'open-source', provider: 'openrouter', score: '16' },
+      'web_xiaomi_mimo_v2_flash.html': { type: 'closed-source', provider: 'openrouter', score: '48' }
+    };
+
+    let allCards = [];
+    let currentCards = [];
+
+    function loadCards() {
+      try {        
+        // Get all filenames from the single modelMetadata object
+        const pageFiles = Object.keys(modelMetadata);
+
+        allCards = pageFiles.map(filename => {
+          const modelData = modelMetadata[filename];
+          const displayName = filename
+            .replace('web_', '')
+            .replace('.html', '')
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase());
+          
+          const score = modelData.score || 'N/A';
+          const scoreClass = getScoreClass(score);
+          
+          return {
+            filename,
+            displayName,
+            score,
+            scoreClass,
+            scoreValue: score === 'N/A' ? -1 : parseInt(score),
+            type: modelData.type || 'unknown',
+            provider: modelData.provider || 'unknown',
+            element: null
+          };
+        });
+
+        // Create initial card elements
+        createCardElements();
+        
+        // Set up filter listeners
+        setupFilterListeners();
+        
+        // Apply initial filters and sort
+        applyFilters();
+
+      } catch (error) {
+        console.error('Error loading cards:', error);
+        document.getElementById('filtered-count').textContent = 'Error loading pages';
+      }
+    }
+
+    function createCardElements() {
+      const cardsContainer = document.getElementById('cards-container');
+      cardsContainer.innerHTML = '';
+      
+      allCards.forEach(cardData => {
+        const card = document.createElement('a');
+        card.href = `pages/${cardData.filename}`;
+        card.className = 'card';
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        
+        card.innerHTML = `
+          <h2 class="card-title">${cardData.displayName}</h2>
+          <div class="card-meta">
+            <span></span>
+            <span class="card-score ${cardData.scoreClass}">${cardData.score}</span>
+          </div>
+        `;
+        
+        cardData.element = card;
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function setupFilterListeners() {
+      const textFilter = document.getElementById('text-filter');
+      const modelTypeFilter = document.getElementById('model-type-filter');
+      const providerFilter = document.getElementById('provider-filter');
+      const sortFilter = document.getElementById('sort-filter');
+
+      // Add input event listeners for real-time filtering
+      textFilter.addEventListener('input', applyFilters);
+      modelTypeFilter.addEventListener('change', applyFilters);
+      providerFilter.addEventListener('change', applyFilters);
+      sortFilter.addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
+      const textFilter = document.getElementById('text-filter').value.toLowerCase();
+      const modelTypeFilter = document.getElementById('model-type-filter').value;
+      const providerFilter = document.getElementById('provider-filter').value;
+      const sortFilter = document.getElementById('sort-filter').value;
+
+      // Filter cards
+      currentCards = allCards.filter(cardData => {
+        // Text filter
+        const matchesText = !textFilter || 
+          cardData.displayName.toLowerCase().includes(textFilter);
+        
+        // Type filter
+        const matchesType = modelTypeFilter === 'all' || 
+          cardData.type === modelTypeFilter;
+        
+        // Provider filter
+        const matchesProvider = providerFilter === 'all' || 
+          cardData.provider === providerFilter;
+        
+        return matchesText && matchesType && matchesProvider;
+      });
+
+      // Sort cards
+      currentCards.sort((a, b) => {
+        switch (sortFilter) {
+          case 'score-desc':
+            return b.scoreValue - a.scoreValue;
+          case 'score-asc':
+            return a.scoreValue - b.scoreValue;
+          case 'name-asc':
+            return a.displayName.localeCompare(b.displayName);
+          case 'name-desc':
+            return b.displayName.localeCompare(a.displayName);
+          default:
+            return 0;
+        }
+      });
+
+      // Update DOM
+      updateCardDisplay();
+      updateResultsCount();
+    }
+
+    function updateCardDisplay() {
+      // Hide all cards first
+      allCards.forEach(cardData => {
+        cardData.element.classList.add('hidden');
+      });
+
+      // Show and reorder filtered cards
+      const cardsContainer = document.getElementById('cards-container');
+      currentCards.forEach(cardData => {
+        cardData.element.classList.remove('hidden');
+        cardsContainer.appendChild(cardData.element); // This reorders the cards
+      });
+    }
+
+    function updateResultsCount() {
+      const totalCount = allCards.length;
+      const filteredCount = currentCards.length;
+      
+      if (filteredCount === totalCount) {
+        document.getElementById('filtered-count').textContent = `${totalCount} Benchmark Pages`;
+      } else {
+        document.getElementById('filtered-count').textContent = 
+          `${filteredCount} of ${totalCount} Benchmark Pages`;
+      }
+    }
+
+    function getScoreClass(score) {
+      if (score === 'N/A') return '';
+      const numScore = parseInt(score);
+      if (numScore >= 47) return 'score-high';
+      if (numScore >= 35) return 'score-medium';
+      return 'score-low';
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', loadCards);
+  </script>
 </body>
 
 </html>
