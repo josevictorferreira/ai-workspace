@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate - Swiss Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-white: #FFFFFF;
+      --color-black: #000000;
+      --color-muted: #F2F2F2;
+      --color-accent: #FF3000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--color-white);
+      color: var(--color-black);
+      line-height: 1.6;
+      position: relative;
+    }
+
+    /* Noise Texture */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.015;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Grid Pattern */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Dot Matrix */
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Typography */
+    .uppercase-tracking {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tracking-tighter {
+      letter-spacing: -0.025em;
+    }
+
+    .tracking-widest {
+      letter-spacing: 0.25em;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 4px solid var(--color-black);
+      padding: 24px 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    /* Filters Section */
+    .filters-section {
+      padding: 48px 0;
+      border-bottom: 4px solid var(--color-black);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 32px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-number {
+      color: var(--color-accent);
+      font-size: 1.5rem;
+      margin-right: 16px;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .filter-group {
+      position: relative;
+    }
+
+    .filter-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--color-black);
+      background-color: var(--color-white);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s ease-out;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Properties Section */
+    .properties-section {
+      padding: 48px 0;
+    }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .property-card {
+      border: 4px solid var(--color-black);
+      background-color: var(--color-white);
+      transition: all 0.2s ease-out;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .property-card:hover {
+      background-color: var(--color-black);
+      transform: scale(1.02);
+    }
+
+    .property-card:hover .property-content {
+      color: var(--color-white);
+    }
+
+    .property-image-container {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+      border-bottom: 4px solid var(--color-black);
+    }
+
+    .property-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .property-content {
+      padding: 24px;
+      transition: color 0.2s ease-out;
+    }
+
+    .property-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .property-location {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--color-accent);
+    }
+
+    .property-card:hover .property-price {
+      color: var(--color-white);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 48px 0;
+      border-top: 4px solid var(--color-black);
+    }
+
+    .pagination-btn {
+      padding: 12px 24px;
+      border: 2px solid var(--color-black);
+      background-color: var(--color-white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+    }
+
+    .pagination-btn:hover {
+      background-color: var(--color-black);
+      color: var(--color-white);
+      transform: translateY(-1px);
+    }
+
+    .pagination-btn.active {
+      background-color: var(--color-black);
+      color: var(--color-white);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .property-image-container {
+        height: 200px;
+      }
+    }
+
+    /* Focus styles for accessibility */
+    button:focus,
+    input:focus,
+    select:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    /* Hover effect for property images */
+    .property-image-container {
+      position: relative;
+    }
+
+    .property-image {
+      opacity: 1;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .property-image.hidden {
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo uppercase-tracking tracking-widest">REAL ESTATE</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="filters-section swiss-grid-pattern">
+      <div class="container">
+        <h2 class="section-title uppercase-tracking tracking-tighter">
+          <span class="section-number">01.</span>PROPERTIES
+        </h2>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label class="filter-label uppercase-tracking tracking-widest">SEARCH</label>
+            <input type="text" class="filter-input" placeholder="Enter property name...">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label uppercase-tracking tracking-widest">PRICE RANGE</label>
+            <div class="price-range">
+              <input type="number" class="filter-input" placeholder="Min">
+              <input type="number" class="filter-input" placeholder="Max">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label uppercase-tracking tracking-widest">LOCATION</label>
+            <select class="filter-select">
+              <option value="">All Locations</option>
+              <option value="londrina">Londrina, PR</option>
+              <option value="ibipora">Ibiporã, PR</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="properties-section">
+      <div class="container">
+        <div class="properties-grid">
+          <!-- Property Card 1 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/house1/400/250.jpg" alt="Modern Villa" class="property-image">
+              <img src="https://picsum.photos/seed/house2/400/250.jpg" alt="Modern Villa" class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">MODERN VILLA</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Londrina, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 1.200.000</p>
+            </div>
+          </div>
+
+          <!-- Property Card 2 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/apt1/400/250.jpg" alt="Luxury Apartment" class="property-image">
+              <img src="https://picsum.photos/seed/apt2/400/250.jpg" alt="Luxury Apartment"
+                class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">LUXURY APARTMENT</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Ibiporã, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 850.000</p>
+            </div>
+          </div>
+
+          <!-- Property Card 3 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/penthouse1/400/250.jpg" alt="Penthouse Suite" class="property-image">
+              <img src="https://picsum.photos/seed/penthouse2/400/250.jpg" alt="Penthouse Suite"
+                class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">PENTHOUSE SUITE</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Londrina, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 2.500.000</p>
+            </div>
+          </div>
+
+          <!-- Property Card 4 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/garden1/400/250.jpg" alt="Garden House" class="property-image">
+              <img src="https://picsum.photos/seed/garden2/400/250.jpg" alt="Garden House"
+                class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">GARDEN HOUSE</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Ibiporã, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 650.000</p>
+            </div>
+          </div>
+
+          <!-- Property Card 5 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/loft1/400/250.jpg" alt="Industrial Loft" class="property-image">
+              <img src="https://picsum.photos/seed/loft2/400/250.jpg" alt="Industrial Loft"
+                class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">INDUSTRIAL LOFT</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Londrina, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 950.000</p>
+            </div>
+          </div>
+
+          <!-- Property Card 6 -->
+          <div class="property-card">
+            <div class="property-image-container">
+              <img src="https://picsum.photos/seed/beach1/400/250.jpg" alt="Beach Condo" class="property-image">
+              <img src="https://picsum.photos/seed/beach2/400/250.jpg" alt="Beach Condo" class="property-image hidden">
+            </div>
+            <div class="property-content">
+              <h3 class="property-name uppercase-tracking tracking-tighter">BEACH CONDO</h3>
+              <p class="property-location uppercase-tracking tracking-widest">Ibiporã, PR</p>
+              <p class="property-price uppercase-tracking tracking-widest">R$ 1.800.000</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <button class="pagination-btn" disabled>&lt;</button>
+          <button class="pagination-btn active">1</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">3</button>
+          <button class="pagination-btn">&gt;</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Image hover effect
+    document.addEventListener('DOMContentLoaded', function () {
+      const propertyCards = document.querySelectorAll('.property-card');
+
+      propertyCards.forEach(card => {
+        const imageContainer = card.querySelector('.property-image-container');
+        const images = imageContainer.querySelectorAll('.property-image');
+        let hoverTimer;
+
+        card.addEventListener('mouseenter', function () {
+          if (images.length > 1) {
+            hoverTimer = setTimeout(() => {
+              images[0].classList.add('hidden');
+              images[1].classList.remove('hidden');
+            }, 1000);
+          }
+        });
+
+        card.addEventListener('mouseleave', function () {
+          clearTimeout(hoverTimer);
+          if (images.length > 1) {
+            images[0].classList.remove('hidden');
+            images[1].classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

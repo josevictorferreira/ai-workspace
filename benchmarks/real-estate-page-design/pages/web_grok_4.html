@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Listings - Swiss Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Root Styles and Design Tokens */
+    :root {
+      --swiss-background: #FFFFFF;
+      --swiss-foreground: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+      --font-family: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--swiss-background);
+      color: var(--swiss-foreground);
+      line-height: 1.5;
+      position: relative;
+    }
+
+    /* Noise Texture (Subtle global background noise) */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.015"/></svg>');
+      background-size: 100px 100px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Grid Pattern */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(var(--swiss-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--swiss-border) 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-position: -1px -1px;
+      opacity: 0.03;
+    }
+
+    /* Dot Matrix Pattern */
+    .swiss-dots {
+      background-image: radial-gradient(circle, var(--swiss-border) 1px, transparent 1px);
+      background-size: 16px 16px;
+      opacity: 0.04;
+    }
+
+    /* Diagonal Lines Pattern */
+    .swiss-diagonal {
+      background-image: repeating-linear-gradient(45deg, var(--swiss-border) 0, var(--swiss-border) 1px, transparent 1px, transparent 10px);
+      opacity: 0.02;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3,
+    label {
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      /* tighter tracking for headlines */
+    }
+
+    h1 {
+      font-size: 6rem;
+      /* Massive for desktop, scale down responsively */
+      line-height: 1;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 4rem;
+      }
+    }
+
+    /* Layout Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      /* Generous padding */
+      display: grid;
+      gap: 2rem;
+    }
+
+    /* Header Section */
+    header {
+      background-color: var(--swiss-muted);
+      position: relative;
+      padding: 4rem 0;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--swiss-muted);
+      opacity: 1;
+      z-index: -1;
+    }
+
+    header .swiss-grid-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Filters Section */
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      border: 4px solid var(--swiss-border);
+      /* Thick visible borders */
+      background-color: var(--swiss-background);
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      /* widest for labels */
+    }
+
+    input,
+    select {
+      border: 2px solid var(--swiss-border);
+      padding: 1rem;
+      font-size: 1rem;
+      background: var(--swiss-background);
+      color: var(--swiss-foreground);
+      outline: none;
+      transition: border-color 0.2s ease-out;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--swiss-accent);
+    }
+
+    .price-range {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .price-range input {
+      flex: 1;
+    }
+
+    /* Listings Grid - Asymmetric (e.g., 3 columns on desktop, stack on mobile) */
+    .listings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* Asymmetric feel with varying card sizes if needed, but even for simplicity */
+      gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .listings {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .listings {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border: 4px solid var(--swiss-border);
+      background-color: var(--swiss-background);
+      position: relative;
+      overflow: hidden;
+      transition: background-color 0.2s ease-out, color 0.2s ease-out;
+      text-decoration: none;
+      color: var(--swiss-foreground);
+      display: block;
+      /* Link-like */
+    }
+
+    .property-card:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-background);
+      cursor: pointer;
+    }
+
+    /* Image Hover Effect - Pure CSS with delay */
+    .property-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .property-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s ease-out;
+      transition-delay: 0s;
+      /* Default */
+    }
+
+    .property-image .img-primary {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .property-image .img-secondary {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .property-card:hover .property-image .img-primary {
+      transition-delay: 1s;
+      /* Delay fade out on hover */
+      opacity: 0;
+    }
+
+    .property-card:hover .property-image .img-secondary {
+      transition-delay: 1s;
+      /* Delay fade in on hover */
+      opacity: 1;
+    }
+
+    .property-info {
+      padding: 1.5rem;
+      text-align: left;
+      /* Flush-left */
+    }
+
+    .property-name {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .property-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    /* Paginator */
+    .paginator {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem 0;
+      border-top: 4px solid var(--swiss-border);
+    }
+
+    .paginator button {
+      background-color: var(--swiss-background);
+      border: 2px solid var(--swiss-border);
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.2s ease-out, color 0.2s ease-out;
+    }
+
+    .paginator button:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-background);
+    }
+
+    .paginator button.active {
+      background-color: var(--swiss-foreground);
+      color: var(--swiss-background);
+    }
+
+    /* Accessibility and Focus */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 2px;
+    }
+
+    /* Apply patterns to specific sections */
+    .listings {
+      position: relative;
+    }
+
+    .listings::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: var(--swiss-muted);
+      mix-blend-mode: multiply;
+    }
+
+    .listings .swiss-dots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="swiss-grid-pattern">
+    <div class="container">
+      <h1>Property Listings</h1>
+    </div>
+  </header>
+
+  <section class="filters container swiss-diagonal">
+    <div class="filter-group">
+      <label for="search">Search</label>
+      <input type="text" id="search" placeholder="Enter keywords">
+    </div>
+    <div class="filter-group">
+      <label>Price Range</label>
+      <div class="price-range">
+        <input type="number" placeholder="Min">
+        <input type="number" placeholder="Max">
+      </div>
+    </div>
+    <div class="filter-group">
+      <label for="location">Location</label>
+      <select id="location">
+        <option>Parana - Londrina</option>
+        <option>Parana - Ibipora</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="listings container swiss-dots">
+    <!-- Mock Property Cards -->
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+1+Img1"
+          alt="Property 1 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+1+Img2"
+          alt="Property 1 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Modern Apartment</h2>
+        <p class="property-price">$250,000</p>
+      </div>
+    </a>
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+2+Img1"
+          alt="Property 2 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+2+Img2"
+          alt="Property 2 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Cozy House</h2>
+        <p class="property-price">$450,000</p>
+      </div>
+    </a>
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+3+Img1"
+          alt="Property 3 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+3+Img2"
+          alt="Property 3 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Luxury Villa</h2>
+        <p class="property-price">$1,200,000</p>
+      </div>
+    </a>
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+4+Img1"
+          alt="Property 4 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+4+Img2"
+          alt="Property 4 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Urban Loft</h2>
+        <p class="property-price">$300,000</p>
+      </div>
+    </a>
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+5+Img1"
+          alt="Property 5 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+5+Img2"
+          alt="Property 5 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Family Home</h2>
+        <p class="property-price">$600,000</p>
+      </div>
+    </a>
+    <a href="#" class="property-card">
+      <div class="property-image">
+        <img class="img-primary" src="https://via.placeholder.com/400x200?text=Property+6+Img1"
+          alt="Property 6 Image 1">
+        <img class="img-secondary" src="https://via.placeholder.com/400x200?text=Property+6+Img2"
+          alt="Property 6 Image 2">
+      </div>
+      <div class="property-info">
+        <h2 class="property-name">Studio Flat</h2>
+        <p class="property-price">$150,000</p>
+      </div>
+    </a>
+  </section>
+
+  <div class="paginator container">
+    <button>&lt;&lt;</button>
+    <button>&lt;</button>
+    <button class="active">1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>&gt;</button>
+    <button>&gt;&gt;</button>
+  </div>
+</body>
+
+</html>

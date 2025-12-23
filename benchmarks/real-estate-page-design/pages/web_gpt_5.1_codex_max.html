@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Swiss Real Estate Listings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --muted: #f2f2f2;
+      --accent: #ff3000;
+      --border: #000000;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    body {
+      /* subtle noise + fine grid */
+      background-image:
+        radial-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 0),
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 0),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 0);
+      background-size: 2px 2px, 24px 24px, 24px 24px;
+      background-position: 0 0, 0 0, 0 0;
+    }
+
+    .container {
+      width: min(1240px, 94vw);
+      margin: 0 auto;
+      padding: 32px 0 72px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .section-label::before {
+      content: '';
+      width: 36px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .hero {
+      border: 4px solid var(--border);
+      padding: 32px 32px 48px;
+      background: var(--muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      /* diagonal texture */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0, rgba(0, 0, 0, 0.03) 2px, transparent 2px, transparent 12px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 7vw, 132px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 640px;
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 20px 0 0;
+    }
+
+    .filters {
+      margin-top: 32px;
+      border: 4px solid var(--border);
+      background: var(--muted);
+      padding: 20px;
+      position: relative;
+    }
+
+    .filters::before {
+      /* grid texture */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px, 24px 24px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .filters-content {
+      position: relative;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      z-index: 1;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .input,
+    .select {
+      background: #fff;
+      border: 3px solid var(--border);
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      outline: none;
+      color: var(--fg);
+      border-radius: 0;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--accent);
+    }
+
+    .range-wrap {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .range {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .range::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 32px;
+      background: var(--fg);
+      border: 2px solid var(--bg);
+      border-radius: 0;
+    }
+
+    .range::-moz-range-thumb {
+      width: 14px;
+      height: 32px;
+      background: var(--fg);
+      border: 2px solid var(--bg);
+      border-radius: 0;
+    }
+
+    .range::-webkit-slider-runnable-track,
+    .range::-moz-range-track {
+      height: 6px;
+      background: var(--fg);
+      border: 2px solid var(--fg);
+      border-radius: 0;
+    }
+
+    .properties {
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      border: 4px solid var(--border);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      transition: background 150ms linear, color 150ms linear, transform 150ms linear;
+      position: relative;
+    }
+
+    .card:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .card a {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .image-stack {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      border-bottom: 4px solid var(--border);
+    }
+
+    .image-stack img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 180ms ease;
+    }
+
+    .image-stack img.secondary {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition-delay: 1s;
+    }
+
+    .image-stack:hover img.secondary {
+      opacity: 1;
+    }
+
+    .image-stack:hover img.primary {
+      opacity: 0;
+      transition-delay: 1s;
+    }
+
+    .card-body {
+      padding: 16px 16px 18px;
+      display: grid;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .card-title {
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .card-price {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .card-meta {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.85;
+      line-height: 1.4;
+    }
+
+    .card-cta {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .card:hover .card-cta {
+      color: #fff;
+    }
+
+    .card-cta::after {
+      content: '→';
+      transition: transform 150ms ease;
+    }
+
+    .card:hover .card-cta::after {
+      transform: translateX(6px);
+    }
+
+    .paginator {
+      margin-top: 36px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .page-btn {
+      min-width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      background: #fff;
+      color: var(--fg);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 150ms linear, color 150ms linear, transform 150ms linear;
+      border-radius: 0;
+    }
+
+    .page-btn:hover,
+    .page-btn:focus-visible {
+      background: var(--accent);
+      color: #fff;
+      outline: none;
+    }
+
+    .page-btn.active {
+      background: var(--fg);
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 24px;
+      }
+
+      .card:hover {
+        transform: translateY(-1px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="hero">
+      <div class="section-label">01. Listings</div>
+      <h1>Real Estate Inventory — Paraná</h1>
+      <p>Precision-curated properties across Londrina and Ibiporã. Objective details, bold structure, and immediate
+        clarity. Use the filters to refine your search by text, price, and location.</p>
+    </div>
+
+    <section class="filters" aria-label="Filters">
+      <div class="filters-content">
+        <div class="field">
+          <label for="search">Text Search</label>
+          <input class="input" id="search" type="text" placeholder="Type keywords" />
+        </div>
+        <div class="field">
+          <label for="state">State</label>
+          <select class="select" id="state">
+            <option>Paraná (PR)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="city">City</label>
+          <select class="select" id="city">
+            <option>Londrina</option>
+            <option>Ibiporã</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="price">Price Range</label>
+          <div class="range-wrap">
+            <input id="price" class="range" type="range" min="200000" max="1200000" value="600000" />
+            <span style="font-size:12px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700;">R$ 200K —
+              1.2M</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Property Listings">
+      <div class="properties">
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80"
+                alt="Modern Loft Londrina">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=60&sat=-40"
+                alt="Modern Loft Londrina alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Modern Loft — Londrina</div>
+              <div class="card-price">R$ 420.000</div>
+              <div class="card-meta">3 Bed / 2 Bath / 180 m² — Londrina, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&w=900&q=80"
+                alt="Garden House Ibiporã">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&w=900&q=60&sat=-30"
+                alt="Garden House Ibiporã alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Garden House — Ibiporã</div>
+              <div class="card-price">R$ 890.000</div>
+              <div class="card-meta">4 Bed / 3 Bath / 260 m² — Ibiporã, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=900&q=80"
+                alt="Skyline Penthouse">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=900&q=60&sat=-30"
+                alt="Skyline Penthouse alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Skyline Penthouse — Londrina</div>
+              <div class="card-price">R$ 1.150.000</div>
+              <div class="card-meta">3 Bed / 3 Bath / 210 m² — Londrina, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80&sat=-10"
+                alt="Minimal Studio">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=60&sat=-50"
+                alt="Minimal Studio alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Minimal Studio — Ibiporã</div>
+              <div class="card-price">R$ 320.000</div>
+              <div class="card-meta">1 Bed / 1 Bath / 74 m² — Ibiporã, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80&sat=10"
+                alt="Family Villa">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=60&sat=-50"
+                alt="Family Villa alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Family Villa — Londrina</div>
+              <div class="card-price">R$ 970.000</div>
+              <div class="card-meta">5 Bed / 4 Bath / 320 m² — Londrina, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#">
+            <div class="image-stack">
+              <img class="primary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=80&sat=5"
+                alt="Concrete Duplex">
+              <img class="secondary"
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=60&sat=-45"
+                alt="Concrete Duplex alt">
+            </div>
+            <div class="card-body">
+              <div class="card-title">Concrete Duplex — Ibiporã</div>
+              <div class="card-price">R$ 560.000</div>
+              <div class="card-meta">2 Bed / 2 Bath / 140 m² — Ibiporã, PR</div>
+              <div class="card-cta">View Property</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="paginator" aria-label="Pagination">
+      <button class="page-btn active" type="button">01</button>
+      <button class="page-btn" type="button">02</button>
+      <button class="page-btn" type="button">03</button>
+      <button class="page-btn" type="button">→</button>
+    </div>
+  </div>
+</body>
+
+</html>

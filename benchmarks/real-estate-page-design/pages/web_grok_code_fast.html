@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate Listings</title>
+  <style>
+    /* Google Fonts for Inter */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+    /* Design Tokens (Centralized for Reusability) */
+    :root {
+      --swiss-bg: #FFFFFF;
+      --swiss-fg: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-accent: #FF3000;
+      --swiss-border: #000000;
+      --spacing-lg: 3rem;
+      /* Generous padding for active negative space */
+      --spacing-md: 2rem;
+      --spacing-sm: 1rem;
+      --grid-unit: 24px;
+      /* For visible grid pattern */
+    }
+
+    /* Reset for Flat, Objective Aesthetics */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--swiss-fg);
+      background: var(--swiss-bg);
+      /* Global noise texture for warmth */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      /* tracking-tighter for large headlines */
+    }
+
+    .uppercase {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      /* tracking-widest for labels */
+    }
+
+    /* Pattern Classes (CSS-Based for Flat Depth) */
+    .swiss-grid-pattern {
+      background-image:
+        linear-gradient(var(--swiss-fg) 1px, transparent 1px),
+        linear-gradient(90deg, var(--swiss-fg) 1px, transparent 1px);
+      background-size: var(--grid-unit) var(--grid-unit);
+      opacity: 0.03;
+      /* Subtle, visible structure */
+    }
+
+    .swiss-dots {
+      background-image: radial-gradient(circle, var(--swiss-fg) 1px, transparent 1px);
+      background-size: 16px 16px;
+      opacity: 0.04;
+      /* Evokes print textures */
+    }
+
+    /* Layout Primitives (Asymmetrical Grid as Law) */
+    .grid {
+      display: grid;
+      gap: var(--spacing-lg);
+    }
+
+    .grid-asym {
+      /* Asymmetrical 7:5 for dynamic rhythm */
+      grid-template-columns: 7fr 5fr;
+    }
+
+    .grid-listings {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-md);
+    }
+
+    .border-thick {
+      border: 4px solid var(--swiss-border);
+      /* Visible structure, never thin */
+    }
+
+    .p-lg {
+      padding: var(--spacing-lg);
+    }
+
+    .p-md {
+      padding: var(--spacing-md);
+    }
+
+    .m-auto {
+      margin: 0 auto;
+    }
+
+    /* Component Styles (Rectangular, Neutral, Functional) */
+    .btn {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+      text-decoration: none;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 2px solid var(--swiss-border);
+      border-radius: 0;
+      /* Strictly rectangular */
+      transition: background-color 0.15s ease-out, color 0.15s ease-out;
+      /* Snappy, mechanical */
+    }
+
+    .btn:hover {
+      background: var(--swiss-accent);
+      color: var(--swiss-bg);
+    }
+
+    .btn-secondary {
+      background: var(--swiss-bg);
+      color: var(--swiss-fg);
+      border: 2px solid var(--swiss-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--swiss-fg);
+      color: var(--swiss-bg);
+    }
+
+    .input {
+      border: 2px solid var(--swiss-border);
+      border-radius: 0;
+      padding: var(--spacing-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .input:focus {
+      border-color: var(--swiss-accent);
+      outline: none;
+    }
+
+    .card {
+      background: var(--swiss-bg);
+      border: 4px solid var(--swiss-border);
+      padding: var(--spacing-md);
+      transition: background-color 0.15s ease-out, color 0.15s ease-out;
+    }
+
+    .card:hover {
+      background: var(--swiss-accent);
+      color: var(--swiss-bg);
+    }
+
+    .card:hover a {
+      color: var(--swiss-bg);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 0;
+      transition: opacity 0.15s ease-out;
+      /* Smooth swap (handled by JS) */
+    }
+
+    .card .price {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--swiss-accent);
+    }
+
+    .filter-icon {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--swiss-accent);
+      display: inline-block;
+      margin-right: var(--spacing-sm);
+    }
+
+    .section-label {
+      color: var(--swiss-accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    /* Responsive (Bold Scales, Stacked on Mobile) */
+    @media (max-width: 767px) {
+      .grid-asym {
+        grid-template-columns: 1fr;
+      }
+
+      /* Single column for asymmetry */
+      h1 {
+        font-size: 3rem;
+      }
+
+      /* text-6xl equivalent */
+      .grid-listings {
+        grid-template-columns: 1fr;
+      }
+
+      .p-lg {
+        padding: var(--spacing-md);
+      }
+
+      /* Reduce for mobile breathing */
+      .card {
+        padding: var(--spacing-sm);
+      }
+
+      .btn {
+        width: 100%;
+        height: 4rem;
+      }
+
+      /* Full-width touch targets */
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      h1 {
+        font-size: 6rem;
+      }
+
+      /* text-8xl */
+      .grid-asym {
+        grid-template-columns: 7fr 5fr;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      h1 {
+        font-size: 9rem;
+      }
+
+      /* text-9xl, massive */
+      .grid-asym {
+        grid-template-columns: 7fr 5fr;
+      }
+
+      .grid-listings {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      }
+    }
+
+    /* Accessibility (Focus, Motion Respect) */
+    .btn:focus,
+    .input:focus,
+    a:focus {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="p-lg border-thick swiss-grid-pattern">
+    <h1>01. Properties</h1>
+    <p style="font-weight: 500; margin-top: var(--spacing-sm);">Real Estate Listings in Paraná</p>
+  </header>
+  <main class="p-lg">
+    <section class="grid grid-asym">
+      <div class="filters border-thick p-md swiss-dots" style="grid-column: 2;">
+        <h2 class="section-label">Filters</h2>
+        <div class="filter-item" style="margin-bottom: var(--spacing-sm);">
+          <div class="filter-icon" style="border-radius: 50%;"></div>
+          <input class="input" type="text" placeholder="SEARCH TEXT" id="search">
+        </div>
+        <div class="filter-item" style="margin-bottom: var(--spacing-sm);">
+          <div class="filter-icon"></div>
+          <input class="input" type="number" placeholder="MIN PRICE" id="min-price">
+          <input class="input" type="number" placeholder="MAX PRICE" id="max-price"
+            style="margin-left: var(--spacing-sm);">
+        </div>
+        <div class="filter-item">
+          <div class="filter-icon" style="border-style: dashed;"></div>
+          <select class="input" id="state">
+            <option>PARANÁ</option>
+          </select>
+          <select class="input" id="city" style="margin-left: var(--spacing-sm);">
+            <option>LONDRINA</option>
+            <option>IBIPORÁ</option>
+          </select>
+        </div>
+      </div>
+      <div class="listings grid grid-listings" style="grid-column: 1;">
+        <!-- Mock Listings (Plural Images for Hover Swap) -->
+        <article class="card swiss-dots">
+          <img src="https://picsum.photos/400/200?random=1" data-alt-src="https://picsum.photos/400/200?random=2"
+            alt="Property Image">
+          <a href="#">LONDRINA APARTMENT</a>
+          <p class="price">$500,000</p>
+        </article>
+        <article class="card swiss-dots">
+          <img src="https://picsum.photos/400/200?random=3" data-alt-src="https://picsum.photos/400/200?random=4"
+            alt="Property Image">
+          <a href="#">IBIPORÁ HOUSE</a>
+          <p class="price">$750,000</p>
+        </article>
+        <article class="card swiss-dots">
+          <img src="https://picsum.photos/400/200?random=5" data-alt-src="https://picsum.photos/400/200?random=6"
+            alt="Property Image">
+          <a href="#">LONDRINA VILLA</a>
+          <p class="price">$1,200,000</p>
+        </article>
+        <article class="card swiss-dots">
+          <img src="https://picsum.photos/400/200?random=7" data-alt-src="https://picsum.photos/400/200?random=8"
+            alt="Property Image">
+          <a href="#">IBIPORÁ CONDO</a>
+          <p class="price">$400,000</p>
+        </article>
+      </div>
+    </section>
+    <section class="pagination p-md border-thick swiss-grid-pattern" style="margin-top: var(--spacing-lg);">
+      <h2 class="section-label">Navigation</h2>
+      <div class="buttons">
+        <button class="btn-secondary">PREV</button>
+        <button class="btn-secondary" style="margin-left: var(--spacing-sm);">1</button>
+        <button class="btn-secondary" style="margin-left: var(--spacing-sm);">2</button>
+        <button class="btn-secondary" style="margin-left: var(--spacing-sm);">3</button>
+        <button class="btn" style="margin-left: var(--spacing-sm);">NEXT</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Minimal JS Only for 1-Sec Hover Image Swap (CSS Can't Handle Event-Based Delay)
+    // Targets card images with data-alt-src; swaps after 1s on hover, reverts on leave.
+    // Wrapped in setTimeout for delay; clears on mouseleave for snappy feel.
+    document.querySelectorAll('.card img[data-alt-src]').forEach(img => {
+      let timeoutId;
+      img.addEventListener('mouseenter', () => {
+        timeoutId = setTimeout(() => {
+          img.src = img.dataset.altSrc;
+        }, 1000);
+      });
+      img.addEventListener('mouseleave', () => {
+        clearTimeout(timeoutId);
+        img.src = img.dataset.altSrc ? img.src.replace(img.dataset.altSrc, img.currentSrc) : img.currentSrc;
+      });
+    });
+  </script>
+</body>
+
+</html>
