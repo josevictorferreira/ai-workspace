@@ -1,0 +1,7 @@
+# Nix
+.venv/
+result
+result-*
+
+# ComfyUI runtime
+ComfyUI/
