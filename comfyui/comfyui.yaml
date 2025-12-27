@@ -1,0 +1,54 @@
+# ComfyUI Declarative Configuration
+# Edit this file to customize your ComfyUI installation
+
+comfyui:
+  version: "0.5.1"
+  repo: "https://github.com/comfyanonymous/ComfyUI"
+  install_dir: "ComfyUI"
+
+# Custom nodes to install
+# Each node specifies a git URL and revision (tag, branch, or commit)
+custom_nodes:
+  # ComfyUI-Manager: Essential for managing other nodes
+  # ComfyUI-Manager:
+  #   url: "https://github.com/ltdrdata/ComfyUI-Manager"
+  #   rev: "2.48.6"
+  #   pip_deps: []  # Optional: additional pip dependencies
+
+  # ComfyUI-Impact-Pack:
+  #   url: "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+  #   rev: "v8.0"
+
+  # ComfyUI-GGUF:
+  #   url: "https://github.com/city96/ComfyUI-GGUF"
+  #   rev: "main"
+
+  # ComfyUI-KJNodes:
+  #   url: "https://github.com/kijai/ComfyUI-KJNodes"
+  #   rev: "main"
+
+# Models to download
+# Organized by model type (maps to ComfyUI/models/<type>/)
+models:
+  # checkpoints:
+  #   sd_xl_base_1.0.safetensors:
+  #     url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+  #     sha256: "optional-hash-for-verification"
+  #     optional: false  # Set to true to skip by default (use --all to include)
+
+  # vae:
+  #   sdxl_vae.safetensors:
+  #     url: "https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors"
+
+  # loras: {}
+  # controlnet: {}
+  # clip: {}
+  # unet: {}
+  # embeddings: {}
+
+# Additional pip packages to install in the virtual environment
+pip_packages:
+  - "spandrel"
+  - "comfyui-frontend-package"
+  - "comfyui-workflow-templates"
+  - "comfyui-embedded-docs"

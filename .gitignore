@@ -3,4 +3,5 @@ invokeai/*
 data/*
 data/
 cache/
+__pycache__/
 comfyui/data/*
