@@ -51,12 +51,19 @@ def run_cmd(cmd: list[str], cwd: Path | None = None, check: bool = True) -> subp
     return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
 
 
-def git_clone(url: str, dest: Path, branch: str | None = None, depth: int = 1) -> bool:
+def git_clone(url: str, dest: Path, branch: str | None = None, depth: int = 1, lfs: bool = False) -> bool:
     """Clone a git repository."""
-    cmd = ["git", "clone", "--depth", str(depth)]
-    if branch:
-        cmd.extend(["--branch", branch])
-    cmd.extend([url, str(dest)])
+    if lfs:
+        # For LFS repos (like HuggingFace), use git lfs clone for better performance
+        cmd = ["git", "lfs", "clone"]
+        if branch:
+            cmd.extend(["--branch", branch])
+        cmd.extend([url, str(dest)])
+    else:
+        cmd = ["git", "clone", "--depth", str(depth)]
+        if branch:
+            cmd.extend(["--branch", branch])
+        cmd.extend([url, str(dest)])
     try:
         run_cmd(cmd)
         return True
@@ -239,6 +246,53 @@ def download_model(args: tuple[str, str, dict, Path]) -> tuple[str, bool]:
     return (name, False)
 
 
+def setup_model_repos(config: dict[str, Any], base_dir: Path) -> bool:
+    """Clone model repositories (e.g., from HuggingFace)."""
+    comfyui_dir = base_dir / config.get("comfyui", {}).get("install_dir", "ComfyUI")
+    models_dir = comfyui_dir / "models"
+    
+    repos = config.get("model_repos", {})
+    if not repos:
+        info("No model repositories configured")
+        return True
+    
+    all_success = True
+    for name, repo_config in repos.items():
+        info(f"Checking model repository: {name}...")
+        repo_dir = models_dir / name
+        url = repo_config.get("url")
+        rev = repo_config.get("rev")
+        
+        if not url:
+            error(f"No URL specified for {name}")
+            all_success = False
+            continue
+        
+        if not repo_dir.exists():
+            info(f"Cloning {name} (this may take a while for large repos)...")
+            if git_clone(url, repo_dir, branch=rev, lfs=True):
+                success(f"{name} cloned successfully")
+            else:
+                all_success = False
+        else:
+            current = git_current_version(repo_dir)
+            if rev and current != rev:
+                info(f"Updating {name} to {rev}...")
+                if git_checkout(repo_dir, rev):
+                    # Pull LFS files after checkout
+                    try:
+                        run_cmd(["git", "lfs", "pull"], cwd=repo_dir)
+                        success(f"{name} updated to {rev}")
+                    except subprocess.CalledProcessError:
+                        warn(f"LFS pull failed for {name}")
+                else:
+                    all_success = False
+            else:
+                success(f"{name} already installed at {current}")
+    
+    return all_success
+
+
 def setup_models(config: dict[str, Any], base_dir: Path, include_optional: bool = False, parallel: int = 2) -> bool:
     """Download models."""
     comfyui_dir = base_dir / config.get("comfyui", {}).get("install_dir", "ComfyUI")
@@ -305,6 +359,7 @@ def main():
     parser.add_argument("--all", "-a", action="store_true", help="Include optional models")
     parser.add_argument("--parallel", "-p", type=int, default=2, help="Parallel model downloads")
     parser.add_argument("--skip-models", action="store_true", help="Skip model downloads")
+    parser.add_argument("--skip-model-repos", action="store_true", help="Skip model repository cloning")
     parser.add_argument("--skip-nodes", action="store_true", help="Skip custom nodes")
     parser.add_argument("--skip-pip", action="store_true", help="Skip pip packages")
     args = parser.parse_args()
@@ -346,6 +401,10 @@ def main():
     if not args.skip_models:
         if not setup_models(config, base_dir, include_optional=args.all, parallel=args.parallel):
             warn("Some models failed to download")
+    
+    if not args.skip_model_repos:
+        if not setup_model_repos(config, base_dir):
+            warn("Some model repositories failed to clone")
     
     print()
     success("Setup complete!")

@@ -1,19 +1,18 @@
-# ComfyUI Declarative Configuration
-# Edit this file to customize your ComfyUI installation
-
 comfyui:
-  version: "0.5.1"
+  version: "0.6.0"
   repo: "https://github.com/comfyanonymous/ComfyUI"
   install_dir: "ComfyUI"
 
-# Custom nodes to install
-# Each node specifies a git URL and revision (tag, branch, or commit)
 custom_nodes:
-  # ComfyUI-Manager: Essential for managing other nodes
-  # ComfyUI-Manager:
-  #   url: "https://github.com/ltdrdata/ComfyUI-Manager"
-  #   rev: "2.48.6"
-  #   pip_deps: []  # Optional: additional pip dependencies
+  ComfyUI-Manager:
+    url: "https://github.com/Comfy-Org//ComfyUI-Manager"
+    rev: "4.0.4"
+    pip_deps: [] # Optional: additional pip dependencies
+
+  ComfyUI-FlashVSR_Ultra_Fast:
+    url: "https://github.com/lihaoyun6/ComfyUI-FlashVSR_Ultra_Fast"
+    rev: "main"
+    pip_deps: []
 
   # ComfyUI-Impact-Pack:
   #   url: "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
@@ -46,7 +45,13 @@ models:
   # unet: {}
   # embeddings: {}
 
-# Additional pip packages to install in the virtual environment
+# Model repositories to clone (for models hosted as git repos, e.g., HuggingFace)
+# Each repo will be cloned to ComfyUI/models/<target_dir>/
+model_repos:
+  FlashVSR:
+    url: "https://huggingface.co/JunhaoZhuang/FlashVSR"
+    # rev: "main"  # Optional: specific branch/tag/commit
+
 pip_packages:
   - "spandrel"
   - "comfyui-frontend-package"

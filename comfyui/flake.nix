@@ -38,7 +38,6 @@
           safetensors
           aiohttp
           yarl
-          pyyaml
           pillow
           scipy
           sounddevice
@@ -52,7 +51,7 @@
           pydantic-settings
           torchsde
           soundfile
-          GitPython
+          gitpython
         ]);
 
         # ROCm runtime libraries
@@ -99,6 +98,7 @@
           packages = [
             pythonEnv
             pkgs.git
+            pkgs.git-lfs
             pkgs.wget
             pkgs.curl
             pkgs.ffmpeg
