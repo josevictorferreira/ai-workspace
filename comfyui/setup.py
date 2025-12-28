@@ -51,24 +51,28 @@ def run_cmd(cmd: list[str], cwd: Path | None = None, check: bool = True) -> subp
     return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
 
 
-def git_clone(url: str, dest: Path, branch: str | None = None, depth: int = 1, lfs: bool = False) -> bool:
+def git_clone(url: str, dest: Path, branch: str | None = None, depth: int = 1, lfs: bool = False, show_progress: bool = True) -> bool:
     """Clone a git repository."""
     if lfs:
-        # For LFS repos (like HuggingFace), use git lfs clone for better performance
-        cmd = ["git", "lfs", "clone"]
+        # For LFS repos, use git lfs clone for better performance
+        cmd = ["git", "lfs", "clone", "--progress"]
         if branch:
             cmd.extend(["--branch", branch])
         cmd.extend([url, str(dest)])
     else:
-        cmd = ["git", "clone", "--depth", str(depth)]
+        cmd = ["git", "clone", "--progress", "--depth", str(depth)]
         if branch:
             cmd.extend(["--branch", branch])
         cmd.extend([url, str(dest)])
     try:
-        run_cmd(cmd)
+        if show_progress:
+            # Don't capture output so progress shows in terminal
+            subprocess.run(cmd, check=True)
+        else:
+            run_cmd(cmd)
         return True
     except subprocess.CalledProcessError as e:
-        error(f"Failed to clone {url}: {e.stderr}")
+        error(f"Failed to clone {url}")
         return False
 
 
@@ -246,6 +250,40 @@ def download_model(args: tuple[str, str, dict, Path]) -> tuple[str, bool]:
     return (name, False)
 
 
+def parse_hf_url(url: str) -> str | None:
+    """Extract repo_id from HuggingFace URL. Returns None if not a HF URL."""
+    import re
+    # Match huggingface.co URLs like:
+    # https://huggingface.co/JunhaoZhuang/FlashVSR
+    # https://huggingface.co/JunhaoZhuang/FlashVSR/tree/main
+    match = re.match(r"https?://huggingface\.co/([^/]+/[^/]+)", url)
+    if match:
+        return match.group(1)
+    return None
+
+
+def download_hf_repo(repo_id: str, dest: Path, revision: str | None = None) -> bool:
+    """Download a HuggingFace repository using huggingface_hub with progress bars."""
+    try:
+        from huggingface_hub import snapshot_download
+    except ImportError:
+        warn("huggingface_hub not installed, falling back to git lfs clone")
+        return False
+    
+    try:
+        info(f"Downloading {repo_id} from HuggingFace...")
+        snapshot_download(
+            repo_id=repo_id,
+            local_dir=str(dest),
+            revision=revision,
+            local_dir_use_symlinks=False,
+        )
+        return True
+    except Exception as e:
+        error(f"Failed to download {repo_id}: {e}")
+        return False
+
+
 def setup_model_repos(config: dict[str, Any], base_dir: Path) -> bool:
     """Clone model repositories (e.g., from HuggingFace)."""
     comfyui_dir = base_dir / config.get("comfyui", {}).get("install_dir", "ComfyUI")
@@ -268,27 +306,29 @@ def setup_model_repos(config: dict[str, Any], base_dir: Path) -> bool:
             all_success = False
             continue
         
-        if not repo_dir.exists():
-            info(f"Cloning {name} (this may take a while for large repos)...")
+        if repo_dir.exists():
+            success(f"{name} already exists at {repo_dir}")
+            continue
+        
+        # Check if it's a HuggingFace URL
+        hf_repo_id = parse_hf_url(url)
+        if hf_repo_id:
+            if download_hf_repo(hf_repo_id, repo_dir, revision=rev):
+                success(f"{name} downloaded successfully")
+            else:
+                # Fallback to git lfs clone
+                info(f"Falling back to git lfs clone for {name}...")
+                if git_clone(url, repo_dir, branch=rev, lfs=True):
+                    success(f"{name} cloned successfully")
+                else:
+                    all_success = False
+        else:
+            # Non-HF repo, use git clone with progress
+            info(f"Cloning {name}...")
             if git_clone(url, repo_dir, branch=rev, lfs=True):
                 success(f"{name} cloned successfully")
             else:
                 all_success = False
-        else:
-            current = git_current_version(repo_dir)
-            if rev and current != rev:
-                info(f"Updating {name} to {rev}...")
-                if git_checkout(repo_dir, rev):
-                    # Pull LFS files after checkout
-                    try:
-                        run_cmd(["git", "lfs", "pull"], cwd=repo_dir)
-                        success(f"{name} updated to {rev}")
-                    except subprocess.CalledProcessError:
-                        warn(f"LFS pull failed for {name}")
-                else:
-                    all_success = False
-            else:
-                success(f"{name} already installed at {current}")
     
     return all_success
 

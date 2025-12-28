@@ -53,6 +53,7 @@ model_repos:
     # rev: "main"  # Optional: specific branch/tag/commit
 
 pip_packages:
+  - "huggingface_hub"
   - "spandrel"
   - "comfyui-frontend-package"
   - "comfyui-workflow-templates"
