@@ -217,6 +217,47 @@
               fi
             fi
 
+            # --- DECLARATIVE OUTPUT & WORKFLOW DIRECTORIES ---
+            OUTPUT_DIR="$HOME/Homelab/images/ai-generations"
+            WORKFLOW_DIR="$HOME/Homelab/backups/workflows"
+            COMFY_OUTPUT="$PWD/ComfyUI/output"
+            COMFY_WORKFLOWS="$PWD/ComfyUI/user/default/workflows"
+
+            # Ensure target directories exist
+            mkdir -p "$OUTPUT_DIR"
+            mkdir -p "$WORKFLOW_DIR"
+
+            # Setup output symlink (only if ComfyUI is installed)
+            if [ -d "$PWD/ComfyUI" ]; then
+              if [ -d "$COMFY_OUTPUT" ] && [ ! -L "$COMFY_OUTPUT" ]; then
+                # Move existing outputs to target dir and replace with symlink
+                if [ "$(ls -A "$COMFY_OUTPUT" 2>/dev/null)" ]; then
+                  mv "$COMFY_OUTPUT"/* "$OUTPUT_DIR/" 2>/dev/null || true
+                fi
+                rm -rf "$COMFY_OUTPUT"
+                ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
+                echo "Linked outputs -> $OUTPUT_DIR"
+              elif [ ! -e "$COMFY_OUTPUT" ]; then
+                ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
+                echo "Linked outputs -> $OUTPUT_DIR"
+              fi
+
+              # Setup workflows symlink
+              mkdir -p "$PWD/ComfyUI/user/default"
+              if [ -d "$COMFY_WORKFLOWS" ] && [ ! -L "$COMFY_WORKFLOWS" ]; then
+                # Move existing workflows to target dir and replace with symlink
+                if [ "$(ls -A "$COMFY_WORKFLOWS" 2>/dev/null)" ]; then
+                  mv "$COMFY_WORKFLOWS"/* "$WORKFLOW_DIR/" 2>/dev/null || true
+                fi
+                rm -rf "$COMFY_WORKFLOWS"
+                ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
+                echo "Linked workflows -> $WORKFLOW_DIR"
+              elif [ ! -e "$COMFY_WORKFLOWS" ]; then
+                ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
+                echo "Linked workflows -> $WORKFLOW_DIR"
+              fi
+            fi
+
             # Set this workspace as default
             comfy set-default "$PWD" 2>/dev/null || true
             echo ""
