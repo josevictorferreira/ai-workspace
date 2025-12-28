@@ -165,6 +165,8 @@
             source "$VENV_DIR/bin/activate"
             export COMFYUI_ROOT="$PWD"
 
+            pip install --quiet aule-attention
+
             # Install ComfyUI frontend and required packages if not present
             if ! python -c "import comfyui_frontend_package" 2>/dev/null; then
               echo "Installing ComfyUI frontend packages..."
