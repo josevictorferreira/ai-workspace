@@ -59,7 +59,7 @@
             pyyaml
             numpy
             einops
-            transformers
+            # transformers/huggingface_hub installed via pip for version compatibility
             tokenizers
             sentencepiece
             safetensors
@@ -134,8 +134,9 @@
           mkdir -p "$COMFY_SNAP_DIR"
           cp "$LATEST" "$COMFY_SNAP_DIR/"
           
-          SNAP_NAME=$(basename "$LATEST")
-          comfy node restore-snapshot "$SNAP_NAME"
+          # Use cm-cli directly with absolute path for reliability
+          cd "$COMFYUI_WORKSPACE/ComfyUI"
+          "$VENV_DIR/bin/python" "custom_nodes/ComfyUI-Manager/cm-cli.py" restore-snapshot "$COMFY_SNAP_DIR/$(basename "$LATEST")"
         '';
       in
       {
@@ -174,8 +175,8 @@
               pip install --quiet comfy-cli
             fi
 
-            # Install additional packages
-            pip install --quiet aule-attention huggingface_hub spandrel
+            # Install additional packages (transformers needs compatible huggingface_hub<1.0)
+            pip install --quiet "huggingface_hub>=0.34.0,<1.0" "transformers>=4.40.0" aule-attention spandrel
 
             # Set workspace to current directory
             export COMFYUI_WORKSPACE="$PWD"
