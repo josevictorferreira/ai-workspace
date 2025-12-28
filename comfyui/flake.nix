@@ -89,6 +89,54 @@
           sudo rocm-smi --showclocks
           sudo rocm-smi --showpower
         '';
+
+        # Helper script to save ComfyUI snapshots
+        comfySave = pkgs.writeShellScriptBin "comfy-save" ''
+          SNAPSHOT_DIR="$COMFYUI_WORKSPACE/snapshots"
+          mkdir -p "$SNAPSHOT_DIR"
+          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+          SNAPSHOT_FILE="$SNAPSHOT_DIR/''${TIMESTAMP}_snapshot.json"
+          
+          echo "Saving snapshot to $SNAPSHOT_FILE..."
+          comfy node save-snapshot
+          
+          # comfy-cli saves snapshots to ComfyUI/user/default/snapshots/
+          LATEST=$(ls -t "$COMFYUI_WORKSPACE/ComfyUI/user/default/snapshots/"*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST" ]; then
+            cp "$LATEST" "$SNAPSHOT_FILE"
+            echo "Snapshot saved: $SNAPSHOT_FILE"
+            echo "Don't forget to commit it to version control!"
+          else
+            echo "Error: Could not find generated snapshot"
+            exit 1
+          fi
+        '';
+
+        # Helper script to restore from latest versioned snapshot
+        comfyRestore = pkgs.writeShellScriptBin "comfy-restore" ''
+          SNAPSHOT_DIR="$COMFYUI_WORKSPACE/snapshots"
+          
+          if [ ! -d "$SNAPSHOT_DIR" ]; then
+            echo "No snapshots directory found"
+            exit 1
+          fi
+          
+          LATEST=$(ls -t "$SNAPSHOT_DIR"/*.json 2>/dev/null | head -1)
+          if [ -z "$LATEST" ]; then
+            echo "No snapshots found in $SNAPSHOT_DIR"
+            exit 1
+          fi
+          
+          echo "Restoring from: $LATEST"
+          
+          # Copy snapshot to ComfyUI's snapshot directory
+          COMFY_SNAP_DIR="$COMFYUI_WORKSPACE/ComfyUI/user/default/snapshots"
+          mkdir -p "$COMFY_SNAP_DIR"
+          cp "$LATEST" "$COMFY_SNAP_DIR/"
+          
+          SNAP_NAME=$(basename "$LATEST")
+          comfy node restore-snapshot "$SNAP_NAME"
+        '';
       in
       {
         devShells.default = pkgs.mkShell {
@@ -97,6 +145,8 @@
           packages = [
             pythonEnv
             capGpu
+            comfySave
+            comfyRestore
           ]
           ++ rocmDependencies
           ++ buildInputs;
@@ -146,14 +196,24 @@
             echo "  comfy env                  - Show environment info"
             echo "  cap-gpu                    - Downgrade GPU for stability"
             echo ""
+            echo "Snapshot Management:"
+            echo "  comfy-save                 - Save current config to snapshots/"
+            echo "  comfy-restore              - Restore from latest snapshot"
+            echo ""
             echo "ROCm: enabled | Python: ${python.version}"
             echo ""
 
             # Auto-install ComfyUI if not present
             if [ ! -d "ComfyUI" ]; then
               echo "First run detected. Installing ComfyUI..."
-              comfy --here install --skip-manager
-              comfy --here node install ComfyUI-Manager
+              comfy --here install
+              
+              # Auto-restore from latest versioned snapshot if available
+              if [ -d "snapshots" ] && ls snapshots/*.json &>/dev/null; then
+                echo ""
+                echo "Found versioned snapshots. Restoring configuration..."
+                comfy-restore
+              fi
             fi
 
             # Set this workspace as default
