@@ -47,6 +47,7 @@
           pkgs.git-lfs
           pkgs.ffmpeg
           pkgs.portaudio
+          pkgs.uv # Required by ComfyUI-Manager for package operations
         ];
 
         pythonEnv = python.withPackages (
@@ -82,6 +83,14 @@
           ]
         );
 
+        capGpu = pkgs.writeShellScriptBin "cap-gpu" ''
+          echo manual | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
+          sudo rocm-smi --setpoweroverdrive 281
+          sudo rocm-smi --setsrange 500 1800
+          sudo rocm-smi --showclocks
+          sudo rocm-smi --showpower
+        '';
+
         # Setup script wrapper
         setupScript = pkgs.writeShellScriptBin "comfyui-setup" ''
           cd "''${COMFYUI_ROOT:-$PWD}"
@@ -101,7 +110,7 @@
           fi
           cd "$COMFYUI_DIR"
           echo "Starting ComfyUI..."
-          exec python main.py --listen 0.0.0.0 --port 8188 "$@"
+          exec python main.py --listen 0.0.0.0 --port 8188 --lowvram --use-split-cross-attention "$@"
         '';
       in
       {
@@ -119,6 +128,7 @@
             pythonEnv
             setupScript
             startScript
+            capGpu
           ]
           ++ rocmDependencies
           ++ buildInputs;
@@ -132,7 +142,8 @@
             export HSA_ENABLE_SDMA="0"
 
             # 3. Memory Allocation fix for PyTorch on consumer cards
-            export PYTORCH_HIP_ALLOC_CONF="expandable_segments:True"
+            # export PYTORCH_HIP_ALLOC_CONF="expandable_segments:True"
+            export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
 
             # 4. Device Visibility
             export HIP_VISIBLE_DEVICES="0"
@@ -154,6 +165,12 @@
             source "$VENV_DIR/bin/activate"
             export COMFYUI_ROOT="$PWD"
 
+            # Install ComfyUI frontend and required packages if not present
+            if ! python -c "import comfyui_frontend_package" 2>/dev/null; then
+              echo "Installing ComfyUI frontend packages..."
+              pip install --quiet comfyui-frontend-package comfyui-workflow-templates comfyui-embedded-docs spandrel toml
+            fi
+
             echo "============================================"
             echo "  ComfyUI Declarative Environment"
             echo "============================================"
@@ -162,6 +179,7 @@
             echo "  comfyui-setup         - Install/update ComfyUI, nodes, and models"
             echo "  comfyui-setup --all   - Include optional models"
             echo "  comfyui-start         - Start ComfyUI server"
+            echo "  cap-gpu               - Downgrade gpu performance level for stability"
             echo ""
             echo "Configuration: Edit comfyui.yaml"
             echo ""
