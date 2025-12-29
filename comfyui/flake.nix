@@ -82,7 +82,7 @@
           ]
         );
 
-        capGpu = pkgs.writeShellScriptBin "cap-gpu" ''
+        gpuCap = pkgs.writeShellScriptBin "gpu-cap" ''
           echo manual | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
           sudo rocm-smi --setpoweroverdrive 281
           sudo rocm-smi --setsrange 500 1800
@@ -160,7 +160,7 @@
           echo "  comfy-restore              - Restore from latest snapshot"
           echo ""
           echo "Hardware Management:"
-          echo "  cap-gpu                    - Downgrade GPU for stability"
+          echo "  gpu-cap                    - Downgrade GPU for stability"
           echo ""
           echo "Help:"
           echo "  comfy-help                 - Show this help"
@@ -175,7 +175,7 @@
 
           packages = [
             pythonEnv
-            capGpu
+            gpuCap
             comfySave
             comfyRestore
             comfyHelp
