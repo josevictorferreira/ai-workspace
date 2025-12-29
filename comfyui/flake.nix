@@ -23,13 +23,14 @@
         python = pkgs.python312;
 
         # ROCm packages - 'clr' contains libamdhip64.so (CRITICAL for hip symbols)
+        # NOTE: hipblaslt removed - gfx1030 (6900 XT) lacks Tensile library support
         rocmDependencies = with pkgs.rocmPackages; [
           rocm-runtime
           rocm-smi
           rocminfo
           hip-common
           hipblas
-          hipblaslt
+          # hipblaslt - DISABLED: causes HIPBLAS_STATUS_INVALID_VALUE on gfx1030
           miopen
           rocblas
           rocsolver
@@ -147,8 +148,49 @@
 
         # Wrapper to launch ComfyUI on 0.0.0.0 with relaxed security for Manager
         comfyLaunch = pkgs.writeShellScriptBin "comfy-launch" ''
+          # Disable hipblaslt for gfx1030 (no Tensile library support)
+          export TORCH_BLAS_PREFER_HIPBLASLT="0"
+          export TORCH_ROCM_DISABLE_HIPBLASLT="1"
+          export HIPBLASLT_FORCE_FALLBACK="1"
+          export ROCBLAS_DISABLE_HIPBLASLT="1"
+          export HIPBLASLT_TENSILE_LIBPATH=""
+          export ROCBLAS_NO_HIPBLASLT="1"
+          export USE_ROCM_HIPBLASLT="0"
+          export HIPBLASLT_ENABLED="0"
           export CM_SECURITY_LEVEL="weak"
           comfy launch -- --auto-launch --listen 0.0.0.0 "$@"
+        '';
+
+        # Model downloader with automatic token injection
+        comfyModel = pkgs.writeShellScriptBin "comfy-model" ''
+          if [ -z "$1" ]; then
+            echo "Usage: comfy-model <url> [extra-args...]"
+            echo "Downloads a model with automatic HuggingFace/CivitAI token injection"
+            exit 1
+          fi
+
+          URL="$1"
+          shift
+
+          if [[ "$URL" == *"huggingface.co"* ]] || [[ "$URL" == *"hf.co"* ]]; then
+            HF_TOKEN=$(cat /run/secrets/hugging_face_api_key 2>/dev/null)
+            if [ -n "$HF_TOKEN" ]; then
+              comfy model download --set-hf-api-token "$HF_TOKEN" --url "$URL" "$@"
+            else
+              echo "Warning: HuggingFace token not found at /run/secrets/hugging_face_api_key"
+              comfy model download --url "$URL" "$@"
+            fi
+          elif [[ "$URL" == *"civitai.com"* ]]; then
+            CIVITAI_TOKEN=$(cat /run/secrets/civitai_api_key 2>/dev/null)
+            if [ -n "$CIVITAI_TOKEN" ]; then
+              comfy model download --set-civitai-api-token "$CIVITAI_TOKEN" --url "$URL" "$@"
+            else
+              echo "Warning: CivitAI token not found at /run/secrets/civitai_api_key"
+              comfy model download --url "$URL" "$@"
+            fi
+          else
+            comfy model download --url "$URL" "$@"
+          fi
         '';
 
         # ROCm-safe node installer (excludes torch packages)
@@ -218,7 +260,7 @@
           echo "  comfy stop                 - Stop background instance"
           echo "  comfy-node-install <name>  - Install node (ROCm-safe)"
           echo "  comfy node update all      - Update all nodes"
-          echo "  comfy model download --url <url>  - Download model"
+          echo "  comfy-model <url>          - Download model (auto-injects tokens)"
           echo "  comfy which                - Show current workspace"
           echo "  comfy env                  - Show environment info"
           echo ""
@@ -246,6 +288,7 @@
             comfySave
             comfyRestore
             comfyLaunch
+            comfyModel
             comfyNodeInstall
             comfyHelp
           ]
@@ -260,6 +303,20 @@
             export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
             export PYTORCH_TUNABLEOP_ENABLED="1"
             export HIP_VISIBLE_DEVICES="0"
+            # Disable hipblaslt to avoid HIPBLAS_STATUS_INVALID_VALUE errors (gfx1030 missing Tensile libs)
+            export TORCH_BLAS_PREFER_HIPBLASLT="0"
+            export TORCH_ROCM_DISABLE_HIPBLASLT="1"
+            export HIPBLASLT_LOG_MASK="0"
+            export ROCBLAS_LAYER="0"
+            # Force disable hipblaslt entirely by hiding the library path
+            export HIPBLASLT_TENSILE_LIBPATH=""
+            # Additional fallback flags for newer PyTorch versions
+            export ROCBLAS_DISABLE_HIPBLASLT="1"
+            export HIPBLASLT_FORCE_FALLBACK="1"
+            # More aggressive hipblaslt disable (critical for gfx1030)
+            export ROCBLAS_NO_HIPBLASLT="1"
+            export USE_ROCM_HIPBLASLT="0"
+            export HIPBLASLT_ENABLED="0"
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
 
             # --- VENV SETUP ---
