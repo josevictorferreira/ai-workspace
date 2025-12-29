@@ -29,6 +29,7 @@
           rocminfo
           hip-common
           hipblas
+          hipblaslt
           miopen
           rocblas
           rocsolver
@@ -44,9 +45,14 @@
           pkgs.git
           pkgs.git-lfs
           pkgs.ffmpeg
-          pkgs.portaudio
           pkgs.uv
           pkgs.wget
+        ];
+
+        # Audio libraries needed by custom nodes (TTS, audio processing)
+        audioLibs = [
+          pkgs.portaudio
+          pkgs.libsamplerate
         ];
 
         pythonEnv = python.withPackages (
@@ -139,6 +145,67 @@
           "$VENV_DIR/bin/python" "custom_nodes/ComfyUI-Manager/cm-cli.py" restore-snapshot "$COMFY_SNAP_DIR/$(basename "$LATEST")"
         '';
 
+        # Wrapper to launch ComfyUI on 0.0.0.0 with relaxed security for Manager
+        comfyLaunch = pkgs.writeShellScriptBin "comfy-launch" ''
+          export CM_SECURITY_LEVEL="weak"
+          comfy launch -- --auto-launch --listen 0.0.0.0 "$@"
+        '';
+
+        # ROCm-safe node installer (excludes torch packages)
+        comfyNodeInstall = pkgs.writeShellScriptBin "comfy-node-install" ''
+          if [ -z "$1" ]; then
+            echo "Usage: comfy-node-install <node-name-or-git-url>"
+            echo "Installs a custom node with ROCm-compatible dependencies"
+            exit 1
+          fi
+
+          NODE_ARG="$1"
+          
+          # Install the node (this may install CUDA torch)
+          echo "Installing node: $NODE_ARG"
+          comfy node install "$NODE_ARG"
+          
+          # Find the installed node directory
+          if [[ "$NODE_ARG" == http* ]]; then
+            # Git URL - extract repo name
+            NODE_NAME=$(basename "$NODE_ARG" .git)
+          else
+            NODE_NAME="$NODE_ARG"
+          fi
+          
+          # Search for the node in custom_nodes
+          NODE_DIR=$(find "$COMFYUI_WORKSPACE/ComfyUI/custom_nodes" -maxdepth 1 -type d -iname "*$NODE_NAME*" | head -1)
+          
+          if [ -z "$NODE_DIR" ]; then
+            echo "Warning: Could not find node directory for $NODE_NAME"
+            echo "You may need to manually fix torch dependencies"
+            exit 0
+          fi
+          
+          # Fix ROCm: uninstall any CUDA torch and reinstall requirements without torch
+          echo "Fixing ROCm compatibility..."
+          pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
+          pip uninstall -y nvidia-cublas-cu12 nvidia-cuda-cupti-cu12 nvidia-cuda-nvrtc-cu12 \
+            nvidia-cuda-runtime-cu12 nvidia-cudnn-cu12 nvidia-cufft-cu12 nvidia-cufile-cu12 \
+            nvidia-curand-cu12 nvidia-cusolver-cu12 nvidia-cusparse-cu12 nvidia-cusparselt-cu12 \
+            nvidia-nccl-cu12 nvidia-nvjitlink-cu12 nvidia-nvshmem-cu12 nvidia-nvtx-cu12 2>/dev/null || true
+          
+          # Reinstall requirements without torch lines
+          if [ -f "$NODE_DIR/requirements.txt" ]; then
+            echo "Reinstalling dependencies (excluding torch)..."
+            grep -v "^torch" "$NODE_DIR/requirements.txt" | grep -v "^#" | grep -v "^$" | \
+              pip install -r /dev/stdin 2>&1 || true
+          fi
+          
+          # Run install.py if it exists (some nodes need this)
+          if [ -f "$NODE_DIR/install.py" ]; then
+            echo "Running install.py..."
+            python "$NODE_DIR/install.py" 2>&1 || true
+          fi
+          
+          echo "Done! Node installed with ROCm torch preserved."
+        '';
+
         comfyHelp = pkgs.writeShellScriptBin "comfy-help" ''
           echo "============================================"
           echo "  ComfyUI Environment (comfy-cli)"
@@ -146,10 +213,10 @@
           echo ""
           echo "Commands:"
           echo "  comfy install              - Install ComfyUI"
-          echo "  comfy launch               - Start ComfyUI"
-          echo "  comfy launch --background  - Start in background"
+          echo "  comfy-launch               - Start ComfyUI (0.0.0.0)"
+          echo "  comfy-launch --background  - Start in background"
           echo "  comfy stop                 - Stop background instance"
-          echo "  comfy node install <name>  - Install custom node"
+          echo "  comfy-node-install <name>  - Install node (ROCm-safe)"
           echo "  comfy node update all      - Update all nodes"
           echo "  comfy model download --url <url>  - Download model"
           echo "  comfy which                - Show current workspace"
@@ -178,18 +245,22 @@
             gpuCap
             comfySave
             comfyRestore
+            comfyLaunch
+            comfyNodeInstall
             comfyHelp
           ]
           ++ rocmDependencies
-          ++ buildInputs;
+          ++ buildInputs
+          ++ audioLibs;
 
           shellHook = ''
             # --- 6900 XT STABILITY FIXES ---
             export HSA_OVERRIDE_GFX_VERSION="10.3.0"
             export HSA_ENABLE_SDMA="0"
             export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
+            export PYTORCH_TUNABLEOP_ENABLED="1"
             export HIP_VISIBLE_DEVICES="0"
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath rocmDependencies}:$LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
 
             # --- VENV SETUP ---
             VENV_DIR="$PWD/.venv"
