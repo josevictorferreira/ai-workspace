@@ -138,6 +138,36 @@
           cd "$COMFYUI_WORKSPACE/ComfyUI"
           "$VENV_DIR/bin/python" "custom_nodes/ComfyUI-Manager/cm-cli.py" restore-snapshot "$COMFY_SNAP_DIR/$(basename "$LATEST")"
         '';
+
+        comfyHelp = pkgs.writeShellScriptBin "comfy-help" ''
+          echo "============================================"
+          echo "  ComfyUI Environment (comfy-cli)"
+          echo "============================================"
+          echo ""
+          echo "Commands:"
+          echo "  comfy install              - Install ComfyUI"
+          echo "  comfy launch               - Start ComfyUI"
+          echo "  comfy launch --background  - Start in background"
+          echo "  comfy stop                 - Stop background instance"
+          echo "  comfy node install <name>  - Install custom node"
+          echo "  comfy node update all      - Update all nodes"
+          echo "  comfy model download --url <url>  - Download model"
+          echo "  comfy which                - Show current workspace"
+          echo "  comfy env                  - Show environment info"
+          echo ""
+          echo "Snapshot Management:"
+          echo "  comfy-save                 - Save current config to snapshots/"
+          echo "  comfy-restore              - Restore from latest snapshot"
+          echo ""
+          echo "Hardware Management:"
+          echo "  cap-gpu                    - Downgrade GPU for stability"
+          echo ""
+          echo "Help:"
+          echo "  comfy-help                 - Show this help"
+          echo ""
+          echo "ROCm: enabled | Python: ${python.version}"
+          echo ""
+        '';
       in
       {
         devShells.default = pkgs.mkShell {
@@ -148,6 +178,7 @@
             capGpu
             comfySave
             comfyRestore
+            comfyHelp
           ]
           ++ rocmDependencies
           ++ buildInputs;
@@ -175,34 +206,10 @@
               pip install --quiet comfy-cli
             fi
 
-            # Install additional packages (transformers needs compatible huggingface_hub<1.0)
-            pip install --quiet "huggingface_hub>=0.34.0,<1.0" "transformers>=4.40.0" aule-attention spandrel
-
             # Set workspace to current directory
             export COMFYUI_WORKSPACE="$PWD"
 
-            echo "============================================"
-            echo "  ComfyUI Environment (comfy-cli)"
-            echo "============================================"
-            echo ""
-            echo "Commands:"
-            echo "  comfy install              - Install ComfyUI"
-            echo "  comfy launch               - Start ComfyUI"
-            echo "  comfy launch --background  - Start in background"
-            echo "  comfy stop                 - Stop background instance"
-            echo "  comfy node install <name>  - Install custom node"
-            echo "  comfy node update all      - Update all nodes"
-            echo "  comfy model download --url <url>  - Download model"
-            echo "  comfy which                - Show current workspace"
-            echo "  comfy env                  - Show environment info"
-            echo "  cap-gpu                    - Downgrade GPU for stability"
-            echo ""
-            echo "Snapshot Management:"
-            echo "  comfy-save                 - Save current config to snapshots/"
-            echo "  comfy-restore              - Restore from latest snapshot"
-            echo ""
-            echo "ROCm: enabled | Python: ${python.version}"
-            echo ""
+            ${pkgs.lib.getExe comfyHelp}
 
             # Auto-install ComfyUI if not present
             if [ ! -d "ComfyUI" ]; then
