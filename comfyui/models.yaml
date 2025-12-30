@@ -1,0 +1,127 @@
+# ComfyUI Declarative Model Configuration
+# This file defines all models to be downloaded/installed for this ComfyUI setup.
+# Run `comfy-models-sync` to download all models defined here.
+#
+# Supported sources:
+#   - huggingface: HuggingFace model files (requires HF token for gated models)
+#   - civitai: CivitAI model files (requires CivitAI API key)
+#   - github: Direct file downloads from GitHub releases/raw files
+#   - git: Clone entire git repositories (for model repos with multiple files)
+#   - url: Direct HTTP/HTTPS download links
+#
+# Model types (destination folders):
+#   checkpoints, loras, vae, controlnet, clip, clip_vision, embeddings,
+#   upscale_models, diffusion_models, text_encoders, unet, configs,
+#   hypernetworks, gligen, style_models, photomaker, audio, audio_encoders,
+#   TTS, model_patches, latent_upscale_models, diffusers
+#
+# Custom paths:
+#   Use `path` field for custom nested destinations (relative to models/)
+#   Example: path: "maya1-TTS/maya1" -> models/maya1-TTS/maya1/
+#
+# Tags:
+#   Use `tags` field to categorize models for selective sync
+#   Example: tags: [video, upscale] or tags: [audio, tts]
+#
+# Token Configuration:
+#   HuggingFace: Set HF_TOKEN env var or place token at /run/secrets/hugging_face_api_key
+#   CivitAI: Set CIVITAI_API_TOKEN env var or place token at /run/secrets/civitai_api_key
+#
+# Usage:
+#   comfy-models-sync              # Download all models
+#   comfy-models-sync --dry-run    # Preview what would be downloaded
+#   comfy-models-sync --tag video  # Sync only models tagged 'video'
+#   comfy-models-sync --tag audio  # Sync only models tagged 'audio'
+#   comfy-models-sync list         # List configured models
+#   comfy-models-sync list --tag video  # List models with 'video' tag
+
+models:
+  # ============================================================
+  # VIDEO SUPER RESOLUTION
+  # ============================================================
+  # FlashVSR - Ultra fast video super resolution
+  # Used by: ComfyUI-FlashVSR_Ultra_Fast custom node
+  # Downloads to: models/FlashVSR/
+  - name: "FlashVSR"
+    source: git
+    path: "FlashVSR"
+    repo: "https://huggingface.co/JunhaoZhuang/FlashVSR"
+    tags: [video, upscale]
+
+  # ============================================================
+  # TEXT-TO-SPEECH
+  # ============================================================
+  # Maya1 TTS - 3B parameter expressive voice model with emotions
+  # Used by: ComfyUI-Maya1_TTS custom node
+  # Downloads to: models/maya1-TTS/maya1/
+  - name: "maya1"
+    source: git
+    path: "maya1-TTS/maya1"
+    repo: "https://huggingface.co/maya-research/maya1"
+    tags: [audio, tts]
+
+  # ============================================================
+  # EXAMPLES (uncomment to use)
+  # ============================================================
+
+  # === CHECKPOINTS ===
+  # - name: "sd_xl_base_1.0"
+  #   type: checkpoints
+  #   source: huggingface
+  #   repo: "stabilityai/stable-diffusion-xl-base-1.0"
+  #   file: "sd_xl_base_1.0.safetensors"
+
+  # - name: "dreamshaper_8"
+  #   type: checkpoints
+  #   source: civitai
+  #   model_id: 4384
+  #   version_id: 128713
+
+  # === LORAS ===
+  # - name: "add_detail"
+  #   type: loras
+  #   source: civitai
+  #   model_id: 58390
+  #   version_id: 62833
+
+  # === VAE ===
+  # - name: "sdxl_vae"
+  #   type: vae
+  #   source: huggingface
+  #   repo: "stabilityai/sdxl-vae"
+  #   file: "sdxl_vae.safetensors"
+
+  # === CONTROLNET ===
+  # - name: "control_v11p_sd15_canny"
+  #   type: controlnet
+  #   source: huggingface
+  #   repo: "lllyasviel/ControlNet-v1-1"
+  #   file: "control_v11p_sd15_canny.pth"
+
+  # === GIT REPOS (for multi-file models like FLUX, etc.) ===
+  # - name: "FLUX.1-dev"
+  #   type: diffusion_models
+  #   source: git
+  #   repo: "https://huggingface.co/black-forest-labs/FLUX.1-dev"
+
+  # === CLIP / TEXT ENCODERS ===
+  # - name: "clip-vit-large-patch14"
+  #   type: clip
+  #   source: huggingface
+  #   repo: "openai/clip-vit-large-patch14"
+  #   file: "model.safetensors"
+
+  # === EMBEDDINGS ===
+  # - name: "bad_prompt_v2"
+  #   type: embeddings
+  #   source: civitai
+  #   model_id: 55700
+  #   version_id: 60095
+
+  # === GITHUB RELEASE ASSETS ===
+  # - name: "segment-anything"
+  #   type: checkpoints
+  #   source: github
+  #   repo: "facebookresearch/segment-anything"
+  #   release: "latest"
+  #   asset: "sam_vit_h_4b8939.pth"

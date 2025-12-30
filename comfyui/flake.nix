@@ -248,6 +248,11 @@
           echo "Done! Node installed with ROCm torch preserved."
         '';
 
+        # Declarative model sync script wrapper
+        comfyModelsSync = pkgs.writeShellScriptBin "comfy-models-sync" ''
+          python "$COMFYUI_WORKSPACE/scripts/comfy-models-sync.py" "$@"
+        '';
+
         comfyHelp = pkgs.writeShellScriptBin "comfy-help" ''
           echo "============================================"
           echo "  ComfyUI Environment (comfy-cli)"
@@ -263,6 +268,12 @@
           echo "  comfy-model <url>          - Download model (auto-injects tokens)"
           echo "  comfy which                - Show current workspace"
           echo "  comfy env                  - Show environment info"
+          echo ""
+          echo "Model Management:"
+          echo "  comfy-models-sync          - Sync models from models.yaml"
+          echo "  comfy-models-sync list     - List configured models"
+          echo "  comfy-models-sync add ...  - Add a model to models.yaml"
+          echo "  comfy-models-sync --help   - Show model sync options"
           echo ""
           echo "Snapshot Management:"
           echo "  comfy-save                 - Save current config to snapshots/"
@@ -290,6 +301,7 @@
             comfyLaunch
             comfyModel
             comfyNodeInstall
+            comfyModelsSync
             comfyHelp
           ]
           ++ rocmDependencies
@@ -349,6 +361,13 @@
                 echo ""
                 echo "Found versioned snapshots. Restoring configuration..."
                 comfy-restore
+              fi
+              
+              # Auto-sync models from models.yaml if present
+              if [ -f "models.yaml" ]; then
+                echo ""
+                echo "Found models.yaml. Syncing models..."
+                comfy-models-sync
               fi
             fi
 
