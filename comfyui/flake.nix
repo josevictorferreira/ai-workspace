@@ -29,8 +29,8 @@
           rocm-smi
           rocminfo
           hip-common
-          hipblas
-          # hipblaslt - DISABLED: causes HIPBLAS_STATUS_INVALID_VALUE on gfx1030
+          # hipblas
+          # hipblaslt # Provides libhipblaslt.so.0 (required by PyTorch); actual use disabled via env vars
           miopen
           rocblas
           rocsolver
@@ -54,6 +54,11 @@
         audioLibs = [
           pkgs.portaudio
           pkgs.libsamplerate
+        ];
+
+        # Additional libraries required by pip-installed PyTorch ROCm
+        torchLibs = [
+          pkgs.zstd
         ];
 
         pythonEnv = python.withPackages (
@@ -148,15 +153,10 @@
 
         # Wrapper to launch ComfyUI on 0.0.0.0 with relaxed security for Manager
         comfyLaunch = pkgs.writeShellScriptBin "comfy-launch" ''
-          # Disable hipblaslt for gfx1030 (no Tensile library support)
+          # Completely disable hipblaslt for gfx1030 (no Tensile library support)
           export TORCH_BLAS_PREFER_HIPBLASLT="0"
-          export TORCH_ROCM_DISABLE_HIPBLASLT="1"
-          export HIPBLASLT_FORCE_FALLBACK="1"
-          export ROCBLAS_DISABLE_HIPBLASLT="1"
-          export HIPBLASLT_TENSILE_LIBPATH=""
-          export ROCBLAS_NO_HIPBLASLT="1"
-          export USE_ROCM_HIPBLASLT="0"
-          export HIPBLASLT_ENABLED="0"
+          export PYTORCH_TUNABLEOP_ENABLED="0"
+          export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
           export CM_SECURITY_LEVEL="weak"
           comfy launch -- --auto-launch --listen 0.0.0.0 "$@"
         '';
@@ -309,27 +309,17 @@
           ++ audioLibs;
 
           shellHook = ''
-            # --- 6900 XT STABILITY FIXES ---
+            # --- 6900 XT (gfx1030) STABILITY FIXES ---
             export HSA_OVERRIDE_GFX_VERSION="10.3.0"
             export HSA_ENABLE_SDMA="0"
             export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
-            export PYTORCH_TUNABLEOP_ENABLED="1"
             export HIP_VISIBLE_DEVICES="0"
-            # Disable hipblaslt to avoid HIPBLAS_STATUS_INVALID_VALUE errors (gfx1030 missing Tensile libs)
+            # Completely disable hipblaslt - gfx1030 lacks Tensile library support
+            # TunableOp uses hipblaslt internally which causes errors on RDNA2
             export TORCH_BLAS_PREFER_HIPBLASLT="0"
-            export TORCH_ROCM_DISABLE_HIPBLASLT="1"
-            export HIPBLASLT_LOG_MASK="0"
-            export ROCBLAS_LAYER="0"
-            # Force disable hipblaslt entirely by hiding the library path
-            export HIPBLASLT_TENSILE_LIBPATH=""
-            # Additional fallback flags for newer PyTorch versions
-            export ROCBLAS_DISABLE_HIPBLASLT="1"
-            export HIPBLASLT_FORCE_FALLBACK="1"
-            # More aggressive hipblaslt disable (critical for gfx1030)
-            export ROCBLAS_NO_HIPBLASLT="1"
-            export USE_ROCM_HIPBLASLT="0"
-            export HIPBLASLT_ENABLED="0"
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+            export PYTORCH_TUNABLEOP_ENABLED="0"
+            export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs ++ torchLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
 
             # --- VENV SETUP ---
             VENV_DIR="$PWD/.venv"

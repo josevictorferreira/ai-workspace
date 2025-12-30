@@ -42,10 +42,10 @@ models:
   # FlashVSR - Ultra fast video super resolution
   # Used by: ComfyUI-FlashVSR_Ultra_Fast custom node
   # Downloads to: models/FlashVSR/
-  - name: "FlashVSR"
+  - name: "FlashVSR-v1.1"
     source: git
-    path: "FlashVSR"
-    repo: "https://huggingface.co/JunhaoZhuang/FlashVSR"
+    path: "FlashVSR-v1.1"
+    repo: "https://huggingface.co/JunhaoZhuang/FlashVSR-v1.1"
     tags: [video, upscale]
 
   # ============================================================
