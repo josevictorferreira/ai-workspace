@@ -59,6 +59,14 @@
         # Additional libraries required by pip-installed PyTorch ROCm
         torchLibs = [
           pkgs.zstd
+          pkgs.libdrm  # Required for amdgpu.ids path resolution
+        ];
+
+        # Vulkan support for Aule Attention backend
+        vulkanLibs = [
+          pkgs.vulkan-loader
+          pkgs.vulkan-headers
+          pkgs.vulkan-tools
         ];
 
         pythonEnv = python.withPackages (
@@ -96,8 +104,8 @@
 
         gpuCap = pkgs.writeShellScriptBin "gpu-cap" ''
           echo manual | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
-          sudo rocm-smi --setpoweroverdrive 281
-          sudo rocm-smi --setsrange 500 1800
+          sudo rocm-smi --setpoweroverdrive 283
+          sudo rocm-smi --setsrange 500 2200
           sudo rocm-smi --showclocks
           sudo rocm-smi --showpower
         '';
@@ -159,6 +167,24 @@
           export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
           export CM_SECURITY_LEVEL="weak"
           comfy launch -- --auto-launch --listen 0.0.0.0 "$@"
+        '';
+
+        # Launch ComfyUI with Aule Attention (flash attention for RDNA2)
+        comfyLaunchAule = pkgs.writeShellScriptBin "comfy-launch-aule" ''
+          # Completely disable hipblaslt for gfx1030 (no Tensile library support)
+          export TORCH_BLAS_PREFER_HIPBLASLT="0"
+          export PYTORCH_TUNABLEOP_ENABLED="0"
+          export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
+          export CM_SECURITY_LEVEL="weak"
+          
+          echo "============================================"
+          echo "  Launching ComfyUI with Aule Attention"
+          echo "============================================"
+          
+          cd "$COMFYUI_WORKSPACE/ComfyUI"
+          
+          # Create a launcher script that installs shim before any imports
+          exec python "$COMFYUI_WORKSPACE/scripts/comfy_aule_launcher.py" --listen 0.0.0.0 "$@"
         '';
 
         # Model downloader with automatic token injection
@@ -253,6 +279,70 @@
           python "$COMFYUI_WORKSPACE/scripts/comfy-models-sync.py" "$@"
         '';
 
+        # Fix for amdgpu.ids path (one-time setup, requires sudo)
+        fixAmdgpuIds = pkgs.writeShellScriptBin "fix-amdgpu-ids" ''
+          if [ -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
+            echo "amdgpu.ids symlink already exists at /opt/amdgpu/share/libdrm/amdgpu.ids"
+            exit 0
+          fi
+          
+          echo "Creating symlink for amdgpu.ids (fixes ROCm/Vulkan detection warnings)"
+          echo "This requires sudo and only needs to be done once."
+          echo ""
+          
+          sudo mkdir -p /opt/amdgpu/share/libdrm
+          sudo ln -sf "${pkgs.libdrm}/share/libdrm/amdgpu.ids" /opt/amdgpu/share/libdrm/amdgpu.ids
+          
+          if [ -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
+            echo "Success! Symlink created."
+            ls -la /opt/amdgpu/share/libdrm/amdgpu.ids
+          else
+            echo "Failed to create symlink"
+            exit 1
+          fi
+        '';
+
+        # Aule Attention - hardware-agnostic FlashAttention that works on RDNA2
+        # Uses Triton for ROCm/CUDA or Vulkan for consumer AMD GPUs
+        auleAttnInstall = pkgs.writeShellScriptBin "aule-attn-install" ''
+          set -e
+          
+          # Check if already installed
+          if python -c "import aule; print(f'Aule Attention already installed')" 2>/dev/null; then
+            python -c "from aule import get_available_backends; print(f'Available backends: {get_available_backends()}')"
+            exit 0
+          fi
+          
+          echo "============================================"
+          echo "  Installing Aule Attention"
+          echo "  (Hardware-agnostic FlashAttention)"
+          echo "============================================"
+          echo ""
+          echo "This works on AMD RDNA2 (6900 XT) via Triton/Vulkan backends"
+          echo ""
+          
+          pip install --quiet aule-attention
+          
+          # Verify installation
+          if python -c "import aule; from aule import get_available_backends; print(f'Aule Attention installed! Backends: {get_available_backends()}')" 2>/dev/null; then
+            echo ""
+            echo "============================================"
+            echo "  Aule Attention installed successfully!"
+            echo "============================================"
+          else
+            echo "Warning: Installation may have failed"
+            echo "Try: pip install aule-attention"
+          fi
+        '';
+
+        # Keep old name as alias for discoverability
+        flashAttnInstall = pkgs.writeShellScriptBin "flash-attn-install" ''
+          echo "NOTE: ROCm Flash Attention doesn't support RDNA2 (6900 XT)"
+          echo "Use 'aule-attn-install' instead for a compatible alternative."
+          echo ""
+          exec ${pkgs.lib.getExe auleAttnInstall}
+        '';
+
         comfyHelp = pkgs.writeShellScriptBin "comfy-help" ''
           echo "============================================"
           echo "  ComfyUI Environment (comfy-cli)"
@@ -261,7 +351,7 @@
           echo "Commands:"
           echo "  comfy install              - Install ComfyUI"
           echo "  comfy-launch               - Start ComfyUI (0.0.0.0)"
-          echo "  comfy-launch --background  - Start in background"
+          echo "  comfy-launch-aule          - Start with Aule Attention (RDNA2)"
           echo "  comfy stop                 - Stop background instance"
           echo "  comfy-node-install <name>  - Install node (ROCm-safe)"
           echo "  comfy node update all      - Update all nodes"
@@ -281,6 +371,8 @@
           echo ""
           echo "Hardware Management:"
           echo "  gpu-cap                    - Downgrade GPU for stability"
+          echo "  aule-attn-install          - Install Aule Attention (RDNA2 compatible)"
+          echo "  fix-amdgpu-ids             - Fix amdgpu.ids path (one-time, sudo)"
           echo ""
           echo "Help:"
           echo "  comfy-help                 - Show this help"
@@ -299,14 +391,19 @@
             comfySave
             comfyRestore
             comfyLaunch
+            comfyLaunchAule
             comfyModel
             comfyNodeInstall
             comfyModelsSync
+            auleAttnInstall
+            flashAttnInstall
+            fixAmdgpuIds
             comfyHelp
           ]
           ++ rocmDependencies
           ++ buildInputs
-          ++ audioLibs;
+          ++ audioLibs
+          ++ vulkanLibs;
 
           shellHook = ''
             # --- 6900 XT (gfx1030) STABILITY FIXES ---
@@ -319,7 +416,21 @@
             export TORCH_BLAS_PREFER_HIPBLASLT="0"
             export PYTORCH_TUNABLEOP_ENABLED="0"
             export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs ++ torchLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+            
+            # --- ROCm BUILD ENVIRONMENT ---
+            export ROCM_PATH="${pkgs.rocmPackages.clr}"
+            export HIP_PATH="${pkgs.rocmPackages.clr}"
+            export PYTORCH_ROCM_ARCH="gfx1030"
+            
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs ++ torchLibs ++ vulkanLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+            export PATH="${pkgs.rocmPackages.clr}/bin:$PATH"
+            
+            # --- FIX: libdrm amdgpu.ids path for Vulkan/ROCm detection ---
+            export LIBDRM_AMDGPU_IDS_PATH="${pkgs.libdrm}/share/libdrm/amdgpu.ids"
+            # Hint user about the symlink if not present
+            if [ ! -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
+              export AMDGPU_IDS_MISSING=1
+            fi
 
             # --- VENV SETUP ---
             VENV_DIR="$PWD/.venv"
@@ -360,6 +471,7 @@
                 comfy-models-sync
               fi
             fi
+
 
             # --- DECLARATIVE OUTPUT & WORKFLOW DIRECTORIES ---
             OUTPUT_DIR="$HOME/Homelab/images/ai-generations"

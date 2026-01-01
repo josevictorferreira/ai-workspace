@@ -60,6 +60,24 @@ models:
     repo: "https://huggingface.co/maya-research/maya1"
     tags: [audio, tts]
 
+  - name: "MiraTTS"
+    source: git
+    path: "TTS/MiraTTS"
+    repo: "https://huggingface.co/YatharthS/MiraTTS"
+    tags: [audio, tts]
+
+  - name: "F5-TTS-pt-br"
+    source: git
+    path: "TTS/F5-TTS-pt-br"
+    repo: "https://huggingface.co/firstpixel/F5-TTS-pt-br"
+    tags: [audio, tts]
+
+  - name: "chatterbox-turbo"
+    source: git
+    path: "TTS/chatterbox-turbo"
+    repo: "https://huggingface.co/ResembleAI/chatterbox-turbo"
+    tags: [audio, tts]
+
   # ============================================================
   # EXAMPLES (uncomment to use)
   # ============================================================
