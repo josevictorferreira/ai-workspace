@@ -167,7 +167,9 @@ def download_git(model: dict, dest_dir: Path, use_path_directly: bool = False) -
     
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if dest_path.exists() and any(dest_path.iterdir()):
+    # Check if this is a valid git repo by looking for .git directory
+    git_dir = dest_path / ".git"
+    if dest_path.exists() and git_dir.exists():
         print(f"  [SKIP] Already exists: {dest_path.name}")
         return True
 
