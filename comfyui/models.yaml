@@ -19,6 +19,11 @@
 #   Use `path` field for custom nested destinations (relative to models/)
 #   Example: path: "maya1-TTS/maya1" -> models/maya1-TTS/maya1/
 #
+# Custom filenames:
+#   For URL downloads, you can specify a custom filename in two ways:
+#   1. Include filename in path: path: "Dia2/Dia2-2B.safetensors" -> models/Dia2/Dia2-2B.safetensors
+#   2. Use explicit filename field: filename: "custom-name.safetensors"
+#
 # Tags:
 #   Use `tags` field to categorize models for selective sync
 #   Example: tags: [video, upscale] or tags: [audio, tts]
@@ -82,6 +87,18 @@ models:
     source: git
     path: "TTS/chatterbox-turbo"
     repo: "https://huggingface.co/ResembleAI/chatterbox-turbo"
+    tags: [audio, tts]
+
+  - name: "Dia2"
+    source: url
+    url: "https://huggingface.co/nari-labs/Dia2-2B/resolve/main/model.safetensors"
+    path: "Dia2/Dia2-2B.safetensors"
+    tags: [audio, tts]
+
+  - name: "Dia2 Tokenizer"
+    source: url
+    url: "https://huggingface.co/nari-labs/Dia2-2B/resolve/main/tokenizer.json"
+    path: "Dia2"
     tags: [audio, tts]
 
   # ============================================================

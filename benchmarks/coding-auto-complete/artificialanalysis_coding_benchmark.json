@@ -1,0 +1,19 @@
+{
+  "model_scores": [
+    { "model": "Gemini 3 Flash", "score": 53.12 },
+    { "model": "Seed-OSS-36B-Instruct", "score": 39.78 },
+    { "model": "Grok CodeFast 1", "score": 39.42 },
+    { "model": "GLM-4.5-Air", "score": 39.35 },
+    { "model": "NVIDIANemotron 3Nano", "score": 38.82 },
+    { "model": "Gemini 2.5Flash (Sep)", "score": 37.84 },
+    { "model": "LlamaNemotronSuper 49B v1.5", "score": 37.82 },
+    { "model": "MagistralSmall 1.2", "score": 37.24 },
+    { "model": "gpt-oss-120B(low)", "score": 37.22 },
+    { "model": "Qwen3 Next 80BA3B", "score": 35.3 },
+    { "model": "Kimi K2", "score": 34.98 },
+    { "model": "gpt-oss-20B(low)", "score": 34.49 },
+    { "model": "Gemini 2.5Flash-Lite(Sep)", "score": 33.23 },
+    { "model": "Devstral 2", "score": 31.86 },
+    { "model": "Nova 2.0 Lite", "score": 21.65 }
+  ]
+}

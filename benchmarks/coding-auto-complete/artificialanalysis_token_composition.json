@@ -1,0 +1,17 @@
+{
+  "NVIDIANemotron 3Nano": "20M",
+  "LlamaNemotronSuper 49B v1.5": "19M",
+  "Seed-OSS-36B-Instruct": "17M",
+  "GLM-4.5-Air": "14M",
+  "MagistralSmall 1.2": "12M",
+  "Grok CodeFast 1": "10M",
+  "Gemini 2.5Flash-Lite(Sep)": "8.3M",
+  "Gemini 2.5Flash (Sep)": "5.1M",
+  "Qwen3 Next 80BA3B": "3.4M",
+  "gpt-oss-20B(low)": "3.4M",
+  "Devstral 2": "3.3M",
+  "gpt-oss-120B(low)": "2M",
+  "Kimi K2": "1.9M",
+  "Nova 2.0 Lite": "1.4M",
+  "Gemini 3 Flash": "1.2M"
+}

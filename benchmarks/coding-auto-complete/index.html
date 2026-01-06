@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Autocomplete Model Benchmark</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .controls input[type="password"] {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-regenerate {
+            background: #007bff;
+            color: white;
+        }
+        .btn-regenerate:hover {
+            background: #0056b3;
+        }
+        .btn-regenerate:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-export {
+            background: #28a745;
+            color: white;
+        }
+        .btn-export:hover {
+            background: #218838;
+        }
+        .btn-import {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-import:hover {
+            background: #5a6268;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .status {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status.loading {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            display: block;
+        }
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            display: block;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            z-index: 10;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            cursor: pointer;
+            user-select: none;
+            background: #f8f9fa;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        th:hover {
+            background: #e9ecef;
+        }
+        th .sort-indicator {
+            display: inline-block;
+            margin-left: 5px;
+            opacity: 0.3;
+        }
+        th.sorted-asc .sort-indicator::after {
+            content: '↑';
+            opacity: 1;
+        }
+        th.sorted-desc .sort-indicator::after {
+            content: '↓';
+            opacity: 1;
+        }
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .topsis-score {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .loading-row {
+            background: #fff3cd;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coding Autocomplete Model Benchmark</h1>
+        
+        <div class="controls">
+            <input type="password" id="apiKey" placeholder="Enter your OpenRouter API Key">
+            <button class="btn-regenerate" id="regenerateBtn" onclick="regenerate()">Regenerate</button>
+            <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+            <button class="btn-import" onclick="document.getElementById('importFile').click()">Import CSV</button>
+            <input type="file" id="importFile" accept=".csv" onchange="importCSV(event)">
+        </div>
+        
+        <div id="status" class="status"></div>
+        <div id="progress" style="display: none;">
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div id="progressText" class="progress-text"></div>
+        </div>
+        
+        <div class="table-container">
+            <table id="benchmarkTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('modelName')">Model Name <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('inputPrice')">Input Price ($/M) <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('outputPrice')">Output Price ($/M) <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('contextTokens')">Context Tokens <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('latency')">Latency (ms) <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('throughput')">Throughput (tok/s) <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('codingScore')">Coding Index Score <span class="sort-indicator"></span></th>
+                        <th onclick="sortTable('topsisScore')">TOPSIS Score <span class="sort-indicator"></span></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="8" style="text-align: center;">Click "Regenerate" to fetch data or "Import CSV" to load existing data</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Benchmark data from JSON
+        const benchmarkData = [
+            { model: "Gemini 3 Flash", score: 53.12 },
+            { model: "Seed-OSS-36B-Instruct", score: 39.78 },
+            { model: "Grok CodeFast 1", score: 39.42 },
+            { model: "GLM-4.5-Air", score: 39.35 },
+            { model: "NVIDIANemotron 3Nano", score: 38.82 },
+            { model: "Gemini 2.5Flash (Sep)", score: 37.84 },
+            { model: "LlamaNemotronSuper 49B v1.5", score: 37.82 },
+            { model: "MagistralSmall 1.2", score: 37.24 },
+            { model: "gpt-oss-120B(low)", score: 37.22 },
+            { model: "Qwen3 Next 80BA3B", score: 35.3 },
+            { model: "Kimi K2", score: 34.98 },
+            { model: "gpt-oss-20B(low)", score: 34.49 },
+            { model: "Gemini 2.5Flash-Lite(Sep)", score: 33.23 },
+            { model: "Devstral 2", score: 31.86 },
+            { model: "Nova 2.0 Lite", score: 21.65 }
+        ];
+
+        // OpenRouter models data (parsed from markdown)
+        const openRouterModels = {
+            "Gemini 3 Flash": { id: "google/gemini-3-flash-preview", inputPrice: 0.50, outputPrice: 3.00, contextTokens: 1048576 },
+            "Seed-OSS-36B-Instruct": { id: "bytedance/seed-oss-36b-instruct", inputPrice: null, outputPrice: null, contextTokens: 131072 },
+            "Grok CodeFast 1": { id: "x-ai/grok-code-fast-1", inputPrice: 0.20, outputPrice: 1.50, contextTokens: 256000 },
+            "GLM-4.5-Air": { id: "z-ai/glm-4.5-air", inputPrice: 0.05, outputPrice: 0.22, contextTokens: 131072 },
+            "NVIDIANemotron 3Nano": { id: "nvidia/nemotron-3-nano-30b-a3b", inputPrice: 0.06, outputPrice: 0.24, contextTokens: 262144 },
+            "Gemini 2.5Flash (Sep)": { id: "google/gemini-2.5-flash-preview-09-2025", inputPrice: 0.30, outputPrice: 2.50, contextTokens: 1048576 },
+            "LlamaNemotronSuper 49B v1.5": { id: "nvidia/llama-3.3-nemotron-super-49b-v1.5", inputPrice: 0.10, outputPrice: 0.40, contextTokens: 131072 },
+            "MagistralSmall 1.2": { id: "mistralai/magistral-small-2506", inputPrice: null, outputPrice: null, contextTokens: 40000 },
+            "gpt-oss-120B(low)": { id: "openai/gpt-oss-120b", inputPrice: 0.02, outputPrice: 0.10, contextTokens: 131072 },
+            "Qwen3 Next 80BA3B": { id: "qwen/qwen3-next-80b-a3b-instruct", inputPrice: 0.06, outputPrice: 0.60, contextTokens: 262144 },
+            "Kimi K2": { id: "moonshotai/kimi-k2-0905", inputPrice: 0.39, outputPrice: 1.90, contextTokens: 262144 },
+            "gpt-oss-20B(low)": { id: "openai/gpt-oss-20b", inputPrice: 0.016, outputPrice: 0.06, contextTokens: 131072 },
+            "Gemini 2.5Flash-Lite(Sep)": { id: "google/gemini-2.5-flash-lite-preview-09-2025", inputPrice: 0.10, outputPrice: 0.40, contextTokens: 1048576 },
+            "Devstral 2": { id: "mistralai/devstral-2512", inputPrice: 0.05, outputPrice: 0.22, contextTokens: 262144 },
+            "Nova 2.0 Lite": { id: "amazon/nova-2-lite-v1", inputPrice: 0.30, outputPrice: 2.50, contextTokens: 1000000 }
+        };
+
+        // Store benchmark results
+        let benchmarkResults = [];
+        let currentSort = { column: 'topsisScore', direction: 'desc' };
+
+        // Load from localStorage on page load
+        window.onload = function() {
+            loadFromStorage();
+        };
+
+        function loadFromStorage() {
+            const stored = localStorage.getItem('benchmarkResults');
+            if (stored) {
+                benchmarkResults = JSON.parse(stored);
+                renderTable();
+                showStatus('Data loaded from local storage', 'success');
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('benchmarkResults', JSON.stringify(benchmarkResults));
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function updateProgress(current, total, message) {
+            const percentage = ((current / total) * 100).toFixed(0);
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressText').textContent = `${message}: ${current}/${total} (${percentage}%)`;
+        }
+
+        // TOPSIS scoring algorithm
+        function calculateTOPSIS(results) {
+            if (results.length === 0) return [];
+
+            const weights = {
+                latency: 0.3,        // Lower is better (beneficial criteria inverted)
+                throughput: 0.4,     // Higher is better
+                codingScore: 0.3     // Higher is better
+            };
+
+            // Extract matrices
+            const latency = results.map(r => r.latency);
+            const throughput = results.map(r => r.throughput);
+            const codingScore = results.map(r => r.codingScore);
+
+            // Normalize each criterion
+            const normalize = (arr) => {
+                const sumSquares = Math.sqrt(arr.reduce((sum, val) => sum + val * val, 0));
+                return arr.map(val => val / sumSquares);
+            };
+
+            const normLatency = normalize(latency);
+            const normThroughput = normalize(throughput);
+            const normCodingScore = normalize(codingScore);
+
+            // Calculate weighted normalized matrix
+            const weighted = results.map((_, i) => ({
+                latency: normLatency[i] * weights.latency,
+                throughput: normThroughput[i] * weights.throughput,
+                codingScore: normCodingScore[i] * weights.codingScore
+            }));
+
+            // Determine ideal and negative-ideal solutions
+            const ideal = {
+                latency: Math.min(...weighted.map(w => w.latency)),      // Min for latency
+                throughput: Math.max(...weighted.map(w => w.throughput)), // Max for throughput
+                codingScore: Math.max(...weighted.map(w => w.codingScore)) // Max for coding score
+            };
+
+            const negativeIdeal = {
+                latency: Math.max(...weighted.map(w => w.latency)),       // Max for latency
+                throughput: Math.min(...weighted.map(w => w.throughput)), // Min for throughput
+                codingScore: Math.min(...weighted.map(w => w.codingScore)) // Min for coding score
+            };
+
+            // Calculate distances to ideal and negative-ideal
+            const distances = weighted.map(w => {
+                const distIdeal = Math.sqrt(
+                    Math.pow(w.latency - ideal.latency, 2) +
+                    Math.pow(w.throughput - ideal.throughput, 2) +
+                    Math.pow(w.codingScore - ideal.codingScore, 2)
+                );
+                const distNegativeIdeal = Math.sqrt(
+                    Math.pow(w.latency - negativeIdeal.latency, 2) +
+                    Math.pow(w.throughput - negativeIdeal.throughput, 2) +
+                    Math.pow(w.codingScore - negativeIdeal.codingScore, 2)
+                );
+                return { distIdeal, distNegativeIdeal };
+            });
+
+            // Calculate TOPSIS score
+            return results.map((r, i) => ({
+                ...r,
+                topsisScore: distances[i].distNegativeIdeal / (distances[i].distIdeal + distances[i].distNegativeIdeal)
+            }));
+        }
+
+        async function regenerate() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (!apiKey) {
+                showStatus('Please enter your OpenRouter API key', 'error');
+                return;
+            }
+
+            document.getElementById('regenerateBtn').disabled = true;
+            document.getElementById('progress').style.display = 'block';
+            benchmarkResults = [];
+
+            const modelsToTest = benchmarkData.filter(bm => {
+                const orModel = openRouterModels[bm.model];
+                return orModel && orModel.inputPrice !== null && orModel.outputPrice !== null;
+            });
+
+            let completed = 0;
+            const total = modelsToTest.length;
+
+            // Shuffle models for random order
+            const shuffledModels = [...modelsToTest].sort(() => Math.random() - 0.5);
+
+            for (const benchmark of shuffledModels) {
+                const orModel = openRouterModels[benchmark.model];
+                
+                try {
+                    const result = await testModel(apiKey, orModel.id);
+                    
+                    benchmarkResults.push({
+                        modelName: benchmark.model,
+                        inputPrice: orModel.inputPrice,
+                        outputPrice: orModel.outputPrice,
+                        contextTokens: orModel.contextTokens,
+                        latency: result.latency,
+                        throughput: result.throughput,
+                        codingScore: benchmark.score,
+                        topsisScore: 0 // Will be calculated later
+                    });
+
+                    showStatus(`Testing ${benchmark.model}: Latency=${result.latency.toFixed(0)}ms, Throughput=${result.throughput.toFixed(2)} tok/s`, 'loading');
+                } catch (error) {
+                    console.error(`Error testing ${benchmark.model}:`, error);
+                    showStatus(`Error testing ${benchmark.model}: ${error.message}`, 'error');
+                }
+
+                completed++;
+                updateProgress(completed, total, 'Models tested');
+            }
+
+            // Calculate TOPSIS scores
+            benchmarkResults = calculateTOPSIS(benchmarkResults);
+
+            // Sort and render
+            applySort();
+            renderTable();
+            saveToStorage();
+
+            document.getElementById('regenerateBtn').disabled = false;
+            document.getElementById('progress').style.display = 'none';
+            showStatus(`Benchmark complete! Tested ${benchmarkResults.length} models`, 'success');
+        }
+
+        async function testModel(apiKey, modelId) {
+            const startTime = performance.now();
+            
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": window.location.href,
+                    "X-Title": "Coding Autocomplete Benchmark"
+                },
+                body: JSON.stringify({
+                    "model": modelId,
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Write a function to calculate factorial of a number in Python."
+                        }
+                    ],
+                    "max_tokens": 200,
+                    "provider": {
+                        "sort": "throughput"
+                    }
+                })
+            });
+
+            const endTime = performance.now();
+            const latency = endTime - startTime;
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+            const outputTokens = data.usage?.completion_tokens || 50;
+            const throughput = outputTokens / (latency / 1000);
+
+            return { latency, throughput };
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (benchmarkResults.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Click "Regenerate" to fetch data or "Import CSV" to load existing data</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = benchmarkResults.map(row => `
+                <tr>
+                    <td>${row.modelName}</td>
+                    <td>${row.inputPrice ? row.inputPrice.toFixed(3) : 'N/A'}</td>
+                    <td>${row.outputPrice ? row.outputPrice.toFixed(3) : 'N/A'}</td>
+                    <td>${row.contextTokens.toLocaleString()}</td>
+                    <td>${row.latency.toFixed(0)}</td>
+                    <td>${row.throughput.toFixed(2)}</td>
+                    <td>${row.codingScore.toFixed(2)}</td>
+                    <td class="topsis-score">${row.topsisScore.toFixed(4)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'desc';
+            }
+            applySort();
+            renderTable();
+            updateSortIndicators();
+        }
+
+        function applySort() {
+            benchmarkResults.sort((a, b) => {
+                let valA = a[currentSort.column];
+                let valB = b[currentSort.column];
+                
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+                
+                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        function updateSortIndicators() {
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+            });
+            
+            const columnIndex = {
+                'modelName': 0,
+                'inputPrice': 1,
+                'outputPrice': 2,
+                'contextTokens': 3,
+                'latency': 4,
+                'throughput': 5,
+                'codingScore': 6,
+                'topsisScore': 7
+            };
+            
+            const th = document.querySelectorAll('th')[columnIndex[currentSort.column]];
+            th.classList.add(currentSort.direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        }
+
+        function exportCSV() {
+            if (benchmarkResults.length === 0) {
+                showStatus('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['Model Name', 'Input Price ($/M)', 'Output Price ($/M)', 'Context Tokens', 'Latency (ms)', 'Throughput (tok/s)', 'Coding Index Score', 'TOPSIS Score'];
+            const rows = benchmarkResults.map(r => [
+                r.modelName,
+                r.inputPrice,
+                r.outputPrice,
+                r.contextTokens,
+                r.latency,
+                r.throughput,
+                r.codingScore,
+                r.topsisScore
+            ]);
+
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `coding-benchmark-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus('CSV exported successfully', 'success');
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                
+                if (lines.length < 2) {
+                    showStatus('Invalid CSV file', 'error');
+                    return;
+                }
+
+                benchmarkResults = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const columns = line.split(',');
+                    if (columns.length < 8) continue;
+                    
+                    benchmarkResults.push({
+                        modelName: columns[0],
+                        inputPrice: parseFloat(columns[1]) || 0,
+                        outputPrice: parseFloat(columns[2]) || 0,
+                        contextTokens: parseInt(columns[3]) || 0,
+                        latency: parseFloat(columns[4]) || 0,
+                        throughput: parseFloat(columns[5]) || 0,
+                        codingScore: parseFloat(columns[6]) || 0,
+                        topsisScore: parseFloat(columns[7]) || 0
+                    });
+                }
+
+                renderTable();
+                saveToStorage();
+                showStatus(`CSV imported: ${benchmarkResults.length} models loaded`, 'success');
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>

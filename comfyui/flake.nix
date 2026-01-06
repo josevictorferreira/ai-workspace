@@ -105,7 +105,7 @@
         gpuCap = pkgs.writeShellScriptBin "gpu-cap" ''
           echo manual | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
           sudo rocm-smi --setpoweroverdrive 283
-          sudo rocm-smi --setsrange 500 2500
+          sudo rocm-smi --setsrange 500 2400
           sudo rocm-smi --showclocks
           sudo rocm-smi --showpower
         '';

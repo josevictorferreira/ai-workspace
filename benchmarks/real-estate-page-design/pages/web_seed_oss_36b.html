@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWISS ESTATE | Premium Property Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --swiss-white: #ffffff;
+      --swiss-black: #000000;
+      --swiss-muted: #f2f2f2;
+      --swiss-accent: #ff3000;
+      --grid-opacity: 0.03;
+      --noise-opacity: 0.015;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--swiss-black);
+      background-color: var(--swiss-white);
+      line-height: 1.4;
+    }
+
+    /* Noise Texture Overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/3E%3CfeColorMatrix type='saturate' values='0'%3E%3C/feColorMatrix%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: var(--noise-opacity);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Header Styles */
+    .site-header {
+      padding: 2rem;
+      border-bottom: 4px solid var(--swiss-black);
+      margin-bottom: 2rem;
+    }
+
+    .site-header h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 0.9;
+    }
+
+    /* Filters Section */
+    .filters {
+      background-color: var(--swiss-muted);
+      background-image: linear-gradient(to right, var(--swiss-black) 1px transparent 1px),
+        linear-gradient(to bottom, var(--swiss-black) 1px transparent 1px);
+      background-size: 24px 24px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .filters-container {
+      display: grid;
+      gap: 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .filters-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .filter-group label {
+      display: block;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    /* Search Input */
+    .search-input {
+      width: 100%;
+      border: none;
+      border-bottom: 3px solid var(--swiss-black);
+      padding: 0.8rem 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background-color: transparent;
+      transition: border-color 0.2s ease-out;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--swiss-accent);
+    }
+
+    /* Price Range Slider */
+    .price-range {
+      width: 100%;
+    }
+
+    .price-range input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--swiss-black);
+      border-radius: 0;
+      margin-top: 1rem;
+    }
+
+    .price-range input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: var(--swiss-accent);
+      border: 3px solid var(--swiss-black);
+      cursor: pointer;
+      transition: transform 0.2s ease-out;
+    }
+
+    .price-range input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .price-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    /* Location Select */
+    .location-select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 3px solid var(--swiss-black);
+      background-color: transparent;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000000' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 16px;
+      transition: all 0.2s ease-out;
+    }
+
+    .location-select:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-white);
+      border-color: var(--swiss-black);
+    }
+
+    /* Property Listings Grid */
+    .listings-grid {
+      display: grid;
+      gap: 3rem;
+      padding: 0 2rem;
+      max-width: 1400px;
+      margin: 0 auto 4rem;
+    }
+
+    @media (max-width: 767px) {
+      .listings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .listings-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border: 3px solid var(--swiss-black);
+      padding: 1.5rem;
+      background-color: var(--swiss-white);
+      transition: all 0.2s ease-out;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .property-card:hover {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-white);
+      border-width: 5px;
+      transform: translateY(-2px);
+    }
+
+    .card-image-container {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--swiss-black);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease-out;
+    }
+
+    .property-card:hover .card-img {
+      transform: scale(1.05);
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-price {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--swiss-accent);
+      margin-top: auto;
+      /* Push to bottom of card */
+      transition: color 0.2s ease-out;
+    }
+
+    .property-card:hover .card-price {
+      color: var(--swiss-white);
+    }
+
+    /* Paginator */
+    .paginator {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      border-top: 4px solid var(--swiss-black);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-btn {
+      border: 3px solid var(--swiss-black);
+      background-color: var(--swiss-white);
+      color: var(--swiss-black);
+      padding: 0.8rem 1.6rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+    }
+
+    .page-btn.active {
+      background-color: var(--swiss-accent);
+      color: var(--swiss-white);
+      border-width: 5px;
+    }
+
+    .page-btn:hover:not(.active) {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+
+    /* Focus States */
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--swiss-accent);
+      outline-offset: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <h1>SWISS ESTATE</h1>
+  </header>
+
+  <section class="filters">
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="search">Text Search</label>
+        <input type="text" id="search" class="search-input" placeholder="SEARCH PROPERTIES...">
+      </div>
+
+      <div class="filter-group">
+        <label for="price-range">Price Range (USD)</label>
+        <div class="price-range">
+          <input type="range" id="price-range" min="100000" max="2000000" step="50000" value="500000">
+          <div class="price-labels">
+            <span>$100K</span>
+            <span>$2M</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="location">Location</label>
+        <select id="location" class="location-select">
+          <option value="">Select State & City</option>
+          <optgroup label="Paraná">
+            <option value="londrina">Londrina</option>
+            <option value="ibipora">Ibiporã</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <main class="listings-grid">
+    <!-- Property Card 1 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Modern luxury villa with pool" class="card-img">
+      </div>
+      <h3 class="card-title">MODERN LUXURY VILLA</h3>
+      <p class="card-price">$1,250,000</p>
+    </div>
+
+    <!-- Property Card 2 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Minimalist urban apartment" class="card-img">
+      </div>
+      <h3 class="card-title">URBAN MINIMALIST APARTMENT</h3>
+      <p class="card-price">$450,000</p>
+    </div>
+
+    <!-- Property Card 3 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1600566752227-17c8c9176b3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Rustic countryside estate" class="card-img">
+      </div>
+      <h3 class="card-title">COUNTRYSIDE RUSTIC ESTATE</h3>
+      <p class="card-price">$890,000</p>
+    </div>
+
+    <!-- Property Card 4 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Industrial loft space" class="card-img">
+      </div>
+      <h3 class="card-title">INDUSTRIAL LOFT SPACE</h3>
+      <p class="card-price">$620,000</p>
+    </div>
+
+    <!-- Property Card 5 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Beachfront condominium" class="card-img">
+      </div>
+      <h3 class="card-title">BEACHFRONT CONDOMINIUM</h3>
+      <p class="card-price">$1,750,000</p>
+    </div>
+
+    <!-- Property Card 6 -->
+    <div class="property-card"
+      data-images="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80,https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+      <div class="card-image-container">
+        <img
+          src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          alt="Mountain retreat cabin" class="card-img">
+      </div>
+      <h3 class="card-title">MOUNTAIN RETREAT CABIN</h3>
+      <p class="card-price">$575,000</p>
+    </div>
+  </main>
+
+  <footer class="paginator">
+    <button class="page-btn prev">← PREVIOUS</button>
+    <button class="page-btn active">01</button>
+    <button class="page-btn">02</button>
+    <button class="page-btn">03</button>
+    <button class="page-btn next">NEXT →</button>
+  </footer>
+
+  <script>
+    // Image cycling on hover (minimal JS)
+    document.querySelectorAll('.property-card').forEach(card => {
+      const img = card.querySelector('.card-img');
+      const images = card.dataset.images.split(',');
+      let currentIndex = 0;
+      let intervalId;
+
+      card.addEventListener('mouseenter', () => {
+        intervalId = setInterval(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          img.src = images[currentIndex];
+        }, 1000);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        clearInterval(intervalId);
+      });
+    });
+  </script>
+</body>
+
+</html>

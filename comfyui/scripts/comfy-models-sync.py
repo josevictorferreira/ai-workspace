@@ -205,10 +205,17 @@ def download_git(model: dict, dest_dir: Path, use_path_directly: bool = False) -
     return True
 
 
-def download_url(model: dict, dest_dir: Path) -> bool:
-    """Download from direct URL."""
+def download_url(model: dict, dest_dir: Path, custom_filename: Optional[str] = None) -> bool:
+    """Download from direct URL.
+    
+    Args:
+        model: Model configuration dict
+        dest_dir: Destination directory for the download
+        custom_filename: Optional filename override (extracted from path if path contains a filename)
+    """
     url = model["url"]
-    filename = model.get("filename", url.split("/")[-1].split("?")[0])
+    # Priority: explicit filename field > custom_filename from path > URL-derived filename
+    filename = model.get("filename") or custom_filename or url.split("/")[-1].split("?")[0]
     
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest_file = dest_dir / filename
@@ -282,8 +289,16 @@ def sync_models(config_path: Path, dry_run: bool = False, model_filter: Optional
             continue
 
         # Use custom path if provided, otherwise use model type
+        # Check if custom_path contains a filename (has extension in last component)
+        custom_filename = None
         if custom_path:
-            dest_dir = models_dir / custom_path
+            path_obj = Path(custom_path)
+            # If the last component has a dot (likely a filename), extract it
+            if '.' in path_obj.name and path_obj.suffix:
+                custom_filename = path_obj.name
+                dest_dir = models_dir / path_obj.parent
+            else:
+                dest_dir = models_dir / custom_path
         else:
             dest_dir = models_dir / model_type
         handler = handlers.get(source)
@@ -294,9 +309,15 @@ def sync_models(config_path: Path, dry_run: bool = False, model_filter: Optional
             continue
 
         try:
-            # For git source with custom path, clone directly into the path
-            if source == "git" and custom_path:
+            # For git source with custom path (without filename), clone directly into the path
+            if source == "git" and custom_path and not custom_filename:
                 if handler(model, dest_dir, use_path_directly=True):
+                    success_count += 1
+                else:
+                    fail_count += 1
+            # For url source, pass custom_filename if extracted from path
+            elif source == "url" and custom_filename:
+                if handler(model, dest_dir, custom_filename=custom_filename):
                     success_count += 1
                 else:
                     fail_count += 1
