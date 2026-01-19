@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 
-def run_benchmarks(model_name, api_url):
+def run_benchmarks(model_name, api_url, temperature=None):
     with open("PROMPT.md", "r", encoding="utf-8") as f:
         prompt_template = f.read()
 
@@ -35,15 +35,16 @@ def run_benchmarks(model_name, api_url):
         payload = {
             "model": model_name,
             "messages": [{"role": "user", "content": full_prompt}],
-            "temperature": 0.0,
             "max_tokens": -1,
             "stream": False,
         }
+        if temperature is not None:
+            payload["temperature"] = temperature
 
         try:
             start_time = time.time()
             response = requests.post(
-                f"{api_url}/v1/chat/completions", json=payload, timeout=60
+                f"{api_url}/v1/chat/completions", json=payload, timeout=180
             )
             duration = time.time() - start_time
             response.raise_for_status()
@@ -92,6 +93,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--url", type=str, default="http://10.10.10.10:1234", help="API base URL"
     )
+    parser.add_argument(
+        "--temperature", type=float, default=None, help="Temperature for model sampling"
+    )
 
     args = parser.parse_args()
-    run_benchmarks(args.model, args.url)
+    run_benchmarks(args.model, args.url, args.temperature)

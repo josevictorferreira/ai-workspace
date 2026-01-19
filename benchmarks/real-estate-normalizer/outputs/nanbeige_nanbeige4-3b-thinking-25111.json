@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "model": "nanbeige_nanbeige4-3b-thinking-25111",
+    "total_benchmark_time_seconds": 0.02062201499938965,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "data": {
+    "0": null,
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null
+  }
+}
