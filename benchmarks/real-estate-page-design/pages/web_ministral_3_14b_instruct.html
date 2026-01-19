@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate | Precision Properties</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style type="text/tailwindcss">
+    @layer base {
+            :root {
+                --swiss-red: #FF3000;
+                --muted-gray: #F2F2F2;
+                --border-black: #000000;
+                --body-bg: #FFFFFF;
+                --text-black: #000000;
+            }
+        }
+
+        @layer utilities {
+            .swiss-grid-pattern {
+                background-image:
+                    linear-gradient(var(--swiss-red) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--swiss-red) 1px, transparent 1px);
+                background-size: 24px 24px;
+                opacity: 0.03;
+            }
+
+            .swiss-dots {
+                background-image:
+                    radial-gradient(circle at center, rgba(0,0,0,0.04) 1px, transparent 1px);
+                background-size: 16px 16px;
+            }
+
+            .swiss-diagonal {
+                background-image:
+                    linear-gradient(45deg, var(--border-black) 1px, transparent 1px),
+                    linear-gradient(-45deg, var(--border-black) 1px, transparent 1px);
+                background-size: 20px 20px;
+                opacity: 0.02;
+            }
+
+            .swiss-noise {
+                background-image:
+                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='16' height='16' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+            }
+
+            .property-card {
+                transition: all 0.2s ease-out;
+            }
+
+            .property-card:hover {
+                transform: translateY(-1px);
+            }
+
+            .property-image-container {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .property-images {
+                display: flex;
+                transition: transform 0.5s ease-in-out;
+            }
+
+            .property-card:hover .property-images {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter bg-body-bg text-text-black">
+  <!-- Header -->
+  <header class="border-b-4 border-border-black p-8 sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-3xl font-bold uppercase tracking-tighter">Swiss Real Estate</h1>
+      <nav class="flex space-x-8">
+        <a href="#"
+          class="uppercase text-sm font-medium hover:text-swiss-red transition-colors duration-200">Listings</a>
+        <a href="#" class="uppercase text-sm font-medium hover:text-swiss-red transition-colors duration-200">About</a>
+        <a href="#"
+          class="uppercase text-sm font-medium hover:text-swiss-red transition-colors duration-200">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-8">
+    <!-- Page Header -->
+    <section class="mb-16 relative swiss-noise">
+      <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">Precision Properties</h2>
+      <p class="text-xl max-w-3xl">Discover meticulously curated real estate with Swiss precision and architectural
+        integrity.</p>
+
+      <!-- Section Number -->
+      <div class="absolute top-0 right-0 text-swiss-red font-bold uppercase tracking-widest">
+        01. Listings
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="mb-16 grid md:grid-cols-3 gap-8 swiss-grid-pattern p-4 border-2 border-border-black rounded-none">
+      <div class="space-y-4">
+        <h3 class="uppercase text-sm font-bold tracking-wider">Search</h3>
+        <input type="text" placeholder="Property name, address or features"
+          class="w-full p-3 border-b-2 border-border-black bg-transparent focus:outline-none focus:border-swiss-red transition-colors duration-200">
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="uppercase text-sm font-bold tracking-wider">Price Range</h3>
+        <div class="flex space-x-4">
+          <input type="text" placeholder="Min"
+            class="w-full p-2 border-b-2 border-border-black bg-transparent focus:outline-none focus:border-swiss-red transition-colors duration-200 text-center">
+          <span class="self-end mt-1">to</span>
+          <input type="text" placeholder="Max"
+            class="w-full p-2 border-b-2 border-border-black bg-transparent focus:outline-none focus:border-swiss-red transition-colors duration-200 text-center">
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="uppercase text-sm font-bold tracking-wider">Location</h3>
+        <select
+          class="w-full p-3 border-b-2 border-border-black bg-transparent focus:outline-none focus:border-swiss-red transition-colors duration-200 uppercase text-xs">
+          <option>State</option>
+          <option>Paraná</option>
+        </select>
+
+        <select
+          class="w-full p-3 border-b-2 border-border-black bg-transparent focus:outline-none focus:border-swiss-red transition-colors duration-200 uppercase text-xs">
+          <option>City</option>
+          <option>Londrina</option>
+          <option>Ibiporã</option>
+        </select>
+
+        <button
+          class="w-full bg-black text-white py-3 hover:bg-swiss-red transition-colors duration-200 uppercase font-bold tracking-wider">
+          Apply Filters
+        </button>
+      </div>
+    </section>
+
+    <!-- Property Listings -->
+    <section
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 swiss-dots p-4 border-2 border-border-black rounded-none">
+      <!-- Property Card 1 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?house" alt="Modern house exterior"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?livingroom" alt="Living room interior"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">Modern Villa in Londrina</h3>
+          <p class="font-medium text-swiss-red">R$ 4.990.000</p>
+        </div>
+      </a>
+
+      <!-- Property Card 2 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?apartment" alt="Apartment building"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?kitchen" alt="Modern kitchen"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">Downtown Apartment</h3>
+          <p class="font-medium text-swiss-red">R$ 1.850.000</p>
+        </div>
+      </a>
+
+      <!-- Property Card 3 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?farm" alt="Country farm"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?garden" alt="Beautiful garden"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">Rural Estate in Ibiporã</h3>
+          <p class="font-medium text-swiss-red">R$ 7.200.000</p>
+        </div>
+      </a>
+
+      <!-- Property Card 4 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?condo" alt="Luxury condo"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?pool" alt="Swimming pool view"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">Luxury Condo Tower</h3>
+          <p class="font-medium text-swiss-red">R$ 3.450.000</p>
+        </div>
+      </a>
+
+      <!-- Property Card 5 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?villa" alt="Beach villa"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?beach" alt="Ocean view"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">Beachfront Villa</h3>
+          <p class="font-medium text-swiss-red">R$ 5.700.000</p>
+        </div>
+      </a>
+
+      <!-- Property Card 6 -->
+      <a href="#"
+        class="property-card block bg-white border-2 border-border-black rounded-none overflow-hidden hover:shadow-[0_0_0_8px_rgba(255,48,0,0.1)] transition-all duration-300">
+        <div class="property-image-container aspect-square relative group">
+          <div class="property-images absolute inset-0 w-full h-full flex transition-transform duration-500">
+            <img src="https://source.unsplash.com/random/600x400/?penthouse" alt="City penthouse"
+              class="w-full h-full object-cover">
+            <img src="https://source.unsplash.com/random/600x400/?cityview" alt="Skyline view"
+              class="w-full h-full object-cover absolute top-0 left-0">
+          </div>
+        </div>
+        <div class="p-6 border-t-2 border-border-black">
+          <h3 class="text-xl font-bold uppercase tracking-tighter mb-1">City Penthouse</h3>
+          <p class="font-medium text-swiss-red">R$ 4.200.000</p>
+        </div>
+      </a>
+    </section>
+
+    <!-- Pagination -->
+    <section class="flex justify-center space-x-4 mb-16 swiss-diagonal p-4 border-2 border-border-black rounded-none">
+      <button
+        class="w-12 h-12 flex items-center justify-center border-2 border-border-black hover:bg-swiss-red hover:text-white transition-colors duration-200">←</button>
+      <button
+        class="w-12 h-12 flex items-center justify-center bg-swiss-red text-white border-2 border-swiss-red hover:bg-opacity-90 transition-all duration-200">1</button>
+      <button
+        class="w-12 h-12 flex items-center justify-center border-2 border-border-black hover:bg-swiss-red hover:text-white transition-colors duration-200">2</button>
+      <button
+        class="w-12 h-12 flex items-center justify-center border-2 border-border-black hover:bg-swiss-red hover:text-white transition-colors duration-200">3</button>
+      <span class="text-sm mx-4">...</span>
+      <button
+        class="w-12 h-12 flex items-center justify-center border-2 border-border-black hover:bg-swiss-red hover:text-white transition-colors duration-200">8</button>
+      <button
+        class="w-12 h-12 flex items-center justify-center border-2 border-border-black hover:bg-swiss-red hover:text-white transition-colors duration-200">→</button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t-4 border-border-black p-8 swiss-noise">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+      <div>
+        <h4 class="uppercase text-sm font-bold tracking-wider mb-4">Swiss Real Estate</h4>
+        <p class="text-sm">Precision properties with architectural integrity and Swiss design principles.</p>
+      </div>
+
+      <div>
+        <h4 class="uppercase text-sm font-bold tracking-wider mb-4">Quick Links</h4>
+        <nav class="space-y-2">
+          <a href="#" class="block uppercase text-xs hover:text-swiss-red transition-colors duration-200">Listings</a>
+          <a href="#" class="block uppercase text-xs hover:text-swiss-red transition-colors duration-200">About Us</a>
+          <a href="#" class="block uppercase text-xs hover:text-swiss-red transition-colors duration-200">Contact</a>
+        </nav>
+      </div>
+
+      <div>
+        <h4 class="uppercase text-sm font-bold tracking-wider mb-4">Connect</h4>
+        <div class="space-y-2">
+          <p class="text-xs uppercase">Email: contact@swissreal.com.br</p>
+          <p class="text-xs uppercase">Phone: +55 (43) 99999-9999</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="max-w-7xl mx-auto mt-8 pt-8 border-t-2 border-border-black text-center text-xs uppercase tracking-wider">
+      © 2023 Swiss Real Estate. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- CSS for the image hover effect -->
+  <style>
+    .property-card:hover .property-images {
+      transform: translateX(-100%);
+    }
+
+    /* Add a slight delay to the image transition */
+    .property-image-container:hover .property-images {
+      animation: slideImage 5s infinite;
+    }
+
+    @keyframes slideImage {
+
+      0%,
+      90% {
+        transform: translateX(0);
+      }
+
+      10% {
+        transform: translateX(-10%);
+      }
+
+      20% {
+        transform: translateX(-20%);
+      }
+
+      30% {
+        transform: translateX(-30%);
+      }
+
+      40% {
+        transform: translateX(-40%);
+      }
+
+      50% {
+        transform: translateX(-50%);
+      }
+
+      60% {
+        transform: translateX(-60%);
+      }
+
+      70% {
+        transform: translateX(-70%);
+      }
+
+      80% {
+        transform: translateX(-80%);
+      }
+
+      90%,
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    /* For better mobile experience */
+    @media (max-width: 640px) {
+      .property-images {
+        transition-duration: 3s;
+      }
+
+      .property-card:hover .property-images {
+        animation: none !important;
+      }
+    }
+  </style>
+</body>
+
+</html>

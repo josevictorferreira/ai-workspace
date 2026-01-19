@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate Listings</title>
+</head>
+
+<body class="bg-white font-sans">
+  <!-- Navigation -->
+  <nav class="bg-gray-800 text-white p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="#" class="text-xl font-bold">Real Estate</a>
+      <ul class="flex space-x-4 hidden md:flex-row">
+        <li><a href="#" class="hover:text-gray-300">Properties</a></li>
+        <li><a href="#" class="hover:text-gray-300">Filters</a></li>
+        <li><a href="#" class="hover:text-gray-300">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Property Listings -->
+  <main class="container mx-auto p-4">
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Property Card -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+        <img src="property.jpg" alt="Property Image" class="w-full h-48 object-cover" />
+        <div class="p-6">
+          <h2 class="text-xl font-bold tracking-tighter text-gray-800">Londrina Property</h2>
+          <p class="text-gray-600 mb-4">A modern 3-bedroom apartment in the heart of Londrina, Paraná. Perfect for
+            families.</p>
+          <div class="mt-6 flex justify-between items-center">
+            <a href="#" class="text-gray-800 hover:text-red-500">View Details</a>
+            <button
+              class="bg-white text-red-500 px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300">View
+              More</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Card -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+        <img src="property2.jpg" alt="Property Image" class="w-full h-48 object-cover" />
+        <div class="p-6">
+          <h2 class="text-xl font-bold tracking-tighter text-gray-800">Ibipora Apartment</h2>
+          <p class="text-gray-600 mb-4">A sleek 2-bedroom apartment in Ibipora, Paraná. Ideal for professionals seeking
+            a quiet neighborhood.</p>
+          <div class="mt-6 flex justify-between items-center">
+            <a href="#" class="text-gray-800 hover:text-red-500">View Details</a>
+            <button
+              class="bg-white text-red-500 px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300">View
+              More</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Card -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+        <img src="property3.jpg" alt="Property Image" class="w-full h-48 object-cover" />
+        <div class="p-6">
+          <h2 class="text-xl font-bold tracking-tighter text-gray-800">Londrina Office</h2>
+          <p class="text-gray-600 mb-4">A modern office space in Londrina, Paraná. Perfect for startups and small
+            businesses.</p>
+          <div class="mt-6 flex justify-between items-center">
+            <a href="#" class="text-gray-800 hover:text-red-500">View Details</a>
+            <button
+              class="bg-white text-red-500 px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300">View
+              More</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <aside class="bg-gray-800 text-white p-4 w-full md:w-1/3">
+      <h2 class="text-xl font-bold mb-6">Filters</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex items-center justify-center">
+          <label for="location">Location:</label>
+          <select id="location"
+            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="Parana">Paraná</option>
+            <option value="Londrina">Londrina</option>
+            <option value="Ibipora">Ibipora</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-center">
+          <label for="price">Price Range:</label>
+          <input type="number" id="price"
+            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Min $">
+          <input type="number" id="price_max"
+            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Max $">
+        </div>
+      </div>
+    </aside>
+
+    <!-- Pagination -->
+    <nav class="bg-gray-800 text-white p-4 mt-6">
+      <ul class="flex space-x-4 hidden md:flex-row">
+        <li><a href="#" class="hover:text-red-500">1</a></li>
+        <li><a href="#" class="hover:text-red-500">2</a></li>
+        <li><a href="#" class="hover:text-red-500">3</a></li>
+      </ul>
+    </nav>
+
+    <!-- Property Listings -->
+    <section class="mt-12">
+      <h2 class="text-3xl font-bold mb-6">Featured Properties</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Repeat this pattern for all properties -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Pagination Script -->
+  <script src="pagination.js"></script>
+</body>
+
+</html>
+<style>
+  /* Define core design tokens */
+  :root {
+    /* Colors */
+    --primary-color: #FF3000;
+    /* Swiss Red - Primary CTA */
+    --secondary-color: #F2F2F2;
+    /* Muted Gray - Secondary Background */
+    --accent-color: #FF0000;
+    /* Swiss Red - Accent Color */
+    --border-color: #000000;
+    /* Pure Black Borders */
+    --background-color: #FFFFFF;
+    /* Pure White Background */
+
+    /* Typography */
+    --font-family: 'Inter', sans-serif;
+    --font-weight-bold: 700;
+    --font-size-base: 1rem;
+    --font-size-heading: 2.5rem;
+    --font-size-body: 1.25rem;
+
+    /* Spacing */
+    --spacing-small: 0.75rem;
+    --spacing-medium: 1.5rem;
+    --spacing-large: 2rem;
+
+    /* Radius & Borders */
+    --border-radius: 0px;
+    /* No rounded corners */
+    --border-width: 2px;
+    /* Thick borders */
+
+    /* Shadows & Effects */
+    --shadow-color: rgba(255, 48, 0, 0.1);
+    /* Subtle ring shadow */
+    --ring-shadow: 0 0 8px rgba(255, 48, 0, 0.2);
+
+    /* Textures & Patterns */
+    --grid-pattern: 24px 24px;
+    --dot-matrix: 16px 16px;
+    --diagonal-line: 45deg 10px;
+    --noise-texture: 1.5% 1.5% noise;
+  }
+
+  /* Use tokens consistently */
+  body {
+    font-family: var(--font-family);
+    color: var(--background-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: var(--accent-color);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    :root {
+      --font-size-body: 1rem;
+      --spacing-small: 0.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --font-size-body: 1.25rem;
+      --spacing-medium: 1.75rem;
+    }
+  }
+</style>
