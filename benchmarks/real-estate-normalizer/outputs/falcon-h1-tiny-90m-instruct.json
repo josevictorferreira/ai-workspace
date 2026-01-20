@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "model": "falcon-h1-tiny-90m-instruct",
+    "total_benchmark_time_seconds": 14.473593711853027,
+    "total_prompt_tokens": 20133,
+    "total_completion_tokens": 1529
+  },
+  "data": {
+    "0": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.23606038093566895,
+        "prompt_tokens": 1942,
+        "completion_tokens": 2,
+        "tokens_per_second": 8.472408593397292
+      }
+    },
+    "1": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.24035429954528809,
+        "prompt_tokens": 2081,
+        "completion_tokens": 2,
+        "tokens_per_second": 8.321049399922034
+      }
+    },
+    "2": {
+      "result": "```json\n{\n  \"title\": \"Venda\",\n  \"description\": \"Venda - For Sale\",\n  \"price\": null,\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": 2,\n  \"parking_spaces_count\": 2,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": null,\n  \"city\": null,\n  \"state\": \"BR\",\n  \"country\": \"Brazil\",\n  \"description\": \"Casa EM Ibiporã - PR\",\n  \"type\": \"business\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": 1,\n  \"floors_count\": null,\n  \"year_built\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 2.223928689956665,
+        "prompt_tokens": 1993,
+        "completion_tokens": 251,
+        "tokens_per_second": 112.86333106521097
+      }
+    },
+    "3": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.21460771560668945,
+        "prompt_tokens": 1985,
+        "completion_tokens": 2,
+        "tokens_per_second": 9.319329430193417
+      }
+    },
+    "4": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.23270940780639648,
+        "prompt_tokens": 2132,
+        "completion_tokens": 2,
+        "tokens_per_second": 8.594409735526927
+      }
+    },
+    "5": {
+      "result": "```json\n{\n    \"title\": \"Venda\",\n    \"description\": \"for_sale\",\n    \"price\": null,\n    \"bedrooms_count\": null,\n    \"bathrooms_count\": null,\n    \"parking_spaces_count\": null,\n    \"property_type\": \"house\",\n    \"listing_status\": \"for_sale\",\n    \"raw_address\": \"https://www.santamerica.com.br/alugar/Londrina/Apartamento/Padrao/Jardim-Lago-Norte/53879\",\n    \"street\": \"Londrina\",\n    \"street_number\": \"53879\",\n    \"complement\": null,\n    \"neighborhood\": null,\n    \"city\": \"Londrina\",\n    \"state\": \"PR\",\n    \"country\": \"BR\",\n    \"normalized_features\": \"\",\n    \"total_area_m2\": null,\n    \"private_area_m2\": null,\n    \"suites_count\": null,\n    \"floors_count\": null,\n    \"year_built\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 2.473816156387329,
+        "prompt_tokens": 2006,
+        "completion_tokens": 282,
+        "tokens_per_second": 113.9939195852866
+      }
+    },
+    "6": {
+      "result": "```json\n{\n    \"title\": \"Condomínio Portal dos Bandeirantes em Londrina\",\n    \"description\": \"Casa Condomínio para Venda no Condomínio Portal dos Bandeirantes em Londrina. R$ 845.000,00, procure pelo código: 53886\".\n    \"price\": null,\n    \"bedrooms_count\": null,\n    \"bathrooms_count\": null,\n    \"parking_spaces_count\": null,\n    \"property_type\": \"other\",\n    \"listing_status\": \"for_sale\",\n    \"raw_address\": null,\n    \"street\": null,\n    \"street_number\": null,\n    \"complement\": null,\n    \"neighborhood\": null,\n    \"city\": \"Londrina\",\n    \"state\": \"BR\",\n    \"country\": \"BR\",\n    \"description\": \"Condomínio Portal dos Bandeirantes em Londrina.\",\n    \"normalized_features\": \"{}\",\n    \"total_area_m2\": null,\n    \"private_area_m2\": null,\n    \"suites_count\": null,\n    \"floors_count\": null,\n    \"year_built\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 2.8519036769866943,
+        "prompt_tokens": 1984,
+        "completion_tokens": 326,
+        "tokens_per_second": 114.30961102601115
+      }
+    },
+    "7": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.23084473609924316,
+        "prompt_tokens": 2102,
+        "completion_tokens": 2,
+        "tokens_per_second": 8.663831949541072
+      }
+    },
+    "8": {
+      "result": "{\n  \"title\": \"Apartamento à venda com 3 quartos no Edifício Zenith, Jardim Andrade em Londrina\",\n  \"description\": \"Apartamento Edifício para venda no Andrade em Londrina. R$ 1.400.000,00, procure pelo código: 53861.\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://www.santamerica.com.br/comprar/Londrina/Apartamento/Edificio/Andrade/53861\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": null,\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"{}\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null\n}",
+      "metrics": {
+        "duration_seconds": 2.975849151611328,
+        "prompt_tokens": 1999,
+        "completion_tokens": 341,
+        "tokens_per_second": 114.58914166242576
+      }
+    },
+    "9": {
+      "result": "```json\n{\n  \"title\": \"Venda\",\n  \"description\": \"For Sale\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://www.megaconstrutoraeassessoria.com.br/imovel/casa-em-construcao-no-centro\",\n  \"street\": \"Vicença\",\n  \"street_number\": \"001\",\n  \"complement\": \"Vênixo\",\n  \"neighborhood\": \"Ilha da Estrela\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"BR\",\n  \"country\": \"BR\",\n  \"description\": \"A house offering rental services.\",\n  \"floors_count\": null,\n  \"listing_status\": \"for_rent\",\n  \"normalized_features\": \"\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"land\": null,\n  \"year_built\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 2.7926080226898193,
+        "prompt_tokens": 1909,
+        "completion_tokens": 319,
+        "tokens_per_second": 114.23013806740467
+      }
+    }
+  }
+}

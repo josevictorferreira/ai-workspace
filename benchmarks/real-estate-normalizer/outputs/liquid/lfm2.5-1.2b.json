@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "model": "liquid/lfm2.5-1.2b",
+    "total_benchmark_time_seconds": 6.95521092414856,
+    "total_prompt_tokens": 21811,
+    "total_completion_tokens": 1189
+  },
+  "data": {
+    "0": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.29425597190856934,
+        "prompt_tokens": 2134,
+        "completion_tokens": 2,
+        "tokens_per_second": 6.796803432833765
+      }
+    },
+    "1": {
+      "result": "{\n  \"title\": \"Salão-loja\",\n  \"description\": \"Salão comercial para venda\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 0.8063087463378906,
+        "prompt_tokens": 2223,
+        "completion_tokens": 149,
+        "tokens_per_second": 184.79273687248366
+      }
+    },
+    "2": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.28055477142333984,
+        "prompt_tokens": 2167,
+        "completion_tokens": 2,
+        "tokens_per_second": 7.128732795572824
+      }
+    },
+    "3": {
+      "result": "{\n  \"title\": \"Rua das Violetas, No 47\",\n  \"description\": null,\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 0.8144857883453369,
+        "prompt_tokens": 2170,
+        "completion_tokens": 149,
+        "tokens_per_second": 182.93750748272717
+      }
+    },
+    "4": {
+      "result": "{\n  \"title\": \"Chácara-imóvel-rural  no Milton Gavetti em Londrina / PR\",\n  \"description\": \"Sítio/Chácara para venda (#vender #compra #comprar) na Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR.\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 0.9674944877624512,
+        "prompt_tokens": 2255,
+        "completion_tokens": 196,
+        "tokens_per_second": 202.58513353734358
+      }
+    },
+    "5": {
+      "result": "{\n  \"title\": \"Apartamento novo para alugar com 2 dormitórios no Residencial Lituânia, Região Norte de Londrina\",\n  \"description\": null,\n  \"price\": 1200.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_rent\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Londrina\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": 2.0,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 1.098787546157837,
+        "prompt_tokens": 2167,
+        "completion_tokens": 234,
+        "tokens_per_second": 212.96200600219282
+      }
+    },
+    "6": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.2623710632324219,
+        "prompt_tokens": 2152,
+        "completion_tokens": 2,
+        "tokens_per_second": 7.622791840532721
+      }
+    },
+    "7": {
+      "result": "{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com 3 dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"neighborhood\": \"Cambé\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 1.1095447540283203,
+        "prompt_tokens": 2275,
+        "completion_tokens": 232,
+        "tokens_per_second": 209.09476536002654
+      }
+    },
+    "8": {
+      "result": "{\n  \"title\": \"Apartamento à venda com 3 quartos no Edifício Zenith, Jardim Andrade em Londrina.\",\n  \"description\": \"Apartamento Edifício para venda no Andrade em Londrina.\",\n  \"price\": 1400000.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"neighborhood\": null,\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": 3.0,\n  \"property_tax\": 3.0\n}",
+      "metrics": {
+        "duration_seconds": 1.0577261447906494,
+        "prompt_tokens": 2162,
+        "completion_tokens": 221,
+        "tokens_per_second": 208.9387702936486
+      }
+    },
+    "9": {
+      "result": "null",
+      "metrics": {
+        "duration_seconds": 0.26276564598083496,
+        "prompt_tokens": 2106,
+        "completion_tokens": 2,
+        "tokens_per_second": 7.611345054390679
+      }
+    }
+  }
+}

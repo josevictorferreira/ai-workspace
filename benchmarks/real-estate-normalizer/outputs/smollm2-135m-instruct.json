@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "model": "smollm2-135m-instruct",
+    "total_benchmark_time_seconds": 10.327996969223022,
+    "total_prompt_tokens": 19271,
+    "total_completion_tokens": 2863
+  },
+  "data": {
+    "0": {
+      "result": "Here is the output of the code:\n\n```json\n  {\n    \"bathrooms_count\": 3,\n    \"bedrooms_count\": null,\n    \"city\": null,\n    \"complement\": null,\n    \"condo_fee\": null,\n    \"country\": \"BR\",\n    \"description\": \"Excelente oportunidade comercial em IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR.\",\n    \"floors_count\": null,\n    \"listing_status\": \"for_sale\",\n    \"neighborhood\": null,\n    \"normalized_features\": \"{}\",\n    \"parking_spaces_count\": 4,\n    \"property_type\": \"other\",\n    \"raw_address\": \"{:country=>\\\"Brazil\\\"}\",\n    \"raw_features\": [\n      {\n        \"title\": \"\",\n        \"description\": \"Excelente oportunidade comercial em IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR.\",\n        \"floors_count\": null,\n        \"listing_status\": \"for_sale\",\n        \"neighborhood\": null,\n        \"normalized_features\": null\n      }, {\n        \"title\": \"\",\n        \"description\": \"Excelente oportunidade comercial em IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR.\",\n        \"floors_count\": null,\n        \"listing_status\": \"for_sale\",\n        \"neighborhood\": null,\n        \"normalized_features\": null\n      }],\n    ]\n  }\n```",
+      "metrics": {
+        "duration_seconds": 1.2481307983398438,
+        "prompt_tokens": 1862,
+        "completion_tokens": 348,
+        "tokens_per_second": 278.81693205782574
+      }
+    },
+    "1": {
+      "result": "I have been tasked with providing a detailed and concise analysis on the Brazilian numeric format, focusing specifically on how different types of data are extracted from raw input. I will provide this in a structured manner, highlighting key concepts such as specific extraction rules, potential pitfalls, and possible implications for understanding the characteristics of the data.",
+      "metrics": {
+        "duration_seconds": 0.2671208381652832,
+        "prompt_tokens": 1989,
+        "completion_tokens": 65,
+        "tokens_per_second": 243.33556470716343
+      }
+    },
+    "2": {
+      "result": "{\"bathrooms_count\": 2, \"bedrooms_count\": 2, \"city\": null, \"complement\": null, \"condo_fee\": null, \"country\": \"BR\", \"description\": \"CASA À VENDA EM IBIPORÃ COM 2 QUARTOS POR 365.000,00 - Casa em Ibi Aram - Ibiporã, PR.  Disponível para Venda: R$ 365.000,00.\", \"floors_count\": null, \"listing_status\": \"for_sale\", \"neighborhood\": null, \"normalized_features\": \"{}\", \"parking_spaces_count\": 2, \"property_type\": \"house\", \"raw_address\": \"{:country=>\\\"Brazil\\\"}\", \"raw_features\": \"{}\", \"state\": null, \"street\": null, \"street_number\": null, \"suites_count\": 1, \"title\": \"Casa EM Ibiporã - PR\", \"url\": \"https://imobiliariacardoso.com/imovel/casa-a-venda-em-ibipora-com-2-quartos-por-365.000-00\", \"year_built\": null}",
+      "metrics": {
+        "duration_seconds": 1.0555896759033203,
+        "prompt_tokens": 1910,
+        "completion_tokens": 290,
+        "tokens_per_second": 274.7279616502811
+      }
+    },
+    "3": {
+      "result": "Here's the output for this scenario:\n\n\n{\"bathrooms_count\": 1, \"bedrooms_count\": 2, \"city\": \"BR\", \"complement\": \"SALDO DEVEDOR JUNTO A CAIXA ECONÔMICA FEDERAL DE R$ 37.200,14\", \"floors_count\": 5}\n\n{\"state\": null, \"street\": null, \"street_number\": null, \"suites_count\": 0}\n\n[\"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\\nVALOR DE VENDA DO IMÓVEL R$ 260.000,00, SALDO DEVEDOR JUNTO A CAIXA ECONÔMICA FEDERAL DE R$ 37.200,14\", \"parking_spaces_count\": 5}\n\n{\"street\": null, \"street_number\": 28,\"price\":\"SALDO DEVEDOR JUNTO A CAIXA ECONÔMICA FEDERAL DE R$ 37.200,14\"}",
+      "metrics": {
+        "duration_seconds": 0.9859809875488281,
+        "prompt_tokens": 1907,
+        "completion_tokens": 269,
+        "tokens_per_second": 272.82473333359127
+      }
+    },
+    "4": {
+      "result": "You can use the following code to convert all raw real estate listings into normalized JSON objects:\n```javascript\nconst data = {\n  \"bathrooms_count\": 2,\n  \"bedrooms_count\": 1,\n  \"city\": null,\n  \"complement\": null,\n  \"condo_fee\": null,\n  \"country\": \"BR\",\n  \"description\": \"Sítio/Chácara para venda #vender #compra #comprar)\",\n  \"price\": null,\n  \"price_per_m2\": null,\n  \"private_area_m2\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": null,\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": null,\n  \"city\": null\n};\n\ndata.json().then((json) => {\n  console.log(\"JSON Converted into Normalized JSON Object\");\n\n  const normalized = json.reduce((acc, item) => ({ ...acc, [item]: item }), {});\n\n\n  return JSON.stringify(normalized);\n});\n```\nIn this code:\n- The `json()` method is used to convert the raw input data into a valid JSON object structure.\n- The normalized data is then stored in an array of objects (`data`) for further processing by the server.",
+      "metrics": {
+        "duration_seconds": 1.1176445484161377,
+        "prompt_tokens": 2029,
+        "completion_tokens": 310,
+        "tokens_per_second": 277.3690440662144
+      }
+    },
+    "5": {
+      "result": "Here's the output in JSON format:\n```json\n{\n  \"bathrooms_count\": 1,\n  \"bedrooms_count\": 0,\n  \"city\": \"PR\",\n  \"complement\": \"Código de código: 53879\"\n}\n```",
+      "metrics": {
+        "duration_seconds": 0.2742159366607666,
+        "prompt_tokens": 1919,
+        "completion_tokens": 68,
+        "tokens_per_second": 247.9797521182112
+      }
+    },
+    "6": {
+      "result": "Extracting data from raw input only if it appears explicitly in the input or if it has a clear meaning. You may assume that the value is not missing, and you can infer whether it's missing or uncertain based on context (e.g., city/country). Avoid including values in your output without explicit identification of the corresponding field or data type (e.g., \"267\" instead of 2500000 if its value is unknown).",
+      "metrics": {
+        "duration_seconds": 0.37097954750061035,
+        "prompt_tokens": 1897,
+        "completion_tokens": 97,
+        "tokens_per_second": 261.4699399293445
+      }
+    },
+    "7": {
+      "result": "Based on the document, here's a step-by-step guide to extract the following features from a raw input:\n\n1. **Extract exact text fragments**: Extract only the information that is specifically required by the data source (e.g., 'house', 'land', etc.). The extracted field will be included in the normalized JSON object if it's not explicitly stated as part of an existing field name or description.\n\n2. **Extract country and state/city**: If the location field includes a comma-separated list of city names, extract only that information and store it separately from the rest of the text fragments (if present). The extracted field should be included in the normalized JSON object if it's not explicitly stated as part of an existing field name or description.\n\n3. **Extract address**: If the property type is unclear, extract only the country/city and state/province fields specified by the source data (e.g., 'USA', 'Canada'). The extracted field should be included in the normalized JSON object if it's not explicitly stated as part of an existing field name or description.\n\n4. **Extract properties**: Extract the unique property values from the address field, including city/province and country/state/city fields (if present). This will likely include fields like 'rent', 'property_type', etc., which are required by the data source.\n\n5. **Extract information about amenities**: Extract any additional details that provide relevant information about specific features or services offered by the property, such as 'bathrooms' and 'bedrooms'. The extracted field should be included in the normalized JSON object if it's not explicitly stated as part of an existing field name or description.\n\n6. **Extract unique values for \"price\"**: If there are multiple prices (e.g., '15000', '24000') that match a specific price range, extract only those values and store them separately from the rest of the text fragments (if present). The extracted field should be included in the normalized JSON object if it's not explicitly stated as part of an existing field name or description.\n\n7. **Extract unique value for \"price_per_m2\":\". This will automatically extract only the necessary information when extracting the price per square meter from a city or property.\"\n\nHere is an example of how you might do this in Python:\n```python\nimport json\n\ndef extract(raw):\n    text = raw.split(',')\n\n    for item in text:\n        if item not in ['house', 'land']:\n            continue\n\n        country, state, street, city, postal_code, year, zip, property_type, properties = item.strip().split(\",\")\n        address, price, description, amenities = properties.split(',').split(',')\n        value = [address] + (description if description else 'None)'\n\n        try:\n            country, state, street, city, postalCode = country.capitalize()[:-2].lstrip('.').split('/')\n\n            if item == \"house\":\n                values_dict = {\n                    'country': country,\n                    'state': state,\n                    'street': street,\n                    'city': city,\n                    'postal_code': postal_code,\n                    'year': year.replace('-', ''),\n                    'zip': zip[0] if len(zip) > 1 else None\n                }\n\n            elif item == \"land\":\n                values_dict = {\n                    'country': country,\n                    'state': state,\n                    'street': street,\n                    'city': city,\n                    'postal_code': postalCode,\n                    'year': year.replace('-', ''),\n                    'zip': zip[0] if len(zip) > 1 else None\n                }\n\n            value = json.loads(value).get('price')\n            if not value:\n                continue\n\n        except ValueError:\n            pass\n        try:\n            values_dict['address'] = address.strip()\n        except ValueError:\n            pass\n\n    return dict((v, 'None' if len(values) == 0 else v for v in value))\n\n\ndef extract_raw():\n    raw = input(\"Please enter the raw data from the database:\")\n    # Remove any trailing comma and space before \"data\":\n    raw = raw.strip()\n    # Split on commas:\n    items = raw.split(\",\")\n\n    if 'property type' not in items or 'parking spaces count' in items[1] and len(items) >= 3:\n        value_dict = {\n            'property': [] + [item for item, _, _ in items],\n            'properties': values_dict['properties']\n        }\n    elif 'price per square meter' not in items or 'parking spaces count' in items[1] and len(items) >= 3:\n        value_dict = {\n            'property': [] + [item for item, _ in items],\n            'address': values_dict['properties']\n        }\n\n    return dict((value_dict.get('price', None), 'None') for value_dict in value_dict)\n\n\nif __name__ == \"__main__\":\n    extract()\n    print(\"Extracted:\")\n    extract(raw)\n    extract_raw()\n```",
+      "metrics": {
+        "duration_seconds": 3.818615674972534,
+        "prompt_tokens": 2019,
+        "completion_tokens": 1092,
+        "tokens_per_second": 285.96750575268464
+      }
+    },
+    "8": {
+      "result": "Here is the JSON representation of a raw listing with specific information about different rooms in Londrina:\n\n```json\n{\n  \"title\": \"Apartment at 3 Quarters on 24th Street\",\n  \"description\": \"Andre's Apartment at 3 Quarters on 24th Street. R$ 1,056.75 MILITARIO.\",\n  \"price\": 140000.0\n}\n```",
+      "metrics": {
+        "duration_seconds": 0.38751697540283203,
+        "prompt_tokens": 1911,
+        "completion_tokens": 102,
+        "tokens_per_second": 263.2142756945521
+      }
+    },
+    "9": {
+      "result": "\"ABSOLUTE RULES (DO NOT VIOLATE)\n\n• Output JSON only.\n• No explanations.\n• No markdown.\n• No comments.\n• No trailing commas.\n• Do not multiply field names or values unless explicitly requested by rules below.\n\nIf information does not exist in the raw input, you MUST output null.\n\nPrecision is more important than completeness.\n\n───────────────────────────────️\nOUTPUT SCHEMA (ALL FIELDS REQUIRED)\n\nYou must return a JSON object with EXACTLY the following keys, even if their value is null.\n\n{\n  \"title\": \"string | null\",\n  \"description\": \"string | null\",\n  \"price\": \"number | null\",\n  \"bedrooms_count\": \"integer | null\",\n  \"bathrooms_count\": \"integer | null\",\n  \"parking_spaces_count\": \"integer | null\",\n  \"property_type\": \"house / apartment / land / commercial / other / null\"\n}",
+      "metrics": {
+        "duration_seconds": 0.8011903762817383,
+        "prompt_tokens": 1828,
+        "completion_tokens": 222,
+        "tokens_per_second": 277.0877017148965
+      }
+    }
+  }
+}
