@@ -1,0 +1,1497 @@
+{
+  "summary": {
+    "total_models": 11,
+    "best_model": "qwen/qwen3-4b-2507",
+    "best_score": 99.8
+  },
+  "models": [
+    {
+      "model_name": "qwen/qwen3-4b-2507",
+      "model_size": "4M",
+      "total_time_seconds": 31.668397188186646,
+      "total_tokens": 19485,
+      "overall_score": 99.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 9.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "description: got None, expected non-null"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "ministral-3-14b-instruct-2512",
+      "model_size": "14M",
+      "total_time_seconds": 346.75471782684326,
+      "total_tokens": 26675,
+      "overall_score": 94.4,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 4.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bathrooms_count: got None, expected one of [3]",
+            "parking_spaces_count: got None, expected one of [4]",
+            "raw_address: got None, expected one of ['{:country=>\"Brazil\"}']",
+            "neighborhood: got 'Terra Bonita', expected one of [None]",
+            "city: got 'Ibiporã', expected one of [None]",
+            "state: got 'PR', expected one of [None]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "raw_address: got None, expected one of ['Rua Maceió, Bairro Boa Vista, região Central de Londrina PR', 'Maceió, Boa Vista, Londrina PR']",
+            "complement: got None, expected one of ['Bairro Boa Vista', 'Boa Vista']"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bathrooms_count: got None, expected one of [2]",
+            "parking_spaces_count: got None, expected one of [2]",
+            "city: got 'Ibiporã', expected one of [None]",
+            "state: got 'PR', expected one of [None]",
+            "suites_count: got None, expected one of [1]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "property_type: got None, expected one of ['other']"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "raw_address: got None, expected one of ['Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR']",
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "complement: got None, expected one of ['distrito da Warta', 'Warta']",
+            "neighborhood: got 'Milton Gavetti', expected one of ['Warta', 'warta', 'distrito da Warta']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "bedrooms_count: got None, expected one of [2]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "property_type: got None, expected one of ['house']"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "neighborhood: got '- Conjunto habitacional Doutor José dos Santos Rocha', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha']",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bedrooms_count: got None, expected one of [3]",
+            "condo_fee: got None, expected one of [3.0, 3]",
+            "property_tax: got None, expected one of [3.0, 3]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "property_type: got None, expected one of ['other']",
+            "city: got 'Ibiporã', expected one of [None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "ministral-3-3b-instruct-2512",
+      "model_size": "3M",
+      "total_time_seconds": 29.505138635635376,
+      "total_tokens": 26609,
+      "overall_score": 93.1,
+      "scores": {
+        "parse": 40.0,
+        "schema": 28.5,
+        "types": 20.0,
+        "values": 4.6
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got None, expected one of [3]",
+            "property_type: got None, expected one of ['commercial']",
+            "state: got 'PR', expected one of [None]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "street_number",
+            "complement"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "state: got 'PR', expected one of [None]",
+            "normalized_features: got ['planned_furniture'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 25,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 85,
+          "missing_keys": [
+            "complement"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "raw_address: got None, expected one of ['Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR']",
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "complement: got None, expected one of ['distrito da Warta', 'Warta']",
+            "neighborhood: got 'Milton Gavetti', expected one of ['Warta', 'warta', 'distrito da Warta']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "property_type: got None, expected one of ['apartment']"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "property_type: got None, expected one of ['house']",
+            "raw_address: got '{:neighborhood=>\"- Conjunto habitacional Doutor José dos Santos Rocha Cambé\", :city=>\"Cambé\", :state=>\"PR\", :country=>\"BR\"}', expected one of [None]",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got None, expected one of ['apartment']",
+            "neighborhood: got 'Andrade', expected one of ['Jardim Andrade', 'jardim Andrade', 'JARDIM ANDRADE']"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "raw_address: got \"{'street': null, 'street_number': null, 'complement': null, 'neighborhood': null, 'city': null}\", expected one of ['{}', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "ibm/granite-4-h-tiny",
+      "model_size": "unknown",
+      "total_time_seconds": 29.49792742729187,
+      "total_tokens": 18751,
+      "overall_score": 92.5,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 19.7,
+        "values": 2.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "price: got None, expected one of [800000.0, 800000]",
+            "bathrooms_count: got None, expected one of [3]",
+            "property_type: got 'other', expected one of ['commercial']",
+            "city: got 'Ibiporã', expected one of [None]",
+            "state: got 'PR', expected one of [None]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['commercial']",
+            "raw_address: got '', expected one of ['Rua Maceió, Bairro Boa Vista, região Central de Londrina PR', 'Maceió, Boa Vista, Londrina PR']",
+            "complement: got None, expected one of ['Bairro Boa Vista', 'Boa Vista']",
+            "total_area_m2: got None, expected one of [803]"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "city: got 'Ibiporã', expected one of [None]",
+            "state: got 'Parana', expected one of [None]",
+            "normalized_features: got ['house'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "state: got 'Parana', expected one of ['PR', 'pr']"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "price: got None, expected one of [12000000.0, 12000000]",
+            "raw_address: got None, expected one of ['Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR']",
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "complement: got '', expected one of ['distrito da Warta', 'Warta']",
+            "neighborhood: got '', expected one of ['Warta', 'warta', 'distrito da Warta']",
+            "total_area_m2: got None, expected one of [242000]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "price: got None, expected one of [1200.0, 1200]",
+            "neighborhood: got None, expected one of ['Jardim Lago Norte', 'jardim Lago Norte', 'JARDIM LAGO NORTE']",
+            "normalized_features: got ['apartment', '2 bedrooms', 'rental'], expected one of [[]]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['house']",
+            "normalized_features: got ['for_sale'], expected one of [[]]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['house']",
+            "neighborhood: got '{:neighborhood=>\"- Conjunto habitacional Doutor José dos Santos Rocha Cambé\", :city=>\"Cambé\", :state=>\"PR\", :country=>\"BR\"}', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha']",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bedrooms_count: got None, expected one of [3]",
+            "raw_address: got '', expected one of [None]",
+            "street: got '', expected one of [None]",
+            "street_number: got '', expected one of [None]",
+            "complement: got '', expected one of [None]",
+            "neighborhood: got '', expected one of ['Jardim Andrade', 'jardim Andrade', 'JARDIM ANDRADE']"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 87,
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "liquidai_lfm2-350m-extract",
+      "model_size": "350MM",
+      "total_time_seconds": 8.358796119689941,
+      "total_tokens": 24682,
+      "overall_score": 70.1,
+      "scores": {
+        "parse": 36.0,
+        "schema": 24.0,
+        "types": 10.1,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'outer_lineração'"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 3,
+          "values_score": 0,
+          "total_score": 73,
+          "type_errors": [
+            "price: expected number, got str",
+            "total_area_m2: expected number, got str",
+            "private_area_m2: expected number, got str",
+            "property_tax: expected number, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'outro'"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 12,
+          "values_score": 0,
+          "total_score": 82,
+          "type_errors": [
+            "price: expected number, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'haus'"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 12,
+          "values_score": 0,
+          "total_score": 82,
+          "type_errors": [
+            "price: expected number, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'rua'"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 12,
+          "values_score": 0,
+          "total_score": 82,
+          "type_errors": [
+            "price: expected number, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'outro'"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'outer_built'"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'otroso'"
+          ]
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 14 column 152 (char 579)"
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'outro'"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 2,
+          "values_score": 0,
+          "total_score": 42,
+          "missing_keys": [
+            "price",
+            "neighborhood",
+            "suites_count",
+            "year_built",
+            "condo_fee"
+          ],
+          "extra_keys": [
+            "land",
+            "address",
+            "number_of_suites_count",
+            "number_of_public_areas_count",
+            "area_type_number",
+            "price_per_m2",
+            "number_of_rooms_count",
+            "number_of_nights",
+            "currency_symbol",
+            "complement_type",
+            "address_state",
+            "address street",
+            "address_number",
+            "floor_count",
+            "number_of_rates",
+            "listing_status_title",
+            "city_name",
+            "address_footer",
+            "number_of_rates_number"
+          ],
+          "type_errors": [
+            "property_tax: expected number, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'casa'"
+          ],
+          "country_error": true
+        }
+      }
+    },
+    {
+      "model_name": "liquid/lfm2.5-1.2b",
+      "model_size": "1.2M",
+      "total_time_seconds": 6.95521092414856,
+      "total_tokens": 23000,
+      "overall_score": 41.2,
+      "scores": {
+        "parse": 24.0,
+        "schema": 5.0,
+        "types": 12.0,
+        "values": 0.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country"
+          ]
+        },
+        "2": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "bedrooms_count: got None, expected one of [2]",
+            "property_type: got 'other', expected one of ['apartment']",
+            "neighborhood: got 'Londrina', expected one of ['Jardim Lago Norte', 'jardim Lago Norte', 'JARDIM LAGO NORTE']"
+          ]
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 10,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 70,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 10,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 70,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement"
+          ]
+        },
+        "9": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        }
+      }
+    },
+    {
+      "model_name": "falcon-h1-tiny-90m-instruct",
+      "model_size": "90MM",
+      "total_time_seconds": 14.473593711853027,
+      "total_tokens": 21662,
+      "overall_score": 28.6,
+      "scores": {
+        "parse": 16.0,
+        "schema": 6.5,
+        "types": 6.1,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 10,
+          "types_score": 10,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "normalized_features",
+            "condo_fee",
+            "property_tax"
+          ],
+          "extra_keys": [
+            "type"
+          ],
+          "country_error": true
+        },
+        "3": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 77,
+          "missing_keys": [
+            "condo_fee",
+            "property_tax"
+          ],
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 3 column 141 (char 205)"
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 77,
+          "missing_keys": [
+            "condo_fee",
+            "property_tax"
+          ],
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 15,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 72,
+          "missing_keys": [
+            "condo_fee",
+            "property_tax"
+          ],
+          "extra_keys": [
+            "land"
+          ],
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-1.7b",
+      "model_size": "1.7M",
+      "total_time_seconds": 130.66347289085388,
+      "total_tokens": 34729,
+      "overall_score": 28.2,
+      "scores": {
+        "parse": 12.0,
+        "schema": 9.0,
+        "types": 6.0,
+        "values": 1.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "2": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        },
+        "3": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['apartment']",
+            "normalized_features: got ['apartment'], expected one of [[]]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['house']",
+            "neighborhood: got None, expected one of ['Bandeirantes', 'bandeirantes', 'Portal dos Bandeirantes']"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [None]",
+            "property_type: got 'other', expected one of ['house']",
+            "raw_address: got 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', expected one of [None]",
+            "neighborhood: got 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha']",
+            "normalized_features: got ['school', 'churches', 'supermarkets', 'living_room', 'kitchen', 'social_bathroom', 'laundry'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados']]"
+          ]
+        },
+        "8": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "9": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 32 column 1 (char 760)"
+        }
+      }
+    },
+    {
+      "model_name": "smollm2-135m-instruct",
+      "model_size": "135MM",
+      "total_time_seconds": 10.327996969223022,
+      "total_tokens": 22134,
+      "overall_score": 22.0,
+      "scores": {
+        "parse": 16.0,
+        "schema": 0.0,
+        "types": 6.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 32 column 5 (char 1070)"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 57,
+          "missing_keys": [
+            "price",
+            "total_area_m2",
+            "private_area_m2",
+            "property_tax"
+          ],
+          "extra_keys": [
+            "raw_features",
+            "url"
+          ],
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        },
+        "3": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 3 column 1 (char 157)"
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 20 column 2 (char 448)"
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "neighborhood",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 2 column 21 (char 22)"
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 3,
+          "values_score": 0,
+          "total_score": 43,
+          "missing_keys": [
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ],
+          "type_errors": [
+            "price: expected number, got str",
+            "bedrooms_count: expected int, got str",
+            "bathrooms_count: expected int, got str",
+            "parking_spaces_count: expected int, got str"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'house / apartment / land / commercial / other / null'"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "nanbeige_nanbeige4-3b-thinking-25111",
+      "model_size": "3M",
+      "total_time_seconds": 0.02062201499938965,
+      "total_tokens": 0,
+      "overall_score": 0.0,
+      "scores": {
+        "parse": 0.0,
+        "schema": 0.0,
+        "types": 0.0,
+        "values": 0.0
+      },
+      "cases": {}
+    },
+    {
+      "model_name": "openbmb.agentcpm-explore@q8_0",
+      "model_size": "unknown",
+      "total_time_seconds": 1041.7338831424713,
+      "total_tokens": 71964,
+      "overall_score": 0.0,
+      "scores": {
+        "parse": 0.0,
+        "schema": 0.0,
+        "types": 0.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 4 column 4 (char 57)"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 32 column 1 (char 1060)"
+        },
+        "2": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 1 column 24 (char 23)"
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 3 column 7 (char 127)"
+        },
+        "5": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 32 column 1 (char 896)"
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        },
+        "8": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 1 column 3 (char 2)"
+        },
+        "9": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 2 column 1 (char 701)"
+        }
+      }
+    }
+  ]
+}

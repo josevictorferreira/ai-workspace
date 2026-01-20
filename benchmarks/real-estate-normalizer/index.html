@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Normalizer Benchmark Evaluation</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+               max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #4a90d9; color: white; font-weight: 600; }
+        tr:hover { background: #f8f9fa; }
+        .score { font-weight: bold; color: #2e7d32; }
+        .score-low { color: #c62828; }
+        .model-name { font-weight: 600; color: #333; }
+        .details { display: none; background: #fafafa; padding: 15px; }
+        .details.show { display: table-row; }
+        .case-details { background: white; padding: 15px; margin: 10px 0; 
+                        border-radius: 6px; border: 1px solid #e0e0e0; }
+        .case-header { font-weight: 600; margin-bottom: 10px; color: #555; }
+        .error { color: #c62828; font-size: 0.9em; }
+        .score-bar { background: #e0e0e0; border-radius: 4px; height: 20px; overflow: hidden; }
+        .score-fill { height: 100%; background: #4caf50; transition: width 0.3s; }
+        .score-fill.low { background: #ff9800; }
+        .score-fill.critical { background: #f44336; }
+        .toggle-btn { background: #4a90d9; color: white; border: none; padding: 6px 12px;
+                      border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .toggle-btn:hover { background: #357abd; }
+    </style>
+</head>
+<body>
+    <h1>🏠 Real Estate Normalizer Benchmark Evaluation</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Size</th>
+                <th>Time (s)</th>
+                <th>Tokens</th>
+                <th>Score</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="model-name">qwen/qwen3-4b-2507</td>
+                <td>4M</td>
+                <td>31.67</td>
+                <td>19,485</td>
+                <td class="score">99.8</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('qwen/qwen3-4b-2507')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-qwen/qwen3-4b-2507">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 40.0/40 | Schema: 30.0/30 | Types: 20.0/20 | Values: 9.8/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill " style="width: 99.8%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 98.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 98%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• description: got None, expected non-null</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">ministral-3-14b-instruct-2512</td>
+                <td>14M</td>
+                <td>346.75</td>
+                <td>26,675</td>
+                <td class="score">94.4</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('ministral-3-14b-instruct-2512')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-ministral-3-14b-instruct-2512">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 40.0/40 | Schema: 30.0/30 | Types: 20.0/20 | Values: 4.4/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill " style="width: 94.4%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bathrooms_count: got None, expected one of [3]</div>
+                                <div>• parking_spaces_count: got None, expected one of [4]</div>
+                                <div>• raw_address: got None, expected one of [&#x27;{:country=&gt;&quot;Brazil&quot;}&#x27;]</div>
+                                <div>• neighborhood: got &#x27;Terra Bonita&#x27;, expected one of [None]</div>
+                                <div>• city: got &#x27;Ibiporã&#x27;, expected one of [None]</div>
+                                <div>• state: got &#x27;PR&#x27;, expected one of [None]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• raw_address: got None, expected one of [&#x27;Rua Maceió, Bairro Boa Vista, região Central de Londrina PR&#x27;, &#x27;Maceió, Boa Vista, Londrina PR&#x27;]</div>
+                                <div>• complement: got None, expected one of [&#x27;Bairro Boa Vista&#x27;, &#x27;Boa Vista&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bathrooms_count: got None, expected one of [2]</div>
+                                <div>• parking_spaces_count: got None, expected one of [2]</div>
+                                <div>• city: got &#x27;Ibiporã&#x27;, expected one of [None]</div>
+                                <div>• state: got &#x27;PR&#x27;, expected one of [None]</div>
+                                <div>• suites_count: got None, expected one of [1]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 98.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 98%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got None, expected one of [&#x27;other&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 92.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 92%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• raw_address: got None, expected one of [&#x27;Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR&#x27;]</div>
+                                <div>• street: got None, expected one of [&#x27;Rodovia Celso Garcia Cid&#x27;, &#x27;Rod. Celso Garcia Cid&#x27;]</div>
+                                <div>• complement: got None, expected one of [&#x27;distrito da Warta&#x27;, &#x27;Warta&#x27;]</div>
+                                <div>• neighborhood: got &#x27;Milton Gavetti&#x27;, expected one of [&#x27;Warta&#x27;, &#x27;warta&#x27;, &#x27;distrito da Warta&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• title: got None, expected non-null</div>
+                                <div>• bedrooms_count: got None, expected one of [2]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 98.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 98%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got None, expected one of [&#x27;house&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• neighborhood: got &#x27;- Conjunto habitacional Doutor José dos Santos Rocha&#x27;, expected one of [&#x27;Conjunto habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Doutor José dos Santos Rocha&#x27;]</div>
+                                <div>• normalized_features: got [], expected one of [[&#x27;school&#x27;, &#x27;churches&#x27;, &#x27;supermarkets&#x27;], [&#x27;escola&#x27;, &#x27;igrejas&#x27;, &#x27;supermercados&#x27;]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bedrooms_count: got None, expected one of [3]</div>
+                                <div>• condo_fee: got None, expected one of [3.0, 3]</div>
+                                <div>• property_tax: got None, expected one of [3.0, 3]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• description: got None, expected non-null</div>
+                                <div>• property_type: got None, expected one of [&#x27;other&#x27;]</div>
+                                <div>• city: got &#x27;Ibiporã&#x27;, expected one of [None]</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">ministral-3-3b-instruct-2512</td>
+                <td>3M</td>
+                <td>29.51</td>
+                <td>26,609</td>
+                <td class="score">93.1</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('ministral-3-3b-instruct-2512')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-ministral-3-3b-instruct-2512">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 40.0/40 | Schema: 28.5/30 | Types: 20.0/20 | Values: 4.6/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill " style="width: 93.1%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bathrooms_count: got None, expected one of [3]</div>
+                                <div>• property_type: got None, expected one of [&#x27;commercial&#x27;]</div>
+                                <div>• state: got &#x27;PR&#x27;, expected one of [None]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 80.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 80%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: street_number, complement</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• state: got &#x27;PR&#x27;, expected one of [None]</div>
+                                <div>• normalized_features: got [&#x27;planned_furniture&#x27;], expected one of [[]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 85.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 85%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: complement</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 92.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 92%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• raw_address: got None, expected one of [&#x27;Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR&#x27;]</div>
+                                <div>• street: got None, expected one of [&#x27;Rodovia Celso Garcia Cid&#x27;, &#x27;Rod. Celso Garcia Cid&#x27;]</div>
+                                <div>• complement: got None, expected one of [&#x27;distrito da Warta&#x27;, &#x27;Warta&#x27;]</div>
+                                <div>• neighborhood: got &#x27;Milton Gavetti&#x27;, expected one of [&#x27;Warta&#x27;, &#x27;warta&#x27;, &#x27;distrito da Warta&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 98.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 98%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got None, expected one of [&#x27;apartment&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 100.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got None, expected one of [&#x27;house&#x27;]</div>
+                                <div>• raw_address: got &#x27;{:neighborhood=&gt;&quot;- Conjunto habitacional Doutor José dos Santos Rocha Cambé&quot;, :city=&gt;&quot;Cambé&quot;, :state=&gt;&quot;PR&quot;, :country=&gt;&quot;BR&quot;}&#x27;, expected one of [None]</div>
+                                <div>• normalized_features: got [], expected one of [[&#x27;school&#x27;, &#x27;churches&#x27;, &#x27;supermarkets&#x27;], [&#x27;escola&#x27;, &#x27;igrejas&#x27;, &#x27;supermercados&#x27;]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got None, expected one of [&#x27;apartment&#x27;]</div>
+                                <div>• neighborhood: got &#x27;Andrade&#x27;, expected one of [&#x27;Jardim Andrade&#x27;, &#x27;jardim Andrade&#x27;, &#x27;JARDIM ANDRADE&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• description: got None, expected non-null</div>
+                                <div>• raw_address: got &quot;{&#x27;street&#x27;: null, &#x27;street_number&#x27;: null, &#x27;complement&#x27;: null, &#x27;neighborhood&#x27;: null, &#x27;city&#x27;: null}&quot;, expected one of [&#x27;{}&#x27;, None]</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">ibm/granite-4-h-tiny</td>
+                <td>unknown</td>
+                <td>29.50</td>
+                <td>18,751</td>
+                <td class="score">92.5</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('ibm/granite-4-h-tiny')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-ibm/granite-4-h-tiny">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 40.0/40 | Schema: 30.0/30 | Types: 19.7/20 | Values: 2.8/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill " style="width: 92.5%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: got None, expected one of [800000.0, 800000]</div>
+                                <div>• bathrooms_count: got None, expected one of [3]</div>
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;commercial&#x27;]</div>
+                                <div>• city: got &#x27;Ibiporã&#x27;, expected one of [None]</div>
+                                <div>• state: got &#x27;PR&#x27;, expected one of [None]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 92.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 92%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;commercial&#x27;]</div>
+                                <div>• raw_address: got &#x27;&#x27;, expected one of [&#x27;Rua Maceió, Bairro Boa Vista, região Central de Londrina PR&#x27;, &#x27;Maceió, Boa Vista, Londrina PR&#x27;]</div>
+                                <div>• complement: got None, expected one of [&#x27;Bairro Boa Vista&#x27;, &#x27;Boa Vista&#x27;]</div>
+                                <div>• total_area_m2: got None, expected one of [803]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• city: got &#x27;Ibiporã&#x27;, expected one of [None]</div>
+                                <div>• state: got &#x27;Parana&#x27;, expected one of [None]</div>
+                                <div>• normalized_features: got [&#x27;house&#x27;], expected one of [[]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 98.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 98%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• state: got &#x27;Parana&#x27;, expected one of [&#x27;PR&#x27;, &#x27;pr&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: got None, expected one of [12000000.0, 12000000]</div>
+                                <div>• raw_address: got None, expected one of [&#x27;Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR&#x27;]</div>
+                                <div>• street: got None, expected one of [&#x27;Rodovia Celso Garcia Cid&#x27;, &#x27;Rod. Celso Garcia Cid&#x27;]</div>
+                                <div>• complement: got &#x27;&#x27;, expected one of [&#x27;distrito da Warta&#x27;, &#x27;Warta&#x27;]</div>
+                                <div>• neighborhood: got &#x27;&#x27;, expected one of [&#x27;Warta&#x27;, &#x27;warta&#x27;, &#x27;distrito da Warta&#x27;]</div>
+                                <div>• total_area_m2: got None, expected one of [242000]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: got None, expected one of [1200.0, 1200]</div>
+                                <div>• neighborhood: got None, expected one of [&#x27;Jardim Lago Norte&#x27;, &#x27;jardim Lago Norte&#x27;, &#x27;JARDIM LAGO NORTE&#x27;]</div>
+                                <div>• normalized_features: got [&#x27;apartment&#x27;, &#x27;2 bedrooms&#x27;, &#x27;rental&#x27;], expected one of [[]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;house&#x27;]</div>
+                                <div>• normalized_features: got [&#x27;for_sale&#x27;], expected one of [[]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 94.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 94%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;house&#x27;]</div>
+                                <div>• neighborhood: got &#x27;{:neighborhood=&gt;&quot;- Conjunto habitacional Doutor José dos Santos Rocha Cambé&quot;, :city=&gt;&quot;Cambé&quot;, :state=&gt;&quot;PR&quot;, :country=&gt;&quot;BR&quot;}&#x27;, expected one of [&#x27;Conjunto habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Doutor José dos Santos Rocha&#x27;]</div>
+                                <div>• normalized_features: got [], expected one of [[&#x27;school&#x27;, &#x27;churches&#x27;, &#x27;supermarkets&#x27;], [&#x27;escola&#x27;, &#x27;igrejas&#x27;, &#x27;supermercados&#x27;]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bedrooms_count: got None, expected one of [3]</div>
+                                <div>• raw_address: got &#x27;&#x27;, expected one of [None]</div>
+                                <div>• street: got &#x27;&#x27;, expected one of [None]</div>
+                                <div>• street_number: got &#x27;&#x27;, expected one of [None]</div>
+                                <div>• complement: got &#x27;&#x27;, expected one of [None]</div>
+                                <div>• neighborhood: got &#x27;&#x27;, expected one of [&#x27;Jardim Andrade&#x27;, &#x27;jardim Andrade&#x27;, &#x27;JARDIM ANDRADE&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 87.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 87%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• normalized_features: expected list, got str</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">liquidai_lfm2-350m-extract</td>
+                <td>350MM</td>
+                <td>8.36</td>
+                <td>24,682</td>
+                <td class="score">70.1</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('liquidai_lfm2-350m-extract')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-liquidai_lfm2-350m-extract">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 36.0/40 | Schema: 24.0/30 | Types: 10.1/20 | Values: 0.0/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill low" style="width: 70.1%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 85.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 85%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: invalid value &#x27;outer_lineração&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 73.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 73%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: expected number, got str</div>
+                                <div>• total_area_m2: expected number, got str</div>
+                                <div>• private_area_m2: expected number, got str</div>
+                                <div>• property_tax: expected number, got str</div>
+                                <div>• property_type: invalid value &#x27;outro&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 82.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 82%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: expected number, got str</div>
+                                <div>• property_type: invalid value &#x27;haus&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 82.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 82%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: expected number, got str</div>
+                                <div>• property_type: invalid value &#x27;rua&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 82.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 82%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• price: expected number, got str</div>
+                                <div>• property_type: invalid value &#x27;outro&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 85.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 85%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: invalid value &#x27;outer_built&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 85.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 85%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: invalid value &#x27;otroso&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 14 column 152 (char 579)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 85.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 85%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: invalid value &#x27;outro&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 42.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 42%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: price, neighborhood, suites_count, year_built, condo_fee</div>
+                                <div>• Extra keys: land, address, number_of_suites_count, number_of_public_areas_count, area_type_number, price_per_m2, number_of_rooms_count, number_of_nights, currency_symbol, complement_type, address_state, address street, address_number, floor_count, number_of_rates, listing_status_title, city_name, address_footer, number_of_rates_number</div>
+                                <div>• property_tax: expected number, got str</div>
+                                <div>• property_type: invalid value &#x27;casa&#x27;</div>
+                                <div>• Country must be &#x27;BR&#x27;</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">liquid/lfm2.5-1.2b</td>
+                <td>1.2M</td>
+                <td>6.96</td>
+                <td>23,000</td>
+                <td class="score-low">41.2</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('liquid/lfm2.5-1.2b')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-liquid/lfm2.5-1.2b">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 24.0/40 | Schema: 5.0/30 | Types: 12.0/20 | Values: 0.2/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 41.2%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: raw_address, street, street_number, complement, neighborhood, city, state, country</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: raw_address, street, street_number, complement, neighborhood, city, state, country</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: raw_address, street, street_number, complement, neighborhood, city, state, country</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 92.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 92%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• description: got None, expected non-null</div>
+                                <div>• bedrooms_count: got None, expected one of [2]</div>
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;apartment&#x27;]</div>
+                                <div>• neighborhood: got &#x27;Londrina&#x27;, expected one of [&#x27;Jardim Lago Norte&#x27;, &#x27;jardim Lago Norte&#x27;, &#x27;JARDIM LAGO NORTE&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 70.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 70%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: raw_address, street, street_number, complement</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 70.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 70%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: raw_address, street, street_number, complement</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">falcon-h1-tiny-90m-instruct</td>
+                <td>90MM</td>
+                <td>14.47</td>
+                <td>21,662</td>
+                <td class="score-low">28.6</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('falcon-h1-tiny-90m-instruct')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-falcon-h1-tiny-90m-instruct">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 16.0/40 | Schema: 6.5/30 | Types: 6.1/20 | Values: 0.0/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 28.6%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: normalized_features, condo_fee, property_tax</div>
+                                <div>• Extra keys: type</div>
+                                <div>• Country must be &#x27;BR&#x27;</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 77.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 77%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: condo_fee, property_tax</div>
+                                <div>• normalized_features: expected list, got str</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting &#x27;,&#x27; delimiter: line 3 column 141 (char 205)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: Empty result</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 77.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 77%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: condo_fee, property_tax</div>
+                                <div>• normalized_features: expected list, got str</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 72.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 72%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: condo_fee, property_tax</div>
+                                <div>• Extra keys: land</div>
+                                <div>• normalized_features: expected list, got str</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">qwen/qwen3-1.7b</td>
+                <td>1.7M</td>
+                <td>130.66</td>
+                <td>34,729</td>
+                <td class="score-low">28.2</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('qwen/qwen3-1.7b')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-qwen/qwen3-1.7b">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 12.0/40 | Schema: 9.0/30 | Types: 6.0/20 | Values: 1.2/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 28.2%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;apartment&#x27;]</div>
+                                <div>• normalized_features: got [&#x27;apartment&#x27;], expected one of [[]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 96.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 96%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;house&#x27;]</div>
+                                <div>• neighborhood: got None, expected one of [&#x27;Bandeirantes&#x27;, &#x27;bandeirantes&#x27;, &#x27;Portal dos Bandeirantes&#x27;]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 90.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill " style="width: 90%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• bathrooms_count: got 1, expected one of [None]</div>
+                                <div>• property_type: got &#x27;other&#x27;, expected one of [&#x27;house&#x27;]</div>
+                                <div>• raw_address: got &#x27;Conjunto habitacional Doutor José dos Santos Rocha Cambé&#x27;, expected one of [None]</div>
+                                <div>• neighborhood: got &#x27;Conjunto habitacional Doutor José dos Santos Rocha Cambé&#x27;, expected one of [&#x27;Conjunto habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Habitacional Doutor José dos Santos Rocha&#x27;, &#x27;Conjunto Doutor José dos Santos Rocha&#x27;]</div>
+                                <div>• normalized_features: got [&#x27;school&#x27;, &#x27;churches&#x27;, &#x27;supermarkets&#x27;, &#x27;living_room&#x27;, &#x27;kitchen&#x27;, &#x27;social_bathroom&#x27;, &#x27;laundry&#x27;], expected one of [[&#x27;school&#x27;, &#x27;churches&#x27;, &#x27;supermarkets&#x27;], [&#x27;escola&#x27;, &#x27;igrejas&#x27;, &#x27;supermercados&#x27;]]</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 32 column 1 (char 760)</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">smollm2-135m-instruct</td>
+                <td>135MM</td>
+                <td>10.33</td>
+                <td>22,134</td>
+                <td class="score-low">22.0</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('smollm2-135m-instruct')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-smollm2-135m-instruct">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 16.0/40 | Schema: 0.0/30 | Types: 6.0/20 | Values: 0.0/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 22.0%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 32 column 5 (char 1070)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting value: line 1 column 1 (char 0)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 57.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 57%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: price, total_area_m2, private_area_m2, property_tax</div>
+                                <div>• Extra keys: raw_features, url</div>
+                                <div>• normalized_features: expected list, got str</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 3</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 3 column 1 (char 157)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 20 column 2 (char 448)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: title, description, price, parking_spaces_count, property_type, listing_status, raw_address, street, street_number, neighborhood, state, country, normalized_features, total_area_m2, private_area_m2, suites_count, floors_count, year_built, condo_fee, property_tax</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting value: line 1 column 1 (char 0)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 2 column 21 (char 22)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 60.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill low" style="width: 60%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: bedrooms_count, bathrooms_count, parking_spaces_count, property_type, listing_status, raw_address, street, street_number, complement, neighborhood, city, state, country, normalized_features, total_area_m2, private_area_m2, suites_count, floors_count, year_built, condo_fee, property_tax</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 43.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 43%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Missing keys: listing_status, raw_address, street, street_number, complement, neighborhood, city, state, country, normalized_features, total_area_m2, private_area_m2, suites_count, floors_count, year_built, condo_fee, property_tax</div>
+                                <div>• price: expected number, got str</div>
+                                <div>• bedrooms_count: expected int, got str</div>
+                                <div>• bathrooms_count: expected int, got str</div>
+                                <div>• parking_spaces_count: expected int, got str</div>
+                                <div>• property_type: invalid value &#x27;house / apartment / land / commercial / other / null&#x27;</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">nanbeige_nanbeige4-3b-thinking-25111</td>
+                <td>3M</td>
+                <td>0.02</td>
+                <td>0</td>
+                <td class="score-low">0.0</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('nanbeige_nanbeige4-3b-thinking-25111')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-nanbeige_nanbeige4-3b-thinking-25111">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 0.0/40 | Schema: 0.0/30 | Types: 0.0/20 | Values: 0.0/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 0.0%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="model-name">openbmb.agentcpm-explore@q8_0</td>
+                <td>unknown</td>
+                <td>1041.73</td>
+                <td>71,964</td>
+                <td class="score-low">0.0</td>
+                <td><button class="toggle-btn" onclick="toggleDetails('openbmb.agentcpm-explore@q8_0')">Show</button></td>
+            </tr>
+            <tr class="details" id="details-openbmb.agentcpm-explore@q8_0">
+                <td colspan="6">
+                    <div class="case-details">
+                        <h4>Overall Scores</h4>
+                        <p>Parse: 0.0/40 | Schema: 0.0/30 | Types: 0.0/20 | Values: 0.0/10</p>
+                        <div class="score-bar">
+                            <div class="score-fill critical" style="width: 0.0%"></div>
+                        </div>
+                        <h4>Per-Case Breakdown</h4>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 0</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 4 column 4 (char 57)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 1</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 32 column 1 (char 1060)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 2</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 1 column 24 (char 23)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 4</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 3 column 7 (char 127)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 5</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 6</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 32 column 1 (char 896)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 7</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 8</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 1 column 3 (char 2)</div>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                            <strong>Case 9</strong>: 0.0/100
+                            <div class="score-bar" style="margin-top: 5px;">
+                                <div class="score-fill critical" style="width: 0%"></div>
+                            </div>
+                            <div class="error">
+                                <div>• Parse error: JSON decode error: Extra data: line 2 column 1 (char 701)</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function toggleDetails(modelName) {
+            const row = document.getElementById("details-" + modelName);
+            const btn = event.target;
+            if (row.style.display === "table-row") {
+                row.style.display = "none";
+                btn.textContent = "Show";
+            } else {
+                row.style.display = "table-row";
+                btn.textContent = "Hide";
+            }
+        }
+    </script>
+</body>
+</html>
