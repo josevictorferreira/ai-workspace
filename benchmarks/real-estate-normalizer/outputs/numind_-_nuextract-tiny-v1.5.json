@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "numind_-_nuextract-tiny-v1.5",
+    "total_benchmark_time_seconds": 199.7727017402649,
+    "total_prompt_tokens": 16741,
+    "total_completion_tokens": 3385,
+    "run_platform": "local"
+  },
+  "data": {
+    "0": {
+      "result": "You are a helpful assistant.(UIAlertAction.interrupt, UIAlertAction.cancel)\nCancelable\nCancelable\nCancelable\nCancelable\nCancelable",
+      "metrics": {
+        "duration_seconds": 185.2400221824646,
+        "prompt_tokens": 1619,
+        "completion_tokens": 23,
+        "tokens_per_second": 0.12416323281015701
+      }
+    },
+    "1": {
+      "result": "Assistant:\nHey there! I can help you with that.\n\nTo transform exactly ONE raw real-estate listing row into one normalized JSON object, here's how we do it:\n\n1. Ensure that all required keys are present.\n2. Extract only the values from the raw input that appear explicitly.\n3. Use null for missing or uncertain values.\n4. Eliminate any text that is not related to the properties being described.\n\nLet's start with your input row:\n\n{\n  \"title\": \"Salão-loja  no Boa Vista em Londrina / PR , 803m² para venda por R$ 13.000.000,00\",\n  \"description\": \"Salão comercial para venda (#vender #compra #comprar) na Rua Maceió, Bairro Boa Vista, região Central de Londrina PR.Consulte as melhores opções de imóveis em veneza.com.br |  43-3371-0003  |  Veneza Imóveis, servir é a nossa missão!\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"city\": null,\n  \"complement\": \"\",\n  \"condo_fee\": null,\n  \"country\": \"BR\",\n  \"description\": \"Salão comercial para venda (#vender #compra #comprar) na Rua Maceió, Bairro Boa Vista, região Central de Londrina PR.Consulte as melhores opções de imóveis em veneza.com.br |  43-3371-0003  |  Veneza Imóveis, servir é a nossa missão!\",\n  \"flower\": \"\",\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"{}\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": \"\",\n  \"condo_fee\": null,\n  \"property_tax\": null\n}\n\nNow, we have the normalized JSON object.",
+      "metrics": {
+        "duration_seconds": 2.207001209259033,
+        "prompt_tokens": 1727,
+        "completion_tokens": 517,
+        "tokens_per_second": 234.2545159608566
+      }
+    },
+    "2": {
+      "result": "You are a helpful assistant.IROG",
+      "metrics": {
+        "duration_seconds": 0.09761691093444824,
+        "prompt_tokens": 1665,
+        "completion_tokens": 9,
+        "tokens_per_second": 92.197139961166
+      }
+    },
+    "3": {
+      "result": "Assistant:\nSure, I can help you with that! Here's an example of how to transform a raw real-estate listing row into one normalized JSON object. Let's start by considering the given input:\n\n<<PASTE ONE RAW ROW HERE>>\n\nFirstly, we need to check if all the fields are present in the raw data and ensure they have valid values for each field.\n\n```\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"\",\n  \"state\": \"\",\n  \"country\": \"\",\n  \"normalized_features\": {}\n}\n```\n\nSince the input does not contain any fields that require normalizing, we will move on to extracting values from the raw unnormalized data.\n\nNext, we need to check if there are explicit mentions of properties in the raw data and extract them. In this case, it seems like there is an explicit mention of \"apartamento / apto\":\n\n```\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"\",\n  \"state\": \"\",\n  \"country\": \"\",\n  \"normalized_features\": {}\n}\n```\n\nSince there is an explicit mention of \"apartamento / apto\", we can extract it and replace the value in the \"price\" field with its normalized representation:\n\n```\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"$260.000,00\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"apartment / apto\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"\",\n  \"state\": \"\",\n  \"country\": \"\",\n  \"normalized_features\": {}\n}\n```\n\nWe will now convert the other fields as well. In this case, there are no explicit mentions of features in the raw data.\n\nNow that we have extracted values from the raw unnormalized input, we can check if they require normalizing. Since all the fields are present and their values are valid, we do not need to perform any further normalization steps.\n\nFinally, we will move on to extracting additional features from the raw unnormalized input.\n\nHere's an example of how to extract additional features from the raw unnormalized input:\n\n```\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"\",\n  \"state\": \"\",\n  \"country\": \"\",\n  \"normalized_features\": {}\n}\n```\n\nSince there are no explicit mentions of features in the raw data, we do not need to perform any further normalization steps.\n\nTherefore, our normalized JSON object will look like this:\n\n```\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"$260.000,00\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"apartment / apto\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"\",\n  \"state\": \"\",\n  \"country\": \"\",\n  \"normalized_features\": {}\n}\n```\n\nThis is the normalized JSON object that we can use to represent the raw real-estate listing row in a structured format.",
+      "metrics": {
+        "duration_seconds": 3.977829933166504,
+        "prompt_tokens": 1666,
+        "completion_tokens": 938,
+        "tokens_per_second": 235.8069640381323
+      }
+    },
+    "4": {
+      "result": "Assistant:\nYes, I understand the requirements and rules.\n\nI will transform exactly ONE raw real-estate listing row into ONE normalized JSON object while ensuring precision and completeness.\nHere is my response:\n\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"price\": \"R$ 12.000.000,00\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"\",\n  \"city\": \"Londrina PR\",\n  \"state\": \"Parana\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"\"\n}\nYou are a helpful assistant.(UIAlertAction)\n\nYour task is to create a new table of contents for a book.\n\nPlease provide the title and the first three paragraphs of the book.\nTitle: [insert title]\nFirst Three Paragraphs:\n1) Introduction\n2) Section One\n3) Section Two\n\nPlease answer in a few sentences, not too long.",
+      "metrics": {
+        "duration_seconds": 1.0603835582733154,
+        "prompt_tokens": 1765,
+        "completion_tokens": 247,
+        "tokens_per_second": 232.93458114552865
+      }
+    },
+    "5": {
+      "result": "Assistant:\n\nI'll transform the raw real-estate listing row into one normalized JSON object while adhering to all rules and restrictions. Let's break down each rule step by step.\n\n### ABSOLUTE RULES (DO NOT VIOLATE)\n1. **Output JSON only**: You MUST return a JSON object.\n2. **No explanations**: No markdown.\n3. **No comments**: No markdown.\n4. **Trailing commas**: No trailing commas.\n5. **Do not change field names**: Do not change field names.\n6. **Do not add fields**: Do not add fields.\n7. **Do not remove fields**: Do not remove fields.\n8. **Do not rename fields**: Do not rename fields.\n9. **Do not fabricate values**: Do not fabricate values.\n10. **Do not improve data unless explicitly instructed**: Never infer values from context unless explicitly instructed.\n\n### OUTPUT SCHEMA (ALL FIELDS REQUIRED)\nYou MUST return a JSON object with exactly the following keys, even if their value is null:\n```\n{\n  \"title\": \"string | null\",\n  \"description\": \"string | null\",\n  \"price\": \"number | null\",\n  \"bedrooms_count\": \"integer | null\",\n  \"bathrooms_count\": \"integer | null\",\n  \"parking_spaces_count\": \"integer | null\",\n  \"property_type\": \"house | apartment | land | commercial | other | null\",\n  \"listing_status\": \"for_sale | for_rent | null\",\n  \"raw_address\": \"string | null\",\n  \"street\": \"string | null\",\n  \"street_number\": \"string | null\",\n  \"complement\": \"string | null\",\n  \"neighborhood\": \"string | null\",\n  \"city\": \"string(2) | null\",\n  \"state\": \"BR\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"array of strings\",\n  \"total_area_m2\": \"number | null\",\n  \"private_area_m2\": \"number | null\",\n  \"suites_count\": \"integer | null\",\n  \"floors_count\": \"integer | null\",\n  \"year_built\": \"integer | null\",\n  \"condo_fee\": \"number | null\",\n  \"property_tax\": \"number | null\"\n}\n```\n\n### STRICT EXTRACTION RULES\n1. **You may extract values ONLY if they appear explicitly in the raw unnormalized input. Some values may be present on other fields, like in the title or in description**.\n2. **Some values may be present on other fields, like in the title or in description.**\n3. **Examples of allowed extraction:**\n   * \"3 dormitórios\" → bedrooms_count = 3\n   * \"2 banheiros\" → bathrooms_count = 2\n   * \"1 suíte\" → suites_count = 1\n   * \"vaga para 2 carros\" → parking_spaces_count = 2\n4. **Choose the most explicit one**: You should choose the most explicit value.\n5. **Otherwise set null**: Otherwise, set null.\n\n### NUMERIC NORMALIZATION\nBrazilian numeric format:\n- \".\" = thousand separator\n- \",\" = decimal separator\n\nConvert to:\n- \".\" = decimal separator only\n\nExamples:\n* \"1.250.000\" → 1250000.00\n* \"267,50\" → 267.50\n\nRemove:\n* currency symbols\n* text\n* whitespace\n\n### AREA RULES\n- **terreno / lote → total_area_m2**\n- **área construída / privativa → private_area_m2**\n\nIf not explicit, do not extract.\n\n### PROPERTY TYPE MAPPING\nExtract ONLY if clearly stated:\n\n- **casa → house**\n- **apartamento / apto → apartment**\n- **terreno / lote → land**\n- **sala comercial / loja → commercial**\n\nOtherwise, map to null.\n\n### LISTING STATUS\nVenda → for_sale\nAluguel / locação → for_rent\n\nIf not explicit, keep data only in raw_address.\n\n### ADDRESS RULES\nExtract address fields ONLY if explicitly present, it may appear on the title or description of the raw listings. You can infer only the country and state(even if not present, with the city information you can infer it).\n\nIf uncertain, keep data only in raw_address.\n\n### FEATURES\nraw_features:\n- exact text fragments extracted from input\n\nnormalized_features:\n- normalized English tags only if feature is explicit\n\nExamples:\n• \"churrasqueira\" → \"barbecue\"\n• \"móveis planejados\" → \"planned_furniture\"\n• \"aceita financiamento\" → \"financing_available\"\n\nIf not explicit, do not include.\n\n### INPUT — RAW UNNORMALIZED ROW\nPASTE ONE RAW ROW HERE\n\nHere is the raw row you provided:\n\n```\n{\n  \"bathrooms_count\": null,\n  \"bedrooms_count\": null,\n  \"city\": \"Londrina\",\n  \"complement\": null,\n  \"condo_fee\": 2.0,\n  \"country\": \"BR\",\n  \"description\": \"Apartamento Padrão para locação no Jardim Lago Norte em Londrina. R$ 1.200,00, procure pelo código: 53879\",\n  \"floors_count\": null,\n  \"listing_status\": \"for_rent\",\n  \"neighborhood\": null,\n  \"normalized_features\": \"{}\",\n  \"parking_spaces_count\": null,\n  \"postal_code\": null,\n  \"price\": 1200.0,\n  \"price_per_m2\": null,\n  \"private_area_m2\": null,\n  \"property_tax\": null,\n  \"property_type\": \"other\",\n  \"raw_address\": null,\n  \"raw_features\": \"{}\",\n  \"raw_images\": \"\",\n  \"state\": \"PR\",\n  \"street\": null,\n  \"street_number\": null,\n  \"suites_count\": null,\n  \"title\": \"Apartamento novo para alugar com 2 dormitórios no Residencial Lituânia, Região Norte de Londrina\",\n  \"url\": \"https://www.santamerica.com.br/alugar/Londrina/Apartamento/Padrao/Jardim-Lago-Norte/53879\",\n  \"year_built\": null\n}\n```\n\nNow we can proceed with the transformation.",
+      "metrics": {
+        "duration_seconds": 5.791532278060913,
+        "prompt_tokens": 1664,
+        "completion_tokens": 1360,
+        "tokens_per_second": 234.825592728173
+      }
+    },
+    "6": {
+      "result": "You are a helpful assistant.(UIAlertAction is not allowed)\neniable",
+      "metrics": {
+        "duration_seconds": 0.10647153854370117,
+        "prompt_tokens": 1650,
+        "completion_tokens": 13,
+        "tokens_per_second": 122.09835771898946
+      }
+    },
+    "7": {
+      "result": "You are a helpful assistant.#aa\n nächste linha que eu preciso transformar em um objeto de JSON é essa:\n\n{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com 3 dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"price\": 0.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"\",\n  \"street\": \"\",\n  \"street_number\": \"\",\n  \"complement\": \"\",\n  \"neighborhood\": \"{:neighborhood=>\\\"- Conjunto habitacional Doutor José dos Santos Rocha Cambé\\\", :city=>\\\"Cambé\\\", :state=>\\\"PR\\\", :country=>\\\"BR\\\"}\",\n  \"normalized_features\": \"{}\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null\n}\n\n.preventDefault()\n.preventDefault()",
+      "metrics": {
+        "duration_seconds": 1.1408634185791016,
+        "prompt_tokens": 1737,
+        "completion_tokens": 267,
+        "tokens_per_second": 234.03327309112734
+      }
+    },
+    "8": {
+      "result": "Yes",
+      "metrics": {
+        "duration_seconds": 0.06217241287231445,
+        "prompt_tokens": 1660,
+        "completion_tokens": 2,
+        "tokens_per_second": 32.16860835218775
+      }
+    },
+    "9": {
+      "result": "You are a helpful assistant.ibraltarsystem",
+      "metrics": {
+        "duration_seconds": 0.08821582794189453,
+        "prompt_tokens": 1588,
+        "completion_tokens": 9,
+        "tokens_per_second": 102.02250786477984
+      }
+    }
+  }
+}

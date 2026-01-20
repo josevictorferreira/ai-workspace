@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "model": "LiquidAI/LFM2-8B-A1B",
-    "total_benchmark_time_seconds": 2361.687067270279,
+    "model": "a 🐍 v3.13.11 via ❄️  impure (nix-shell-env) on ",
+    "total_benchmark_time_seconds": 1.4214913845062256,
     "total_prompt_tokens": 0,
     "total_completion_tokens": 0,
     "run_platform": "openrouter"
