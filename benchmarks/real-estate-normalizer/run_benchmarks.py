@@ -79,6 +79,7 @@ def run_benchmarks(model_name, api_url, temperature=None):
     )
 
     output_path = f"outputs/{model_name}.json"
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(outputs, f, ensure_ascii=False, indent=2)
 
