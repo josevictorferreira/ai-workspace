@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "model": "qwen/qwen2.5-coder-7b-instruct",
+    "total_benchmark_time_seconds": 2181.7266030311584,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": null,
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null
+  }
+}

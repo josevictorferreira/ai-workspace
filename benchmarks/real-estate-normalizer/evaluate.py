@@ -83,6 +83,7 @@ class ModelResult:
     total_prompt_tokens: int
     total_completion_tokens: int
     total_tokens: int
+    platform: str = "local"  # "local" or "openrouter"
     cases: Dict[str, CaseResult] = field(default_factory=dict)
     overall_score: float = 0.0
     parse_score: float = 0.0
@@ -412,6 +413,7 @@ def evaluate_outputs(outputs: Dict, golden: Dict) -> List[ModelResult]:
         total_time = metadata.get("total_benchmark_time_seconds", 0)
         total_prompt = metadata.get("total_prompt_tokens", 0)
         total_completion = metadata.get("total_completion_tokens", 0)
+        platform = metadata.get("run_platform", "local")
         
         model_result = ModelResult(
             model_name=model_name,
@@ -419,7 +421,8 @@ def evaluate_outputs(outputs: Dict, golden: Dict) -> List[ModelResult]:
             total_time_seconds=total_time,
             total_prompt_tokens=total_prompt,
             total_completion_tokens=total_completion,
-            total_tokens=total_prompt + total_completion
+            total_tokens=total_prompt + total_completion,
+            platform=platform,
         )
         
         # Evaluate each case
@@ -477,6 +480,7 @@ def save_evaluation_json(results: List[ModelResult], output_file: str):
         model_data = {
             "model_name": model.model_name,
             "model_size": model.model_size,
+            "platform": model.platform,
             "total_time_seconds": model.total_time_seconds,
             "total_tokens": model.total_tokens,
             "overall_score": round(model.overall_score, 2),
@@ -567,6 +571,7 @@ def generate_html_report(results: List[ModelResult], output_file: str):
         '            <tr>',
         '                <th>Model</th>',
         '                <th>Size</th>',
+        '                <th>Platform</th>',
         '                <th>Time (s)</th>',
         '                <th>Tokens</th>',
         '                <th>Score</th>',
@@ -591,20 +596,14 @@ def generate_html_report(results: List[ModelResult], output_file: str):
             f'            <tr>',
             f'                <td class="model-name">{html_escape(model.model_name)}</td>',
             f'                <td>{html_escape(model.model_size)}</td>',
+            f'                <td>{html_escape(model.platform)}</td>',
             f'                <td>{model.total_time_seconds:.2f}</td>',
             f'                <td>{model.total_tokens:,}</td>',
             f'                <td class="{score_class}">{model.overall_score:.1f}</td>',
             f'                <td><button class="toggle-btn" onclick="toggleDetails(\'{html_escape(model.model_name)}\')">Show</button></td>',
             f'            </tr>',
             f'            <tr class="details" id="details-{html_escape(model.model_name)}">',
-            f'                <td colspan="6">',
-            f'                    <div class="case-details">',
-            f'                        <h4>Overall Scores</h4>',
-            f'                        <p>Parse: {model.parse_score:.1f}/40 | Schema: {model.schema_score:.1f}/30 | Types: {model.types_score:.1f}/20 | Values: {model.values_score:.1f}/10</p>',
-            f'                        <div class="score-bar">',
-            f'                            <div class="score-fill {score_bar_class}" style="width: {model.overall_score}%"></div>',
-            f'                        </div>',
-            f'                        <h4>Per-Case Breakdown</h4>'
+            f'                <td colspan="7">',
         ])
         
         # Add case details

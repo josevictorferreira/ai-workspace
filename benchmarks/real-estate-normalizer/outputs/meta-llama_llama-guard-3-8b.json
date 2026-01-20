@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "meta-llama/llama-guard-3-8b",
+    "total_benchmark_time_seconds": 19.25124716758728,
+    "total_prompt_tokens": 16016,
+    "total_completion_tokens": 449,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\"title\": null, \"description\": null, \"price\": null, \"bedrooms_count\": 3, \"bathrooms_count\": 2, \"parking_spaces_count\": null, \"property_type\": \"house\", \"listing_status\": \"for_sale\", \"raw_address\": null, \"street\": null, \"street_number\": null, \"complement\": null, \"neighborhood\": null, \"city\": null, \"state\": null, \"country\": \"BR\", \"normalized_features\": null, \"total_area_m2\": null, \"private_area_m2\": null, \"suites_count\": 1, \"floors_count\": 1, \"year_built\": null, \"condo_fee\": null, \"property_tax\": null}  {\"prices\": 280000, \"square_footage\": 95, \"facilities\": \"\", \"amenities\": \"\", \"description_local\": null, \"do_not_rent_expiration\": \"\", \"neighborhood\": null, \"year_built\": null, \"last_recently_updated\": null, \"hours\": \"\", \"style\": \"\", \"condition\": \"\", \"properties\": \"\", \"total_square_footage\": 2855, \"address\": \"Rua ☯️ ☯️, 617 ☯️ ☯assistant\", \"images\": \"▲assistant\"}  {\"title\": null, \"description\": null, \"price\": null, \"suites_count\": null, \"bathrooms_count\": null, \"safe_composed_raw_address\": null, \"safe_raw_address\": null, \"safe_neighborhood\": null, \"safe_city\": null, \"safe_state\": null, \"safe_country\": null}  {\"safe_city\": \"Belo Horizonte",
+      "metrics": {
+        "duration_seconds": 10.784292936325073,
+        "prompt_tokens": 1555,
+        "completion_tokens": 362,
+        "tokens_per_second": 33.56733743578719
+      }
+    },
+    "1": {
+      "result": "}><sup>unsafe\nsafe",
+      "metrics": {
+        "duration_seconds": 1.1712050437927246,
+        "prompt_tokens": 1641,
+        "completion_tokens": 7,
+        "tokens_per_second": 5.976750217307665
+      }
+    },
+    "2": {
+      "result": "",
+      "metrics": {
+        "duration_seconds": 0.7207200527191162,
+        "prompt_tokens": 1591,
+        "completion_tokens": 1,
+        "tokens_per_second": 1.387501286008656
+      }
+    },
+    "3": {
+      "result": "",
+      "metrics": {
+        "duration_seconds": 0.7125241756439209,
+        "prompt_tokens": 1595,
+        "completion_tokens": 1,
+        "tokens_per_second": 1.4034611514708004
+      }
+    },
+    "4": {
+      "result": "S1",
+      "metrics": {
+        "duration_seconds": 0.7126410007476807,
+        "prompt_tokens": 1673,
+        "completion_tokens": 3,
+        "tokens_per_second": 4.209693235236948
+      }
+    },
+    "5": {
+      "result": "",
+      "metrics": {
+        "duration_seconds": 1.12912917137146,
+        "prompt_tokens": 1594,
+        "completion_tokens": 1,
+        "tokens_per_second": 0.88563826473935
+      }
+    },
+    "6": {
+      "result": "isayarassistant\n\nsafe",
+      "metrics": {
+        "duration_seconds": 0.8246200084686279,
+        "prompt_tokens": 1576,
+        "completion_tokens": 7,
+        "tokens_per_second": 8.488758371264174
+      }
+    },
+    "7": {
+      "result": "*)\"}\n\nsafe",
+      "metrics": {
+        "duration_seconds": 0.574397087097168,
+        "prompt_tokens": 1677,
+        "completion_tokens": 4,
+        "tokens_per_second": 6.963823615845286
+      }
+    },
+    "8": {
+      "result": "[{\"street_number\": \"965/9\", \"street_number_bias\": 9988.5}, {\"street_number\": \"965/13\", \"street_number_bias\": 9999.2}, {\"street_number\": \"965/1428\", \"street_number_bias\": 9999.8}]",
+      "metrics": {
+        "duration_seconds": 1.822883129119873,
+        "prompt_tokens": 1586,
+        "completion_tokens": 62,
+        "tokens_per_second": 34.01205431635923
+      }
+    },
+    "9": {
+      "result": "",
+      "metrics": {
+        "duration_seconds": 0.6311349868774414,
+        "prompt_tokens": 1528,
+        "completion_tokens": 1,
+        "tokens_per_second": 1.5844471005284129
+      }
+    }
+  }
+}
