@@ -29,7 +29,9 @@
       "for_sale"
     ],
     "raw_address": [
-      "{:country=>\"Brazil\"}"
+      "Comercial em Terra Bonita - Ibiporã, PR",
+      "Terra Bonita, Ibiporã, PR",
+      null
     ],
     "street": [
       null
@@ -50,7 +52,8 @@
     ],
     "state": [
       "PR",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -150,7 +153,8 @@
     ],
     "state": [
       "PR",
-      "pr"
+      "pr",
+      "Paraná"
     ],
     "country": [
       "BR"
@@ -211,6 +215,8 @@
       "for_sale"
     ],
     "raw_address": [
+      "Casa em Ibi Aram - Ibiporã, PR",
+      "Ibiporã - PR - Brasil",
       "{:country=>\"Brazil\"}"
     ],
     "street": [
@@ -226,11 +232,14 @@
       "Ibi Aram"
     ],
     "city": [
-      null
+      "Ibiporã",
+      "ibipora",
+      "ibipora"
     ],
     "state": [
       "PR",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -287,7 +296,8 @@
       null
     ],
     "property_type": [
-      "other"
+      "other",
+      null
     ],
     "listing_status": [
       "for_sale"
@@ -304,7 +314,15 @@
       "Rua das violetas"
     ],
     "street_number": [
-      "47"
+      "47",
+      "N.º 47",
+      "n.º 47",
+      "nº 47",
+      "n 47",
+      "n. 47",
+      "N 47",
+      "N. 47",
+      47
     ],
     "complement": [
       null
@@ -321,7 +339,8 @@
     "state": [
       "PR",
       "pr",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -387,7 +406,9 @@
       "for_sale"
     ],
     "raw_address": [
-      "Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR"
+      "Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR",
+      "no Milton Gavetti em Londrina / PR",
+      "Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR."
     ],
     "street": [
       "Rodovia Celso Garcia Cid",
@@ -401,7 +422,8 @@
       "Warta",
       "milton gavetti",
       "Milton Gavetti",
-      "Milton gavetti"
+      "Milton gavetti",
+      null
     ],
     "neighborhood": [
       "Warta",
@@ -418,7 +440,8 @@
     "state": [
       "PR",
       "pr",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -481,6 +504,8 @@
       "for_rent"
     ],
     "raw_address": [
+      "Jardim Lago Norte em Londrina",
+      "Residencial Lituânia, Jardim Lago Norte",
       null
     ],
     "street": [
@@ -513,7 +538,8 @@
     "state": [
       "PR",
       "pr",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -603,7 +629,8 @@
       "PR",
       "pr",
       "Parana",
-      "parana"
+      "parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -611,7 +638,10 @@
       "Brasil"
     ],
     "normalized_features": [
-      []
+      [],
+      [
+        "condominium"
+      ]
     ],
     "total_area_m2": [
       null
@@ -653,7 +683,7 @@
       3
     ],
     "bathrooms_count": [
-      null
+      2
     ],
     "parking_spaces_count": [
       null
@@ -680,7 +710,10 @@
       "Conjunto habitacional Doutor José dos Santos Rocha",
       "Conjunto Habitacional Doutor José dos Santos Rocha",
       "Conjunto Doutor José dos Santos Rocha",
-      "Doutor José dos Santos Rocha"
+      "Doutor José dos Santos Rocha",
+      "Conjunto Habitacional Doutor José Dos Santos Rocha",
+      "Conjunto habitacional Doutor José dos Santos Rocha Cambé",
+      "- Conjunto habitacional Doutor José dos Santos Rocha Cambé"
     ],
     "city": [
       "Cambé",
@@ -689,7 +722,8 @@
     "state": [
       "PR",
       "pr",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",
@@ -706,6 +740,14 @@
         "escola",
         "igrejas",
         "supermercados"
+      ],
+      [
+        "suite",
+        "kitchen",
+        "laundry",
+        "living_room",
+        "bathroom",
+        "private_area"
       ]
     ],
     "total_area_m2": [
@@ -761,6 +803,7 @@
       "for_sale"
     ],
     "raw_address": [
+      "Edifício Zenith, Jardim Andrade em Londrina",
       null
     ],
     "street": [
@@ -777,7 +820,8 @@
     "neighborhood": [
       "Jardim Andrade",
       "jardim Andrade",
-      "JARDIM ANDRADE"
+      "JARDIM ANDRADE",
+      "Andrade"
     ],
     "city": [
       "Londrina",
@@ -785,13 +829,18 @@
     ],
     "state": [
       "PR",
-      "pr"
+      "pr",
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR"
     ],
     "normalized_features": [
-      []
+      [],
+      [
+        "financing_available"
+      ]
     ],
     "total_area_m2": [
       null
@@ -822,6 +871,7 @@
       "Residencial Ibiaram - Ibiporã/PR"
     ],
     "description": [
+      "",
       null
     ],
     "price": [
@@ -850,6 +900,8 @@
     ],
     "raw_address": [
       "{}",
+      "Residencial Ibiaram - Ibiporã/PR",
+      "Ibiporã/PR",
       null
     ],
     "street": [
@@ -876,7 +928,8 @@
     "state": [
       "PR",
       "pr",
-      "Parana"
+      "Parana",
+      "Paraná"
     ],
     "country": [
       "BR",

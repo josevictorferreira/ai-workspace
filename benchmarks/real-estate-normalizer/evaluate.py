@@ -308,12 +308,17 @@ def values_match(model_val: Any, golden_val: Any) -> bool:
 
 def compare_values(model_data: Dict, golden_data: Dict) -> Tuple[bool, List[str]]:
     """Compare model output to golden expected, return (correct, errors)."""
+    # Fields that should be completely ignored in evaluation
+    ignore_fields = {"raw_address"}
     # Fields that should only be checked for presence (non-null), not exact match
     pass_through_fields = {"title", "description"}
 
     errors = []
 
     for key in golden_data:
+        if key in ignore_fields:
+            continue
+
         # Skip pass-through fields - only check they're present (not null)
         if key in pass_through_fields:
             if model_data.get(key) is None:

@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "model": "aira-2-portuguese-560m",
+    "total_benchmark_time_seconds": 0.20369982719421387,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0,
+    "run_platform": "local"
+  },
+  "data": {
+    "0": null,
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null
+  }
+}

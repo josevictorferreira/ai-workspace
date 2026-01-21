@@ -141,7 +141,7 @@ def run_benchmarks(model_name, api_url, temperature=None, use_openrouter=False):
         payload = {
             "model": model_name,
             "messages": [{"role": "user", "content": full_prompt}],
-            "max_tokens": -1,
+            "max_tokens": 4096,
             "stream": False,
         }
         if temperature is not None:
@@ -162,7 +162,16 @@ def run_benchmarks(model_name, api_url, temperature=None, use_openrouter=False):
         try:
             start_time = time.time()
 
+            print(f"[DEBUG] Making API request to {api_url}...")
+            print(
+                f"[DEBUG] Model: {model_name}, Prompt length: {len(full_prompt)} chars"
+            ) if debug else None
+            print(
+                f"[DEBUG] Payload max_tokens: {payload['max_tokens']}"
+            ) if debug else None
+
             result_json = make_api_request_with_retry(api_url, payload, headers)
+            print(f"[DEBUG] API response received successfully") if debug else None
             print(f"API response: {result_json}") if debug else None
             duration = time.time() - start_time
 
