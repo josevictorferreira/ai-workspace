@@ -337,9 +337,8 @@ def run_benchmarks(model_name, api_url, temperature=None, use_openrouter=False):
             ],
             "max_tokens": 4096,
             "stream": False,
+            "temperature": 0.1,
         }
-        if temperature is not None:
-            payload["temperature"] = temperature
 
         # OpenRouter specific settings
         if use_openrouter:
