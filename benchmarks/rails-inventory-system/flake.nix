@@ -34,7 +34,7 @@
         db_parallel_create = pkgs.writeShellScriptBin "db_parallel_create" ''
           echo "Creating parallel test databases on port $PGPORT..."
           for i in $(seq 2 $(($(nproc) + 1))); do
-            createdb -h "$PGHOST" -p "$PGPORT" -U postgres "valoris_test$i" 2>/dev/null || true
+            createdb -h "$PGHOST" -p "$PGPORT" -U postgres "inventory_system_test$i" 2>/dev/null || true
           done
           echo "Parallel test databases ready"
         '';
@@ -42,15 +42,15 @@
         db_parallel_drop = pkgs.writeShellScriptBin "db_parallel_drop" ''
           echo "Dropping parallel test databases on port $PGPORT..."
           for i in $(seq 2 $(($(nproc) + 1))); do
-            dropdb -h "$PGHOST" -p "$PGPORT" -U postgres "valoris_test$i" 2>/dev/null || true
+            dropdb -h "$PGHOST" -p "$PGPORT" -U postgres "inventory_system_test$i" 2>/dev/null || true
           done
           echo "Parallel test databases dropped"
         '';
 
         db_use_homelab = pkgs.writeShellScriptBin "db_use_homelab" ''
           set -e
-          DB_PASSWORD_FILE="/run/secrets/valoris_database_password"
-          SECRET_KEY_FILE="/run/secrets/valoris_secret_key_base"
+          DB_PASSWORD_FILE="/run/secrets/inventory_system_database_password"
+          SECRET_KEY_FILE="/run/secrets/inventory_system_secret_key_base"
 
           if [ ! -f "$DB_PASSWORD_FILE" ]; then
             echo "Error: $DB_PASSWORD_FILE not found" >&2
@@ -65,10 +65,10 @@
           SECRET_KEY_BASE=$(cat "$SECRET_KEY_FILE")
 
           echo "unset DATABASE_URL"
-          echo "export VALORIS_DATABASE_HOST=\"10.10.10.133\""
-          echo "export VALORIS_DATABASE_PORT=\"5432\""
-          echo "export VALORIS_DATABASE_USERNAME=\"postgres\""
-          echo "export VALORIS_DATABASE_PASSWORD=\"$DB_PASSWORD\""
+          echo "export INVENTORY_SYSTEM_DATABASE_HOST=\"10.10.10.133\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PORT=\"5432\""
+          echo "export INVENTORY_SYSTEM_DATABASE_USERNAME=\"postgres\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PASSWORD=\"$DB_PASSWORD\""
           echo "export SECRET_KEY_BASE=\"$SECRET_KEY_BASE\""
           echo "export RAILS_ENV=production"
         '';
@@ -76,7 +76,7 @@
         db_homelab = pkgs.writeShellScriptBin "db_homelab" ''
           # Shell function for eval-ing to connect to homelab production database
           # Usage: eval "$(db_homelab)"
-          # Requires HOMELAB_POSTGRES_USERNAME, HOMELAB_POSTGRES_PASSWORD, and VALORIS_SECRET_KEY env vars
+          # Requires HOMELAB_POSTGRES_USERNAME, HOMELAB_POSTGRES_PASSWORD, and INVENTORY_SYSTEM_SECRET_KEY env vars
 
           if [ -z "''${HOMELAB_POSTGRES_USERNAME:-}" ]; then
             echo "# Error: HOMELAB_POSTGRES_USERNAME is not set" >&2
@@ -88,27 +88,27 @@
             exit 1
           fi
 
-          if [ -z "''${VALORIS_SECRET_KEY:-}" ]; then
-            echo "# Error: VALORIS_SECRET_KEY is not set" >&2
+          if [ -z "''${INVENTORY_SYSTEM_SECRET_KEY:-}" ]; then
+            echo "# Error: INVENTORY_SYSTEM_SECRET_KEY is not set" >&2
             exit 1
           fi
 
           echo "unset DATABASE_URL"
-          echo "export VALORIS_DATABASE_HOST=\"10.10.10.133\""
-          echo "export VALORIS_DATABASE_PORT=\"5432\""
-          echo "export VALORIS_DATABASE_USERNAME=\"$HOMELAB_POSTGRES_USERNAME\""
-          echo "export VALORIS_DATABASE_PASSWORD=\"$HOMELAB_POSTGRES_PASSWORD\""
-          echo "export SECRET_KEY_BASE=\"$VALORIS_SECRET_KEY\""
+          echo "export INVENTORY_SYSTEM_DATABASE_HOST=\"10.10.10.133\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PORT=\"5432\""
+          echo "export INVENTORY_SYSTEM_DATABASE_USERNAME=\"$HOMELAB_POSTGRES_USERNAME\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PASSWORD=\"$HOMELAB_POSTGRES_PASSWORD\""
+          echo "export SECRET_KEY_BASE=\"$INVENTORY_SYSTEM_SECRET_KEY\""
           echo "export RAILS_ENV=production"
           echo "# Homelab database configured - run 'rails console' to connect"
         '';
 
         db_use_local = pkgs.writeShellScriptBin "db_use_local" ''
           echo "export DATABASE_URL=\"postgresql://postgres:postgres@localhost:$PGPORT/development?host=$PGHOST\""
-          echo "export VALORIS_DATABASE_HOST=\"$PGHOST\""
-          echo "export VALORIS_DATABASE_PORT=\"$PGPORT\""
-          echo "export VALORIS_DATABASE_USERNAME=\"postgres\""
-          echo "export VALORIS_DATABASE_PASSWORD=\"postgres\""
+          echo "export INVENTORY_SYSTEM_DATABASE_HOST=\"$PGHOST\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PORT=\"$PGPORT\""
+          echo "export INVENTORY_SYSTEM_DATABASE_USERNAME=\"postgres\""
+          echo "export INVENTORY_SYSTEM_DATABASE_PASSWORD=\"postgres\""
           echo "export RAILS_ENV=development"
         '';
 
@@ -285,12 +285,12 @@
             # Rails DB configuration defaults (using sandbox exports)
             # We force these to follow PGPORT/PGHOST to ensure the local sandbox is used by default.
             # Stale environment variables from parent shells or homelab scripts are overridden here.
-            export VALORIS_DATABASE_HOST="$PGHOST"
-            export VALORIS_DATABASE_PORT="$PGPORT"
-            export VALORIS_DATABASE_USERNAME="postgres"
-            export VALORIS_DATABASE_PASSWORD="postgres"
+            export INVENTORY_SYSTEM_DATABASE_HOST="$PGHOST"
+            export INVENTORY_SYSTEM_DATABASE_PORT="$PGPORT"
+            export INVENTORY_SYSTEM_DATABASE_USERNAME="postgres"
+            export INVENTORY_SYSTEM_DATABASE_PASSWORD="postgres"
 
-            echo "=== Valoris Sandbox Ready ==="
+            echo "=== Inventory System Sandbox Ready ==="
             echo "Ruby: $(ruby --version)"
             echo "PostgreSQL: $(psql --version | head -1)"
             echo "Port: $PGPORT"
@@ -304,35 +304,7 @@
       {
         devShells.default = devSandbox;
 
-        packages = {
-          build-push = pkgs.writeShellApplication {
-            name = "build-push";
-            text = ''
-              set -e
-              REGISTRY="ghcr.io"
-              REPO=$(git remote get-url origin 2>/dev/null | sed -E 's|.*github\.com[:/]||' | sed 's/\.git$//' | sed 's/$/-backend/' || echo "$USER/valoris-backend")
-              TAG="''${REGISTRY}/''${REPO}:latest"
-              echo "$GITHUB_TOKEN" | podman login "$REGISTRY" -u "josevictorferreira" --password-stdin
-              podman build --platform=linux/amd64 --file Containerfile --tag "$TAG" .
-              podman push "$TAG"
-            '';
-          };
-
-          deploy = pkgs.writeShellApplication {
-            name = "deploy";
-            text = ''
-              set -e
-              REGISTRY="ghcr.io"
-              REPO=$(git remote get-url origin 2>/dev/null | sed -E 's|.*github\.com[:/]||' | sed 's/\.git$//' | sed 's/$/-backend/' || echo "$USER/valoris-backend")
-              TAG="''${REGISTRY}/''${REPO}:latest"
-              echo "$GITHUB_TOKEN" | podman login "$REGISTRY" -u "josevictorferreira" --password-stdin
-              podman build --platform=linux/amd64 --file Containerfile --tag "$TAG" .
-              podman push "$TAG"
-              kubectl --context=ze-homelab -n apps rollout restart deployment/valoris-backend deployment/valoris-worker
-              kubectl --context=ze-homelab -n apps rollout status deployment/valoris-backend --timeout=300s
-            '';
-          };
-        };
+        packages = { };
       }
     );
 }
