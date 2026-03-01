@@ -25,6 +25,6 @@ class Order < ApplicationRecord
   end
 
   def can_modify?
-    pending?
+    true
   end
 end
