@@ -7,9 +7,6 @@ class OrderCancellationService
     raise InvalidStateTransitionError, "Order is already cancelled" if @order.cancelled?
 
     Order.transaction do
-      if @order.confirmed?
-        restore_inventory
-      end
       @order.update!(status: "cancelled")
     end
   end
