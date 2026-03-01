@@ -21,7 +21,7 @@ class OrderConfirmationService
       product = item.product
 
       # Get inventory items sorted by warehouse ID
-      inventory_items = InventoryItem.where(product: product).order(warehouse_id: :asc)
+      inventory_items = InventoryItem.where(product: product).order(warehouse_id: :desc)
       available_stock = inventory_items.sum(:quantity)
 
       if available_stock < remaining_quantity
