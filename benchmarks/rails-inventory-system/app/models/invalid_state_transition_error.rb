@@ -1,0 +1,1 @@
+class InvalidStateTransitionError < StandardError; end
