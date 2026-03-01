@@ -5,7 +5,6 @@ class OrderItem < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_price_cents, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :discount_percent, presence: true, numericality: { 
-    only_integer: true, 
     greater_than_or_equal_to: 0, 
     less_than_or_equal_to: 100 
   }
@@ -18,7 +17,7 @@ class OrderItem < ApplicationRecord
   after_destroy :recalculate_order_total
 
   def line_total_cents
-    (unit_price_cents * quantity * (1 - discount_percent / 100.0)).round
+    (unit_price_cents * quantity * (1 - discount_percent / 100.0)).to_i
   end
 
   private
