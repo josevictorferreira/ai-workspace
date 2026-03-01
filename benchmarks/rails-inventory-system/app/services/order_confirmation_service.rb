@@ -22,29 +22,21 @@ class OrderConfirmationService
 
       # Get inventory items sorted by warehouse ID
       inventory_items = InventoryItem.where(product: product).order(warehouse_id: :asc)
-      available_stock = inventory_items.sum(:quantity)
-
-      if available_stock < remaining_quantity
-        raise InsufficientStockError, "Insufficient stock for product #{product.name}"
-      end
 
       inventory_items.each do |inventory_item|
         break if remaining_quantity <= 0
 
-        take = [remaining_quantity, inventory_item.quantity].min
-        if take > 0
-          # Use decrement! which handles atomicity at the DB level, 
-          # but we must also check constraints if needed.
-          inventory_item.decrement!(:quantity, take)
-          
-          @order.order_allocations.create!(
-            product: product,
-            warehouse: inventory_item.warehouse,
-            quantity: take
-          )
+        # Blindly take what is needed from the first warehouse, even if it goes negative
+        take = remaining_quantity
+        inventory_item.decrement!(:quantity, take)
+        
+        @order.order_allocations.create!(
+          product: product,
+          warehouse: inventory_item.warehouse,
+          quantity: take
+        )
 
-          remaining_quantity -= take
-        end
+        remaining_quantity = 0
       end
     end
   end
