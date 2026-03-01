@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "google/gemma-2-9b-it",
+    "total_benchmark_time_seconds": 14.46525239944458,
+    "total_prompt_tokens": 23909,
+    "total_completion_tokens": 1067,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"title\": \"Comercial EM Ibiporã - PR\",\n  \"description\": \"EXCELENTE OPORTUNIDADE COMERCIAL EM IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR.  Disponível para Venda: R$ 800.000,00.\",\n  \"price\": 800000.00,\n  \"property_type\": \"commercial\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Comercial em Terra Bonita - Ibiporã, PR\",\n  \"neighborhood\": \"Terra Bonita\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"parking_spaces_count\": 4,\n  \"normalized_features\": [\n    \"commercial\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 2.5610556602478027,
+        "prompt_tokens": 2360,
+        "completion_tokens": 191,
+        "tokens_per_second": 74.57862121650227
+      }
+    },
+    "1": {
+      "result": "{\n  \"price\": 13000000.00,\n  \"property_type\": \"commercial\",\n  \"raw_address\": \"Rua Maceió, Bairro Boa Vista, região Central de Londrina PR\",\n  \"street\": \"Rua Maceió\",\n  \"neighborhood\": \"Boa Vista\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\"\n}",
+      "metrics": {
+        "duration_seconds": 1.047668695449829,
+        "prompt_tokens": 2454,
+        "completion_tokens": 94,
+        "tokens_per_second": 89.72302065362369
+      }
+    },
+    "2": {
+      "result": "{\n  \"price\": 365000.00,\n  \"raw_address\": \"Casa em Ibi Aram - Ibiporã, PR\",\n  \"neighborhood\": \"Ibi Aram\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\"\n}",
+      "metrics": {
+        "duration_seconds": 0.9476568698883057,
+        "prompt_tokens": 2387,
+        "completion_tokens": 72,
+        "tokens_per_second": 75.97686703678535
+      }
+    },
+    "3": {
+      "result": "{\n  \"price\": 260000.00,\n  \"street\": \"RUA DAS VIOLETAS\",\n  \"street_number\": \"47\",\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\"\n}",
+      "metrics": {
+        "duration_seconds": 0.9570314884185791,
+        "prompt_tokens": 2397,
+        "completion_tokens": 77,
+        "tokens_per_second": 80.45712281341608
+      }
+    },
+    "4": {
+      "result": "{\n  \"price\": 12000000.00,\n  \"total_area_m2\": 242000.00,\n  \"property_type\": \"farm\",\n  \"neighborhood\": \"Warta\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\"\n}",
+      "metrics": {
+        "duration_seconds": 1.053910255432129,
+        "prompt_tokens": 2492,
+        "completion_tokens": 81,
+        "tokens_per_second": 76.8566389619086
+      }
+    },
+    "5": {
+      "result": "{\n  \"property_type\": \"apartment\",\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": null,\n  \"normalized_features\": [\n    \"new\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.1010496616363525,
+        "prompt_tokens": 2372,
+        "completion_tokens": 53,
+        "tokens_per_second": 48.13588509825499
+      }
+    },
+    "6": {
+      "result": "{\n  \"property_type\": \"gated_house\",\n  \"neighborhood\": \"Bandeirantes\",\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"suites_count\": null,\n  \"parking_spaces_count\": null\n}",
+      "metrics": {
+        "duration_seconds": 0.9118340015411377,
+        "prompt_tokens": 2362,
+        "completion_tokens": 67,
+        "tokens_per_second": 73.47828649376953
+      }
+    },
+    "7": {
+      "result": "{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com 3 dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"price\": null,\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 2,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Conjunto Habitacional Doutor José dos Santos Rocha Cambé\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\n    \"suite\",\n    \"built_in_cabinets\"\n  ],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": 1,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 3.0105037689208984,
+        "prompt_tokens": 2393,
+        "completion_tokens": 309,
+        "tokens_per_second": 102.64062885088487
+      }
+    },
+    "8": {
+      "result": "{\n  \"property_type\": \"apartment\",\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"street\": \"not set\",\n  \"street_number\": \"not set\",\n  \"complement\": \"not set\",\n  \"neighborhood\": \"Jardim Andrade\"\n}",
+      "metrics": {
+        "duration_seconds": 1.074160099029541,
+        "prompt_tokens": 2371,
+        "completion_tokens": 88,
+        "tokens_per_second": 81.92447297149126
+      }
+    },
+    "9": {
+      "result": "{\n  \"property_type\": \"house\",\n  \"neighborhood\": \"Centro\",\n  \"city\": \"Ibiporã\"\n}",
+      "metrics": {
+        "duration_seconds": 1.1636793613433838,
+        "prompt_tokens": 2321,
+        "completion_tokens": 35,
+        "tokens_per_second": 30.07701361962373
+      }
+    }
+  }
+}

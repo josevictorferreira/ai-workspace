@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "meta-llama/llama-3.2-1b-instruct",
+    "total_benchmark_time_seconds": 23.014508724212646,
+    "total_prompt_tokens": 22355,
+    "total_completion_tokens": 2698,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"title\": \"Comercial EM Ibiporã - PR\",\n  \"description\": \"EXCELENTE OPORTUNIDADE COMERCIAL EM IBIPORÃ! Comercial em Terra Bonita - Ibiporã, PR. Disponível para Venda: R$ 800.000,00\",\n  \"address\": {\n    \"street\": \"R. 123, 1º andar, Ibirapuera, Ibiporã, PR 04020-000\",\n    \"number\": \"123\",\n    \"complement\": \"Avenida 123, Ibirapuera, Ibiporã, PR 04020-000\",\n    \"neighborhood\": \"Ibirapuera\",\n    \"city\": \"Ibiporã\",\n    \"state\": \"PR\",\n    \"postal_code\": \"04020-000\"\n  },\n  \"property_type\": \"commercial\",\n  \"status\": \"for_sale\",\n  \"price\": 800000.00,\n  \"total_area\": 123,\n  \"private_area\": 123,\n  \"bedrooms\": 3,\n  \"bathrooms\": 3,\n  \"suites\": 0,\n  \"condo_fee\": 0,\n  \"property_tax\": 0\n}",
+      "metrics": {
+        "duration_seconds": 1.9991626739501953,
+        "prompt_tokens": 2211,
+        "completion_tokens": 272,
+        "tokens_per_second": 136.05696201927802
+      }
+    },
+    "1": {
+      "result": "{\n  \"title\": \"Salão-loja  no Boa Vista em Londrina / PR\",\n  \"description\": \"Salão comercial para venda (#vender #compra #comprar) na Rua Maceió, Bairro Boa Vista, região Central de Londrina PR.Consulte as melhores opções de imóveis em veneza.com.br | 43-3371-0003 | Veneza Imóveis, servir é a nossa missão!\",\n  \"address\": {\n    \"street\": \"Rua Maceió\",\n    \"number\": \"803\",\n    \"complement\": \"\",\n    \"neighborhood\": \"Boa Vista\",\n    \"city\": \"Londrina\",\n    \"state\": \"PR\",\n    \"postal_code\": \"803\"\n  },\n  \"property_type\": \"other\",\n  \"status\": \"for_sale\",\n  \"price\": null,\n  \"total_area\": null,\n  \"private_area\": null,\n  \"bedrooms\": null,\n  \"bathrooms\": null,\n  \"suites\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 5.382359743118286,
+        "prompt_tokens": 2284,
+        "completion_tokens": 241,
+        "tokens_per_second": 44.77589969866561
+      }
+    },
+    "2": {
+      "result": "{\n  \"title\": \"Casa EM Ibipã - PR\",\n  \"description\": \"CASA À VENDA EM IBIPORÃ COM 2 QUARTOS POR 365.000,00 - Casa em Ibi Aram - Ibiporã, PR. Disponível para Venda: R$ 365.000,00.\",\n  \"address\": {\n    \"street\": \"R. 123, Ibi Aram, Ibiporã, PR\",\n    \"number\": \"123\",\n    \"complement\": \"Ave. 123, nº 123, Ibi Aram, Ibiporã, PR\",\n    \"neighborhood\": \"Ibi Aram\",\n    \"city\": \"Ibiarã\",\n    \"state\": \"PR\",\n    \"postal_code\": \"80000-000\"\n  },\n  \"property_type\": \"house\",\n  \"status\": \"for_sale\",\n  \"price\": 365000.00,\n  \"total_area\": 360000.00,\n  \"private_area\": 113.34,\n  \"bedrooms\": 2,\n  \"bathrooms\": 2,\n  \"suites\": 1,\n  \"condo_fee\": 0.00,\n  \"property_tax\": 0.00\n}",
+      "metrics": {
+        "duration_seconds": 1.8931865692138672,
+        "prompt_tokens": 2226,
+        "completion_tokens": 274,
+        "tokens_per_second": 144.729528750976
+      }
+    },
+    "3": {
+      "result": "{\n  \"title\": \"RUA DAS VIOLETAS, N.º 47\",\n  \"description\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"price\": \"R$ 260.000,00\",\n  \"total_area_m2\": \"0\",\n  \"private_area_m2\": \"0\",\n  \"bedrooms_count\": \"0\",\n  \"bathrooms_count\": \"0\",\n  \"suites_count\": \"0\",\n  \"parking_spaces_count\": \"0\",\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"address\": \"Rua das Violetas, Nº 47, Ibiporã, Jardim Éden\",\n  \"street\": \"Rua das Violetas\",\n  \"street_number\": \"0\",\n  \"complement\": \"N.º 47\",\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"SP\",\n  \"country\": \"Brazil\",\n  \"normalized_features\": [\n    \"apartamento\",\n    \"condominio\",\n    \"galpao\",\n    \"fazenda\",\n    \"warehouse\",\n    \"condominium\",\n    \"gated_house\",\n    \"country_house\",\n    \"farm\",\n    \"warehouse\",\n    \"gated_land\",\n    \"other\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 2.159790277481079,
+        "prompt_tokens": 2245,
+        "completion_tokens": 308,
+        "tokens_per_second": 142.60643878775784
+      }
+    },
+    "4": {
+      "result": "{\n  \"title\": \"Chácara-imóvel-rural  no Milton Gavetti em Londrina / PR\",\n  \"description\": \"Sítio/Chácara para venda (#vender #compra #comprar) na Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR. - A área é composta de 10,5 alqueires agricultáveis.\",\n  \"price\": null,\n  \"total_area\": null,\n  \"private_area\": null,\n  \"bedrooms\": null,\n  \"bathrooms\": null,\n  \"suites\": null,\n  \"parking_spaces\": null,\n  \"property_type\": \"chacara-imóvel-rural\",\n  \"status\": \"for_sale\",\n  \"listing_status\": null,\n  \"address\": \"Rd. Celso Garcia Cid, Warta, Londrina, PR\",\n  \"street\": \"Rd. Celso Garcia Cid\",\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Warta\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"Brazil\",\n  \"normalized_features\": [\n    \"chacara-imóvel-rural\",\n    \"londrina\",\n    \"pr\",\n    \"rodovia-celso-garcia-cid\",\n    \"warta\"\n  ],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 2.475313663482666,
+        "prompt_tokens": 2316,
+        "completion_tokens": 356,
+        "tokens_per_second": 143.82015711864267
+      }
+    },
+    "5": {
+      "result": "{\n  \"title\": \"Apartamento novo para alugar com 2 dormitórios no Residencial Lituânia, Região Norte de Londrina\",\n  \"description\": \"Apartamento Padrão para locação no Jardim Lago Norte em Londrina. R$ 1.200,00, procure pelo código: 53879\",\n  \"address\": {\n    \"street\": \"Rua do Jardim Lago\",\n    \"number\": \"123\",\n    \"complement\": \"Londrina\",\n    \"neighborhood\": \"Londrina\",\n    \"city\": \"Londrina\",\n    \"state\": \"PR\",\n    \"postal_code\": \"80000-000\"\n  },\n  \"property_type\": \"apartamento\",\n  \"status\": \"for_rent\",\n  \"price\": 1200.0,\n  \"total_area\": null,\n  \"private_area\": null,\n  \"bedrooms\": 2,\n  \"bathrooms\": null,\n  \"suites\": null,\n  \"parking_spaces\": null,\n  \"condo_fee\": 2.0,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 1.6192584037780762,
+        "prompt_tokens": 2226,
+        "completion_tokens": 244,
+        "tokens_per_second": 150.6862644224639
+      }
+    },
+    "6": {
+      "result": "{\n  \"title\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\",\n  \"description\": \"Casa Condomínio para venda no Bandeirantes em Londrina. R$ 845.000,00, procure pelo código: 53886\",\n  \"address\": {\n    \"street\": \"Condomínio Portal dos Bandeirantes\",\n    \"number\": \"123\",\n    \"complement\": \"Londrina\",\n    \"city\": \"Londrina\",\n    \"state\": \"PR\",\n    \"postal_code\": \"80000-000\"\n  },\n  \"property_type\": \"other\",\n  \"status\": \"for_sale\",\n  \"price\": 845000.0,\n  \"total_area\": null,\n  \"private_area\": null,\n  \"bedrooms\": null,\n  \"bathrooms\": null,\n  \"suites\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 1.4643340110778809,
+        "prompt_tokens": 2208,
+        "completion_tokens": 210,
+        "tokens_per_second": 143.40990403236023
+      }
+    },
+    "7": {
+      "result": "{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com 3 dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"address\": {\n    \"street\": \"Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n    \"number\": \"123\",\n    \"complement\": \"Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n    \"neighborhood\": \"- Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n    \"city\": \"Cambé\",\n    \"state\": \"PR\",\n    \"country\": \"BR\",\n    \"postal_code\": \"12345\"\n  },\n  \"property_type\": \"apartamento\",\n  \"status\": \"for_sale\",\n  \"price\": null,\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"bedrooms\": 3,\n  \"bathrooms\": 1,\n  \"suites\": 1,\n  \"parking_spaces\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 1.7238719463348389,
+        "prompt_tokens": 2253,
+        "completion_tokens": 268,
+        "tokens_per_second": 155.46398360377088
+      }
+    },
+    "8": {
+      "result": "{\n  \"title\": \"Apartamento à venda com 3 quartos no Edifício Zenith, Jardim Andrade em Londrina\",\n  \"description\": \"Apartamento Edifício para venda no Andrade em Londrina. R$ 1.400.000,00, procure pelo código: 53861\",\n  \"address\": {\n    \"street\": \"Jardim Andrade\",\n    \"number\": \"123\",\n    \"complement\": \"Londrina\",\n    \"city\": \"Londrina\",\n    \"state\": \"PR\",\n    \"postal_code\": \"80000-000\"\n  },\n  \"property_type\": \"apartamento\",\n  \"status\": \"for_sale\",\n  \"price\": 1400000.0,\n  \"total_area\": null,\n  \"private_area\": null,\n  \"bedrooms\": 3,\n  \"bathrooms\": null,\n  \"suites\": null,\n  \"parking_spaces\": null,\n  \"condo_fee\": 3.0,\n  \"property_tax\": 3.0\n}",
+      "metrics": {
+        "duration_seconds": 1.518681526184082,
+        "prompt_tokens": 2216,
+        "completion_tokens": 228,
+        "tokens_per_second": 150.1302255074404
+      }
+    },
+    "9": {
+      "result": "{\n  \"title\": \"Residencial Ibiaram - Ibiporã/PR\",\n  \"description\": \"\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://www.megaconstrutoraeassessoria.com.br/imovel/casa-em-construcao-no-centro\",\n  \"street\": \"Ibiaram\",\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Ibiporã\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"Brazil\",\n  \"normalized_features\": [\n    \"terreno\",\n    \"lote\",\n    \"condominio\",\n    \"galpao\",\n    \"fazenda\",\n    \"warehouse\",\n    \"condominium\",\n    \"gated_house\",\n    \"country_house\",\n    \"farm\",\n    \"warehouse\",\n    \"gated_land\"\n  ],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 2.0045857429504395,
+        "prompt_tokens": 2170,
+        "completion_tokens": 297,
+        "tokens_per_second": 148.16028750302397
+      }
+    }
+  }
+}

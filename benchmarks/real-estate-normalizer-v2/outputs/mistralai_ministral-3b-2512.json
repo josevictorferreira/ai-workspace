@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "mistralai/ministral-3b-2512",
+    "total_benchmark_time_seconds": 13.5884690284729,
+    "total_prompt_tokens": 25364,
+    "total_completion_tokens": 2138,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "```json\n{\n  \"title\": \"Comercial EM Ibiporã - PR\",\n  \"price\": 800000.00,\n  \"parking_spaces_count\": 4,\n  \"property_type\": \"commercial\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://imobiliariacardoso.com/imovel/excelente-oportunidade-comercial-em-ibipora\",\n  \"neighborhood\": \"Terra Bonita\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\"paved_street\"]\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.0940494537353516,
+        "prompt_tokens": 2509,
+        "completion_tokens": 141,
+        "tokens_per_second": 128.87900041318207
+      }
+    },
+    "1": {
+      "result": "```json\n{\n  \"title\": null,\n  \"description\": null,\n  \"price\": 13000000.00,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"commercial\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Rua Maceió, Bairro Boa Vista, região Central de Londrina, PR\",\n  \"street\": \"Maceió\",\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Boa Vista\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": 803,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.3822977542877197,
+        "prompt_tokens": 2597,
+        "completion_tokens": 234,
+        "tokens_per_second": 169.2833539475561
+      }
+    },
+    "2": {
+      "result": "```json\n{\n  \"title\": \"Casa EM Ibiporã - PR\",\n  \"description\": \"CASA À VENDA EM IBIPORÃ COM 2 QUARTOS POR 365.000,00\",\n  \"price\": 365000.00,\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": 2,\n  \"parking_spaces_count\": 2,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://imobiliariacardoso.com/imovel/casa-a-venda-em-ibipora-com-2-quartos-por-360-000-00\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Ibiporã\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": 1,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.518585205078125,
+        "prompt_tokens": 2530,
+        "completion_tokens": 291,
+        "tokens_per_second": 191.62573099415204
+      }
+    },
+    "3": {
+      "result": "```json\n{\n  \"title\": \"RUA DAS VIOLETAS, N.º 47\",\n  \"description\": null,\n  \"price\": 260000.00,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"street\": \"RUA DAS VIOLETAS\",\n  \"street_number\": \"47\",\n  \"complement\": null,\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": 37200.14\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.4871606826782227,
+        "prompt_tokens": 2546,
+        "completion_tokens": 265,
+        "tokens_per_second": 178.19190830325235
+      }
+    },
+    "4": {
+      "result": "```json\n{\n  \"title\": \"Chácara-imóvel-rural no Milton Gavetti em Londrina / PR\",\n  \"description\": \"Sítio/Chácara para venda na Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR\",\n  \"price\": 12000000.00,\n  \"total_area_m2\": 242000.00,\n  \"property_type\": \"farm\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Rodovia Celso Garcia Cid, distrito da Warta, Londrina, PR\",\n  \"street\": \"Rodovia Celso Garcia Cid\",\n  \"street_number\": null,\n  \"complement\": \"distrito da Warta\",\n  \"neighborhood\": null,\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\"agricultural_land\"]\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.2092621326446533,
+        "prompt_tokens": 2632,
+        "completion_tokens": 209,
+        "tokens_per_second": 172.83266742415685
+      }
+    },
+    "5": {
+      "result": "```json\n{\n  \"title\": null,\n  \"description\": null,\n  \"price\": 1200.0,\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"apartment\",\n  \"listing_status\": \"for_rent\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Jardim Lago Norte\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": 2.0,\n  \"property_tax\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.3635540008544922,
+        "prompt_tokens": 2521,
+        "completion_tokens": 209,
+        "tokens_per_second": 153.2759244364557
+      }
+    },
+    "6": {
+      "result": "```json\n{\n  \"title\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\",\n  \"description\": \"Casa Condomínio para venda no Bandeirantes em Londrina\",\n  \"price\": 845000.0,\n  \"property_type\": \"gated_house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Condomínio Portal dos Bandeirantes, Londrina\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": \"Condomínio Portal dos Bandeirantes\",\n  \"neighborhood\": \"Bandeirantes\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\"gated\"],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.456803560256958,
+        "prompt_tokens": 2507,
+        "completion_tokens": 225,
+        "tokens_per_second": 154.44772798352676
+      }
+    },
+    "7": {
+      "result": "```json\n{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com 3 dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 3,\n  \"suites_count\": 1,\n  \"neighborhood\": \"Conjunto habitacional Doutor José dos Santos Rocha\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\"built_in_cabinets\", \"kitchen\", \"laundry_room\", \"social_bathroom\"]\n}\n```",
+      "metrics": {
+        "duration_seconds": 0.9714853763580322,
+        "prompt_tokens": 2544,
+        "completion_tokens": 160,
+        "tokens_per_second": 164.69625163048613
+      }
+    },
+    "8": {
+      "result": "```json\n{\n  \"title\": null,\n  \"description\": null,\n  \"price\": 1400000.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"apartment\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Jardim Andrade\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": 3.0,\n  \"property_tax\": 3.0\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.262481451034546,
+        "prompt_tokens": 2517,
+        "completion_tokens": 213,
+        "tokens_per_second": 168.71535009520832
+      }
+    },
+    "9": {
+      "result": "```json\n{\n  \"title\": null,\n  \"description\": null,\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Centro\",\n  \"city\": null,\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}\n```",
+      "metrics": {
+        "duration_seconds": 1.0353457927703857,
+        "prompt_tokens": 2461,
+        "completion_tokens": 191,
+        "tokens_per_second": 184.47942835496613
+      }
+    }
+  }
+}

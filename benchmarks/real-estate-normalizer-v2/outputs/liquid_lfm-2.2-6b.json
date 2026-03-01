@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "liquid/lfm-2.2-6b",
+    "total_benchmark_time_seconds": 13.437299251556396,
+    "total_prompt_tokens": 29150,
+    "total_completion_tokens": 1157,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\"title\": \"Comercial EM Ibiporã - PR\", \"description\": \"EXCELENTE OPORTUNIDADE COMERCIAL EM IBIPORÃ!\", \"price\": 800000.00, \"property_type\": \"commercial\", \"listing_status\": \"for_sale\", \"normalized_features\": [\"commercial\"], \"year_built\": null, \"bedrooms_count\": null, \"bathrooms_count\": 3, \"parking_spaces_count\": 4, \"private_area_m2\": null, \"suites_count\": null, \"floors_count\": null, \"property_tax\": null}",
+      "metrics": {
+        "duration_seconds": 1.7487258911132812,
+        "prompt_tokens": 2891,
+        "completion_tokens": 142,
+        "tokens_per_second": 81.20197723475081
+      }
+    },
+    "1": {
+      "result": "{\"title\": \"Salão-loja no Boa Vista em Londrina / PR\", \"description\": \"Salão comercial para venda\", \"price\": 13000000.00, \"property_type\": \"commercial\", \"listing_status\": \"for_sale\", \"city\": \"Londrina\", \"state\": \"PR\", \"country\": \"BR\", \"normalized_features\": [\"commercial\", \"sala_comercial\"]}",
+      "metrics": {
+        "duration_seconds": 1.0963351726531982,
+        "prompt_tokens": 2966,
+        "completion_tokens": 96,
+        "tokens_per_second": 87.56446239672684
+      }
+    },
+    "2": {
+      "result": "{\"title\": \"Casa EM Ibiporã - PR\", \"description\": \"CASA À VENDA EM IBIPORÃ COM 2 QUARTOS POR 365.000,00\", \"price\": 365000.0, \"bedrooms_count\": 2, \"bathrooms_count\": 2, \"property_type\": \"house\", \"listing_status\": \"for_sale\", \"country\": \"BR\", \"normalized_features\": [\"pool\", \"heated_pool\", \"childrens_pool\", \"gym\", \"playground\", \"garden\", \"parking_space\"]}",
+      "metrics": {
+        "duration_seconds": 1.3279452323913574,
+        "prompt_tokens": 2903,
+        "completion_tokens": 135,
+        "tokens_per_second": 101.66081906622959
+      }
+    },
+    "3": {
+      "result": "{\"title\": \"RUA DAS VIOLETAS, N.º 47\", \"description\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\", \"price\": 260000.0, \"property_type\": \"other\", \"listing_status\": \"for_sale\", \"city\": \"Ibiporã\", \"state\": \"PR\", \"country\": \"BR\", \"normalized_features\": [\"street\", \"neighborhood\"]}",
+      "metrics": {
+        "duration_seconds": 1.348236083984375,
+        "prompt_tokens": 2922,
+        "completion_tokens": 110,
+        "tokens_per_second": 81.58808483668712
+      }
+    },
+    "4": {
+      "result": "{\"title\": \"Chácara-imóvel-rural no Milton Gavetti em Londrina / PR\", \"description\": \"Sítio/Chácara para venda\", \"price\": 12000000.0, \"bedrooms_count\": null, \"bathrooms_count\": null, \"parking_spaces_count\": null, \"property_type\": \"country_house\", \"listing_status\": \"for_sale\", \"raw_address\": null, \"street\": null, \"street_number\": null, \"complement\": null, \"neighborhood\": null, \"city\": \"Londrina\", \"state\": \"PR\", \"country\": \"BR\", \"normalized_features\": [\"sítio\", \"chácara\"], \"total_area_m2\": 242000.0, \"private_area_m2\": null, \"suites_count\": null, \"floors_count\": null, \"year_built\": null, \"condo_fee\": null, \"property_tax\": null}",
+      "metrics": {
+        "duration_seconds": 1.7997026443481445,
+        "prompt_tokens": 2998,
+        "completion_tokens": 217,
+        "tokens_per_second": 120.57547433264887
+      }
+    },
+    "5": {
+      "result": "{\"title\": \"Apartamento novo para alugar com 2 dormitórios no Residencial Lituânia, Região Norte de Londrina\", \"description\": \"Apartamento Padrão para locação no Jardim Lago Norte em Londrina. R$ 1.200,00, procure pelo código: 53879\", \"price\": 1200.0, \"bedrooms_count\": 2, \"property_type\": \"apartment\", \"listing_status\": \"for_rent\", \"country\": \"BR\"}",
+      "metrics": {
+        "duration_seconds": 1.208911418914795,
+        "prompt_tokens": 2900,
+        "completion_tokens": 114,
+        "tokens_per_second": 94.29971312731459
+      }
+    },
+    "6": {
+      "result": "{\"title\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\", \"description\": \"Casa Condomínio para venda no Bandeirantes em Londrina.\", \"price\": 845000.0, \"property_type\": \"house\", \"listing_status\": \"for_sale\", \"city\": \"Londrina\", \"state\": \"PR\"}",
+      "metrics": {
+        "duration_seconds": 1.106241226196289,
+        "prompt_tokens": 2885,
+        "completion_tokens": 88,
+        "tokens_per_second": 79.54865350894586
+      }
+    },
+    "7": {
+      "result": "{\"title\": \"Casa com 3 dormitórios\", \"description\": \"3 dormitórios, sendo um suíte\", \"property_type\": \"house\", \"listing_status\": \"for_sale\", \"city\": \"Cambé\", \"state\": \"PR\", \"country\": \"BR\", \"normalized_features\": [\"pool\", \"gym\", \"playground\", \"garden\"]}",
+      "metrics": {
+        "duration_seconds": 1.075354814529419,
+        "prompt_tokens": 2945,
+        "completion_tokens": 89,
+        "tokens_per_second": 82.7633807906899
+      }
+    },
+    "8": {
+      "result": "{\"title\": \"Apartamento à venda com 3 quartos no Edifício Zenith, Jardim Andrade em Londrina\", \"description\": \"Apartamento Edifício para venda no Andrade em Londrina\", \"price\": 1400000.0, \"bedrooms_count\": 3, \"property_type\": \"apartment\", \"listing_status\": \"for_sale\", \"city\": \"Londrina\", \"state\": \"PR\", \"country\": \"BR\"}",
+      "metrics": {
+        "duration_seconds": 1.1917870044708252,
+        "prompt_tokens": 2892,
+        "completion_tokens": 106,
+        "tokens_per_second": 88.94206733447803
+      }
+    },
+    "9": {
+      "result": "{\"title\": \"Residencial Ibiaram - Ibiporã/PR\", \"property_type\": \"other\", \"status\": \"for_sale\", \"listing_status\": \"for_sale\", \"country\": \"BR\", \"normalized_features\": [\"residential\"]}",
+      "metrics": {
+        "duration_seconds": 0.8719124794006348,
+        "prompt_tokens": 2848,
+        "completion_tokens": 60,
+        "tokens_per_second": 68.81424617439225
+      }
+    }
+  }
+}

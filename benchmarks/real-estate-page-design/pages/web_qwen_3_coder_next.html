@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate | Swiss Style Listings</title>
+
+  <!-- Import Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+           DESIGN SYSTEM: SWISS INTERNATIONAL
+           ========================================= */
+
+    :root {
+      /* Colors */
+      --color-bg: #FFFFFF;
+      --color-fg: #000000;
+      --color-muted: #F2F2F2;
+      --color-accent: #FF3000;
+      /* Swiss Red */
+      --color-border: #000000;
+
+      /* Spacing & Grid */
+      --spacing-unit: 24px;
+      /* Critical Grid Unit */
+      --border-width: 4px;
+      /* Swiss Thickness */
+
+      /* Typography */
+      --font-main: 'Inter', sans-serif;
+      --scale-xs: 0.875rem;
+      --scale-sm: 1rem;
+      --scale-md: 1.5rem;
+      --scale-lg: 2.25rem;
+      --scale-xl: 3.75rem;
+      --scale-2xl: 6rem;
+      --scale-3xl: 8rem;
+
+      /* Transitions */
+      --transition-speed: 0.15s;
+      --transition-ease: ease-out;
+    }
+
+    /* RESET & GLOBAL */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      /* Apply Noise Texture Globally via CSS Pattern */
+      background-color: var(--color-bg);
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+    }
+
+    body {
+      font-family: var(--font-main);
+      color: var(--color-fg);
+      background-color: var(--color-bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* UTILITIES */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-unit);
+    }
+
+    .uppercase {
+      text-transform: uppercase;
+    }
+
+    .bold {
+      font-weight: 700;
+    }
+
+    .black {
+      font-weight: 900;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
+    .tracking-tight {
+      letter-spacing: -0.05em;
+    }
+
+    .tracking-widest {
+      letter-spacing: 0.2em;
+    }
+
+    /* ASYMMETRICAL GRID UTILS */
+    .grid-layout {
+      display: grid;
+      gap: var(--border-width);
+      /* 4px visible gap for structure */
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .col-span-12 {
+      grid-column: span 12;
+    }
+
+    .col-span-8 {
+      grid-column: span 8;
+    }
+
+    .col-span-4 {
+      grid-column: span 4;
+    }
+
+    .col-span-6 {
+      grid-column: span 6;
+    }
+
+    @media (max-width: 768px) {
+      .col-span-tablet-12 {
+        grid-column: span 12 !important;
+      }
+
+      .col-span-tablet-6 {
+        grid-column: span 6 !important;
+      }
+
+      :root {
+        --spacing-unit: 16px;
+      }
+    }
+
+    /* COMPONENTS */
+
+    /* 1. HEADER */
+    header {
+      border-bottom: var(--border-width) solid var(--color-border);
+      padding: var(--spacing-unit) 0;
+      position: sticky;
+      top: 0;
+      background: var(--color-bg);
+      z-index: 100;
+      /* Apply subtle Grid Pattern */
+      background-image:
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-position: center bottom;
+      background-blend-mode: multiply;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: var(--scale-lg);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      text-decoration: none;
+      color: var(--color-fg);
+      transition: color var(--transition-speed);
+    }
+
+    .brand:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: var(--scale-sm);
+      font-weight: 500;
+      text-transform: uppercase;
+      padding-bottom: 0.25rem;
+      border-bottom: 2px solid transparent;
+      transition: border-color var(--transition-speed);
+    }
+
+    .nav-links a:hover {
+      border-bottom-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    /* 2. HERO SECTION */
+    .hero {
+      padding: calc(var(--spacing-unit) * 4) 0;
+      text-align: left;
+    }
+
+    .hero-subtitle {
+      font-size: var(--scale-sm);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      margin-bottom: var(--spacing-unit);
+      display: block;
+    }
+
+    .hero-headline {
+      font-size: clamp(3rem, 8vw, var(--scale-3xl));
+      font-weight: 900;
+      line-height: 0.9;
+      margin-bottom: var(--spacing-unit);
+      letter-spacing: -0.05em;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: var(--color-fg);
+      color: var(--color-bg);
+      font-weight: 700;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-size: var(--scale-sm);
+      border: var(--border-width) solid var(--color-fg);
+      transition: background var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+    }
+
+    .hero-btn:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
+      border-color: var(--color-accent);
+      transform: translateY(-1px);
+    }
+
+    /* 3. FILTERS SECTION */
+    .filters {
+      background-color: var(--color-muted);
+      padding: calc(var(--spacing-unit) * 3) 0;
+      border-top: var(--border-width) solid var(--color-border);
+      border-bottom: var(--border-width) solid var(--color-border);
+    }
+
+    .filter-grid {
+      display: grid;
+      gap: var(--border-width);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      border: var(--border-width) solid var(--color-fg);
+      background: var(--color-bg);
+    }
+
+    .filter-label {
+      background: var(--color-fg);
+      color: var(--color-bg);
+      padding: 0.75rem 1rem;
+      font-size: var(--scale-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .filter-input,
+    .filter-select {
+      padding: 1rem;
+      font-family: var(--font-main);
+      font-size: var(--scale-sm);
+      border: none;
+      border-top: var(--border-width) solid var(--color-fg) !important;
+      /* Only top border for structure */
+      outline: none;
+      transition: background-color var(--transition-speed);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      background-color: #f8f8f8;
+    }
+
+    .filter-select {
+      cursor: pointer;
+    }
+
+    .filter-price-container {
+      position: relative;
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-price-label {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: #666;
+      pointer-events: none;
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: calc(var(--spacing-unit) * 3) 0;
+    }
+
+    /* 4. PROPERTY CARDS */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: calc(var(--spacing-unit) * 4) 0 var(--spacing-unit) 0;
+      border-bottom: var(--border-width) solid var(--color-border);
+      padding-bottom: var(--spacing-unit);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, var(--scale-2xl));
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .section-count {
+      font-size: var(--scale-sm);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .cards-grid {
+      display: grid;
+      gap: calc(var(--border-width) * 2);
+      /* 8px gap */
+      margin-bottom: calc(var(--spacing-unit) * 6);
+    }
+
+    .card {
+      background: var(--color-bg);
+      border: var(--border-width) solid var(--color-fg);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-speed), background-color var(--transition-speed), border-color var(--transition-speed);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    /* On hover, change text colors to maintain legibility */
+    .card:hover .card-title,
+    .card:hover .card-price,
+    .card:hover .card-location {
+      color: var(--color-bg);
+    }
+
+    .card-image-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease-out;
+      /* Smooth zoom */
+    }
+
+    .card:hover .card-image {
+      transform: scale(1.1);
+    }
+
+    /* Image Carousel (Simulated) */
+    .card-image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 0.1s linear;
+      /* Instant response */
+      z-index: 1;
+    }
+
+    .card:hover .card-image-overlay {
+      opacity: 1;
+    }
+
+    .card-image-overlay::after {
+      content: "NEXT >";
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 2px 6px;
+      font-size: 0.6rem;
+      font-weight: 900;
+    }
+
+    .card-content {
+      padding: calc(var(--spacing-unit) * 2);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--scale-xs);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-meta span {
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-size: var(--scale-md);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      transition: color var(--transition-speed);
+    }
+
+    .card-price {
+      font-size: var(--scale-lg);
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      transition: color var(--transition-speed);
+    }
+
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--scale-sm);
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 2px solid transparent;
+      transition: border-color var(--transition-speed);
+    }
+
+    .card:hover .card-details {
+      border-top-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .card-details .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-details .stat svg {
+      width: 1.2rem;
+      height: 1.2rem;
+      stroke-width: 2;
+    }
+
+    .card-btn {
+      text-decoration: none;
+      font-size: var(--scale-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--color-fg);
+      transition: all var(--transition-speed);
+      align-self: flex-start;
+    }
+
+    /* Specific state for hover on card (the button needs to invert) */
+    .card:hover .card-btn {
+      background-color: var(--color-bg);
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    /* 5. PAGINATION */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: calc(var(--border-width) * 2);
+      padding: calc(var(--spacing-unit) * 4) 0;
+      border-top: var(--border-width) solid var(--color-border);
+      margin-top: calc(var(--spacing-unit) * 4);
+    }
+
+    .page-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border: var(--border-width) solid var(--color-fg);
+      background: var(--color-bg);
+      text-decoration: none;
+      color: var(--color-fg);
+      font-weight: 900;
+      font-size: var(--scale-sm);
+      transition: all var(--transition-speed);
+      cursor: pointer;
+    }
+
+    .page-btn:hover {
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+      transform: translateY(-1px);
+    }
+
+    .page-btn.active {
+      background-color: var(--color-fg);
+      color: var(--color-bg);
+    }
+
+    .page-btn.next-prev {
+      min-width: 100px;
+    }
+
+    /* RESPONSIVE ADJUSTMENTS */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      /* Simple hide for mockup */
+      .hero-headline {
+        font-size: 2.5rem;
+      }
+
+      .grid-layout .col-span-8,
+      .grid-layout .col-span-4 {
+        grid-column: span 12;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-details {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* ACCESSIBILITY */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand uppercase black tracking-tight">Bauhaus<span
+          style="color:var(--color-accent)">Prop</span></a>
+      <nav class="nav-links">
+        <a href="#">Properties</a>
+        <a href="#">Developers</a>
+        <a href="#">Agency</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="hero-subtitle">01. The Collection</span>
+      <h1 class="hero-headline black tracking-tight">
+        Architecture<br>is Frozen<br>Music.
+      </h1>
+      <p style="max-width: 500px; margin-bottom: 2rem; font-size: 1.125rem; font-weight: 400;">
+        Discover a curated selection of properties defined by mathematical precision, functional aesthetics, and
+        timeless materials.
+      </p>
+      <a href="#" class="hero-btn">Browse Inventory</a>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="filters">
+      <div class="container">
+        <div class="filter-grid">
+          <!-- Search -->
+          <div class="filter-group col-span-tablet-12">
+            <div class="filter-label">Search Query</div>
+            <input type="text" class="filter-input" placeholder="Address, Keyword, or Reference #">
+          </div>
+
+          <!-- Price Range -->
+          <div class="filter-group col-span-tablet-6">
+            <div class="filter-label">Price Range (USD)</div>
+            <div class="filter-price-container">
+              <input type="number" class="filter-input" placeholder="Min">
+              <span class="filter-price-label">-</span>
+              <input type="number" class="filter-input" placeholder="Max">
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="filter-group col-span-tablet-6">
+            <div class="filter-label">Location</div>
+            <div class="filter-price-container" style="flex-direction: column; position: static;">
+              <select class="filter-select" aria-label="State">
+                <option value="PR">Paraná (PR)</option>
+                <option value="SP">São Paulo (SP)</option>
+                <option value="RJ">Rio de Janeiro (RJ)</option>
+              </select>
+              <select class="filter-select" aria-label="City">
+                <option value="londrina">Londrina</option>
+                <option value="ibipora">Ibiporã</option>
+                <option value="curitiba">Curitiba</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="hero-btn" style="border-color: transparent;">Apply Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTINGS -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title uppercase black tracking-tight">Available Properties</h2>
+        <span class="section-count">04 Results Found</span>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- CARD 1: Modernist Villa -->
+        <article class="card">
+          <div class="card-image-container">
+            <!-- Base Image -->
+            <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=1000&auto=format&fit=crop"
+              alt="Modernist Villa" class="card-image">
+            <!-- Overlay Image (Triggered by hover) -->
+            <div class="card-image-overlay"
+              style="background-image: url('https://images.unsplash.com/photo-1600596542815-3ad19e6db98e?q=80&w=1000&auto=format&fit=crop');">
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-meta">
+              <span>Villa</span>
+              <span>Available</span>
+            </div>
+            <h3 class="card-title uppercase tracking-tight">The Horizon Villa</h3>
+            <p class="card-location" style="color: #666; font-size: var(--scale-xs); text-transform: uppercase;">
+              Londrina, PR</p>
+            <p class="card-price">$1,250,000</p>
+            <div class="card-details">
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                350m²
+              </span>
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                </svg>
+                4 Beds
+              </span>
+            </div>
+            <a href="#" class="card-btn" style="margin-top: 1rem;">View Details</a>
+          </div>
+        </article>
+
+        <!-- CARD 2: Urban Loft -->
+        <article class="card">
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1000&auto=format&fit=crop"
+              alt="Urban Loft" class="card-image">
+            <div class="card-image-overlay"
+              style="background-image: url('https://images.unsplash.com/photo-1522771753038-61633552e238?q=80&w=1000&auto=format&fit=crop');">
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-meta">
+              <span>Loft</span>
+              <span>New</span>
+            </div>
+            <h3 class="card-title uppercase tracking-tight">Central Square Loft</h3>
+            <p class="card-location" style="color: #666; font-size: var(--scale-xs); text-transform: uppercase;">
+              Ibiporã, PR</p>
+            <p class="card-price">$450,000</p>
+            <div class="card-details">
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                120m²
+              </span>
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                </svg>
+                2 Beds
+              </span>
+            </div>
+            <a href="#" class="card-btn" style="margin-top: 1rem;">View Details</a>
+          </div>
+        </article>
+
+        <!-- CARD 3: Concrete Studio -->
+        <article class="card">
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1599114752531-67b45c77f33c?q=80&w=1000&auto=format&fit=crop"
+              alt="Concrete Studio" class="card-image">
+            <div class="card-image-overlay"
+              style="background-image: url('https://images.unsplash.com/photo-1599114752531-67b45c77f33c?q=80&w=1000&auto=format&fit=crop');">
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-meta">
+              <span>Studio</span>
+              <span>Rented</span>
+            </div>
+            <h3 class="card-title uppercase tracking-tight">Grid Block Studio</h3>
+            <p class="card-location" style="color: #666; font-size: var(--scale-xs); text-transform: uppercase;">
+              Londrina, PR</p>
+            <p class="card-price">$320,000</p>
+            <div class="card-details">
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                85m²
+              </span>
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                </svg>
+                1 Bed
+              </span>
+            </div>
+            <a href="#" class="card-btn" style="margin-top: 1rem;">View Details</a>
+          </div>
+        </article>
+
+        <!-- CARD 4: Geometric House -->
+        <article class="card">
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop"
+              alt="Geometric House" class="card-image">
+            <div class="card-image-overlay"
+              style="background-image: url('https://images.unsplash.com/photo-1600607686527-6fb88609c6a5?q=80&w=1000&auto=format&fit=crop');">
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-meta">
+              <span>Residence</span>
+              <span>Exclusive</span>
+            </div>
+            <h3 class="card-title uppercase tracking-tight">The Red Rectangle</h3>
+            <p class="card-location" style="color: #666; font-size: var(--scale-xs); text-transform: uppercase;">Paraná,
+              PR</p>
+            <p class="card-price">$890,000</p>
+            <div class="card-details">
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                210m²
+              </span>
+              <span class="stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="square"
+                  stroke-linejoin="miter">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                </svg>
+                3 Beds
+              </span>
+            </div>
+            <a href="#" class="card-btn" style="margin-top: 1rem;">View Details</a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- PAGINATION -->
+      <nav class="pagination" aria-label="Page Navigation">
+        <a href="#" class="page-btn next-prev" aria-label="Previous Page">&larr; Prev</a>
+        <a href="#" class="page-btn active" aria-current="page">01</a>
+        <a href="#" class="page-btn">02</a>
+        <a href="#" class="page-btn">03</a>
+        <a href="#" class="page-btn next-prev" aria-label="Next Page">Next &rarr;</a>
+      </nav>
+
+    </section>
+  </main>
+
+  <footer
+    style="border-top: var(--border-width) solid var(--color-fg); padding: calc(var(--spacing-unit) * 4) 0; text-align: center; background: var(--color-muted);">
+    <div class="container">
+      <p class="uppercase" style="font-weight: 900; font-size: var(--scale-lg); margin-bottom: 1rem;">BauhausProp</p>
+      <p style="font-size: var(--scale-xs); letter-spacing: 0.1em; margin-bottom: 2rem;">Functional Design for Modern
+        Living</p>
+      <p style="font-size: 0.75rem; opacity: 0.7;">&copy; 2024 Swiss Real Estate Systems. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Minimal JavaScript to handle the "Hover Skip" effect on Cards
+    // Logic: When hovering a card, we wait 1 second, then swap the main image's background 
+    // to match the overlay image, simulating a "next slide".
+    // On mouse leave, we revert.
+
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+      const mainImg = card.querySelector('.card-image');
+      const overlayImg = card.querySelector('.card-image-overlay');
+      let hoverTimer = null;
+
+      card.addEventListener('mouseenter', () => {
+        hoverTimer = setTimeout(() => {
+          // Get background image from overlay
+          const nextSrc = overlayImg.style.backgroundImage;
+
+          // Apply to main image (using CSS var for simplicity or direct style)
+          // We set the main image opacity to 0 first, then swap, then fade back? 
+          // Swiss style prefers instant snap. Let's do a hard swap.
+          if (nextSrc) {
+            mainImg.style.opacity = '0';
+            mainImg.style.transition = 'opacity 0.1s linear';
+
+            // Actually, for a true YouTube feel, we usually replace the src.
+            // But our CSS logic uses background-image for the overlay.
+            // To make this work with just CSS we used opacity transitions.
+            // Since the prompt asked for 1 sec hover to change image, 
+            // let's make the overlay THE main source after delay.
+
+            // Simplified Approach for "Mockup" feel:
+            // We will just make the main image disappear and let the overlay take over fully?
+            // No, the overlay is already there.
+
+            // Better approach for the specific request:
+            // Swap the src of the main <img> tag after 1s
+
+            // Get the URL from the overlay background
+            const url = nextSrc.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+
+            // Load new image
+            const newImg = new Image();
+            newImg.src = url;
+
+            newImg.onload = () => {
+              // Animation
+              mainImg.style.transition = 'opacity 0.1s linear';
+              setTimeout(() => {
+                mainImg.src = url;
+                mainImg.style.opacity = '1';
+              }, 100);
+            }
+          }
+        }, 1000); // 1 second delay
+      });
+
+      card.addEventListener('mouseleave', () => {
+        clearTimeout(hoverTimer); // Cancel the swap
+
+        // Optional: Reset image immediately? 
+        // Or wait for user to interact again. 
+        // Let's just keep the current state to avoid jarring changes.
+        // If we wanted to reset:
+        // mainImg.style.opacity = '1';
+        // mainImg.src = originalSrc; // (Would need to store original)
+      });
+    });
+
+    // Add simple focus styles for accessibility (kbd navigation)
+    document.querySelectorAll('button, a, input, select').forEach(el => {
+      el.addEventListener('focus', () => el.style.boxShadow = '0 0 0 2px #FF3000');
+      el.addEventListener('blur', () => el.style.boxShadow = 'none');
+    });
+  </script>
+</body>
+
+</html>

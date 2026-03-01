@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "nousresearch/deephermes-3-mistral-24b-preview",
+    "total_benchmark_time_seconds": 16.87267231941223,
+    "total_prompt_tokens": 25794,
+    "total_completion_tokens": 959,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"price\": 800000.00,\n  \"city\": \"Ibipor\\u00e3\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\n    \"commercial\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.2061712741851807,
+        "prompt_tokens": 2552,
+        "completion_tokens": 54,
+        "tokens_per_second": 44.76976127331441
+      }
+    },
+    "1": {
+      "result": "{\n  \"price\": 13000000.00,\n  \"total_area_m2\": 803.00,\n  \"property_type\": \"commercial\",\n  \"neighborhood\": \"Boa Vista\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\n    \"elevator\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.4192004203796387,
+        "prompt_tokens": 2640,
+        "completion_tokens": 86,
+        "tokens_per_second": 60.597501779907056
+      }
+    },
+    "2": {
+      "result": "{\n  \"price\": 365000.0,\n  \"city\": \"Ibipor\\u00e3\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\n    \"fitted_kitchen\",\n    \"covered_parking\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.2955830097198486,
+        "prompt_tokens": 2573,
+        "completion_tokens": 62,
+        "tokens_per_second": 47.85490357225865
+      }
+    },
+    "3": {
+      "result": "{\n  \"price\": 260000.00,\n  \"raw_address\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"street\": \"RUA DAS VIOLETAS\",\n  \"street_number\": \"47\",\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\n    \"piped_water\",\n    \"sewage_system\",\n    \"electricity\",\n    \"paved_street\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 2.129582405090332,
+        "prompt_tokens": 2589,
+        "completion_tokens": 138,
+        "tokens_per_second": 64.80143697193364
+      }
+    },
+    "4": {
+      "result": "{\n  \"price\": 12000000.00,\n  \"total_area_m2\": 242000.00,\n  \"property_type\": \"farm\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\n    \"garden\",\n    \"orchard\",\n    \"vegetable_garden\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.5973782539367676,
+        "prompt_tokens": 2675,
+        "completion_tokens": 90,
+        "tokens_per_second": 56.342322038123015
+      }
+    },
+    "5": {
+      "result": "{\n  \"property_type\": \"apartment\",\n  \"bedrooms_count\": 2,\n  \"neighborhood\": \"Jardim Lago Norte\",\n  \"normalized_features\": [\n    \"fitted_kitchen\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.06844162940979,
+        "prompt_tokens": 2564,
+        "completion_tokens": 50,
+        "tokens_per_second": 46.797128288252985
+      }
+    },
+    "6": {
+      "result": "{\n  \"property_type\": \"gated_house\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"suites_count\": null,\n  \"parking_spaces_count\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null,\n  \"neighborhood\": \"Bandeirantes\",\n  \"normalized_features\": [\n    \"gated\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.7168421745300293,
+        "prompt_tokens": 2550,
+        "completion_tokens": 108,
+        "tokens_per_second": 62.90618998194407
+      }
+    },
+    "7": {
+      "result": "{\n  \"price\": null,\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 2,\n  \"suites_count\": 1,\n  \"parking_spaces_count\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null,\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"normalized_features\": [\n    \"built_in_cabinets\",\n    \"fitted_kitchen\",\n    \"laundry_room\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.6520216464996338,
+        "prompt_tokens": 2587,
+        "completion_tokens": 111,
+        "tokens_per_second": 67.1904028831529
+      }
+    },
+    "8": {
+      "result": "{\n  \"property_type\": \"apartment\",\n  \"bedrooms_count\": 3,\n  \"neighborhood\": \"Jardim Andrade\",\n  \"normalized_features\": [\n    \"elevator\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 1.4004194736480713,
+        "prompt_tokens": 2560,
+        "completion_tokens": 48,
+        "tokens_per_second": 34.2754445387429
+      }
+    },
+    "9": {
+      "result": "{\n  \"title\": \"Residencial Ibiaram - Ibipor\\u00e3/PR\",\n  \"description\": null,\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": null,\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": null,\n  \"city\": \"Ibipor\\u00e3\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 2.639204740524292,
+        "prompt_tokens": 2504,
+        "completion_tokens": 212,
+        "tokens_per_second": 80.32722764732723
+      }
+    }
+  }
+}

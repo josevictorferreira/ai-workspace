@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Real Estate Listings | Swiss Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400,500,700,900&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Core Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-white: #ffffff;
+      --color-black: #000000;
+      --color-accent-red: #ff3000;
+      --color-muted-gray: #f2f2f2;
+      --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-scale-headline: 6xl;
+      /* Mobile */
+      --font-scale-body: 1rem;
+      --spacing-unit: 8px;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--color-white);
+      color: var(--color-black);
+      line-height: 1.5em;
+      padding: clamp(0, 2%, 32px) clamp(2rem, 4vw, 64px) clamp(2rem, 4vw, 64px);
+      margin-inline-auto;
+    }
+
+    /* Swiss Style Text Utilities */
+    .text-uppercase {
+      text-transform: uppercase !important;
+    }
+
+    .tracking-tighter {
+      letter-spacing: -0.03em;
+    }
+
+    .tracking-wide {
+      letter-spacing: 0.15em;
+    }
+
+    /* Swiss Design System Tokens */
+    :root {
+      --swiss-red: #FF3000;
+      --swiss-black: #000000;
+      --swiss-gray-light: #F2F2F2;
+      --swiss-white: #FFFFFF;
+    }
+
+    .text-accent {
+      color: var(--swiss-red) !important;
+    }
+
+    .bg-accent {
+      background-color: var(--swiss-red);
+    }
+
+    .border-accent {
+      border-color: var(--swiss-red);
+    }
+
+    /* Swiss Layout Primitives */
+    .container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Swiss Grid System (visible borders + subtle textures) */
+    .grid-swiss {
+      display: grid;
+      gap: 32px;
+      position: relative;
+    }
+
+    /* Swiss Card Pattern */
+    .card {
+      position: relative;
+      background-color: var(--swiss-white);
+      border: 4px solid var(--swiss-black);
+      padding: 1.5rem;
+      transition: transform 0.1s ease-out, background-color 0.2s ease-out;
+      overflow: hidden;
+    }
+
+    /* Swiss Text Patterns */
+    .text-uppercase {
+      text-transform: uppercase;
+    }
+
+    .tracking-wide {
+      letter-spacing: 0.08em;
+    }
+
+    .tracking-widest {
+      letter-spacing: 0.15em;
+    }
+
+    /* Swiss Typography Scale */
+    .type-hero {
+      font-weight: bold;
+    }
+
+    .type-lead {
+      font-weight: bold;
+      line-height: normal;
+    }
+
+    .type-label {
+      display: inline-block;
+      padding-bottom: 2px;
+      border-bottom: 4px solid var(--swiss-black);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Swiss Pattern Overlays */
+    .pattern-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .pattern-dots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(#000 1px, transparent 1px),
+        radial-gradient(#000 1px, transparent 1px);
+      background-size: 16px 16px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .pattern-diagonal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(45deg, #000 1px, transparent 1px);
+      background-size: 10px 24px;
+      opacity: 0.02;
+      pointer-events: none;
+    }
+
+    .pattern-noise {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.05) 50%, transparent 50%);
+      background-size: 2px 2px;
+      opacity: 0.015;
+      pointer-events: none;
+    }
+
+    .pattern-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Swiss Design Classes */
+    .text-uppercase {
+      text-transform: uppercase;
+    }
+
+    .tracking-wide {
+      letter-spacing: 2px;
+    }
+
+    .font-black {
+      font-weight: 900;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    .font-medium {
+      font-weight: 500;
+    }
+
+    /* Swiss Colors */
+    .bg-white {
+      background-color: #FFFFFF;
+    }
+
+    .bg-black {
+      background-color: #000000;
+    }
+
+    .bg-accent {
+      background-color: #FF3000;
+    }
+
+    .text-black {
+      color: #000000;
+    }
+
+    .text-white {
+      color: #FFFFFF;
+    }
+
+    .text-accent {
+      color: #FF3000;
+    }
+
+    /* Swiss Typography */
+    .typeface-sans-serif {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Swiss Layout */
+    .grid-swiss {
+      display: grid;
+      gap: 2rem;
+      align-items: start;
+      justify-content: stretch;
+    }
+
+    .container-grid {
+      max-width: 1600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .grid-rows {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(32rem, 100% - 2rem), 1fr));
+      gap: 4rem;
+      padding-top: 4rem;
+      justify-content: center;
+    }
+
+    /* Swiss Card */
+    .card-suisse {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #FFFFFF;
+      border-style: solid;
+      border-width: 2px 0px;
+      border-color: #000000;
+      transition: background-color 150ms ease-out;
+    }
+
+    .card-suisse:hover {
+      background-color: #FF3000;
+    }
+
+    .card-content-suisse {
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 4.25rem;
+      text-align: left;
+    }
+
+    .card-image-suisse {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #F2F2F2;
+      overflow: hidden;
+      transition: border-color 150ms ease-out;
+      border-right: solid;
+      border-width: 2px 0px;
+    }
+
+    .card-image-suisse img {
+      width: auto;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .card-text-suisse h3,
+    .card-text-suisse p {
+      margin-top: 0px;
+      font-weight: bold;
+    }
+
+    .card-link-suisse {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+    }
+
+    .swiss-pattern-grid {
+      background-image:
+        linear-gradient(90deg, #000 1px transparent),
+        linear-gradient(#000 1px, transparent);
+      background-size: 24px 24px;
+      opacity: 3%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Swiss Style Components */
+
+    .swiss-header-sans-serif {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: bold;
+    }
+
+    .uppercase-text {
+      text-transform: uppercase;
+    }
+
+    .tracking-wide {
+      letter-spacing: .2em;
+    }
+
+    .font-black {
+      font-weight: black;
+    }
+
+    /* Swiss Red Accent */
+    .swiss-red-accent {
+      color: #FF3000;
+    }
+
+    .bg-swiss-red {
+      background-color: #FF3000;
+    }
+
+    /* Swiss Pattern Overlay */
+
+    .pattern-overlay {
+      position: relative;
+    }
+
+    .pattern-overlay::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiss-noise-texture {
+      position: relative;
+      background-image: url("data:image/svg+xml;base64,PHN2ZSB3IDEwMj0‘100%' h=’100%’ fill-opacity='1' style='fill-rule:non-zero'> <g><path d='m 7.9 0 l 0.1 0.5 l -0.1 0.5 l -0.7 0 l 0.3 -0.5 l 0 -0.8 l -0.2 0 l 0.4 0.5 l -0.6 0 l 0.1 0.5 l 0.5 0 z m 1.8 0 l 0.3 0 l 0.4 -0.5 l -0.6 0 l 0.2 0 l 0 0.8 l -0.3 0 l 0.3 0 z' fill='rgba(255,0,0,0.1)' /></g></svg>");
+      opacity: 0.02;
+    }
+
+    /* Swiss Pattern Overlay */
+
+    .pattern-overlay {
+      position: relative;
+    }
+
+    .pattern-grid-24 {
+      background-image: repeating-linear-gradient(to right, transparent 0px, rgba(0, 0, 0, 0.03) 1px);
+    }
+
+    .pattern-dots-16 {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 2px, transparent 2px);
+    }
+
+    /* Swiss Pattern Noise */
+
+    .noise-overlay {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .noise-overlay::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.org/2000/svg" viewBox="0 0 4 4" width="100%" height="100%"><rect fill="%23ffffff"/><path stroke="%230000" opacity="0.015" d="M0,1 L-1,0 H1 Z"/></svg>');
+      pointer-events: none;
+    }
+
+    .text-black {
+      color: #000;
+    }
+
+    .text-white {
+      color: #FFF;
+    }
+
+    .bg-white {
+      background-color: #FFF;
+    }
+
+    .bg-muted-gray {
+      background-color: #F2F2F2;
+    }
+
+    .bg-red-accent {
+      background-color: #FF3000;
+    }
+
+    /* Swiss Grid Patterns */
+
+    .pattern-grid-24px {
+      background-image: repeating-linear-gradient(to right, transparent 23.75px, rgba(0, 0, 0, 0.03) 24px);
+    }
+
+    .pattern-dots-matrix {
+      background-image: radial-gradient(#000 1px, transparent 1px),
+        radial-gradient(#000 1px, transparent 1px) 0 16px;
+      background-size: 16px 32px;
+    }
+
+    /* Swiss Layout Grid */
+
+    .swiss-layout-grid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Swiss Container with Borders */
+
+    .border-thick {
+      border-width: 4px;
+      border-color: #000;
+    }
+
+    /* Swiss Button */
+
+    .btn-swiss {
+      background: black;
+      color: white;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: normal;
+    }
+
+    .btn-swiss:hover {
+      background: #FF3000;
+      color: white;
+      transform: none;
+    }
+
+    /* Swiss Typography */
+
+    .typo-text-black {
+      font-family: 'Inter', sans-serif;
+      color: black;
+    }
+
+    .typo-text-white {
+      color: white;
+    }
+
+    .typo-uppercase {
+      text-transform: uppercase;
+    }
+
+    .typo-bold {
+      font-weight: bold;
+    }
+
+    @media (prefers-reduced-motion) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+
+<body class="bg-[#FFFFFF] text-black">
+  <main class="container mx-auto px-4 py-16 md:py-24 min-h-screen" role="main">
+
+    <header id="app-header" class="flex items-center justify-between mb-32">
+      <div class="flex flex-col gap-4">
+        <h1 class="text-[9rem] leading-tight tracking-widest font-black uppercase text-black hidden md:block">Property
+        </h1>
+        <p class="typo-text-black typo-bold typo-uppercase text-xl mt--2">Swiss Style Real Estate Listing</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <section id="filters" aria-label="Filters for property listings">
+        <form aria-labelledby="filter-form" role="search">
+          <div class="flex flex-col gap-4 md:gap-6 mt--8">
+            <!-- Search Input -->
+            <label
+              class="flex flex-row items-center border-b border-black focus-within:border-red-accent focus-within:text-red-accent transition-[border-color] duration-150 ease-out">
+              <span class="text-xs uppercase tracking-widest mr-4 font-bold hidden md:block">Search</span>
+              <input type="text" placeholder="Text search…" aria-label="Search property name or description…"
+                class="w-full border-none bg-transparent text-black uppercase font-bold text-base leading-tight focus:outline-none focus-visible:none" />
+            </label>
+
+            <!-- Location Filter -->
+            <div class="flex flex-wrap gap-4 md:flex-row">
+              <label
+                class="flex flex-col border-b focus-within:border-red-accent transition-[border-color] duration-150 ease-out">
+                <span class="text-xs uppercase tracking-widest mb-2 font-bold hidden md:block">Location</span>
+                <select aria-label="Select city"
+                  class="w-full border-none bg-transparent text-black uppercase font-bold text-base leading-tight focus:outline-none focus-visible:none">
+                  <option value="">Select City…</option>
+                  <option value="londrina">Londrina</option>
+                  <option value="ibipora">Ibipora</option>
+                </select>
+              </label>
+
+              <!-- Range Slider -->
+              <div class="flex flex-col md:flex-row gap-4">
+                <label
+                  class="flex flex-col border-b focus-within:border-red-accent transition-[border-color] duration-150 ease-out">
+                  <span class="text-xs uppercase tracking-widest mb-2 font-bold hidden md:block">Price (CHF)</span>
+                  <input type="range" aria-label="Min price" min=0 max=5000 step=50 value=0
+                    class="w-full border-none bg-transparent text-black uppercase font-bold text-base leading-tight focus:outline-none">
+                </label>
+
+                <label
+                  class="flex flex-col border-b focus-within:border-red-accent transition-[border-color] duration-150 ease-out">
+                  <span class="text-xs uppercase tracking-widest mb-2 font-bold hidden md:block">Max price (CHF)</span>
+                  <input type="range" aria-label="Max price" min=0 max=5000 step=50 value=5000
+                    class="w-full border-none bg-transparent text-black uppercase font-bold text-base leading-tight focus:outline-none">
+                </label>
+              </div>
+
+              </label>
+
+              <label class="flex flex-col gap-2">
+                <span class="text-xs uppercase tracking-widest mb-2 font-bold hidden md:block">Location</span>
+                <select aria-label="City"
+                  class="border-none bg-transparent text-black uppercase font-bold text-base leading-tight focus:outline-none">
+                  <option value="londrina">Londrina (L)</option>
+                  <option value="ibipora">Ibipora (I)</option>
+                </select>
+
+              </label>
+            </div>
+
+          </div>
+          </div>
+        </form>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow px-12 py-24" role="region">
+      <section aria-label="Property Listing Grid" class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-16">
+        <!-- Filter Sidebar (Desktop) -->
+        <div
+          class="lg:block hidden col-span-1 border-l border-black p-4 text-black uppercase tracking-widest font-bold text-xl leading-snug">
+          <h2 class="mb-4 text-lg font-normal">Filters</h2>
+          <ul aria-label="Filter Options" class="space-y-4">
+            <li><button type="submit"
+                class="flex items-center space-x-2 px-2 py-1 border-b border-black uppercase tracking-widest font-bold hover:bg-black hover:text-white focus:outline-none">Text
+                Search</button></li>
+            <li><label for="price-min" class="block mb-2 text-xs uppercase tracking-wide">Price Range (CHF)</label></li>
+            <div class="flex items-center space-x-4">
+              <input type="number" id="price-min" placeholder="Min"
+                class="border-b border-black px-2 py-1 focus:border-swiss-red" />
+              <input type="number" id="price-max" placeholder="Max"
+                class="border-b border-black px-2 py-1 focus:border-swiss-red" />
+            </div>
+          </ul>
+          </nav>
+
+          </aside>
+          <main aria-label="Property Listings">
+            <section aria-labelledby="hero-text" class="swiss-noise bg-white">
+              <header id="hero-text"
+                class="flex flex-col md:flex-row items-start justify-between p-12 border-b border-black">
+                <h1 class="text-[10rem] font-normal leading-none tracking-tighter uppercase">Real Estate</h1>
+                <div aria-label="Search Bar" class="hidden md:block">
+                  <label for="search-text" class="sr-only">Search Property Name</label>
+                  <input id="search-text" type="text" placeholder="Property name..."
+                    class="border-b border-black px-4 py-2 focus:border-swiss-accent focus:border-b-0 focus:outline-none focus:bg-black focus:text-white" />
+                </div>
+              </header>
+
+              <!-- Property List -->
+              <ul aria-label="Properties Grid" class="flex flex-col gap-12 md:flex-row justify-center">
+                <!-- Card 1 -->
+                <li aria-labelledby="property-card-1"
+                  class="w-full md:w-[45%] border-black bg-white p-8 hover:bg-black hover:text-white focus-within:bg-black focus-within:text-white transition-colors duration-200 ease-linear">
+                  <a href="#" role="button" aria-label="Property Listing: Swiss House 1">
+                    <figure class="flex items-center justify-start relative overflow-hidden">
+                      <img src="https://placehold.co/600x400?text=Swiss+House+1" alt="Swiss House 1"
+                        class="object-cover w-full max-h-20" />
+                      <figcaption aria-hidden="true" class="sr-only">Swiss House 1</figcaption>
+                    </figure>
+                    <h3 id="property-card-1" aria-label="Property Listing: Swiss House 1"
+                      class="text-black uppercase tracking-wide font-bold hover:text-white focus:text-black">01. Swiss
+                      House 1</h3>
+                    <p aria-hidden="true" class="sr-only">Price: CHF 45,000</p>
+                    <span aria-label="CHF 45,000" aria-hidden="true"
+                      class="text-black uppercase tracking-wide hover:text-white focus:bg-red-700 font-bold">CHF
+                      45,000</span>
+                    </figcaption>
+                    </figure>
+                  </a>
+                </li>
+
+                <li class="col-span-full md:col-span-2 lg:col-span-1">
+                  <a href="#" aria-label="Property Listing: Swiss House 2"
+                    class="flex flex-col h-full text-black border-black focus-visible:border-red-700 hover:bg-black hover:text-white focus:bg-red-700 focus:text-white focus-visible:border-red-700">
+                    <figure>
+                      <img src="https://picsum.photos/640x320" alt="Image 2" />
+                      <figcaption>
+                        <h1 class="text-[8rem] font-black uppercase tracking-tighter">Swiss House 2</h1>
+                        <span aria-label="CHF 72,000" aria-hidden="true"
+                          class="text-black hover:text-white focus:bg-red-700 font-bold">CHF 72,000</span>
+                      </figcaption>
+                    </figure>
+                  </a>
+                </li>
+
+                <li class="col-span-full md:col-span-1 lg:col-span-2">
+                  <a href="#" aria-label="Property Listing: Swiss House 3"
+                    class="flex items-center justify-between p-8 border-black border-b-4 hover:bg-black hover:text-white focus-visible:text-swiss-red font-black uppercase tracking-wide gap-16">
+                    <div>
+                      <img src="https://picsum.photos/640x320" alt="Image 3" />
+                    </div>
+                    <figure>
+                      <figcaption>
+                        <span aria-label="CHF 58,000">CHF 58,000</span>
+                      </figcaption>
+                    </figure>
+                  </a>
+                </li>
+
+              </ul>
+
+              <footer class="p-16 border-black border-t-4">
+                <section class="flex justify-center gap-4">
+                  <h2 id="pagination" aria-label="Pagination">Pagination</h2>
+                  <button type="button" aria-label="Previous Page"
+                    class="hover:bg-swiss-red hover:text-white font-black uppercase tracking-wide px-16 py-8 border-black border-b-4 focus-visible:border-swiss-red focus-visible:text-swiss-red"
+                    disabled>
+                    « Previous
+                  </button>
+                  <button type="button" aria-label="Next Page"
+                    class="hover:bg-swiss-red hover:text-white font-black uppercase tracking-wide px-16 py-8 border-black border-b-4 focus-visible:border-swiss-red focus-visible:text-swiss-red">
+                    Next »
+                  </button>
+                </section>
+              </footer>
+
+</body>
+
+</html>
+
+<div id="app"></div>

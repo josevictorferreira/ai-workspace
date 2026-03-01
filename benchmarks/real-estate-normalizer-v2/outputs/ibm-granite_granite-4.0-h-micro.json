@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "ibm-granite/granite-4.0-h-micro",
+    "total_benchmark_time_seconds": 69.92127060890198,
+    "total_prompt_tokens": 22350,
+    "total_completion_tokens": 1848,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"title\": \"Comercial EM Ibiporã - PR\",\n  \"description\": \"EXCELENTE OPORTUNIDADE COMERCIAL EM IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR. Disponível para Venda: R$ 800.000,00.\",\n  \"price\": 800000.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": 3,\n  \"parking_spaces_count\": 4,\n  \"property_type\": \"commercial\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Comercial em Terra Bonita - Ibiporã, PR\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Terra Bonita\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 9.228559494018555,
+        "prompt_tokens": 2210,
+        "completion_tokens": 265,
+        "tokens_per_second": 28.715207413655236
+      }
+    },
+    "1": {
+      "result": "{\n  \"title\": \"Salão-loja  no Boa Vista em Londrina / PR , 803m² para venda por R$ 13.000.000,00\",\n  \"description\": \"Salão comercial para venda (#vender #compra #comprar) na Rua Maceió, Bairro Boa Vista, região Central de Londrina PR.Consulte as melhores opções de imóveis em veneza.com.br |  43-3371-0003  | Veneza Imóveis, servir é a nossa missão!\",\n  \"price\": 13000000,\n  \"normalized_features\": [\n    \"commercial\"\n  ],\n  \"total_area_m2\": 803,\n  \"property_type\": \"commercial\"\n}",
+      "metrics": {
+        "duration_seconds": 5.792979001998901,
+        "prompt_tokens": 2284,
+        "completion_tokens": 163,
+        "tokens_per_second": 28.13750920618837
+      }
+    },
+    "2": {
+      "result": "{\n  \"price\": 365000.00,\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": 2,\n  \"parking_spaces_count\": 2,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"CASA À VENDA EM IBIPORÃ COM 2 QUARTOS POR 365.000,00 - Casa em Ibi Aram - Ibiporã, PR.  Disponível para Venda: R$ 365.000,00.\",\n  \"street\": \"Ibiporã\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"normalized_features\": []\n}",
+      "metrics": {
+        "duration_seconds": 6.70673680305481,
+        "prompt_tokens": 2225,
+        "completion_tokens": 156,
+        "tokens_per_second": 23.26019412733545
+      }
+    },
+    "3": {
+      "result": "{\n  \"title\": \"RUA DAS VIOLETAS, N.º 47\",\n  \"description\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"price\": 260000.00,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"street\": \"RUA DAS VIOLETAS\",\n  \"street_number\": \"47\",\n  \"complement\": \"Jardim Éden\",\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"Parana\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"pool\",\n  \"total_area_m2\": 360,\n  \"private_area_m2\": 113.34,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 9.505756855010986,
+        "prompt_tokens": 2245,
+        "completion_tokens": 280,
+        "tokens_per_second": 29.455834424420104
+      }
+    },
+    "4": {
+      "result": "{\n  \"title\": \"Chácara-imóvel-rural  no Milton Gavetti em Londrina / PR , 242.000m² para venda por R$ 12.000.000,00\",\n  \"description\": \"Sítio/Chácara para venda (#vender #compra #comprar) na Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR. - A área é composta de 10,5. alqueires agricultáveis.Consulte as melhores opções de imóveis em veneza.com.br |  43-3371-0003  |  Veneza Imóveis, servir é a nossa missão!\",\n  \"price\": 12000000,\n  \"total_area_m2\": 242000,\n  \"normalized_features\": [\"land\"]\n}",
+      "metrics": {
+        "duration_seconds": 6.412184715270996,
+        "prompt_tokens": 2316,
+        "completion_tokens": 181,
+        "tokens_per_second": 28.227508725526548
+      }
+    },
+    "5": {
+      "result": "{\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": 2,\n  \"price\": 1200.0,\n  \"property_type\": \"apartment\",\n  \"listing_status\": \"for_rent\",\n  \"raw_address\": \"Apartamento Padrão para locação no Jardim Lago Norte em Londrina\",\n  \"street\": \"Jardim Lago Norte\",\n  \"neighborhood\": \"Lago Norte\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"normalized_features\": []\n}",
+      "metrics": {
+        "duration_seconds": 4.730424880981445,
+        "prompt_tokens": 2225,
+        "completion_tokens": 119,
+        "tokens_per_second": 25.156302656540753
+      }
+    },
+    "6": {
+      "result": "{\n  \"price\": 845000.0,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Casa Condomínio para venda no Bandeirantes em Londrina\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Bandeirantes\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 6.703557968139648,
+        "prompt_tokens": 2207,
+        "completion_tokens": 196,
+        "tokens_per_second": 29.238204686457472
+      }
+    },
+    "7": {
+      "result": "{\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 2,\n  \"suites_count\": 1,\n  \"parking_spaces_count\": 1,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"street\": null,\n  \"street_number\": null,\n  \"complement\": \"Conjunto Habitacional Doutor José dos Santos Rocha Cambé\",\n  \"neighborhood\": \"Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\n    \"pool\"\n  ],\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 7.819424390792847,
+        "prompt_tokens": 2253,
+        "completion_tokens": 224,
+        "tokens_per_second": 28.646609878823526
+      }
+    },
+    "8": {
+      "result": "{\n  \"bedrooms_count\": 3,\n  \"price\": 1400000.0,\n  \"normalized_features\": [\"3_bedrooms\"]\n}",
+      "metrics": {
+        "duration_seconds": 2.0212502479553223,
+        "prompt_tokens": 2215,
+        "completion_tokens": 33,
+        "tokens_per_second": 16.32652860940029
+      }
+    },
+    "9": {
+      "result": "{\n  \"title\": \"Residencial Ibiaram - Ibiporã/PR\",\n  \"description\": \"\",\n  \"price\": null,\n  \"bedrooms_count\": null,\n  \"bathrooms_count\": null,\n  \"parking_spaces_count\": null,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"https://www.megaconstrutoraeassessoria.com.br/imovel/casa-em-construcao-no-centro\",\n  \"street\": \"Centro\",\n  \"street_number\": null,\n  \"complement\": null,\n  \"neighborhood\": \"Centro\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": \"garden\",\n  \"total_area_m2\": null,\n  \"private_area_m2\": null,\n  \"suites_count\": null,\n  \"floors_count\": null,\n  \"year_built\": null,\n  \"condo_fee\": null,\n  \"property_tax\": null\n}",
+      "metrics": {
+        "duration_seconds": 9.536406993865967,
+        "prompt_tokens": 2170,
+        "completion_tokens": 231,
+        "tokens_per_second": 24.22295945932094
+      }
+    }
+  }
+}

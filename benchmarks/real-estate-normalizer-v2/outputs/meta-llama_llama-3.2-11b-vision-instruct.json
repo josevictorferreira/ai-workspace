@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "meta-llama/llama-3.2-11b-vision-instruct",
+    "total_benchmark_time_seconds": 69.32935428619385,
+    "total_prompt_tokens": 22345,
+    "total_completion_tokens": 2782,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"title\":,\n  \"description\":,\n  \"price\": 000.00,\n  \"bedrooms_count\":,\n  \"bathrooms_count\": ,\n  \"parking_spaces_count\": ,\n  \"property_type\": \"commercial\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\":,\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Terra Bonita\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"gym\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 6.154999494552612,
+        "prompt_tokens": 2210,
+        "completion_tokens": 199,
+        "tokens_per_second": 32.33144051045364
+      }
+    },
+    "1": {
+      "result": "{\n  \"title\": \"Salão-loja  no Boa Vista em Londrina / PR \",\n  \"description\": \"Salão comercial para venda (#vender #compra #comprar) na Rua Maceió, Bairro Boa Vista, região Central de Londrina PR.Consulte as melhores opções de imóveis em veneza.com.br |  --000  |  Veneza Imóveis, servir é a nossa missão!\",\n  \"price\": 00000.00,\n  \"bedrooms_count\":,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Rua Maceió, Bairro Boa Vista, região Central de Londrina PR\",\n  \"street\": \"Rua Maceió\",\n  \"neighborhood\": \"Boa Vista\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m\": ,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 7.316535711288452,
+        "prompt_tokens": 2283,
+        "completion_tokens": 293,
+        "tokens_per_second": 40.04627484397289
+      }
+    },
+    "2": {
+      "result": "{\n  \"title\": \"Casa EM Ibiporã - PR\",\n  \"description\": \"CASA À VENDA EM IBIPORÃ COM  QUARTOS POR .000,00 - Casa em Ibi Aram - Ibiporã, PR.  Disponível para Venda: R$ .000,00.\",\n  \"price\": 000.00,\n  \"bedrooms_count\": ,\n  \"bathrooms_count\": ,\n  \"parking_spaces_count\": ,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Ibiporã, PR\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"pool\", \"gym\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\": ,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 6.965296745300293,
+        "prompt_tokens": 2225,
+        "completion_tokens": 244,
+        "tokens_per_second": 35.030811883877675
+      }
+    },
+    "3": {
+      "result": "{\n  \"title\": \"Rua das Violetas, N.º \",\n  \"description\": \"Rua das Violetas, N.º , Ibiporã, Jardim Éden VALOR DE VENDA DO IMÓVEL R$ .000,00, SALDO DEVEDOR JUNTO A CAIXA ECONÔMICA FEDERAL DE R$ .,\",\n  \"price\": 000.00,\n  \"bedrooms_count\":,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Rua das Violetas, N.º , Ibiporã, Jardim Éden\",\n  \"street\": \"Rua das Violetas\",\n  \"street_number\": \"\",\n  \"complement\":,\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 7.931111574172974,
+        "prompt_tokens": 2244,
+        "completion_tokens": 300,
+        "tokens_per_second": 37.825719282140206
+      }
+    },
+    "4": {
+      "result": "{\n  \"title\": \"Chácara-imóvel-rural  no Milton Gavetti em Londrina / PR \",\n  \"description\": \"Sítio/Chácara para venda (#vender #compra #comprar) na Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR.\",\n  \"price\": 00000.00,\n  \"bedrooms_count\":,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"farm\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR\",\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Warta\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"garden\", \"orchard\"],\n  \"total_area_m\": 000,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 6.002355575561523,
+        "prompt_tokens": 2315,
+        "completion_tokens": 275,
+        "tokens_per_second": 45.81534641494037
+      }
+    },
+    "5": {
+      "result": "{\n  \"title\":,\n  \"description\":,\n  \"price\":,\n  \"bedrooms_count\": ,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"apartment\",\n  \"listing_status\": \"for_rent\",\n  \"raw_address\":,\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Residencial Lituânia\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"gym\", \"pool\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\": .,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 4.686018466949463,
+        "prompt_tokens": 2225,
+        "completion_tokens": 202,
+        "tokens_per_second": 43.106957734953056
+      }
+    },
+    "6": {
+      "result": "{\n  \"title\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\",\n  \"description\": \"Casa Condomínio para venda no Bandeirantes em Londrina. R$ .000,00, procure pelo código: \",\n  \"price\": 000.,\n  \"bedrooms_count\":,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"gated_house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\",\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Portal dos Bandeirantes\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"gated\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 5.868632078170776,
+        "prompt_tokens": 2207,
+        "completion_tokens": 268,
+        "tokens_per_second": 45.666519289369774
+      }
+    },
+    "7": {
+      "result": "{\n  \"title\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"description\": \"Casa com  dormitórios, sendo um suíte, sala, cozinha bem ampla, banheiro social, lavanderia, espaço no fundo.\",\n  \"price\":,\n  \"bedrooms_count\": ,\n  \"bathrooms_count\": ,\n  \"parking_spaces_count\":,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\":,\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Conjunto habitacional Doutor José dos Santos Rocha Cambé\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"pool\", \"gym\", \"barbecue_area\", \"built_in_cabinets\", \"fitted_kitchen\", \"air_conditioning\", \"fireplace\", \"whirlpool\", \"hot_tub\", \"high_ceiling\", \"wine_cellar\", \"master_suite\", \"closet\", \"office\", \"tv_room\", \"dining_room\", \"half_bath\", \"social_bathroom\", \"kitchen\", \"pantry\", \"laundry_room\", \"staff_quarters\", \"maid_bathroom\", \"gated\", \"doorman\", \"security_h\", \"guard_house\", \"intercom\", \"cameras\", \"monitoring_company\", \"electric_fence\", \"electronic_gate\", \"elevator\", \"service_elevator\", \"solar_panels\", \"cistern\", \"piped_water\", \"sewage_system\", \"electricity\", \"paved_street\", \"bicycle_storage\", \"storage_unit\", \"service_entrance\", \"caretaker\", \"pet_friendly\", \"ocean_view\", \"mountain_view\", \"city_view\", \"garden_view\", \"morning_sun\", \"afternoon_sun\", \"covered_parking\", \"street_parking\", \"private_garage\", \"parking_space\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\": ,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 11.957472324371338,
+        "prompt_tokens": 2252,
+        "completion_tokens": 515,
+        "tokens_per_second": 43.0693031126941
+      }
+    },
+    "8": {
+      "result": "{\n  \"title\": \"Apartamento à venda com  quartos no Edifício Zenith, Jardim Andrade em Londrina\",\n  \"description\": \"Apartamento Edifício para venda no Andrade em Londrina. R$ ..000,00, procure pelo código: \",\n  \"price\": 000.,\n  \"bedrooms_count\": ,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"apartment\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"Edifício Zenith, Jardim Andrade em Londrina\",\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Jardim Andrade\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"gym\", \"elevator\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\": .,\n  \"property_tax\": .\n}",
+      "metrics": {
+        "duration_seconds": 6.368378639221191,
+        "prompt_tokens": 2215,
+        "completion_tokens": 279,
+        "tokens_per_second": 43.810209129480995
+      }
+    },
+    "9": {
+      "result": "{\n  \"title\": \"Residencial Ibiaram - Ibiporã/PR\",\n  \"description\":,\n  \"price\":,\n  \"bedrooms_count\":,\n  \"bathrooms_count\":,\n  \"parking_spaces_count\":,\n  \"property_type\": \"house\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\":,\n  \"street\":,\n  \"street_number\":,\n  \"complement\":,\n  \"neighborhood\": \"Centro\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"pool\", \"gym\"],\n  \"total_area_m\":,\n  \"private_area_m\":,\n  \"suites_count\":,\n  \"floors_count\":,\n  \"year_built\":,\n  \"condo_fee\":,\n  \"property_tax\":\n}",
+      "metrics": {
+        "duration_seconds": 5.345211982727051,
+        "prompt_tokens": 2169,
+        "completion_tokens": 207,
+        "tokens_per_second": 38.726247091587105
+      }
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "model": "mistralai/mistral-nemo",
+    "total_benchmark_time_seconds": 12.110915660858154,
+    "total_prompt_tokens": 25344,
+    "total_completion_tokens": 1266,
+    "run_platform": "openrouter"
+  },
+  "data": {
+    "0": {
+      "result": "{\n  \"price\": 800000.00,\n  \"property_type\": \"commercial\",\n  \"raw_address\": \"EXCELENTE OPORTUNIDADE COMERCIAL EM IBIPORÃ! - Comercial em Terra Bonita - Ibiporã, PR\",\n  \"neighborhood\": \"Terra Bonita\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"normalized_features\": [\"commercial\"]\n}",
+      "metrics": {
+        "duration_seconds": 0.969597578048706,
+        "prompt_tokens": 2507,
+        "completion_tokens": 107,
+        "tokens_per_second": 110.35506113302714
+      }
+    },
+    "1": {
+      "result": "{\n  \"price\": 13000000.00,\n  \"total_area_m2\": 803,\n  \"property_type\": \"commercial\",\n  \"raw_address\": \"Rua Maceió, Bairro Boa Vista, região Central de Londrina PR\",\n  \"street\": \"Maceió\",\n  \"neighborhood\": \"Boa Vista\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"commercial\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.0931665897369385,
+        "prompt_tokens": 2595,
+        "completion_tokens": 120,
+        "tokens_per_second": 109.77283894934715
+      }
+    },
+    "2": {
+      "result": "{\n  \"price\": 365000.00,\n  \"total_area_m2\": 360,\n  \"raw_address\": \"Casa EM Ibiporã - PR\",\n  \"street\": \"Ibi Aram\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"garden\"]\n}",
+      "metrics": {
+        "duration_seconds": 0.8141517639160156,
+        "prompt_tokens": 2528,
+        "completion_tokens": 90,
+        "tokens_per_second": 110.54450040998009
+      }
+    },
+    "3": {
+      "result": "{\n  \"price\": 260000.00,\n  \"property_type\": \"other\",\n  \"listing_status\": \"for_sale\",\n  \"raw_address\": \"RUA DAS VIOLETAS, N.º 47, Ibiporã, Jardim Éden\",\n  \"street\": \"RUA DAS VIOLETAS\",\n  \"street_number\": \"47\",\n  \"neighborhood\": \"Jardim Éden\",\n  \"city\": \"Ibiporã\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\n    \"garden\"\n  ]\n}",
+      "metrics": {
+        "duration_seconds": 0.9477849006652832,
+        "prompt_tokens": 2544,
+        "completion_tokens": 142,
+        "tokens_per_second": 149.8230240852384
+      }
+    },
+    "4": {
+      "result": "{\n  \"price\": 12000000.00,\n  \"total_area_m2\": 242000,\n  \"property_type\": \"farm\",\n  \"raw_address\": \"Rodovia Celso Garcia Cid, distrito da Warta, Londrina PR\",\n  \"city\": \"Londrina\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"garden\", \"vegetable_garden\", \"orchard\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.714388370513916,
+        "prompt_tokens": 2630,
+        "completion_tokens": 111,
+        "tokens_per_second": 64.7461228208903
+      }
+    },
+    "5": {
+      "result": "{\n  \"bedrooms_count\": 2,\n  \"bathrooms_count\": 1,\n  \"listing_status\": \"for_rent\",\n  \"price\": 1200.0,\n  \"condo_fee\": 2.0,\n  \"normalized_features\": [\"apartment\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.210235834121704,
+        "prompt_tokens": 2519,
+        "completion_tokens": 65,
+        "tokens_per_second": 53.708540242631294
+      }
+    },
+    "6": {
+      "result": "{\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 3,\n  \"property_type\": \"house\",\n  \"raw_address\": \"Casa à venda no Condomínio Portal dos Bandeirantes em Londrina\",\n  \"street\": \"Condomínio Portal dos Bandeirantes\",\n  \"neighborhood\": \"Bandeirantes\",\n  \"price\": 845000.0,\n  \"normalized_features\": [\"gated\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.048110008239746,
+        "prompt_tokens": 2505,
+        "completion_tokens": 101,
+        "tokens_per_second": 96.36393050918862
+      }
+    },
+    "7": {
+      "result": "{\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 2,\n  \"suites_count\": 1,\n  \"property_type\": \"house\",\n  \"raw_address\": \"Casa Á Venda Conjunto Habitacional Doutor José Dos Santos Rocha Cambé\",\n  \"street\": \"Conjunto habitacional Doutor José dos Santos Rocha\",\n  \"neighborhood\": \"Cambé\",\n  \"city\": \"Cambé\",\n  \"state\": \"PR\",\n  \"country\": \"BR\",\n  \"normalized_features\": [\"garden\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.114194393157959,
+        "prompt_tokens": 2542,
+        "completion_tokens": 122,
+        "tokens_per_second": 109.4961532288954
+      }
+    },
+    "8": {
+      "result": "{\n  \"bedrooms_count\": 3,\n  \"property_type\": \"apartment\",\n  \"raw_address\": \"Apartamento à venda com 3 quartos no Edifício Zenith, Jardim Andrade em Londrina.\",\n  \"street\": \"Edifício Zenith\",\n  \"neighborhood\": \"Jardim Andrade\",\n  \"total_area_m2\": 1400000.0,\n  \"normalized_features\": [\"built_in_cabinets\"]\n}",
+      "metrics": {
+        "duration_seconds": 0.839378833770752,
+        "prompt_tokens": 2515,
+        "completion_tokens": 104,
+        "tokens_per_second": 123.90114667628622
+      }
+    },
+    "9": {
+      "result": "{\n  \"property_type\": \"house\",\n  \"bedrooms_count\": 3,\n  \"bathrooms_count\": 3,\n  \"price\": 350000.00,\n  \"total_area_m2\": 360,\n  \"private_area_m2\": 113.34,\n  \"suites_count\": 2,\n  \"floors_count\": 1,\n  \"year_built\": 2022,\n  \"condo_fee\": 250.00,\n  \"property_tax\": 1000.00,\n  \"normalized_features\": [\"gourmet_area\", \"party_room\", \"sauna\", \"garden\", \"furnished\", \"built_in_cabinets\", \"air_conditioning\", \"fireplace\", \"whirlpool\", \"high_ceiling\", \"master_suite\", \"closet\", \"office\", \"dining_room\", \"half_bath\", \"social_bathroom\", \"kitchen\", \"pantry\", \"laundry_room\", \"staff_quarters\", \"maid_bathroom\", \"gated\", \"doorman\", \"security_24h\", \"electric_fence\", \"elevator\", \"service_elevator\", \"cistern\", \"piped_water\", \"electricity\", \"paved_street\", \"covered_parking\", \"private_garage\"]\n}",
+      "metrics": {
+        "duration_seconds": 1.4532084465026855,
+        "prompt_tokens": 2459,
+        "completion_tokens": 304,
+        "tokens_per_second": 209.19228809302012
+      }
+    }
+  }
+}

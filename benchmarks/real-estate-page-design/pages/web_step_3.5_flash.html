@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'swiss-bg': '#FFFFFF',
+            'swiss-fg': '#000000',
+            'swiss-muted': '#F2F2F2',
+            'swiss-accent': '#FF3000',
+            'swiss-border': '#000000',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          spacing: {
+            '128': '32rem',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Enforce strict rectangular corners everywhere */
+    input,
+    select,
+    button,
+    a,
+    .card,
+    .property-card {
+      border-radius: 0 !important;
+    }
+
+    /* Global noise texture */
+    .swiss-noise {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.015;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* 24px grid pattern */
+    .swiss-grid-pattern {
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* 16px dot matrix pattern */
+    .swiss-dots {
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* Card image swap: initial states */
+    .property-card .img-primary {
+      opacity: 1;
+      transition: opacity 0.5s;
+    }
+
+    .property-card .img-secondary {
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    /* Hover states with 1s delay */
+    .property-card:hover .img-primary {
+      opacity: 0;
+      transition-delay: 1000ms;
+    }
+
+    .property-card:hover .img-secondary {
+      opacity: 1;
+      transition-delay: 1000ms;
+    }
+  </style>
+</head>
+
+<body class="bg-white swiss-grid-pattern font-sans antialiased">
+  <!-- Global noise overlay -->
+  <div class="swiss-noise"></div>
+
+  <div class="max-w-7xl mx-auto p-6 md:p-8">
+    <!-- Header with numbered section and large typography -->
+    <header class="relative border-b-4 border-black mb-8">
+      <!-- Decorative geometric composition: large red square (subtle) -->
+      <div class="absolute -top-20 -right-20 w-96 h-96 bg-swiss-accent opacity-5"></div>
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
+        <div class="mb-4 md:mb-0">
+          <span class="text-swiss-accent text-xs font-bold tracking-widest uppercase">01.</span>
+          <h1 class="text-6xl md:text-8xl lg:text-9xl uppercase tracking-tighter font-black leading-none">Properties
+          </h1>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters Section (with dot pattern on muted background) -->
+    <section class="mb-12 border-b-2 border-black pb-8 bg-swiss-muted swiss-dots">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+        <!-- Text Search -->
+        <div class="md:col-span-1">
+          <label class="block text-xs font-bold uppercase tracking-widest mb-2">Search</label>
+          <input type="text" placeholder="Enter keyword..."
+            class="w-full border-2 border-black bg-transparent px-4 py-3 uppercase text-sm focus:outline-none focus:border-swiss-accent focus-visible:ring-2 focus-visible:ring-swiss-accent focus-visible:ring-offset-2 transition-colors">
+        </div>
+        <!-- Price Range -->
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold uppercase tracking-widest mb-2">Price Range</label>
+          <div class="flex gap-4">
+            <input type="number" placeholder="Min"
+              class="w-1/2 border-2 border-black bg-transparent px-4 py-3 uppercase text-sm focus:outline-none focus:border-swiss-accent focus-visible:ring-2 focus-visible:ring-swiss-accent focus-visible:ring-offset-2 transition-colors">
+            <input type="number" placeholder="Max"
+              class="w-1/2 border-2 border-black bg-transparent px-4 py-3 uppercase text-sm focus:outline-none focus:border-swiss-accent focus-visible:ring-2 focus-visible:ring-swiss-accent focus-visible:ring-offset-2 transition-colors">
+          </div>
+        </div>
+        <!-- Location -->
+        <div class="md:col-span-1">
+          <label class="block text-xs font-bold uppercase tracking-widest mb-2">Location</label>
+          <div class="flex gap-2">
+            <select
+              class="w-2/3 border-2 border-black bg-transparent px-4 py-3 uppercase text-sm focus:outline-none focus:border-swiss-accent focus-visible:ring-2 focus-visible:ring-swiss-accent focus-visible:ring-offset-2 transition-colors">
+              <option value="" disabled selected>State</option>
+              <option value="PR">Paraná</option>
+            </select>
+            <select
+              class="w-1/3 border-2 border-black bg-transparent px-4 py-3 uppercase text-sm focus:outline-none focus:border-swiss-accent focus-visible:ring-2 focus-visible:ring-swiss-accent focus-visible:ring-offset-2 transition-colors">
+              <option value="" disabled selected>City</option>
+              <option value="londrina">Londrina</option>
+              <option value="ibipora">Ibiporá</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button
+          class="bg-black text-white border-2 border-black px-8 py-4 font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent transition-colors duration-200">
+          Apply Filters
+        </button>
+      </div>
+    </section>
+
+    <!-- Property Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      <!-- Card 1 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop1a/800/450" alt="Modern House"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop1b/800/450" alt="Modern House alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Modern House
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$500,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop2a/800/450" alt="Classic Apartment"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop2b/800/450" alt="Classic Apartment alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Classic
+            Apartment</h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$750,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop3a/800/450" alt="Luxury Villa"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop3b/800/450" alt="Luxury Villa alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Luxury Villa
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">
+            $1,200,000</p>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop4a/800/450" alt="Cozy Cottage"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop4b/800/450" alt="Cozy Cottage alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Cozy Cottage
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$450,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop5a/800/450" alt="City Loft"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop5b/800/450" alt="City Loft alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">City Loft
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$850,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop6a/800/450" alt="Beachfront"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop6b/800/450" alt="Beachfront alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Beachfront
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">
+            $2,500,000</p>
+        </div>
+      </a>
+
+      <!-- Card 7 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop7a/800/450" alt="Mountain Cabin"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop7b/800/450" alt="Mountain Cabin alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Mountain
+            Cabin</h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$600,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 8 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop8a/800/450" alt="Urban Studio"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop8b/800/450" alt="Urban Studio alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Urban Studio
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">$900,000
+          </p>
+        </div>
+      </a>
+
+      <!-- Card 9 -->
+      <a href="#"
+        class="property-card group block border-4 border-black bg-white hover:bg-swiss-accent transition-colors duration-200">
+        <div class="relative aspect-video border-b-4 border-black overflow-hidden">
+          <img src="https://picsum.photos/seed/prop9a/800/450" alt="Penthouse"
+            class="img-primary absolute inset-0 w-full h-full object-cover">
+          <img src="https://picsum.photos/seed/prop9b/800/450" alt="Penthouse alternate"
+            class="img-secondary absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-black uppercase tracking-wider group-hover:text-white transition-colors">Penthouse
+          </h3>
+          <p class="text-2xl font-black uppercase tracking-tight mt-2 group-hover:text-white transition-colors">
+            $1,800,000</p>
+        </div>
+      </a>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="flex justify-center items-center gap-2 mb-12">
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">
+        &lt;
+      </button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">1</button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-swiss-accent border-swiss-accent text-white font-bold uppercase tracking-widest">2</button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">3</button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">4</button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">5</button>
+      <button
+        class="px-4 py-2 border-2 border-black bg-transparent text-black font-bold uppercase tracking-widest hover:bg-swiss-accent hover:border-swiss-accent hover:text-white transition-colors duration-200">
+        &gt;
+      </button>
+    </nav>
+  </div>
+</body>
+
+</html>

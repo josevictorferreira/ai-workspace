@@ -1,10 +1,859 @@
 {
   "summary": {
-    "total_models": 1,
-    "best_model": "qwen/qwen3-4b-2507",
-    "best_score": 97.6
+    "total_models": 36,
+    "best_model": "deepseek/deepseek-r1-distill-llama-70b",
+    "best_score": 99.0
   },
   "models": [
+    {
+      "model_name": "deepseek/deepseek-r1-distill-llama-70b",
+      "model_size": "70M",
+      "platform": "openrouter",
+      "total_time_seconds": 45.90520763397217,
+      "total_tokens": 29519,
+      "overall_score": 99.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 9.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "neighborhood: got 'Conjunto Habitacional Doutor José dos Santos Rocha Cambé', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha', 'Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José Dos Santos Rocha', 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', '- Conjunto habitacional Doutor José dos Santos Rocha Cambé']",
+            "normalized_features: got ['living_room', 'kitchen', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "openai/gpt-oss-120b",
+      "model_size": "120M",
+      "platform": "openrouter",
+      "total_time_seconds": 20.20009469985962,
+      "total_tokens": 32864,
+      "overall_score": 99.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 9.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Terra Bonita']"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "description: got None, expected non-null"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "bytedance-seed/seed-1.6-flash",
+      "model_size": "unknown",
+      "platform": "openrouter",
+      "total_time_seconds": 108.2904920578003,
+      "total_tokens": 40053,
+      "overall_score": 99.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 9.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "state: got None, expected one of ['PR', 'pr', 'Parana', 'Paraná']"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['kitchen', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "city: got None, expected one of ['Ibiporã', 'Ibipora', 'ibipora', 'IBIPORÃ', 'ibiporã']"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+      "model_size": "30M",
+      "platform": "openrouter",
+      "total_time_seconds": 38.635080337524414,
+      "total_tokens": 25799,
+      "overall_score": 99.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 9.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "property_tax: got 37200.14, expected one of [None]"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['dining_room', 'kitchen', 'social_bathroom', 'laundry_room', 'backyard'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen-2.5-coder-32b-instruct",
+      "model_size": "32M",
+      "platform": "openrouter",
+      "total_time_seconds": 56.549980878829956,
+      "total_tokens": 25883,
+      "overall_score": 98.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 8.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "property_type: got 'gated_house', expected one of ['house']",
+            "neighborhood: got 'Conjunto Habitacional Doutor José dos Santos Rocha Cambé', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha', 'Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José Dos Santos Rocha', 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', '- Conjunto habitacional Doutor José dos Santos Rocha Cambé']",
+            "normalized_features: got ['lavanderia', 'backyard'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-30b-a3b-instruct-2507",
+      "model_size": "30M",
+      "platform": "openrouter",
+      "total_time_seconds": 23.940690517425537,
+      "total_tokens": 25842,
+      "overall_score": 98.6,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 8.6
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Terra Bonita', expected one of [None]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Ibi Aram', expected one of [None]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Jardim Lago Norte', expected one of [None]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Ibiporã', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-vl-30b-a3b-instruct",
+      "model_size": "30M",
+      "platform": "openrouter",
+      "total_time_seconds": 45.2580988407135,
+      "total_tokens": 25978,
+      "overall_score": 98.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 8.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Terra Bonita', expected one of [None]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Ibi Aram', expected one of [None]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['garden', 'orchard', 'paved_street', 'electricity', 'sewage_system', 'piped_water'], expected one of [[]]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "street: got 'Portal dos Bandeirantes', expected one of [None]",
+            "normalized_features: got ['gated', 'doorman', 'security_24h', 'intercom', 'cameras', 'electric_fence', 'elevator', 'service_elevator', 'paved_street', 'bicycle_storage', 'covered_parking', 'private_garage'], expected one of [[], ['condominium']]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['suite', 'kitchen', 'laundry_room', 'garden'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "street: got 'Jardim Andrade', expected one of [None]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "property_type: got 'other', expected one of ['house']",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
     {
       "model_name": "qwen/qwen3-4b-2507",
       "model_size": "4M",
@@ -132,6 +981,5196 @@
             "property_type: got 'other', expected one of ['house']",
             "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
           ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/ministral-3b",
+      "model_size": "3M",
+      "platform": "openrouter",
+      "total_time_seconds": 13.450030326843262,
+      "total_tokens": 28392,
+      "overall_score": 96.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 6.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "street: got 'Ibi Aram', expected one of [None]",
+            "street_number: got 'Ibi Aram', expected one of [None]",
+            "neighborhood: got 'Ibiporã', expected one of ['Ibi Aram']",
+            "total_area_m2: got 360, expected one of [None]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bedrooms_count: got 3, expected one of [None]",
+            "bathrooms_count: got 2, expected one of [None]",
+            "parking_spaces_count: got 1, expected one of [None]"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [None]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bedrooms_count: got 3, expected one of [None]",
+            "bathrooms_count: got 3, expected one of [None]",
+            "parking_spaces_count: got 2, expected one of [None]",
+            "street: got 'Portal dos Bandeirantes', expected one of [None]",
+            "street_number: got '53886', expected one of [None]",
+            "complement: got 'Condomínio Portal dos Bandeirantes', expected one of [None]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got 3, expected one of [2]",
+            "property_type: got 'other', expected one of ['house']",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "bathrooms_count: got 2, expected one of [None]",
+            "street: got 'Jardim Andrade', expected one of [None]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Ibiporã', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "meta-llama/llama-3.1-8b-instruct",
+      "model_size": "8M",
+      "platform": "openrouter",
+      "total_time_seconds": 16.93308115005493,
+      "total_tokens": 25125,
+      "overall_score": 95.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 29.0,
+        "types": 20.0,
+        "values": 6.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['pool', 'gym'], expected one of [[]]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "street_number",
+            "complement"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['pool', 'gym'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "normalized_features: got ['garden', 'orchard'], expected one of [[]]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['gym', 'pool'], expected one of [[]]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['gated'], expected one of [[], ['condominium']]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [2]",
+            "normalized_features: got ['pool', 'gym', 'barbecue_area', 'playground'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['pool', 'gym'], expected one of [[], ['financing_available']]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "google/gemma-3-4b-it",
+      "model_size": "4M",
+      "platform": "openrouter",
+      "total_time_seconds": 56.622796297073364,
+      "total_tokens": 27029,
+      "overall_score": 95.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 30.0,
+        "types": 20.0,
+        "values": 5.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['commercial'], expected one of [[]]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['commercial'], expected one of [[]]"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "neighborhood: got 'Ibiporã', expected one of ['Ibi Aram']",
+            "normalized_features: got ['house'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'house', expected one of ['other', None]",
+            "normalized_features: got ['condo_fee', 'property_tax'], expected one of [[]]"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "normalized_features: got ['land', 'agricultáveis'], expected one of [[]]",
+            "private_area_m2: got 105000.0, expected one of [None]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [None]",
+            "normalized_features: got ['apartment'], expected one of [[]]",
+            "suites_count: got 0, expected one of [None]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['gated'], expected one of [[], ['condominium']]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "price: got 899000.0, expected one of [0.0, '0.00', 0, '0', None]",
+            "bathrooms_count: got 1, expected one of [2]",
+            "parking_spaces_count: got 1, expected one of [None]",
+            "normalized_features: got ['suite', 'kitchen'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]",
+            "total_area_m2: got 150.0, expected one of [None]",
+            "private_area_m2: got 100.0, expected one of [None]",
+            "floors_count: got 1, expected one of [None]",
+            "year_built: got 2020, expected one of [None]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['Edifício'], expected one of [[], ['financing_available']]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Ibiporã', expected one of ['Residencial Ibiaram', None]",
+            "normalized_features: got ['house'], expected one of [[]]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/devstral-2512",
+      "model_size": "unknown",
+      "platform": "openrouter",
+      "total_time_seconds": 59.6653368473053,
+      "total_tokens": 28264,
+      "overall_score": 95.4,
+      "scores": {
+        "parse": 40.0,
+        "schema": 27.0,
+        "types": 20.0,
+        "values": 8.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['built_in_cabinets', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-14b",
+      "model_size": "14M",
+      "platform": "openrouter",
+      "total_time_seconds": 105.8241331577301,
+      "total_tokens": 34278,
+      "overall_score": 91.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 24.0,
+        "types": 20.0,
+        "values": 7.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [2]",
+            "neighborhood: got 'Conjunto Habitacional Doutor José dos Santos Rocha Cambé', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha', 'Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José Dos Santos Rocha', 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', '- Conjunto habitacional Doutor José dos Santos Rocha Cambé']",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "nvidia/nemotron-nano-9b-v2",
+      "model_size": "9M",
+      "platform": "openrouter",
+      "total_time_seconds": 93.46817207336426,
+      "total_tokens": 35909,
+      "overall_score": 90.2,
+      "scores": {
+        "parse": 40.0,
+        "schema": 24.0,
+        "types": 20.0,
+        "values": 6.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [2]",
+            "property_type: got 'other', expected one of ['house']",
+            "neighborhood: got 'Conjunto Habitacional Doutor José dos Santos Rocha Cambé', expected one of ['Conjunto habitacional Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José dos Santos Rocha', 'Conjunto Doutor José dos Santos Rocha', 'Doutor José dos Santos Rocha', 'Conjunto Habitacional Doutor José Dos Santos Rocha', 'Conjunto habitacional Doutor José dos Santos Rocha Cambé', '- Conjunto habitacional Doutor José dos Santos Rocha Cambé']",
+            "normalized_features: got ['laundry_room', 'backyard'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "z-ai/glm-4.5-air",
+      "model_size": "unknown",
+      "platform": "openrouter",
+      "total_time_seconds": 41.42298126220703,
+      "total_tokens": 25105,
+      "overall_score": 89.2,
+      "scores": {
+        "parse": 36.0,
+        "schema": 27.0,
+        "types": 18.0,
+        "values": 8.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Illegal trailing comma before end of object: line 25 column 23 (char 1045)"
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [2]",
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "meta-llama/llama-3.2-3b-instruct",
+      "model_size": "3M",
+      "platform": "openrouter",
+      "total_time_seconds": 31.136836290359497,
+      "total_tokens": 25396,
+      "overall_score": 87.1,
+      "scores": {
+        "parse": 40.0,
+        "schema": 28.0,
+        "types": 17.7,
+        "values": 1.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 0,
+          "values_score": 0,
+          "total_score": 70,
+          "type_errors": [
+            "price: expected number, got str",
+            "bedrooms_count: expected int, got str",
+            "total_area_m2: expected number, got str",
+            "private_area_m2: expected number, got str",
+            "suites_count: expected int, got str",
+            "floors_count: expected int, got str",
+            "year_built: expected int, got str",
+            "condo_fee: expected number, got str",
+            "property_tax: expected number, got str"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 25,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 85,
+          "missing_keys": [
+            "street_number"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 25,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 85,
+          "missing_keys": [
+            "street_number"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 87,
+          "type_errors": [
+            "bedrooms_count: expected int, got float"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [None]",
+            "normalized_features: got ['pool', 'gym', 'gourmet_area', 'furnished', 'air_conditioning'], expected one of [[]]",
+            "suites_count: got 1, expected one of [None]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bedrooms_count: got 3, expected one of [None]",
+            "bathrooms_count: got 2, expected one of [None]",
+            "parking_spaces_count: got 2, expected one of [None]",
+            "property_type: got 'gated_land', expected one of ['house', 'gated_house']",
+            "street: got 'Condomínio Portal dos Bandeirantes', expected one of [None]",
+            "normalized_features: got ['gym', 'barbecue_area', 'garden', 'backyard', 'furnished', 'built_in_cabinets', 'air_conditioning', 'fireplace', 'pool', 'terrace', 'elevator'], expected one of [[], ['condominium']]",
+            "suites_count: got 2, expected one of [None]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "price: got 350000.0, expected one of [0.0, '0.00', 0, '0', None]",
+            "parking_spaces_count: got 2, expected one of [None]",
+            "normalized_features: got ['pool', 'gym', 'barbecue_area', 'garden', 'furnished', 'built_in_cabinets', 'air_conditioning', 'fireplace', 'master_suite', 'closet', 'kitchen', 'pantry', 'laundry_room', 'gated'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 90,
+          "value_errors": [
+            "bathrooms_count: got 2, expected one of [None]",
+            "parking_spaces_count: got 2, expected one of [None]",
+            "street: got 'Jardim Andrade', expected one of [None]",
+            "normalized_features: got ['pool', 'gym', 'barbecue_area', 'garden', 'furnished', 'fitted_kitchen', 'air_conditioning', 'elevator'], expected one of [[], ['financing_available']]",
+            "suites_count: got 1, expected one of [None]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['house']",
+            "city: got None, expected one of ['Ibiporã', 'Ibipora', 'ibipora', 'IBIPORÃ', 'ibiporã']"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "meta-llama/llama-3-8b-instruct",
+      "model_size": "8M",
+      "platform": "openrouter",
+      "total_time_seconds": 39.879152059555054,
+      "total_tokens": 24511,
+      "overall_score": 85.2,
+      "scores": {
+        "parse": 40.0,
+        "schema": 23.0,
+        "types": 20.0,
+        "values": 2.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['commercial']",
+            "normalized_features: got ['gym', 'barbecue_area'], expected one of [[]]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "street_number",
+            "complement"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null",
+            "neighborhood: got 'Lituânia', expected one of ['Jardim Lago Norte', 'jardim Lago Norte', 'JARDIM LAGO NORTE', 'LAGO NORTE', 'Lago norte', 'lago norte']",
+            "normalized_features: got ['pool', 'gym'], expected one of [[]]"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "normalized_features: got ['gated'], expected one of [[], ['condominium']]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null",
+            "bedrooms_count: got None, expected one of [3]",
+            "normalized_features: got ['pool'], expected one of [[], ['financing_available']]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "floors_count",
+            "year_built"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/ministral-3b-2512",
+      "model_size": "3M",
+      "platform": "openrouter",
+      "total_time_seconds": 13.5884690284729,
+      "total_tokens": 27502,
+      "overall_score": 82.2,
+      "scores": {
+        "parse": 40.0,
+        "schema": 19.0,
+        "types": 20.0,
+        "values": 3.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got 'Ibiporã', expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "property_tax: got 37200.14, expected one of [None]"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 10,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 70,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "country"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null",
+            "bedrooms_count: got None, expected one of [3]"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "title: got None, expected non-null",
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]",
+            "city: got None, expected one of ['Ibiporã', 'Ibipora', 'ibipora', 'IBIPORÃ', 'ibiporã']"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "liquid/lfm2-8b-a1b",
+      "model_size": "8M",
+      "platform": "openrouter",
+      "total_time_seconds": 32.42765283584595,
+      "total_tokens": 36114,
+      "overall_score": 81.7,
+      "scores": {
+        "parse": 36.0,
+        "schema": 26.5,
+        "types": 17.0,
+        "values": 2.2
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "complement: got 'Terra Bonita', expected one of [None]",
+            "neighborhood: got None, expected one of ['Terra Bonita']",
+            "normalized_features: got ['commercial', 'parking_space', 'parking_space', 'parking_space', 'parking_space', 'terra', 'ibiporã', 'pr'], expected one of [[]]"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "street_number: got '43-3371-0003', expected one of [None]",
+            "complement: got 'Salão comercial', expected one of ['Bairro Boa Vista', 'Boa Vista', 'Bairro boa vista', 'bairro boa vista', 'boa vista', None]",
+            "normalized_features: got ['commercial', 'salão comercial', 'Rua Maceió', 'Boa Vista', 'Londrina PR', '803m²', '43-3371-0003', 'Londrina', 'Central'], expected one of [[]]"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "street: got 'Ibi Aram', expected one of [None]",
+            "complement: got 'Casa em Ibi Aram - Ibiporã, PR', expected one of [None]",
+            "normalized_features: got ['house', 'gated_house', 'parking_spaces', 'bedrooms', 'bathrooms', 'parking_spaces_count', 'price', 'property_type', 'listing_status', 'neighborhood', 'city', 'state'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "complement: got 'Jardim Éden', expected one of [None]",
+            "normalized_features: got ['gated_house', 'residential', 'urban', 'commercial', 'residential_area'], expected one of [[]]"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']",
+            "normalized_features: got ['rural', 'chácara', 'agricultável', 'sítio'], expected one of [[]]",
+            "total_area_m2: got 10500, expected one of [242000]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'apartamento'"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 85,
+          "enum_errors": [
+            "property_type: invalid value 'condominio'"
+          ]
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Unterminated string starting at: line 657 column 5 (char 12894)"
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 25,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 85,
+          "extra_keys": [
+            "raw_address_components"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 2,
+          "total_score": 92,
+          "value_errors": [
+            "price: got 350000.0, expected one of [0.0, 0.0, 0, '0.00', '0.0', '0', None]",
+            "neighborhood: got 'Ibiporã', expected one of ['Residencial Ibiaram', None]",
+            "normalized_features: got ['house', 'for_sale', 'pool', 'gated_house', 'private_area', 'built_in_cabinets', 'gated', 'security_24h', 'elevator', 'service_elevator', 'electric_fence', 'cables', 'paved_street', 'bicycle_storage', 'storage_unit'], expected one of [[]]",
+            "private_area_m2: got 113.34, expected one of [None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "openai/gpt-oss-20b",
+      "model_size": "20M",
+      "platform": "openrouter",
+      "total_time_seconds": 24.886825561523438,
+      "total_tokens": 39398,
+      "overall_score": 78.0,
+      "scores": {
+        "parse": 32.0,
+        "schema": 24.0,
+        "types": 16.0,
+        "values": 6.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['apartment']",
+            "neighborhood: got 'Residencial Lituânia', expected one of ['Jardim Lago Norte', 'jardim Lago Norte', 'JARDIM LAGO NORTE', 'LAGO NORTE', 'Lago norte', 'lago norte']"
+          ]
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "Empty result"
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "bathrooms_count: got 1, expected one of [2]",
+            "property_type: got 'other', expected one of ['house']",
+            "normalized_features: got ['kitchen', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Jardim Andrade', 'jardim Andrade', 'JARDIM ANDRADE', 'Andrade']"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "description: got None, expected non-null"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "google/gemma-3-27b-it",
+      "model_size": "27M",
+      "platform": "openrouter",
+      "total_time_seconds": 52.24268436431885,
+      "total_tokens": 26256,
+      "overall_score": 76.3,
+      "scores": {
+        "parse": 40.0,
+        "schema": 13.5,
+        "types": 20.0,
+        "values": 2.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "complement: got 'Ibi Aram', expected one of [None]",
+            "neighborhood: got None, expected one of ['Ibi Aram']"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "country"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "complement: got 'Condomínio Portal dos Bandeirantes', expected one of [None]"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['kitchen', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 15,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 75,
+          "missing_keys": [
+            "bathrooms_count",
+            "street_number",
+            "complement"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/mistral-small-3.2-24b-instruct",
+      "model_size": "24M",
+      "platform": "openrouter",
+      "total_time_seconds": 31.161551475524902,
+      "total_tokens": 27704,
+      "overall_score": 75.4,
+      "scores": {
+        "parse": 40.0,
+        "schema": 12.0,
+        "types": 20.0,
+        "values": 3.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['suite'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-next-80b-a3b-instruct",
+      "model_size": "80M",
+      "platform": "openrouter",
+      "total_time_seconds": 42.9912965297699,
+      "total_tokens": 25101,
+      "overall_score": 75.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 12.0,
+        "types": 20.0,
+        "values": 3.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['commercial'], expected one of [[]]"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['suite', 'kitchen', 'laundry_room', 'backyard'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "ibm-granite/granite-4.0-h-micro",
+      "model_size": "unknown",
+      "platform": "openrouter",
+      "total_time_seconds": 69.92127060890198,
+      "total_tokens": 24198,
+      "overall_score": 72.9,
+      "scores": {
+        "parse": 40.0,
+        "schema": 12.5,
+        "types": 19.4,
+        "values": 1.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 10,
+          "total_score": 100
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 87,
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 20,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 80,
+          "missing_keys": [
+            "title",
+            "description"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 15,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 75,
+          "missing_keys": [
+            "title",
+            "description",
+            "price"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 17,
+          "values_score": 0,
+          "total_score": 87,
+          "type_errors": [
+            "normalized_features: expected list, got str"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "google/gemma-3-12b-it",
+      "model_size": "12M",
+      "platform": "openrouter",
+      "total_time_seconds": 52.07441306114197,
+      "total_tokens": 25822,
+      "overall_score": 67.4,
+      "scores": {
+        "parse": 40.0,
+        "schema": 6.0,
+        "types": 20.0,
+        "values": 1.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "complement",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got [], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "neighborhood: got 'Centro', expected one of ['Residencial Ibiaram', None]"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/mistral-small-24b-instruct-2501",
+      "model_size": "24M",
+      "platform": "openrouter",
+      "total_time_seconds": 66.26954865455627,
+      "total_tokens": 27442,
+      "overall_score": 66.3,
+      "scores": {
+        "parse": 40.0,
+        "schema": 5.5,
+        "types": 20.0,
+        "values": 0.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 25,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 85,
+          "missing_keys": [
+            "price"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['suite', 'kitchen', 'laundry_room', 'social_bathroom'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "description",
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "nousresearch/deephermes-3-mistral-24b-preview",
+      "model_size": "24M",
+      "platform": "openrouter",
+      "total_time_seconds": 16.87267231941223,
+      "total_tokens": 26753,
+      "overall_score": 63.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 3.0,
+        "types": 20.0,
+        "values": 0.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "description: got None, expected non-null"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "google/gemma-2-9b-it",
+      "model_size": "9M",
+      "platform": "openrouter",
+      "total_time_seconds": 14.46525239944458,
+      "total_tokens": 24976,
+      "overall_score": 63.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 3.0,
+        "types": 20.0,
+        "values": 0.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "raw_address",
+            "complement",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "normalized_features",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['suite', 'built_in_cabinets'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "listing_status",
+            "raw_address",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/mistral-small-3.1-24b-instruct",
+      "model_size": "24M",
+      "platform": "openrouter",
+      "total_time_seconds": 45.7459831237793,
+      "total_tokens": 27062,
+      "overall_score": 63.8,
+      "scores": {
+        "parse": 40.0,
+        "schema": 3.0,
+        "types": 20.0,
+        "values": 0.8
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['built_in_cabinets', 'laundry_room'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "description",
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street",
+            "street_number",
+            "complement",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "liquid/lfm-2.2-6b",
+      "model_size": "6M",
+      "platform": "openrouter",
+      "total_time_seconds": 13.437299251556396,
+      "total_tokens": 30307,
+      "overall_score": 63.4,
+      "scores": {
+        "parse": 40.0,
+        "schema": 3.0,
+        "types": 20.0,
+        "values": 0.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "condo_fee"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "street: got None, expected one of ['Rodovia Celso Garcia Cid', 'Rod. Celso Garcia Cid']",
+            "neighborhood: got None, expected one of ['Warta', 'distrito da Warta', 'warta', 'distrito da Warta', 'Milton Gavetti', 'milton gavetti']",
+            "normalized_features: got ['sítio', 'chácara'], expected one of [[]]"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "description",
+            "price",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ],
+          "extra_keys": [
+            "status"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/mistral-nemo",
+      "model_size": "unknown",
+      "platform": "openrouter",
+      "total_time_seconds": 12.110915660858154,
+      "total_tokens": 26610,
+      "overall_score": 60.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 0.0,
+        "types": 20.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "property_type",
+            "listing_status",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "parking_spaces_count",
+            "property_type",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "property_tax"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "total_area_m2",
+            "private_area_m2",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "price",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "street_number",
+            "complement",
+            "city",
+            "state",
+            "country",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen2.5-coder-7b-instruct",
+      "model_size": "7M",
+      "platform": "openrouter",
+      "total_time_seconds": 45.09516644477844,
+      "total_tokens": 31677,
+      "overall_score": 57.4,
+      "scores": {
+        "parse": 24.0,
+        "schema": 18.0,
+        "types": 12.0,
+        "values": 3.4
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Unterminated string starting at: line 2 column 12 (char 13)"
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 8,
+          "total_score": 98,
+          "value_errors": [
+            "normalized_features: got ['commercial'], expected one of [[]]"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "street: got 'Casa em Ibi Aram', expected one of [None]",
+            "neighborhood: got 'Ibiporã', expected one of ['Ibi Aram']",
+            "normalized_features: got ['pool', 'gym', 'barbecue_area', 'playground', 'kids_playroom', 'built_in_cabinets', 'fitted_kitchen', 'air_conditioning', 'fireplace', 'wine_cellar', 'master_suite', 'closet', 'office', 'tv_room', 'dining_room', 'half_bath', 'social_bathroom', 'kitchen', 'pantry', 'laundry_room', 'maid_bathroom', 'gated', 'doorman', 'security_24h', 'guard_house', 'intercom', 'cameras', 'monitoring_company', 'electric_fence', 'electronic_gate', 'elevator', 'service_elevator', 'solar_panels', 'cistern', 'piped_water', 'sewage_system', 'electricity', 'paved_street', 'bicycle_storage', 'storage_unit', 'service_entrance', 'caretaker', 'pet_friendly', 'ocean_view', 'mountain_view', 'city_view', 'garden_view', 'morning_sun', 'afternoon_sun', 'covered_parking', 'street_parking', 'private_garage', 'parking_space'], expected one of [[]]"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'house', expected one of ['other', None]",
+            "normalized_features: got ['pool', 'gym', 'barbecue_area', 'playground', 'built_in_cabinets', 'fitted_kitchen', 'air_conditioning', 'solar_heating', 'fireplace', 'whirlpool', 'hot_tub', 'high_ceiling', 'wine_cellar', 'master_suite', 'closet', 'office', 'tv_room', 'dining_room', 'half_bath', 'social_bathroom', 'kitchen', 'pantry', 'laundry_room', 'staff_quarters', 'maid_bathroom', 'gated', 'doorman', 'security_24h', 'guard_house', 'intercom', 'cameras', 'monitoring_company', 'electric_fence', 'electronic_gate', 'elevator', 'service_elevator', 'solar_panels', 'cistern', 'piped_water', 'sewage_system', 'electricity', 'paved_street', 'bicycle_storage', 'storage_unit', 'service_entrance', 'caretaker', 'pet_friendly', 'ocean_view', 'mountain_view', 'city_view', 'garden_view', 'morning_sun', 'afternoon_sun', 'covered_parking', 'street_parking', 'private_garage', 'parking_space'], expected one of [[]]"
+          ]
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Illegal trailing comma before end of object: line 25 column 34 (char 970)"
+        },
+        "5": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 27 column 1 (char 804)"
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "property_type: got 'other', expected one of ['house', 'gated_house']",
+            "neighborhood: got None, expected one of ['Bandeirantes', 'bandeirantes', 'Portal dos Bandeirantes', 'Condomínio Portal dos Bandeirantes']"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 6,
+          "total_score": 96,
+          "value_errors": [
+            "bathrooms_count: got None, expected one of [2]",
+            "normalized_features: got ['suite'], expected one of [['school', 'churches', 'supermarkets'], ['escola', 'igrejas', 'supermercados'], ['suite', 'kitchen', 'laundry', 'living_room', 'bathroom', 'private_area']]"
+          ]
+        },
+        "8": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Extra data: line 27 column 1 (char 973)"
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": true,
+          "schema_score": 30,
+          "types_score": 20,
+          "values_score": 4,
+          "total_score": 94,
+          "value_errors": [
+            "description: got None, expected non-null",
+            "property_type: got 'other', expected one of ['house']",
+            "city: got None, expected one of ['Ibiporã', 'Ibipora', 'ibipora', 'IBIPORÃ', 'ibiporã']"
+          ]
+        }
+      }
+    },
+    {
+      "model_name": "meta-llama/llama-3.2-1b-instruct",
+      "model_size": "1M",
+      "platform": "openrouter",
+      "total_time_seconds": 23.014508724212646,
+      "total_tokens": 25053,
+      "overall_score": 57.0,
+      "scores": {
+        "parse": 40.0,
+        "schema": 3.0,
+        "types": 14.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites"
+          ]
+        },
+        "1": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites"
+          ]
+        },
+        "2": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites"
+          ]
+        },
+        "3": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 0,
+          "values_score": 0,
+          "total_score": 40,
+          "missing_keys": [
+            "raw_address",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ],
+          "extra_keys": [
+            "address"
+          ],
+          "type_errors": [
+            "price: expected number, got str",
+            "total_area_m2: expected number, got str",
+            "private_area_m2: expected number, got str",
+            "bedrooms_count: expected int, got str",
+            "bathrooms_count: expected int, got str",
+            "suites_count: expected int, got str",
+            "parking_spaces_count: expected int, got str"
+          ],
+          "country_error": true
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 5,
+          "values_score": 0,
+          "total_score": 45,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "raw_address"
+          ],
+          "extra_keys": [
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites",
+            "parking_spaces",
+            "status",
+            "address"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'chacara-imóvel-rural'"
+          ],
+          "country_error": true
+        },
+        "5": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 55,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites",
+            "parking_spaces"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'apartamento'"
+          ]
+        },
+        "6": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites"
+          ]
+        },
+        "7": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 55,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "bedrooms",
+            "bathrooms",
+            "suites",
+            "parking_spaces"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'apartamento'"
+          ]
+        },
+        "8": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 15,
+          "values_score": 0,
+          "total_score": 55,
+          "missing_keys": [
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "listing_status",
+            "raw_address",
+            "street",
+            "street_number",
+            "complement",
+            "neighborhood",
+            "city",
+            "state",
+            "country",
+            "normalized_features",
+            "total_area_m2",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built"
+          ],
+          "extra_keys": [
+            "address",
+            "status",
+            "total_area",
+            "private_area",
+            "bedrooms",
+            "bathrooms",
+            "suites",
+            "parking_spaces"
+          ],
+          "enum_errors": [
+            "property_type: invalid value 'apartamento'"
+          ]
+        },
+        "9": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 30,
+          "types_score": 10,
+          "values_score": 0,
+          "total_score": 80,
+          "country_error": true
+        }
+      }
+    },
+    {
+      "model_name": "qwen/qwen3-vl-8b-instruct",
+      "model_size": "8M",
+      "platform": "openrouter",
+      "total_time_seconds": 435.7772500514984,
+      "total_tokens": 59888,
+      "overall_score": 6.0,
+      "scores": {
+        "parse": 4.0,
+        "schema": 0.0,
+        "types": 2.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "2": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "3": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "4": {
+          "parse_success": true,
+          "parse_score": 40,
+          "schema_valid": false,
+          "schema_score": 0,
+          "types_score": 20,
+          "values_score": 0,
+          "total_score": 60,
+          "missing_keys": [
+            "title",
+            "description",
+            "bedrooms_count",
+            "bathrooms_count",
+            "parking_spaces_count",
+            "street_number",
+            "complement",
+            "private_area_m2",
+            "suites_count",
+            "floors_count",
+            "year_built",
+            "condo_fee",
+            "property_tax"
+          ]
+        },
+        "5": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "8": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        },
+        "9": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 1 column 1 (char 0)"
+        }
+      }
+    },
+    {
+      "model_name": "mistralai/mistral-small-3.1-24b-instruc",
+      "model_size": "24M",
+      "platform": "openrouter",
+      "total_time_seconds": 1.2764296531677246,
+      "total_tokens": 0,
+      "overall_score": 0.0,
+      "scores": {
+        "parse": 0.0,
+        "schema": 0.0,
+        "types": 0.0,
+        "values": 0.0
+      },
+      "cases": {}
+    },
+    {
+      "model_name": "meta-llama/llama-3.2-11b-vision-instruct",
+      "model_size": "11M",
+      "platform": "openrouter",
+      "total_time_seconds": 69.32935428619385,
+      "total_tokens": 25127,
+      "overall_score": 0.0,
+      "scores": {
+        "parse": 0.0,
+        "schema": 0.0,
+        "types": 0.0,
+        "values": 0.0
+      },
+      "cases": {
+        "0": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 2 column 11 (char 12)"
+        },
+        "1": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 318)"
+        },
+        "2": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 188)"
+        },
+        "3": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 208)"
+        },
+        "4": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 219)"
+        },
+        "5": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 2 column 11 (char 12)"
+        },
+        "6": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 201)"
+        },
+        "7": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 4 column 11 (char 226)"
+        },
+        "8": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting ',' delimiter: line 4 column 13 (char 219)"
+        },
+        "9": {
+          "parse_success": false,
+          "parse_score": 0,
+          "schema_valid": false,
+          "schema_score": 0.0,
+          "types_score": 0.0,
+          "values_score": 0.0,
+          "total_score": 0,
+          "parse_error": "JSON decode error: Expecting value: line 3 column 17 (char 65)"
         }
       }
     }
