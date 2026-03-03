@@ -110,6 +110,12 @@ if ! command -v opencode >/dev/null 2>&1; then
   exit 1
 fi
 
+# Detect opencode run flags once at startup
+OPENCODE_RUN_HELP=$(opencode run --help 2>/dev/null)
+HAS_PROMPT_FILE=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt-file && echo true || echo false)
+HAS_PROMPT=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt && echo true || echo false)
+readonly HAS_PROMPT_FILE HAS_PROMPT
+
 for var in "${require_envs[@]}"; do
   if [[ -z ${!var+x} ]]; then
     echo "Error: required env '$var' not set" >&2
@@ -167,6 +173,50 @@ worktree_remove() {
   rm -rf "$wt_path"
 }
 
+git_create_fix_branch() {
+  local fail_branch="$1"
+  local fix_branch="$2"
+  git branch -f "$fix_branch" "$fail_branch"
+}
+git_get_commit_sha() {
+  local worktree_path="$1"
+  (cd "$worktree_path" && git rev-parse --verify HEAD 2>/dev/null) || echo ""
+}
+git_is_dirty() {
+  local worktree_path="$1"
+  cd "$worktree_path" 2>/dev/null || { echo false; return; }
+  if git status --porcelain | grep -q . ; then
+    echo true
+  else
+    echo false
+  fi
+}
+git_auto_commit() {
+  local worktree_path="$1"
+  local fix_branch="$2"
+  local rspec_status="$3"
+  if [[ "$rspec_status" != "PASS" ]]; then
+    echo ""
+    return 0
+  fi
+  local dirty
+  dirty=$(git_is_dirty "$worktree_path")
+  if [[ "$dirty" != "true" ]]; then
+    echo ""
+    return 0
+  fi
+  cd "$worktree_path" || { echo ""; return 1; }
+  IFS=/ read -ra parts <<< "$fix_branch"
+  local fail_suffix="${parts[2]}"
+  local model_snake="${parts[3]}"
+  local msg="bench(fix): $fail_suffix via $model_snake"
+  git add -A
+  if ! git commit -m "$msg"; then
+    echo ""
+    return 1
+  fi
+  git rev-parse HEAD
+}
 # Track worktrees for cleanup
 declare -a worktrees_to_remove=()
 
@@ -194,18 +244,159 @@ if [[ "$print_names" == true ]]; then
   exit 0
 fi
 
-echo "Benchmark runner foundation ready."
-echo "MODEL slug: $(model_slug \"$MODEL\")"
-echo "Next: implement benchmark loop over branches matching '$branches' | grep '$filter'"
+# Task 10: Results tracking functions
 
-# Foundation end - later tasks add:
-# for fail_branch in $(git branch -l $branches | grep $filter); do
-#   fix_branch=$(fix_branch_name "$fail_branch")
-#   wt_path="$worktree_root/$(basename "$fix_branch")"
-#   worktrees_to_remove+=("$wt_path")
-#   worktree_add "$fail_branch" "$fix_branch" "$wt_path"
-#   # run opencode/rspec...
-# done
+readonly RESULTS_FILE="$REPO_ROOT/.sisyphus/benchmark-results.md"
+
+results_init() {
+  mkdir -p "$(dirname "$RESULTS_FILE")"
+  if [[ ! -f "$RESULTS_FILE" ]]; then
+    cat > "$RESULTS_FILE" << 'EOF'
+# Benchmark Results
+
+| Timestamp | Model | Fail Branch | Fix Branch | OpenCode RC | Pre RC | Post RC | Status | Commit | Log Dir |
+|-----------|-------|-------------|------------|-------------|--------|---------|--------|--------|---------|
+EOF
+  fi
+}
+
+results_write_baseline() {
+  local model="$1"
+  local rc="$2"
+  local log_dir="$3"
+  local status=$( [[ "$rc" -eq 0 ]] && echo "PASS" || echo "FAIL" )
+  echo "| $(date +%Y%m%d-%H%M%S) | $model | v1/working | BASELINE | - | $rc | - | $status | - | $log_dir |" >> "$RESULTS_FILE"
+}
+
+results_add_row() {
+  local timestamp="$1"
+  local model="$2"
+  local fail_branch="$3"
+  local fix_branch="$4"
+  local opencode_rc="$5"
+  local pre_rc="$6"
+  local post_rc="$7"
+  local status="$8"
+  local commit_sha="$9"
+  local log_dir="${10}"
+  echo "| $timestamp | $model | $fail_branch | $fix_branch | $opencode_rc | $pre_rc | $post_rc | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
+}
+
+# Task 11: Main benchmark loop
+
+main() {
+  local timestamp=$(date +%Y%m%d-%H%M%S)
+  local log_root="$REPO_ROOT/.sisyphus/bench-logs/$timestamp"
+  mkdir -p "$log_root"
+
+  # Initialize results file
+  results_init
+
+  # BASELINE: Run rspec on v1/working first
+  echo "=== BASELINE: v1/working ==="
+  local baseline_wt="$worktree_root/baseline-$timestamp"
+  local baseline_env="bench_baseline"
+  worktree_add "v1/working" "v1/working" "$baseline_wt" 2>/dev/null || true
+  db_prepare "$baseline_wt" "$baseline_env"
+  local baseline_result=$(rspec_run "$baseline_wt" "$baseline_env" "baseline")
+  local baseline_rc=$(echo "$baseline_result" | jq -r '.exit_code')
+  results_write_baseline "$MODEL" "$baseline_rc" "$log_root/baseline"
+
+  if [[ "$baseline_rc" -ne 0 ]]; then
+    echo "ERROR: Baseline failed (rc=$baseline_rc). Aborting."
+    db_drop "$baseline_wt" "$baseline_env" 2>/dev/null || true
+    worktree_remove "$baseline_wt"
+    exit 1
+  fi
+
+  db_drop "$baseline_wt" "$baseline_env" 2>/dev/null || true
+  worktree_remove "$baseline_wt"
+
+  # PER-BRANCH LOOP
+  local fail_branches
+  if [[ -n "$filter" ]]; then
+    fail_branches=$(git branch -l "$branches" | sed 's/^[* ]*//' | grep -E "$filter" || true)
+  else
+    fail_branches=$(git branch -l "$branches" | sed 's/^[* ]*//' || true)
+  fi
+
+  if [[ -z "$fail_branches" ]]; then
+    echo "No branches matching '$branches' (filter: '$filter')"
+    exit 0
+  fi
+
+  for fail_branch in $fail_branches; do
+    echo ""
+    echo "=== Processing: $fail_branch ==="
+
+    local fail_suffix=${fail_branch#v1/fail/}
+    local fix_branch=$(fix_branch_name "$fail_branch")
+    local wt_path="$worktree_root/$fail_suffix/$(model_slug "$MODEL")"
+    local branch_log="$log_root/$fail_suffix"
+    mkdir -p "$branch_log"
+
+    # Skip if fix branch already exists
+    if git branch --list "$fix_branch" | grep -q "$fix_branch"; then
+      echo "SKIP: Fix branch $fix_branch already exists"
+      results_add_row "$timestamp" "$MODEL" "$fail_branch" "$fix_branch" "N/A" "N/A" "N/A" "SKIPPED" "" "$branch_log"
+      continue
+    fi
+
+    # Create fix branch from fail branch, then worktree
+    git_create_fix_branch "$fail_branch" "$fix_branch"
+    worktrees_to_remove+=("$wt_path")
+    worktree_add "$fail_branch" "$fix_branch" "$wt_path"
+
+    # DB isolation
+    local test_env=$(db_test_env_number "$fail_suffix")
+    db_prepare "$wt_path" "$test_env"
+
+    # RSpec PRE
+    echo "Running rspec (pre)..."
+    local pre_result=$(rspec_run "$wt_path" "$test_env" "pre")
+    local pre_rc=$(echo "$pre_result" | jq -r '.exit_code')
+    local pre_log=$(echo "$pre_result" | jq -r '.log_path')
+
+    # Generate PROMPT.md
+    generate_prompt_md "$wt_path" "$fail_branch" "$pre_log"
+
+    # Run opencode
+    echo "Running opencode..."
+    local prompt_path="$wt_path/PROMPT.md"
+    local opencode_result=$(opencode_run "$wt_path" "$prompt_path")
+    local opencode_rc=$(echo "$opencode_result" | jq -r '.exit_code')
+
+    # RSpec POST
+    echo "Running rspec (post)..."
+    local post_result=$(rspec_run "$wt_path" "$test_env" "post")
+    local post_rc=$(echo "$post_result" | jq -r '.exit_code')
+    local post_status=$(echo "$post_result" | jq -r '.status')
+
+    # Auto-commit if PASS
+    local commit_sha=""
+    if [[ "$post_status" == "PASS" ]]; then
+      commit_sha=$(git_auto_commit "$wt_path" "$fix_branch" "$post_status")
+    fi
+
+    # Record results
+    results_add_row "$timestamp" "$MODEL" "$fail_branch" "$fix_branch" "$opencode_rc" "$pre_rc" "$post_rc" "$post_status" "$commit_sha" "$branch_log"
+
+    # Cleanup DB
+    db_drop "$wt_path" "$test_env" 2>/dev/null || true
+
+    echo "Done: $fail_branch -> $post_status"
+  done
+
+  echo ""
+  echo "=== Benchmark Complete ==="
+  echo "Results: $RESULTS_FILE"
+  echo "Logs: $log_root"
+}
+
+# Run main (unless --print-names)
+if [[ "$print_names" != true ]]; then
+  main
+fi
 
 generate_prompt_md() {
   local worktree_path="$1"
@@ -354,4 +545,39 @@ rspec_run() {
     local status=$( [[ $exit_code -eq 0 ]] && echo "PASS" || echo "FAIL" )
 
     echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"log_path\":\"$log_path\"}"
+}
+
+opencode_run() {
+    local worktree_path="$1"
+    local prompt_path="$2"
+
+    local repo_root
+    repo_root=$(cd "$worktree_path" && git rev-parse --show-toplevel)
+    local timestamp=$(date +%Y-%m-%d-%H%M%S)
+    local branch_name=$(basename "$worktree_path")
+    local log_dir="$repo_root/.sisyphus/bench-logs/${timestamp}/${branch_name}"
+    mkdir -p "$log_dir"
+    local log_path="${log_dir}/opencode.log"
+
+    local start_sec=$(date +%s)
+
+    cd "$worktree_path" || {
+        echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
+        return 1
+    }
+
+    if [[ "$HAS_PROMPT_FILE" == true ]]; then
+        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
+    elif [[ "$HAS_PROMPT" == true ]]; then
+        local prompt_content
+        prompt_content=$(cat "$prompt_path")
+        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt "$prompt_content" --dir . > "$log_path" 2>&1
+    else
+        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --dir . < "$prompt_path" > "$log_path" 2>&1
+    fi
+
+    local exit_code=$?
+    local elapsed_sec=$(( $(date +%s) - start_sec ))
+
+    echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
 }
