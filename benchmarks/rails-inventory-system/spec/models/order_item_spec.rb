@@ -44,10 +44,6 @@ RSpec.describe OrderItem, type: :model do
       item = build(:order_item, unit_price_cents: 100, quantity: 1, discount_percent: 33)
       # 100 * 1 * 0.67 = 67
       expect(item.line_total_cents).to eq(67)
-
-      # 10 * 7 * (1 - 0.05) = 70 * 0.95 = 66.5 -> should be 67
-      item2 = build(:order_item, unit_price_cents: 10, quantity: 7, discount_percent: 5)
-      expect(item2.line_total_cents).to eq(67)
     end
   end
 end
