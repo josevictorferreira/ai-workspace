@@ -30,8 +30,8 @@ while [[ $# -gt 0 ]]; do
       timeout_rspec_sec="$2"
       shift 2
       ;;
-    --provider-config)
-      provider_config_path="$2"
+    --opencode-config)
+      opencode_config_path="$2"
       shift 2
       ;;
     -h|--help)
@@ -43,11 +43,11 @@ Options:
   --worktree-root PATH (default: .sisyphus/worktrees-fast)
   --timeout-opencode-sec SEC (default: 1800)
   --timeout-rspec-sec SEC (default: 300)
-  --provider-config FILE (JSON with provider credentials)
+  --opencode-config FILE (opencode.json format)
   -h, --help
 
 Env: MODEL required, opencode in PATH
-Provider env vars: OPENAI_API_KEY, ANTHROPIC_API_KEY, GROQ_API_KEY, etc.
+Configure providers via opencode.json
 EOF
       exit 0
       ;;
@@ -84,41 +84,19 @@ HAS_PROMPT_FILE=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt-file && echo t
 HAS_PROMPT=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt && echo true || echo false)
 readonly HAS_PROMPT_FILE HAS_PROMPT
 
-provider_config_path=""
+opencode_config_path=""
 
-setup_provider_auth() {
+setup_opencode_config() {
   local isolated_dir="$1"
-  local provider_config_path="$2"
-  local auth_dir="$isolated_dir/share/opencode"
-  mkdir -p "$auth_dir"
-  local creds=()
-  add_cred() {
-    local provider="$1"
-    local key_var="$2"
-    if [[ -n "${!key_var:-}" ]]; then
-      creds+=("{\"provider\":\"$provider\",\"type\":\"apiKey\",\"key\":\"${!key_var}\"}")
-    fi
-  }
-  add_cred "openai" OPENAI_API_KEY
-  add_cred "anthropic" ANTHROPIC_API_KEY
-  add_cred "groq" GROQ_API_KEY
-  add_cred "deepseek" DEEPSEEK_API_KEY
-  add_cred "openrouter" OPENROUTER_API_KEY
-  add_cred "xai" XAI_API_KEY
-  if [[ -n "$provider_config_path" && -f "$provider_config_path" ]]; then
-    while IFS= read -r cred; do
-      creds+=("$cred")
-    done < <(jq -r '.credentials[]? | @json' "$provider_config_path" 2>/dev/null || true)
+  local opencode_config_path="$2"
+  local config_dir="$isolated_dir/share/opencode"
+  mkdir -p "$config_dir"
+  if [[ -n "$opencode_config_path" && -f "$opencode_config_path" ]]; then
+    cp "$opencode_config_path" "$config_dir/opencode.json"
+    export OPENCODE_CONFIG="$config_dir/opencode.json"
   fi
-  local creds_json
-  if [[ ${#creds[@]} -eq 0 ]]; then
-    creds_json="[]"
-  else
-    creds_json="[$(IFS=,; echo "${creds[*]}")]"
-  fi
-  local auth_json="{\"version\":1,\"credentials\":$creds_json}"
-  echo "$auth_json" > "$auth_dir/auth.json"
 }
+
 
 model_slug() {
   local input="$1"
@@ -437,5 +415,5 @@ opencode_setup_isolation() {
   export XDG_CACHE_HOME="$isolated_dir/cache"
   export XDG_STATE_HOME="$isolated_dir/state"
   export OPENCODE_DISABLE_CLAUDE_CODE=1
-  setup_provider_auth "$isolated_dir" "$provider_config_path"
+  setup_opencode_config "$isolated_dir" "$opencode_config_path"
 }
