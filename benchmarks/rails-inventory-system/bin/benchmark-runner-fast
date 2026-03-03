@@ -217,7 +217,7 @@ db_prepare() {
   local log_file="$worktree_path/db_prepare.log"
   cd "$worktree_path" || return 1
   timeout ${timeout_rspec_sec}s bash -c "
-    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:prepare 2>&1 | tee '$log_file'
+    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee "$log_file"
   " || {
     echo "db_prepare failed for $test_env_number (check $log_file)" >&2
     return 1
@@ -232,7 +232,7 @@ db_drop() {
   local queue_db="${primary_db}_queue"
   cd "$worktree_path" || return 0
   echo "Dropping DBs for $test_env_number: $primary_db, $queue_db"
-  RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:drop || true
+  RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:drop 2>/dev/null || true
   dropdb "$primary_db" >/dev/null 2>&1 || true
   dropdb "$queue_db" >/dev/null 2>&1 || true
   echo "db_drop completed for $test_env_number"
