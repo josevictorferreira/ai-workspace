@@ -17,7 +17,7 @@ class OrderItem < ApplicationRecord
   after_destroy :recalculate_order_total
 
   def line_total_cents
-    (unit_price_cents * quantity * (1 - discount_percent / 100.0)).to_i
+    (unit_price_cents * quantity * (1 - discount_percent / 100)).round
   end
 
   private
