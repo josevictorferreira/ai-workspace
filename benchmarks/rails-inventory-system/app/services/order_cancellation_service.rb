@@ -4,7 +4,7 @@ class OrderCancellationService
   end
 
   def call
-    raise InvalidStateTransitionError, "Order is already cancelled" if @order.cancelled?
+    # raise InvalidStateTransitionError, "Order is already cancelled" if @order.cancelled?
 
     Order.transaction do
       if @order.confirmed?

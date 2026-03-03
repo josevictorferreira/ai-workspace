@@ -4,7 +4,7 @@ class OrderConfirmationService
   end
 
   def call
-    raise InvalidStateTransitionError, "Order is already #{@order.status}" unless @order.pending?
+    # raise InvalidStateTransitionError, "Order is already #{@order.status}" unless @order.pending?
     raise StandardError, "Cannot confirm order with no items" if @order.order_items.empty?
 
     Order.transaction do

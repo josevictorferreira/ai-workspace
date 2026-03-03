@@ -170,47 +170,187 @@ FOREIGN KEY ("warehouse_id")
   [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
   [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
   [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4629425203984560) /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (3.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
   [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
-Migrating to RemoveQuantityNonNegativeConstraintFromInventoryItems (20260301164609)
-  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Create (1.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260301164609') RETURNING "version" /*application='InventorySystem'*/[0m
-  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT /*application='InventorySystem'*/[0m
-  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(4629425203984560) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
   [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
+  [1m[35m (557.4ms)[0m  [1m[35mDROP DATABASE IF EXISTS "inventory_system_development" /*application='InventorySystem'*/[0m
   [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
+  [1m[35m (25.8ms)[0m  [1m[35mDROP DATABASE IF EXISTS "inventory_system_development_queue" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (29.9ms)[0m  [1m[35mDROP DATABASE IF EXISTS "inventory_system_test" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (28.3ms)[0m  [1m[35mDROP DATABASE IF EXISTS "inventory_system_test_queue" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (36.3ms)[0m  [1m[35mCREATE DATABASE "inventory_system_development" ENCODING = 'unicode' /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (35.7ms)[0m  [1m[35mCREATE DATABASE "inventory_system_development_queue" ENCODING = 'unicode' /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (38.0ms)[0m  [1m[35mCREATE DATABASE "inventory_system_test" ENCODING = 'unicode' /*application='InventorySystem'*/[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
+  [1m[35m (36.8ms)[0m  [1m[35mCREATE DATABASE "inventory_system_test_queue" ENCODING = 'unicode' /*application='InventorySystem'*/[0m
+  [1m[35mSQL (9.5ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "inventory_items" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.8ms)[0m  [1m[35mCREATE TABLE "inventory_items" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "product_id" bigint NOT NULL, "quantity" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, "warehouse_id" bigint NOT NULL, CONSTRAINT quantity_non_negative CHECK (quantity >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_inventory_items_on_product_id_and_warehouse_id" ON "inventory_items" ("product_id", "warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_inventory_items_on_product_id" ON "inventory_items" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_inventory_items_on_warehouse_id" ON "inventory_items" ("warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "order_allocations" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "order_allocations" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "order_id" bigint NOT NULL, "product_id" bigint NOT NULL, "quantity" integer, "updated_at" timestamp(6) NOT NULL, "warehouse_id" bigint NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_order_id" ON "order_allocations" ("order_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_product_id" ON "order_allocations" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_warehouse_id" ON "order_allocations" ("warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "order_items" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE TABLE "order_items" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "discount_percent" integer DEFAULT 0 NOT NULL, "order_id" bigint NOT NULL, "product_id" bigint NOT NULL, "quantity" integer DEFAULT 1 NOT NULL, "unit_price_cents" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT discount_percent_range CHECK (discount_percent >= 0 AND discount_percent <= 100), CONSTRAINT quantity_positive CHECK (quantity > 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mCREATE INDEX "index_order_items_on_order_id" ON "order_items" ("order_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_items_on_product_id" ON "order_items" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "orders" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.8ms)[0m  [1m[35mCREATE TABLE "orders" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "status" character varying DEFAULT 'pending' NOT NULL, "total_cents" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT total_cents_non_negative CHECK (total_cents >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mCREATE INDEX "index_orders_on_status" ON "orders" ("status") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "products" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (3.2ms)[0m  [1m[35mCREATE TABLE "products" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "name" character varying NOT NULL, "price_cents" integer DEFAULT 0 NOT NULL, "sku" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT price_cents_non_negative CHECK (price_cents >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_products_on_name" ON "products" ("name") /*application='InventorySystem'*/[0m
+  [1m[35m (1.5ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_products_on_sku" ON "products" ("sku") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "warehouses" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.9ms)[0m  [1m[35mCREATE TABLE "warehouses" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "name" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_warehouses_on_name" ON "warehouses" ("name") /*application='InventorySystem'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mALTER TABLE "inventory_items" ADD CONSTRAINT "fk_rails_62d92932b7"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "inventory_items" ADD CONSTRAINT "fk_rails_7ace994e5c"
+FOREIGN KEY ("warehouse_id")
+  REFERENCES "warehouses" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.4ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_88efba025d"
+FOREIGN KEY ("order_id")
+  REFERENCES "orders" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_468902d50f"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_a8925fd1c0"
+FOREIGN KEY ("warehouse_id")
+  REFERENCES "warehouses" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "order_items" ADD CONSTRAINT "fk_rails_e3cb28f071"
+FOREIGN KEY ("order_id")
+  REFERENCES "orders" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "order_items" ADD CONSTRAINT "fk_rails_f1a29ddd47"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InventorySystem'*/[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260301161305) /*application='InventorySystem'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20260301161133),
+(20260301161132),
+(20260301161131),
+(20260301161130),
+(20260301161129); /*application='InventorySystem'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-03-01 16:48:27.228305', '2026-03-01 16:48:27.228307') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '60b628bf9c08a9c60f48d546dca9ecfef7e4c353', '2026-03-01 16:48:27.235453', '2026-03-01 16:48:27.235455') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (8.9ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='InventorySystem'*/[0m
+  [1m[35m (2.3ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InventorySystem'*/[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (0) /*application='InventorySystem'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-03-01 16:48:27.264400', '2026-03-01 16:48:27.264403') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', 'a71d23a9d8025196df4aad6f0cbff1ce3af537cf', '2026-03-01 16:48:27.272477', '2026-03-01 16:48:27.272723') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (9.1ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='InventorySystem'*/[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "inventory_items" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.5ms)[0m  [1m[35mCREATE TABLE "inventory_items" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "product_id" bigint NOT NULL, "quantity" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, "warehouse_id" bigint NOT NULL, CONSTRAINT quantity_non_negative CHECK (quantity >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_inventory_items_on_product_id_and_warehouse_id" ON "inventory_items" ("product_id", "warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_inventory_items_on_product_id" ON "inventory_items" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_inventory_items_on_warehouse_id" ON "inventory_items" ("warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "order_allocations" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (1.7ms)[0m  [1m[35mCREATE TABLE "order_allocations" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "order_id" bigint NOT NULL, "product_id" bigint NOT NULL, "quantity" integer, "updated_at" timestamp(6) NOT NULL, "warehouse_id" bigint NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_order_id" ON "order_allocations" ("order_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_product_id" ON "order_allocations" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE INDEX "index_order_allocations_on_warehouse_id" ON "order_allocations" ("warehouse_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "order_items" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (1.9ms)[0m  [1m[35mCREATE TABLE "order_items" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "discount_percent" integer DEFAULT 0 NOT NULL, "order_id" bigint NOT NULL, "product_id" bigint NOT NULL, "quantity" integer DEFAULT 1 NOT NULL, "unit_price_cents" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT discount_percent_range CHECK (discount_percent >= 0 AND discount_percent <= 100), CONSTRAINT quantity_positive CHECK (quantity > 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_order_items_on_order_id" ON "order_items" ("order_id") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE INDEX "index_order_items_on_product_id" ON "order_items" ("product_id") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "orders" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.3ms)[0m  [1m[35mCREATE TABLE "orders" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "status" character varying DEFAULT 'pending' NOT NULL, "total_cents" integer DEFAULT 0 NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT total_cents_non_negative CHECK (total_cents >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE INDEX "index_orders_on_status" ON "orders" ("status") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "products" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE TABLE "products" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "name" character varying NOT NULL, "price_cents" integer DEFAULT 0 NOT NULL, "sku" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT price_cents_non_negative CHECK (price_cents >= 0)) /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_products_on_name" ON "products" ("name") /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_products_on_sku" ON "products" ("sku") /*application='InventorySystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE IF EXISTS "warehouses" CASCADE /*application='InventorySystem'*/[0m
+  [1m[35m (1.8ms)[0m  [1m[35mCREATE TABLE "warehouses" ("id" bigserial primary key, "created_at" timestamp(6) NOT NULL, "name" character varying NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_warehouses_on_name" ON "warehouses" ("name") /*application='InventorySystem'*/[0m
+  [1m[35m (1.8ms)[0m  [1m[35mALTER TABLE "inventory_items" ADD CONSTRAINT "fk_rails_62d92932b7"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "inventory_items" ADD CONSTRAINT "fk_rails_7ace994e5c"
+FOREIGN KEY ("warehouse_id")
+  REFERENCES "warehouses" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_88efba025d"
+FOREIGN KEY ("order_id")
+  REFERENCES "orders" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_468902d50f"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "order_allocations" ADD CONSTRAINT "fk_rails_a8925fd1c0"
+FOREIGN KEY ("warehouse_id")
+  REFERENCES "warehouses" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.3ms)[0m  [1m[35mALTER TABLE "order_items" ADD CONSTRAINT "fk_rails_e3cb28f071"
+FOREIGN KEY ("order_id")
+  REFERENCES "orders" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[35mALTER TABLE "order_items" ADD CONSTRAINT "fk_rails_f1a29ddd47"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+ /*application='InventorySystem'*/[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InventorySystem'*/[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO public /*application='InventorySystem'*/[0m
-  [1m[35mSQL (0.0ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (3.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4629425203984560) /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-Reverting RemoveQuantityNonNegativeConstraintFromInventoryItems (20260301164609)
-  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(4629425203984560) /*application='InventorySystem'*/[0m
-  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4629425203984560) /*application='InventorySystem'*/[0m
-  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
-Reverting RemoveQuantityNonNegativeConstraintFromInventoryItems (20260301164609)
-  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InventorySystem'*/[0m
-  [1m[35m (6.8ms)[0m  [1m[35mALTER TABLE "inventory_items" ADD CONSTRAINT quantity_non_negative CHECK (quantity >= 0) /*application='InventorySystem'*/[0m
-  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mROLLBACK /*application='InventorySystem'*/[0m
-  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(4629425203984560) /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260301161305) /*application='InventorySystem'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20260301161133),
+(20260301161132),
+(20260301161131),
+(20260301161130),
+(20260301161129); /*application='InventorySystem'*/[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-03-01 16:48:27.390999', '2026-03-01 16:48:27.391000') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Update (0.9ms)[0m  [1m[33mUPDATE "ar_internal_metadata" SET "value" = 'test', "updated_at" = '2026-03-01 16:48:27.396112' WHERE "ar_internal_metadata"."key" = 'environment' /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '60b628bf9c08a9c60f48d546dca9ecfef7e4c353', '2026-03-01 16:48:27.400498', '2026-03-01 16:48:27.400498') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[35mSQL (9.1ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "plpgsql" SCHEMA pg_catalog /*application='InventorySystem'*/[0m
+  [1m[35m (2.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (0) /*application='InventorySystem'*/[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-03-01 16:48:27.430197', '2026-03-01 16:48:27.430198') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Update (0.9ms)[0m  [1m[33mUPDATE "ar_internal_metadata" SET "value" = 'test', "updated_at" = '2026-03-01 16:48:27.434705' WHERE "ar_internal_metadata"."key" = 'environment' /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'schema_sha1' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.9ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', 'a71d23a9d8025196df4aad6f0cbff1ce3af537cf', '2026-03-01 16:48:27.436757', '2026-03-01 16:48:27.436760') RETURNING "key" /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InventorySystem'*/[0m

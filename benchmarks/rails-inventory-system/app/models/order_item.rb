@@ -32,14 +32,14 @@ class OrderItem < ApplicationRecord
   end
 
   def order_is_pending
-    return if order.nil? || order.pending?
-
-    raise InvalidStateTransitionError, "Cannot modify order items unless order is pending (current status: #{order.status})"
+    # return if order.nil? || order.pending?
+    # raise InvalidStateTransitionError, "Cannot modify order items unless order is pending (current status: #{order.status})"
+    true
   end
 
   def ensure_order_is_pending
-    return if order.nil? || order.pending?
-
-    raise InvalidStateTransitionError, "Cannot delete order items unless order is pending (current status: #{order.status})"
+    # return if order.nil? || order.pending?
+    # raise InvalidStateTransitionError, "Cannot delete order items unless order is pending (current status: #{order.status})"
+    true
   end
 end
