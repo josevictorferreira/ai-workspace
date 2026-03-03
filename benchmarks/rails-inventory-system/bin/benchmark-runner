@@ -566,6 +566,8 @@ opencode_run() {
         return 1
     }
 
+    opencode_setup_isolation "$worktree_path"
+
     if [[ "$HAS_PROMPT_FILE" == true ]]; then
         timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
     elif [[ "$HAS_PROMPT" == true ]]; then
@@ -580,4 +582,15 @@ opencode_run() {
     local elapsed_sec=$(( $(date +%s) - start_sec ))
 
     echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
+}
+
+opencode_setup_isolation() {
+  local worktree_path="$1"
+  local isolated_dir="$worktree_path/.opencode-isolated"
+  mkdir -p "$isolated_dir"/{config,share,cache,state}
+  export XDG_CONFIG_HOME="$isolated_dir/config"
+  export XDG_DATA_HOME="$isolated_dir/share"
+  export XDG_CACHE_HOME="$isolated_dir/cache"
+  export XDG_STATE_HOME="$isolated_dir/state"
+  export OPENCODE_DISABLE_CLAUDE_CODE=1
 }
