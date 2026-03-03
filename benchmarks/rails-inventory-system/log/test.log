@@ -6202,6 +6202,7 @@ FOREIGN KEY ("product_id")
   [1m[36mOrderItem Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "order_items" WHERE "order_items"."order_id" = $1 LIMIT $2[0m  [["order_id", 16], ["LIMIT", 1]]
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
   [1m[36mActiveRecord::InternalMetadata Load (0.5ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+<<<<<<< HEAD
   [1m[36mActiveRecord::InternalMetadata Load (1.5ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
   [1m[36mActiveRecord::SchemaMigration Load (2.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
@@ -7316,10 +7317,14 @@ FOREIGN KEY ("product_id")
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK[0m
   [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
   [1m[36mActiveRecord::InternalMetadata Load (1.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+=======
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+>>>>>>> v1/fail/breaking-allocations
   [1m[36mActiveRecord::SchemaMigration Load (2.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
   [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+<<<<<<< HEAD
   [1m[36mProduct Exists? (0.7ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 1"], ["LIMIT", 1]]
   [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-1"], ["LIMIT", 1]]
   [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:07.629519"], ["name", "Product 1"], ["price_cents", 1000], ["sku", "SKU-1"], ["updated_at", "2026-03-01 16:48:07.629519"]]
@@ -7362,10 +7367,93 @@ FOREIGN KEY ("product_id")
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
   [1m[36mOrder Create (0.4ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:07.869892"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:48:07.869892"]]
+=======
+  [1m[36mOrder Create (0.8ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:34.781436"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:34.781436"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 1"], ["LIMIT", 1]]
+  [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-1"], ["LIMIT", 1]]
+  [1m[36mProduct Create (0.2ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:34.827795"], ["name", "Product 1"], ["price_cents", 100], ["sku", "SKU-1"], ["updated_at", "2026-03-01 16:32:34.827795"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.6ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:34.854150"], ["discount_percent", 0], ["order_id", 165], ["product_id", 195], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:34.854150"]]
+  [1m[36mOrderItem Load (0.2ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 165]]
+  [1m[36mOrder Update (0.3ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:34.879151"], ["id", 165]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 1"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 1], ["created_at", "2026-03-01 16:32:34.898084"], ["name", "Warehouse 1"], ["updated_at", "2026-03-01 16:32:34.898084"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 195], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.4ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:34.921853"], ["product_id", 195], ["quantity", 20], ["updated_at", "2026-03-01 16:32:34.921853"], ["warehouse_id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Load (0.2ms)[0m  [1m[34mSELECT "products".* FROM "products" WHERE "products"."id" = $1 LIMIT $2[0m  [["id", 195], ["LIMIT", 1]]
+  [1m[36mInventoryItem Sum (0.2ms)[0m  [1m[34mSELECT SUM("inventory_items"."quantity") FROM "inventory_items" WHERE "inventory_items"."product_id" = $1[0m  [["product_id", 195]]
+  [1m[36mInventoryItem Load (0.2ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 ORDER BY "inventory_items"."warehouse_id" DESC[0m  [["product_id", 195]]
+  [1m[36mInventoryItem Update All (0.2ms)[0m  [1m[33mUPDATE "inventory_items" SET "quantity" = COALESCE("inventory_items"."quantity", 0) - $1 WHERE "inventory_items"."id" = $2[0m  [["quantity", 15], ["id", 131]]
+  [1m[36mWarehouse Load (0.1ms)[0m  [1m[34mSELECT "warehouses".* FROM "warehouses" WHERE "warehouses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mOrderAllocation Create (0.5ms)[0m  [1m[32mINSERT INTO "order_allocations" ("created_at", "order_id", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:34.977437"], ["order_id", 165], ["product_id", 195], ["quantity", 15], ["updated_at", "2026-03-01 16:32:34.977437"], ["warehouse_id", 1]]
+  [1m[36mOrder Update (0.2ms)[0m  [1m[33mUPDATE "orders" SET "status" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["status", "confirmed"], ["updated_at", "2026-03-01 16:32:34.986156"], ["id", 165]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mOrder Load (0.1ms)[0m  [1m[34mSELECT "orders".* FROM "orders" WHERE "orders"."id" = $1 LIMIT $2[0m  [["id", 165], ["LIMIT", 1]]
+  [1m[36mInventoryItem Load (0.2ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 195], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Create (0.3ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.012042"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.012042"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 2"], ["LIMIT", 1]]
+  [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-2"], ["LIMIT", 1]]
+  [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.022845"], ["name", "Product 2"], ["price_cents", 100], ["sku", "SKU-2"], ["updated_at", "2026-03-01 16:32:35.022845"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.3ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.034458"], ["discount_percent", 0], ["order_id", 166], ["product_id", 196], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:35.034458"]]
+  [1m[36mOrderItem Load (0.1ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 166]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:35.044029"], ["id", 166]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 2"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 1], ["created_at", "2026-03-01 16:32:35.052050"], ["name", "Warehouse 2"], ["updated_at", "2026-03-01 16:32:35.052050"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 196], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.2ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.061729"], ["product_id", 196], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.061729"], ["warehouse_id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 3"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 2], ["created_at", "2026-03-01 16:32:35.067441"], ["name", "Warehouse 3"], ["updated_at", "2026-03-01 16:32:35.067441"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 196], ["warehouse_id", 2], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.2ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.072228"], ["product_id", 196], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.072228"], ["warehouse_id", 2]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Load (0.2ms)[0m  [1m[34mSELECT "products".* FROM "products" WHERE "products"."id" = $1 LIMIT $2[0m  [["id", 196], ["LIMIT", 1]]
+  [1m[36mInventoryItem Sum (0.1ms)[0m  [1m[34mSELECT SUM("inventory_items"."quantity") FROM "inventory_items" WHERE "inventory_items"."product_id" = $1[0m  [["product_id", 196]]
+  [1m[36mInventoryItem Load (0.1ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 ORDER BY "inventory_items"."warehouse_id" DESC[0m  [["product_id", 196]]
+  [1m[36mInventoryItem Update All (0.2ms)[0m  [1m[33mUPDATE "inventory_items" SET "quantity" = COALESCE("inventory_items"."quantity", 0) - $1 WHERE "inventory_items"."id" = $2[0m  [["quantity", 10], ["id", 133]]
+  [1m[36mWarehouse Load (0.1ms)[0m  [1m[34mSELECT "warehouses".* FROM "warehouses" WHERE "warehouses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mOrderAllocation Create (0.3ms)[0m  [1m[32mINSERT INTO "order_allocations" ("created_at", "order_id", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.086288"], ["order_id", 166], ["product_id", 196], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.086288"], ["warehouse_id", 2]]
+  [1m[36mInventoryItem Update All (0.2ms)[0m  [1m[33mUPDATE "inventory_items" SET "quantity" = COALESCE("inventory_items"."quantity", 0) - $1 WHERE "inventory_items"."id" = $2[0m  [["quantity", 5], ["id", 132]]
+  [1m[36mWarehouse Load (0.1ms)[0m  [1m[34mSELECT "warehouses".* FROM "warehouses" WHERE "warehouses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mOrderAllocation Create (0.2ms)[0m  [1m[32mINSERT INTO "order_allocations" ("created_at", "order_id", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.097403"], ["order_id", 166], ["product_id", 196], ["quantity", 5], ["updated_at", "2026-03-01 16:32:35.097403"], ["warehouse_id", 1]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "status" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["status", "confirmed"], ["updated_at", "2026-03-01 16:32:35.098327"], ["id", 166]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mOrder Load (0.1ms)[0m  [1m[34mSELECT "orders".* FROM "orders" WHERE "orders"."id" = $1 LIMIT $2[0m  [["id", 166], ["LIMIT", 1]]
+  [1m[36mInventoryItem Load (0.1ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 196], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Create (1.9ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.115346"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.115346"]]
+>>>>>>> v1/fail/breaking-allocations
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
   [1m[36mProduct Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 3"], ["LIMIT", 1]]
   [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-3"], ["LIMIT", 1]]
+<<<<<<< HEAD
   [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:07.882002"], ["name", "Product 3"], ["price_cents", 500], ["sku", "SKU-3"], ["updated_at", "2026-03-01 16:48:07.882002"]]
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
@@ -7377,10 +7465,54 @@ FOREIGN KEY ("product_id")
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
   [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:07.927660"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:48:07.927660"]]
+=======
+  [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.124205"], ["name", "Product 3"], ["price_cents", 100], ["sku", "SKU-3"], ["updated_at", "2026-03-01 16:32:35.124205"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.6ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.130032"], ["discount_percent", 0], ["order_id", 167], ["product_id", 197], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:35.130032"]]
+  [1m[36mOrderItem Load (0.1ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 167]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:35.135953"], ["id", 167]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 4"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 1], ["created_at", "2026-03-01 16:32:35.144184"], ["name", "Warehouse 4"], ["updated_at", "2026-03-01 16:32:35.144184"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (1.4ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 197], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.1ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.152245"], ["product_id", 197], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.152245"], ["warehouse_id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 5"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 2], ["created_at", "2026-03-01 16:32:35.155493"], ["name", "Warehouse 5"], ["updated_at", "2026-03-01 16:32:35.155493"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 197], ["warehouse_id", 2], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.1ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.161974"], ["product_id", 197], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.161974"], ["warehouse_id", 2]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Load (0.2ms)[0m  [1m[34mSELECT "products".* FROM "products" WHERE "products"."id" = $1 LIMIT $2[0m  [["id", 197], ["LIMIT", 1]]
+  [1m[36mInventoryItem Sum (0.1ms)[0m  [1m[34mSELECT SUM("inventory_items"."quantity") FROM "inventory_items" WHERE "inventory_items"."product_id" = $1[0m  [["product_id", 197]]
+  [1m[36mInventoryItem Load (0.1ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 ORDER BY "inventory_items"."warehouse_id" DESC[0m  [["product_id", 197]]
+  [1m[36mInventoryItem Update All (0.2ms)[0m  [1m[33mUPDATE "inventory_items" SET "quantity" = COALESCE("inventory_items"."quantity", 0) - $1 WHERE "inventory_items"."id" = $2[0m  [["quantity", 10], ["id", 135]]
+  [1m[36mWarehouse Load (0.1ms)[0m  [1m[34mSELECT "warehouses".* FROM "warehouses" WHERE "warehouses"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mOrderAllocation Create (0.3ms)[0m  [1m[32mINSERT INTO "order_allocations" ("created_at", "order_id", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.186540"], ["order_id", 167], ["product_id", 197], ["quantity", 10], ["updated_at", "2026-03-01 16:32:35.186540"], ["warehouse_id", 2]]
+  [1m[36mInventoryItem Update All (0.2ms)[0m  [1m[33mUPDATE "inventory_items" SET "quantity" = COALESCE("inventory_items"."quantity", 0) - $1 WHERE "inventory_items"."id" = $2[0m  [["quantity", 5], ["id", 134]]
+  [1m[36mWarehouse Load (0.1ms)[0m  [1m[34mSELECT "warehouses".* FROM "warehouses" WHERE "warehouses"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mOrderAllocation Create (0.2ms)[0m  [1m[32mINSERT INTO "order_allocations" ("created_at", "order_id", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.195051"], ["order_id", 167], ["product_id", 197], ["quantity", 5], ["updated_at", "2026-03-01 16:32:35.195051"], ["warehouse_id", 1]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "status" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["status", "confirmed"], ["updated_at", "2026-03-01 16:32:35.199159"], ["id", 167]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mOrderAllocation Count (0.2ms)[0m  [1m[34mSELECT COUNT(*) FROM "order_allocations" WHERE "order_allocations"."order_id" = $1[0m  [["order_id", 167]]
+  [1m[36mOrderAllocation Load (0.1ms)[0m  [1m[34mSELECT "order_allocations".* FROM "order_allocations" WHERE "order_allocations"."order_id" = $1 AND "order_allocations"."warehouse_id" = $2 LIMIT $3[0m  [["order_id", 167], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.217852"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.217852"]]
+>>>>>>> v1/fail/breaking-allocations
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
   [1m[36mProduct Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 4"], ["LIMIT", 1]]
   [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-4"], ["LIMIT", 1]]
+<<<<<<< HEAD
   [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:07.931301"], ["name", "Product 4"], ["price_cents", 500], ["sku", "SKU-4"], ["updated_at", "2026-03-01 16:48:07.931301"]]
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
@@ -7628,10 +7760,60 @@ FOREIGN KEY ("product_id")
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
   [1m[36mOrder Update (0.2ms)[0m  [1m[33mUPDATE "orders" SET "status" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["status", "cancelled"], ["updated_at", "2026-03-01 16:48:08.307690"], ["id", 25]]
+=======
+  [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.222707"], ["name", "Product 4"], ["price_cents", 100], ["sku", "SKU-4"], ["updated_at", "2026-03-01 16:32:35.222707"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.3ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.227023"], ["discount_percent", 0], ["order_id", 168], ["product_id", 198], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:35.227023"]]
+  [1m[36mOrderItem Load (0.1ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 168]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:35.231516"], ["id", 168]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 6"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 1], ["created_at", "2026-03-01 16:32:35.237820"], ["name", "Warehouse 6"], ["updated_at", "2026-03-01 16:32:35.237820"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 198], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.1ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.242835"], ["product_id", 198], ["quantity", 5], ["updated_at", "2026-03-01 16:32:35.242835"], ["warehouse_id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mWarehouse Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "warehouses" WHERE "warehouses"."name" = $1 LIMIT $2[0m  [["name", "Warehouse 7"], ["LIMIT", 1]]
+  [1m[36mWarehouse Create (0.1ms)[0m  [1m[32mINSERT INTO "warehouses" ("id", "created_at", "name", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["id", 2], ["created_at", "2026-03-01 16:32:35.246719"], ["name", "Warehouse 7"], ["updated_at", "2026-03-01 16:32:35.246719"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mInventoryItem Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 198], ["warehouse_id", 2], ["LIMIT", 1]]
+  [1m[36mInventoryItem Create (0.1ms)[0m  [1m[32mINSERT INTO "inventory_items" ("created_at", "product_id", "quantity", "updated_at", "warehouse_id") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.251408"], ["product_id", 198], ["quantity", 5], ["updated_at", "2026-03-01 16:32:35.251408"], ["warehouse_id", 2]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Load (0.8ms)[0m  [1m[34mSELECT "products".* FROM "products" WHERE "products"."id" = $1 LIMIT $2[0m  [["id", 198], ["LIMIT", 1]]
+  [1m[36mInventoryItem Sum (0.1ms)[0m  [1m[34mSELECT SUM("inventory_items"."quantity") FROM "inventory_items" WHERE "inventory_items"."product_id" = $1[0m  [["product_id", 198]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+  [1m[36mOrder Load (0.1ms)[0m  [1m[34mSELECT "orders".* FROM "orders" WHERE "orders"."id" = $1 LIMIT $2[0m  [["id", 168], ["LIMIT", 1]]
+  [1m[36mInventoryItem Load (0.1ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 198], ["warehouse_id", 1], ["LIMIT", 1]]
+  [1m[36mInventoryItem Load (0.1ms)[0m  [1m[34mSELECT "inventory_items".* FROM "inventory_items" WHERE "inventory_items"."product_id" = $1 AND "inventory_items"."warehouse_id" = $2 LIMIT $3[0m  [["product_id", 198], ["warehouse_id", 2], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.271971"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.271971"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 5"], ["LIMIT", 1]]
+  [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-5"], ["LIMIT", 1]]
+  [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.277410"], ["name", "Product 5"], ["price_cents", 100], ["sku", "SKU-5"], ["updated_at", "2026-03-01 16:32:35.277410"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.2ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.279185"], ["discount_percent", 0], ["order_id", 169], ["product_id", 199], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:35.279185"]]
+  [1m[36mOrderItem Load (0.1ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 169]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:35.280254"], ["id", 169]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Update (0.2ms)[0m  [1m[33mUPDATE "orders" SET "status" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["status", "confirmed"], ["updated_at", "2026-03-01 16:32:35.280926"], ["id", 169]]
+>>>>>>> v1/fail/breaking-allocations
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mBEGIN[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+<<<<<<< HEAD
   [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:08.309774"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:48:08.309774"]]
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
@@ -7819,4 +8001,22 @@ FOREIGN KEY ("product_id")
   [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:48:08.442105"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:48:08.442105"]]
   [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
   [1m[36mOrderItem Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "order_items" WHERE "order_items"."order_id" = $1 LIMIT $2[0m  [["order_id", 32], ["LIMIT", 1]]
+=======
+  [1m[36mOrder Create (0.3ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.289821"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.289821"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mProduct Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."name" = $1 LIMIT $2[0m  [["name", "Product 6"], ["LIMIT", 1]]
+  [1m[36mProduct Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "products" WHERE "products"."sku" = $1 LIMIT $2[0m  [["sku", "SKU-6"], ["LIMIT", 1]]
+  [1m[36mProduct Create (0.1ms)[0m  [1m[32mINSERT INTO "products" ("created_at", "name", "price_cents", "sku", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.291877"], ["name", "Product 6"], ["price_cents", 100], ["sku", "SKU-6"], ["updated_at", "2026-03-01 16:32:35.291877"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Create (0.3ms)[0m  [1m[32mINSERT INTO "order_items" ("created_at", "discount_percent", "order_id", "product_id", "quantity", "unit_price_cents", "updated_at") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.292682"], ["discount_percent", 0], ["order_id", 170], ["product_id", 200], ["quantity", 15], ["unit_price_cents", 100], ["updated_at", "2026-03-01 16:32:35.292682"]]
+  [1m[36mOrderItem Load (0.1ms)[0m  [1m[34mSELECT "order_items".* FROM "order_items" WHERE "order_items"."order_id" = $1[0m  [["order_id", 170]]
+  [1m[36mOrder Update (0.1ms)[0m  [1m[33mUPDATE "orders" SET "total_cents" = $1, "updated_at" = $2 WHERE "orders"."id" = $3[0m  [["total_cents", 1500], ["updated_at", "2026-03-01 16:32:35.294054"], ["id", 170]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mOrder Create (0.2ms)[0m  [1m[32mINSERT INTO "orders" ("created_at", "status", "total_cents", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["created_at", "2026-03-01 16:32:35.295441"], ["status", "pending"], ["total_cents", 0], ["updated_at", "2026-03-01 16:32:35.295441"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mOrderItem Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "order_items" WHERE "order_items"."order_id" = $1 LIMIT $2[0m  [["order_id", 171], ["LIMIT", 1]]
+>>>>>>> v1/fail/breaking-allocations
   [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK[0m

@@ -1,0 +1,357 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Benchmark Runner Foundation (Tasks 1-3)
+# - CLI parsing, env gating, nix re-exec
+# - Model slugify + branch naming
+# - Worktree lifecycle + cleanup trap
+#
+# Usage:
+#   MODEL=grok-4 ./bin/benchmark-runner --branches 'v1/fail/*' --filter 'order_spec' \\
+#     --worktree-root .sisyphus/worktrees --timeout-opencode-sec 300 --keep-worktrees
+#
+# Debug:
+#   ./bin/benchmark-runner --print-names --branches 'v1/fail/*'
+#
+# Required: MODEL env var, opencode in PATH
+# Optional: --require-env DB_HOST
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Defaults
+branches="v1/fail/*"
+filter=""
+keep_worktrees=false
+worktree_root=".sisyphus/worktrees"
+timeout_opencode_sec=300
+timeout_rspec_sec=120
+require_envs=()
+print_names=false
+
+# Parse CLI (portable long-opt parser)
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --branches)
+      branches="$2"
+      shift 2
+      ;;
+    --filter)
+      filter="$2"
+      shift 2
+      ;;
+    --keep-worktrees)
+      keep_worktrees=true
+      shift
+      ;;
+    --worktree-root)
+      worktree_root="$2"
+      shift 2
+      ;;
+    --timeout-opencode-sec)
+      timeout_opencode_sec="$2"
+      shift 2
+      ;;
+    --timeout-rspec-sec)
+      timeout_rspec_sec="$2"
+      shift 2
+      ;;
+    --require-env)
+      require_envs+=("$2")
+      shift 2
+      ;;
+    --print-names)
+      print_names=true
+      shift
+      ;;
+    -h|--help)
+      cat << EOF
+Benchmark Runner v0.1 (Foundation)
+
+Options:
+  --branches BRANCH_GLOB (default: v1/fail/*)
+  --filter REGEX
+  --keep-worktrees
+  --worktree-root PATH (default: .sisyphus/worktrees)
+  --timeout-opencode-sec SEC (default: 300)
+  --timeout-rspec-sec SEC (default: 120)
+  --require-env VAR (repeatable)
+  --print-names (debug: print derived names)
+  -h, --help
+
+Env: MODEL required, opencode in PATH
+EOF
+      exit 0
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      echo "Unexpected arg: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Nix re-exec if not in shell
+if [[ -z ${IN_NIX_SHELL+x} ]]; then
+  exec nix develop --impure --command bash "$0" "$@"
+fi
+
+# Env gating
+if [[ -z ${MODEL+x} ]]; then
+  echo "Error: MODEL env var required" >&2
+  exit 1
+fi
+
+if ! command -v opencode >/dev/null 2>&1; then
+  echo "Error: opencode not in PATH" >&2
+  exit 1
+fi
+
+for var in "${require_envs[@]}"; do
+  if [[ -z ${!var+x} ]]; then
+    echo "Error: required env '$var' not set" >&2
+    exit 1
+  fi
+done
+
+# Model slugify: snake_case (lower, /:@->_, collapse repeats)
+model_slug() {
+  local input="$1"
+  echo "$input" | tr '[:upper:] /:@-' '[:lower:]_' | sed 's/_\\+/_/g; s/^_\\?//; s/_$//'
+}
+
+# Fix branch name: v1/fix/<fail_suffix>/<model_snake>
+fix_branch_name() {
+  local fail_branch="$1"
+  local model_snake="$(model_slug "$MODEL")"
+  local fail_suffix="${fail_branch#v1/fail/}"  # strip prefix
+  fail_suffix="${fail_suffix%%/*}"            # first component after prefix
+  echo "v1/fix/${fail_suffix}/${model_snake}"
+}
+
+# Worktree mgmt
+mkdir -p "$worktree_root"
+
+worktree_add() {
+  local fail_branch="$1"
+  local fix_branch="$2"
+  local wt_path="$3"
+
+  # Prune stale worktrees
+  git worktree prune >/dev/null 2>&1 || true
+
+  # Remove if exists
+  if git worktree list | cut -d $'\\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
+    echo "Removing existing worktree: $wt_path"
+    git worktree remove "$wt_path" || true
+    rm -rf "$wt_path"
+  fi
+
+  # Add new (creates branch if needed)
+  git worktree add "$wt_path" "$fix_branch"
+  echo "Added worktree: $wt_path (fail: $fail_branch -> fix: $fix_branch)"
+}
+
+worktree_remove() {
+  local wt_path="$1"
+  if [[ "$keep_worktrees" == true ]]; then
+    return 0
+  fi
+  git worktree prune >/dev/null 2>&1 || true
+  if git worktree list | cut -d $'\\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
+    git worktree remove "$wt_path" || true
+  fi
+  rm -rf "$wt_path"
+}
+
+# Track worktrees for cleanup
+declare -a worktrees_to_remove=()
+
+cleanup() {
+  echo "Cleaning up worktrees..."
+  for wt_path in "${worktrees_to_remove[@]}"; do
+    worktree_remove "$wt_path"
+  done
+}
+
+if [[ "$keep_worktrees" == false ]]; then
+  trap cleanup EXIT INT TERM
+fi
+
+# Debug: print names (no execution)
+if [[ "$print_names" == true ]]; then
+  echo "MODEL: $MODEL"
+  echo "Slug: $(model_slug "$MODEL")"
+  echo "Branches glob: $branches"
+  echo "Filter: $filter"
+  echo "Worktree root: $worktree_root"
+  echo "Timeouts: opencode=${timeout_opencode_sec}s, rspec=${timeout_rspec_sec}s"
+  echo "Example: fail 'v1/fail/order_spec' -> fix '$(fix_branch_name 'v1/fail/order_spec')'"
+  echo "Worktree path: $worktree_root/example"
+  exit 0
+fi
+
+echo "Benchmark runner foundation ready."
+echo "MODEL slug: $(model_slug \"$MODEL\")"
+echo "Next: implement benchmark loop over branches matching '$branches' | grep '$filter'"
+
+# Foundation end - later tasks add:
+# for fail_branch in $(git branch -l $branches | grep $filter); do
+#   fix_branch=$(fix_branch_name "$fail_branch")
+#   wt_path="$worktree_root/$(basename "$fix_branch")"
+#   worktrees_to_remove+=("$wt_path")
+#   worktree_add "$fail_branch" "$fix_branch" "$wt_path"
+#   # run opencode/rspec...
+# done
+
+generate_prompt_md() {
+  local worktree_path="$1"
+  local fail_branch="$2"
+  local rspec_pre_log="$3"
+
+  local prompt_md="$worktree_path/PROMPT.md"
+
+  cat > "$prompt_md" << 'HEADER'
+## Project Context
+
+This is a **Ruby on Rails 8.1 API-only** application implementing an **Order and Inventory Management System**. The system manages products, warehouses, and inventory stock, handling the full lifecycle of an order from pending to confirmed or cancelled.
+
+### Key Features
+- **Multi-Warehouse Support**: Inventory is tracked per warehouse.
+- **Stock Allocation Logic**: Orders are confirmed by deducting stock from warehouses in ascending ID order.
+- **Atomic Transactions**: Inventory deductions and order status updates are performed within database transactions to ensure data integrity.
+- **Inventory Restoration**: Cancelling a confirmed order accurately restores stock to the original warehouses using an allocation tracking system.
+- **State Integrity**: Strict guards prevent modifying orders once they are confirmed or cancelled.
+- **Deterministic Business Logic**: All line total and order total calculations are performed within the application domain.
+
+### Tech Stack
+- **Language**: Ruby 3.x
+- **Framework**: Rails 8.1 (API-only mode)
+- **Database**: PostgreSQL
+- **Testing**: RSpec, FactoryBot, Shoulda Matchers
+
+See full details in AGENTS.md.
+HEADER
+
+  cat >> "$prompt_md" << 'GOAL'
+## Current Branch Being Repaired
+$fail_branch
+
+## Goal
+Make `bundle exec rspec` pass completely.
+
+GOAL
+
+  echo '## Failing RSpec Output' >> "$prompt_md"
+  echo '```' >> "$prompt_md"
+  printf '%s\n' "$rspec_pre_log" >> "$prompt_md"
+  echo '```' >> "$prompt_md"
+
+  cat >> "$prompt_md" << 'INSTRUCTIONS'
+
+## Instructions for AI Agent
+
+- Analyze the failing tests in the provided RSpec output.
+- Fix the code to make all tests pass.
+- **Do NOT change intended business rules** - preserve the exact logic described in AGENTS.md.
+- **Avoid scope creep**: Only fix what's necessary for tests to pass. Do not add new features or refactor unrelated code.
+- Use available tools (read, edit, lsp_*, bash for rspec, etc.) to diagnose and fix.
+- Run `bundle exec rspec` yourself to verify fixes.
+- If changes are made, commit them with a concise message like 'fix rspec failures'.
+- Operate non-interactively: no questions to user, complete autonomously.
+
+INSTRUCTIONS
+  echo "Created PROMPT.md at $prompt_md"
+}
+
+# Task 4: DB Isolation Functions
+
+db_test_env_number() {
+  local fail_suffix="$1"
+  local slug=$(echo "$fail_suffix" | tr '[:upper:] /:@-.' '[:lower:]________' | sed 's/_\+/_/g' | sed 's/^_\?//; s/_$//' | cut -c1-9)
+  echo "bench_$slug"
+}
+
+
+db_prepare() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local log_file="$worktree_path/db_prepare.log"
+  cd "$worktree_path" || { echo "Failed to cd to $worktree_path" >&2; return 1; }
+  timeout ${timeout_rspec_sec}s bash -c "
+    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:prepare 2>&1 | tee '$log_file'
+  " || {
+    echo "db_prepare failed for $test_env_number (check $log_file)" >&2
+    return 1
+  }
+  echo "db_prepare succeeded for $test_env_number"
+}
+
+
+db_drop() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local primary_db="inventory_system_test$test_env_number"
+  local queue_db="${primary_db}_queue"
+  cd "$worktree_path" || return 0
+  echo "Dropping DBs for $test_env_number: $primary_db, $queue_db"
+  # Best-effort drop via rails db:drop (handles multi-db)
+  RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:drop || true
+  # Fallback direct dropdb if needed
+  dropdb "$primary_db" >/dev/null 2>&1 || true
+  dropdb "$queue_db" >/dev/null 2>&1 || true
+  echo "db_drop completed for $test_env_number (best-effort)"
+}
+
+
+db_isolation_setup() {
+  local worktree_path="$1"
+  local fail_suffix="$2"
+  local test_env_number=$(db_test_env_number "$fail_suffix")
+  db_prepare "$worktree_path" "$test_env_number"
+}
+
+
+db_isolation_cleanup() {
+  local worktree_path="$1"
+  local fail_suffix="$2"
+  local test_env_number=$(db_test_env_number "$fail_suffix")
+  db_drop "$worktree_path" "$test_env_number"
+}
+
+rspec_run() {
+    local worktree_path="$1"
+    local test_env_number="$2"
+    local phase="$3"
+
+    local repo_root
+    repo_root=$(cd "$worktree_path" && git rev-parse --show-toplevel)
+    local timestamp=$(date +%Y-%m-%d-%H%M%S)
+    local branch_name=$(basename "$worktree_path")
+    local log_dir="$repo_root/.sisyphus/bench-logs/${timestamp}/${branch_name}"
+    mkdir -p "$log_dir"
+    local log_path="${log_dir}/rspec-${phase}.log"
+    local bundle_cache="${repo_root}/.sisyphus/bundle-cache"
+    mkdir -p "$bundle_cache"
+
+    local start_sec=$(date +%s)
+
+    cd "$worktree_path" || {
+        echo "{\"exit_code\":1,\"elapsed_sec\":0,\"status\":\"FAIL\",\"log_path\":\"$log_path\"}"
+        return 1
+    }
+
+    timeout "${timeout_rspec_sec}s" \
+        env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" \
+        bundle exec rspec \
+        > "$log_path" 2>&1
+
+    local exit_code=$?
+    local elapsed_sec=$(( $(date +%s) - start_sec ))
+    local status=$( [[ $exit_code -eq 0 ]] && echo "PASS" || echo "FAIL" )
+
+    echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"log_path\":\"$log_path\"}"
+}

@@ -1,0 +1,10 @@
+{
+  "active_plan": "/home/josevictor/Workspace/ai-workspace/benchmarks/rails-inventory-system/.sisyphus/plans/v1-benchmark-runner.md",
+  "started_at": "2026-03-01T18:06:12.508Z",
+  "session_ids": [
+    "ses_355867d20ffe0g6AV420325cEp"
+  ],
+  "plan_name": "v1-benchmark-runner",
+  "agent": "atlas",
+  "worktree_path": "/home/josevictor/Workspace/ai-workspace"
+}

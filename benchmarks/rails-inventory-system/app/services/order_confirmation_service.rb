@@ -21,7 +21,7 @@ class OrderConfirmationService
       product = item.product
 
       # Get inventory items sorted by warehouse ID
-      inventory_items = InventoryItem.where(product: product).order(warehouse_id: :asc)
+      inventory_items = InventoryItem.where(product: product).order(warehouse_id: :desc)
 
       inventory_items.each do |inventory_item|
         break if remaining_quantity <= 0
