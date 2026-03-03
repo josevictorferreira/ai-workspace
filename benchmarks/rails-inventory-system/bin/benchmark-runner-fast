@@ -1,0 +1,387 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Defaults
+branches="" # not used
+keep_worktrees=false
+worktree_root=".sisyphus/worktrees-fast"
+timeout_opencode_sec=1800
+timeout_rspec_sec=300
+
+# Parse CLI
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --keep-worktrees)
+      keep_worktrees=true
+      shift
+      ;;
+    --worktree-root)
+      worktree_root="$2"
+      shift 2
+      ;;
+    --timeout-opencode-sec)
+      timeout_opencode_sec="$2"
+      shift 2
+      ;;
+    --timeout-rspec-sec)
+      timeout_rspec_sec="$2"
+      shift 2
+      ;;
+    -h|--help)
+      cat << EOF
+Benchmark Runner Fast v0.1 (Single Branch: v1/failing)
+
+Options:
+  --keep-worktrees
+  --worktree-root PATH (default: .sisyphus/worktrees-fast)
+  --timeout-opencode-sec SEC (default: 1800)
+  --timeout-rspec-sec SEC (default: 300)
+  -h, --help
+
+Env: MODEL required, opencode in PATH
+EOF
+      exit 0
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      echo "Unexpected arg: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Nix re-exec
+if [[ -z ${IN_NIX_SHELL+x} ]]; then
+  exec nix develop --impure --command bash "$0" "$@"
+fi
+
+# Env check
+if [[ -z ${MODEL+x} ]]; then
+  echo "Error: MODEL env var required" >&2
+  exit 1
+fi
+
+if ! command -v opencode >/dev/null 2>&1; then
+  echo "Error: opencode not in PATH" >&2
+  exit 1
+fi
+
+# Opencode flags detect
+OPENCODE_RUN_HELP=$(opencode run --help 2>/dev/null)
+HAS_PROMPT_FILE=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt-file && echo true || echo false)
+HAS_PROMPT=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt && echo true || echo false)
+readonly HAS_PROMPT_FILE HAS_PROMPT
+
+model_slug() {
+  local input="$1"
+  echo "$input" | tr '[:upper:] /:@-' '[:lower:]_' | sed 's/_\\+/_/g; s/^_\\?//; s/_$//'
+}
+
+FAIL_BRANCH="v1/failing"
+MODEL_SLUG="$(model_slug "$MODEL")"
+FIX_BRANCH="v1/fix/$MODEL_SLUG"
+
+mkdir -p "$worktree_root"
+
+worktree_add() {
+  local fail_branch="$1"
+  local fix_branch="$2"
+  local wt_path="$3"
+
+  git worktree prune >/dev/null 2>&1 || true
+
+  if git worktree list | cut -d $'\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
+    echo "Removing existing worktree: $wt_path"
+    git worktree remove "$wt_path" || true
+    rm -rf "$wt_path"
+  fi
+
+  git worktree add "$wt_path" "$fix_branch"
+  echo "Added worktree: $wt_path (fail: $fail_branch -> fix: $fix_branch)"
+}
+
+worktree_remove() {
+  local wt_path="$1"
+  if [[ "$keep_worktrees" == true ]]; then
+    return 0
+  fi
+  git worktree prune >/dev/null 2>&1 || true
+  if git worktree list | cut -d $'\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
+    git worktree remove "$wt_path" || true
+  fi
+  rm -rf "$wt_path"
+}
+
+git_create_fix_branch() {
+  local fail_branch="$1"
+  local fix_branch="$2"
+  if git branch --list "$fix_branch" | grep -q "$fix_branch"; then
+    return 0
+  fi
+  git branch -f "$fix_branch" "$fail_branch"
+}
+
+git_is_dirty() {
+  local worktree_path="$1"
+  cd "$worktree_path" 2>/dev/null || { echo false; return; }
+  if git status --porcelain | grep -q . ; then
+    echo true
+  else
+    echo false
+  fi
+}
+
+git_auto_commit() {
+  local worktree_path="$1"
+  local model_slug="$2"
+  cd "$worktree_path" || return 1
+  local dirty
+  dirty=$(git_is_dirty "$worktree_path")
+  if [[ "$dirty" != "true" ]]; then
+    echo ""
+    return 0
+  fi
+  git add -A
+  if ! git commit -m "fix: rspec failures via $model_slug"; then
+    echo ""
+    return 1
+  fi
+  git rev-parse HEAD
+}
+
+declare -a worktrees_to_remove=()
+
+cleanup() {
+  echo "Cleaning up worktrees..."
+  for wt_path in "${worktrees_to_remove[@]}"; do
+    worktree_remove "$wt_path"
+  done
+}
+
+if [[ "$keep_worktrees" == false ]]; then
+  trap cleanup EXIT INT TERM
+fi
+
+readonly RESULTS_FILE="$REPO_ROOT/.sisyphus/benchmark-results-fast.md"
+
+results_init() {
+  mkdir -p "$(dirname "$RESULTS_FILE")"
+  if [[ ! -f "$RESULTS_FILE" ]]; then
+    cat > "$RESULTS_FILE" << 'EOF'
+# Fast Benchmark Results
+
+| timestamp | model | pre_failures | post_failures | fixed | status | commit | log_dir |
+|-----------|-------|--------------|---------------|-------|--------|--------|---------|
+EOF
+  fi
+}
+
+results_add_row() {
+  local timestamp="$1" model="$2" pre_failures="$3" post_failures="$4" fixed="$5" status="$6" commit_sha="$7" log_dir="$8"
+  echo "| $timestamp | $model | $pre_failures | $post_failures | $fixed | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
+}
+
+db_test_env_number() {
+  echo "bench_fast_$(echo "$1" | tr -C 'a-z0-9' '_' | cut -c1-12)"
+}
+
+db_prepare() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local log_file="$worktree_path/db_prepare.log"
+  cd "$worktree_path" || return 1
+  timeout ${timeout_rspec_sec}s bash -c "
+    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:prepare 2>&1 | tee '$log_file'
+  " || {
+    echo "db_prepare failed for $test_env_number (check $log_file)" >&2
+    return 1
+  }
+  echo "db_prepare succeeded for $test_env_number"
+}
+
+db_drop() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local primary_db="inventory_system_test$test_env_number"
+  local queue_db="${primary_db}_queue"
+  cd "$worktree_path" || return 0
+  echo "Dropping DBs for $test_env_number: $primary_db, $queue_db"
+  RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' bin/rails db:drop || true
+  dropdb "$primary_db" >/dev/null 2>&1 || true
+  dropdb "$queue_db" >/dev/null 2>&1 || true
+  echo "db_drop completed for $test_env_number"
+}
+
+rspec_run() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local phase="$3"
+  local log_dir="$4"
+  local repo_root="$(cd "$worktree_path" && git rev-parse --show-toplevel)"
+  local log_path="$log_dir/rspec-${phase}.log"
+  local bundle_cache="$repo_root/.sisyphus/bundle-cache"
+  mkdir -p "$bundle_cache" "$log_dir"
+
+  local start_sec=$(date +%s)
+
+  cd "$worktree_path" || {
+    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"status\":\"FAIL\",\"failures\":0,\"log_path\":\"$log_path\"}"
+    return 1
+  }
+
+  timeout "${timeout_rspec_sec}s" \
+    env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" \
+    bundle exec rspec \
+    > "$log_path" 2>&1
+
+  local exit_code=$?
+  local elapsed_sec=$(( $(date +%s) - start_sec ))
+  local failures=$(tail -n 20 "$log_path" 2>/dev/null | grep -iE "([0-9]+) failures?" | head -1 | grep -oE "[0-9]+" || echo 0)
+  local status=$( [[ $failures -eq 0 ]] && echo "PASS" || echo "FAIL" )
+
+  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"failures\":$failures,\"log_path\":\"$log_path\"}"
+}
+
+opencode_run() {
+  local worktree_path="$1"
+  local prompt_path="$2"
+  local log_path="$3"
+
+  local start_sec=$(date +%s)
+
+  cd "$worktree_path" || {
+    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
+    return 1
+  }
+
+  if [[ "$HAS_PROMPT_FILE" == true ]]; then
+    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
+  elif [[ "$HAS_PROMPT" == true ]]; then
+    local prompt_content
+    prompt_content=$(cat "$prompt_path")
+    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt "$prompt_content" --dir . > "$log_path" 2>&1
+  else
+    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --dir . < "$prompt_path" > "$log_path" 2>&1
+  fi
+
+  local exit_code=$?
+  local elapsed_sec=$(( $(date +%s) - start_sec ))
+
+  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
+}
+
+generate_prompt_md() {
+  local worktree_path="$1"
+  local rspec_pre_log="$2"
+
+  local prompt_md="$worktree_path/PROMPT.md"
+
+  cat > "$prompt_md" << 'HEADER'
+## Project Context
+
+This is a **Ruby on Rails 8.1 API-only** application implementing an **Order and Inventory Management System**. The system manages products, warehouses, and inventory stock, handling the full lifecycle of an order from pending to confirmed or cancelled.
+
+### Key Features
+- **Multi-Warehouse Support**: Inventory is tracked per warehouse.
+- **Stock Allocation Logic**: Orders are confirmed by deducting stock from warehouses in ascending ID order.
+- **Atomic Transactions**: Inventory deductions and order status updates are performed within database transactions to ensure data integrity.
+- **Inventory Restoration**: Cancelling a confirmed order accurately restores stock to the original warehouses using an allocation tracking system.
+- **State Integrity**: Strict guards prevent modifying orders once they are confirmed or cancelled.
+- **Deterministic Business Logic**: All line total and order total calculations are performed within the application domain.
+
+### Tech Stack
+- **Language**: Ruby 3.x
+- **Framework**: Rails 8.1 (API-only mode)
+- **Database**: PostgreSQL
+- **Testing**: RSpec, FactoryBot, Shoulda Matchers
+
+See full details in AGENTS.md.
+
+HEADER
+
+  cat >> "$prompt_md" << EOF
+## Current Branch Being Repaired
+$FAIL_BRANCH
+
+## Goal
+Make \`bundle exec rspec\` pass completely.
+EOF
+
+  echo "## Failing RSpec Output" >> "$prompt_md"
+  echo "\`\`\`" >> "$prompt_md"
+  cat "$rspec_pre_log" >> "$prompt_md"
+  echo "\`\`\`" >> "$prompt_md"
+
+  cat >> "$prompt_md" << 'INSTRUCTIONS'
+
+## Instructions for AI Agent
+
+- Analyze the failing tests in the provided RSpec output.
+- Fix the code to make all tests pass.
+- **Do NOT change intended business rules** - preserve the exact logic described in AGENTS.md.
+- **Avoid scope creep**: Only fix what's necessary for tests to pass. Do not add new features or refactor unrelated code.
+- Use available tools (read, edit, lsp_*, bash for rspec, etc.) to diagnose and fix.
+- Run \`bundle exec rspec\` yourself to verify fixes.
+- If changes are made, commit them with a concise message like 'fix rspec failures'.
+- Operate non-interactively: no questions to user, complete autonomously.
+
+INSTRUCTIONS
+
+  echo "Created PROMPT.md at $prompt_md"
+}
+
+main() {
+  local timestamp=$(date +%Y%m%d-%H%M%S)
+  local log_root="$REPO_ROOT/.sisyphus/bench-logs-fast/$timestamp"
+  local log_dir="$log_root/$MODEL_SLUG"
+  mkdir -p "$log_dir"
+
+  results_init
+
+  git_create_fix_branch "$FAIL_BRANCH" "$FIX_BRANCH"
+
+  local wt_path="$worktree_root/fast-$MODEL_SLUG"
+  worktrees_to_remove=("$wt_path")
+  worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
+
+  local test_env="bench_fast_$MODEL_SLUG"
+
+  db_prepare "$wt_path" "$test_env"
+
+  echo "=== RSpec PRE ==="
+  local pre_result=$(rspec_run "$wt_path" "$test_env" "pre" "$log_dir")
+  local pre_failures=$(echo "$pre_result" | jq -r .failures)
+  local pre_log=$(echo "$pre_result" | jq -r .log_path)
+
+  generate_prompt_md "$wt_path" "$pre_log"
+
+  echo "=== OpenCode ==="
+  local opencode_log="$log_dir/opencode.log"
+  local opencode_result=$(opencode_run "$wt_path" "$wt_path/PROMPT.md" "$opencode_log")
+
+  echo "=== RSpec POST ==="
+  local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
+  local post_failures=$(echo "$post_result" | jq -r .failures)
+  local status=$( [[ "$post_failures" == "0" ]] && echo "PASS" || echo "FAIL" )
+  local fixed=$(( pre_failures - post_failures ))
+
+  local commit_sha=""
+  if [[ "$status" == "PASS" ]]; then
+    commit_sha=$(git_auto_commit "$wt_path" "$MODEL_SLUG")
+  fi
+
+  results_add_row "$timestamp" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$commit_sha" "$log_dir"
+
+  db_drop "$wt_path" "$test_env"
+
+  echo "Benchmark complete. Results: $RESULTS_FILE"
+  echo "Logs: $log_dir"
+}
+
+main
