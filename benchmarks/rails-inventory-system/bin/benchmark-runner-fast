@@ -344,7 +344,8 @@ main() {
 
   echo "=== OpenCode ==="
   local opencode_log="$log_dir/opencode.log"
-  local opencode_result=$(opencode_run "$wt_path" "$wt_path/PROMPT.md" "$opencode_log")
+  local prompt_path="$wt_path/$RELATIVE_PATH/PROMPT.md"
+  local opencode_result=$(opencode_run "$wt_path" "$prompt_path" "$opencode_log")
 
   echo "=== RSpec POST ==="
   local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
