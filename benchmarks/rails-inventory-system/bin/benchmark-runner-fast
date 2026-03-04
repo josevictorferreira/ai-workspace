@@ -209,7 +209,8 @@ results_add_row() {
 }
 
 db_test_env_number() {
-  echo "bench_fast_$(echo "$1" | tr -C 'a-z0-9' '_' | cut -c1-12)"
+  # Use empty TEST_ENV_NUMBER to use default test database
+  echo ""
 }
 
 db_prepare() {
