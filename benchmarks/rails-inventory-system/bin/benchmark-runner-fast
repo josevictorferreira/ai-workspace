@@ -375,6 +375,14 @@ main() {
   worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
 
   local test_env="bench_fast_$MODEL_SLUG"
+  local project_path="$wt_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+
+  echo "Installing bundle..."
+  (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install 2>&1 | tee "$log_root/bundle-install.log") || {
+    echo "Bundle install failed" >&2
+    exit 1
+  }
 
   db_prepare "$wt_path" "$test_env"
 
