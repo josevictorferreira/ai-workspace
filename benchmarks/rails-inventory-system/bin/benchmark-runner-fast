@@ -8,7 +8,7 @@ readonly RELATIVE_PATH="benchmarks/rails-inventory-system"
 # Re-exec in nix shell if not already in one
 if [[ -z "${IN_NIX_SHELL:-}" ]] && [[ -f "$REPO_ROOT/flake.nix" ]]; then
   echo "Re-executing in nix shell..."
-  exec nix develop "$REPO_ROOT" --impure --command bash "$SCRIPT_DIR/benchmark-runner-fast" "$@"
+  exec nix develop "$REPO_ROOT" --impure --command bash -c "cd '$PWD' && '$SCRIPT_DIR/benchmark-runner-fast' $*"
 fi
 
 # Defaults
