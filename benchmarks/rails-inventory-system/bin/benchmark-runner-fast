@@ -326,16 +326,10 @@ opencode_run() {
     return 1
   }
 
-  # Read prompt content and pass as message argument
-  local prompt_content
-  prompt_content=$(cat "$prompt_path")
-  # Escape the content for safe passing to bash -c
-  local escaped_content
-  escaped_content=$(printf '%q' "$prompt_content")
-  
   # Run opencode with benchmark config (auto-allows edits, blocks git/web)
   # Pass API key env vars explicitly
-  env OPENCODE_DISABLE_CLAUDE_CODE=1 \
+  # Use a here-document to pass the prompt content
+  (cd "$project_path" && env OPENCODE_DISABLE_CLAUDE_CODE=1 \
     OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json.benchmark" \
     OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
     OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
@@ -343,7 +337,7 @@ opencode_run() {
     GROQ_API_KEY="${GROQ_API_KEY:-}" \
     DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
     XAI_API_KEY="${XAI_API_KEY:-}" \
-    timeout "${timeout_opencode_sec}s" bash -c "opencode run --model '$MODEL' --dir . --attach $escaped_content" > "$log_path" 2>&1
+    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --dir . --attach $(cat "$prompt_path")) > "$log_path" 2>&1
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
