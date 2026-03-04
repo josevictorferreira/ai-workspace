@@ -217,9 +217,10 @@ db_prepare() {
   local test_env_number="$2"
   local project_path="$worktree_path/$RELATIVE_PATH"
   local log_file="$project_path/db_prepare.log"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
   mkdir -p "$(dirname "$log_file")"
   cd "$project_path" || return 1
-  timeout ${timeout_rspec_sec}s bash -c "
+  env BUNDLE_PATH="$bundle_cache" timeout ${timeout_rspec_sec}s bash -c "
     RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee '$log_file'
   " || {
     echo "db_prepare failed for $test_env_number (check $log_file)" >&2
