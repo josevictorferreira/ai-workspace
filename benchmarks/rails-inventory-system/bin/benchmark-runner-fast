@@ -343,7 +343,7 @@ opencode_run() {
     GROQ_API_KEY="${GROQ_API_KEY:-}" \
     DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
     XAI_API_KEY="${XAI_API_KEY:-}" \
-    timeout "${timeout_opencode_sec}s" bash -c "opencode $escaped_content --model '$MODEL' --dir . --attach" > "$log_path" 2>&1
+    timeout "${timeout_opencode_sec}s" bash -c "opencode run --model '$MODEL' --dir . --attach $escaped_content" > "$log_path" 2>&1
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
