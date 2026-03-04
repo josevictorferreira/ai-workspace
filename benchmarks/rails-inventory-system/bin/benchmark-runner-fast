@@ -215,10 +215,12 @@ db_test_env_number() {
 db_prepare() {
   local worktree_path="$1"
   local test_env_number="$2"
-  local log_file="$worktree_path/db_prepare.log"
-  cd "$worktree_path" || return 1
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local log_file="$project_path/db_prepare.log"
+  mkdir -p "$(dirname "$log_file")"
+  cd "$project_path" || return 1
   timeout ${timeout_rspec_sec}s bash -c "
-    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee "$log_file"
+    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee '$log_file'
   " || {
     echo "db_prepare failed for $test_env_number (check $log_file)" >&2
     return 1
