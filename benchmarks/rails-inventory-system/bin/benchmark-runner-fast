@@ -6,13 +6,13 @@ readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
 readonly RELATIVE_PATH="benchmarks/rails-inventory-system"
 
 # Defaults
-branches="" # not used
-keep_worktrees=false
 worktree_root="$REPO_ROOT/.sisyphus/worktrees-fast"
-timeout_opencode_sec=1800
+timeout_opencode_sec=3600
 timeout_rspec_sec=300
+keep_worktrees=false
+opencode_config_path=""
 
-# Parse CLI
+# Parse CLI args
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --keep-worktrees)
@@ -20,56 +20,52 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --worktree-root)
+      if [[ -z "${2:-}" ]]; then echo "Error: --worktree-root requires an argument" >&2; exit 1; fi
       worktree_root="$2"
       shift 2
       ;;
     --timeout-opencode-sec)
+      if [[ -z "${2:-}" ]]; then echo "Error: --timeout-opencode-sec requires an argument" >&2; exit 1; fi
       timeout_opencode_sec="$2"
       shift 2
       ;;
     --timeout-rspec-sec)
+      if [[ -z "${2:-}" ]]; then echo "Error: --timeout-rspec-sec requires an argument" >&2; exit 1; fi
       timeout_rspec_sec="$2"
       shift 2
       ;;
     --opencode-config)
+      if [[ -z "${2:-}" ]]; then echo "Error: --opencode-config requires an argument" >&2; exit 1; fi
       opencode_config_path="$2"
       shift 2
       ;;
     -h|--help)
-      cat << EOF
-Benchmark Runner Fast v0.1 (Single Branch: v1/failing)
+      cat << 'EOF'
+Usage: MODEL=<model> ./bin/benchmark-runner-fast [options]
+
+Runs benchmark on v1/failing branch using specified model.
 
 Options:
   --keep-worktrees
   --worktree-root PATH (default: .sisyphus/worktrees-fast)
-  --timeout-opencode-sec SEC (default: 1800)
+  --timeout-opencode-sec SEC (default: 3600)
   --timeout-rspec-sec SEC (default: 300)
-  --opencode-config FILE (opencode.json format)
+  --opencode-config FILE
   -h, --help
 
 Env: MODEL required, opencode in PATH
-Configure providers via opencode.json
 EOF
       exit 0
       ;;
-    --*)
-      echo "Unknown option: $1" >&2
-      exit 1
-      ;;
     *)
-      echo "Unexpected arg: $1" >&2
+      echo "Unknown option: $1" >&2
       exit 1
       ;;
   esac
 done
 
-# Nix re-exec
-if [[ -z ${IN_NIX_SHELL+x} ]]; then
-  exec nix develop --impure --command bash "$0" "$@"
-fi
-
-# Env check
-if [[ -z ${MODEL+x} ]]; then
+# Required env check
+if [[ -z "${MODEL:-}" ]]; then
   echo "Error: MODEL env var required" >&2
   exit 1
 fi
@@ -79,63 +75,51 @@ if ! command -v opencode >/dev/null 2>&1; then
   exit 1
 fi
 
-# Opencode flags detect
-OPENCODE_RUN_HELP=$(opencode run --help 2>/dev/null)
-HAS_PROMPT_FILE=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt-file && echo true || echo false)
-HAS_PROMPT=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt && echo true || echo false)
-readonly HAS_PROMPT_FILE HAS_PROMPT
+# Compute derived values
+MODEL_SLUG="$(echo "$MODEL" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '_' | tr -s '_' | sed 's/^_\|_$//g')"
+FAIL_BRANCH="v1/failing"
+FIX_BRANCH="v1/fix/${MODEL_SLUG}"
 
-opencode_config_path=""
+# Results file
+RESULTS_FILE="$REPO_ROOT/.sisyphus/benchmark-results-fast.md"
 
-setup_opencode_config() {
-  local isolated_dir="$1"
-  local opencode_config_path="$2"
-  local config_dir="$isolated_dir/share/opencode"
-  mkdir -p "$config_dir"
-  if [[ -n "$opencode_config_path" && -f "$opencode_config_path" ]]; then
-    cp "$opencode_config_path" "$config_dir/opencode.json"
-    export OPENCODE_CONFIG="$config_dir/opencode.json"
+# Array to track worktrees for cleanup
+declare -a worktrees_to_remove=()
+
+cleanup() {
+  if [[ "$keep_worktrees" != true ]]; then
+    echo "Cleaning up worktrees..."
+    for wt in "${worktrees_to_remove[@]}"; do
+      if [[ -d "$wt" ]]; then
+        worktree_remove "$wt" 2>/dev/null || true
+      fi
+    done
+    git worktree prune 2>/dev/null || true
   fi
 }
-
+trap cleanup EXIT INT TERM
 
 model_slug() {
-  local input="$1"
-  echo "$input" | tr '[:upper:] /:@-' '[:lower:]_' | sed 's/_\\+/_/g; s/^_\\?//; s/_$//'
+  echo "$1" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '_' | tr -s '_' | sed 's/^_\|_$//g'
 }
-
-FAIL_BRANCH="v1/failing"
-MODEL_SLUG="$(model_slug "$MODEL")"
-FIX_BRANCH="v1/fix/$MODEL_SLUG"
-
-mkdir -p "$worktree_root"
 
 worktree_add() {
   local fail_branch="$1"
   local fix_branch="$2"
   local wt_path="$3"
 
-  git worktree prune >/dev/null 2>&1 || true
-
-  if git worktree list | cut -d $'\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
-    echo "Removing existing worktree: $wt_path"
-    git worktree remove "$wt_path" || true
-    rm -rf "$wt_path"
-  fi
-
-  git worktree add "$wt_path" "$fix_branch"
+  git_create_fix_branch "$fail_branch" "$fix_branch"
+  git worktree add "$wt_path" "$fix_branch" 2>/dev/null || {
+    echo "Worktree already exists at $wt_path, removing..." >&2
+    worktree_remove "$wt_path"
+    git worktree add "$wt_path" "$fix_branch"
+  }
   echo "Added worktree: $wt_path (fail: $fail_branch -> fix: $fix_branch)"
 }
 
 worktree_remove() {
   local wt_path="$1"
-  if [[ "$keep_worktrees" == true ]]; then
-    return 0
-  fi
-  git worktree prune >/dev/null 2>&1 || true
-  if git worktree list | cut -d $'\t' -f1 | grep -Fx "$wt_path" >/dev/null; then
-    git worktree remove "$wt_path" || true
-  fi
+  git worktree remove "$wt_path" 2>/dev/null || true
   rm -rf "$wt_path"
 }
 
@@ -143,69 +127,54 @@ git_create_fix_branch() {
   local fail_branch="$1"
   local fix_branch="$2"
   if git branch --list "$fix_branch" | grep -q "$fix_branch"; then
-    return 0
+    echo "Fix branch $fix_branch already exists"
+  else
+    git branch "$fix_branch" "$fail_branch"
   fi
-  git branch -f "$fix_branch" "$fail_branch"
 }
 
 git_is_dirty() {
-  local worktree_path="$1"
-  cd "$worktree_path" 2>/dev/null || { echo false; return; }
-  if git status --porcelain | grep -q . ; then
-    echo true
-  else
-    echo false
-  fi
+  local wt_path="$1"
+  [[ -n $(cd "$wt_path" && git status --porcelain) ]]
 }
 
 git_auto_commit() {
-  local worktree_path="$1"
+  local wt_path="$1"
   local model_slug="$2"
-  cd "$worktree_path" || return 1
-  local dirty
-  dirty=$(git_is_dirty "$worktree_path")
-  if [[ "$dirty" != "true" ]]; then
-    echo ""
+
+  cd "$wt_path" || return 1
+
+  if ! git_is_dirty "$wt_path"; then
+    echo "Working tree clean, nothing to commit"
     return 0
   fi
+
   git add -A
-  if ! git commit -m "fix: rspec failures via $model_slug"; then
-    echo ""
-    return 1
-  fi
+  git commit -m "fix: rspec failures via ${model_slug}"
   git rev-parse HEAD
 }
 
-declare -a worktrees_to_remove=()
-
-cleanup() {
-  echo "Cleaning up worktrees..."
-  for wt_path in "${worktrees_to_remove[@]}"; do
-    worktree_remove "$wt_path"
-  done
-}
-
-if [[ "$keep_worktrees" == false ]]; then
-  trap cleanup EXIT INT TERM
-fi
-
-readonly RESULTS_FILE="$REPO_ROOT/.sisyphus/benchmark-results-fast.md"
-
 results_init() {
   mkdir -p "$(dirname "$RESULTS_FILE")"
-  if [[ ! -f "$RESULTS_FILE" ]]; then
-    cat > "$RESULTS_FILE" << 'EOF'
+  cat > "$RESULTS_FILE" << 'EOF'
 # Fast Benchmark Results
 
 | timestamp | model | pre_failures | post_failures | fixed | status | commit | log_dir |
 |-----------|-------|--------------|---------------|-------|--------|--------|---------|
 EOF
-  fi
 }
 
 results_add_row() {
-  local timestamp="$1" model="$2" pre_failures="$3" post_failures="$4" fixed="$5" status="$6" commit_sha="$7" log_dir="$8"
-  echo "| $timestamp | $model | $pre_failures | $post_failures | $fixed | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
+  local timestamp="$1"
+  local model="$2"
+  local pre="$3"
+  local post="$4"
+  local fixed="$5"
+  local status="$6"
+  local commit="$7"
+  local log_dir="$8"
+
+  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $commit | $log_dir |" >> "$RESULTS_FILE"
 }
 
 db_test_env_number() {
@@ -217,35 +186,57 @@ db_prepare() {
   local worktree_path="$1"
   local test_env_number="$2"
   local project_path="$worktree_path/$RELATIVE_PATH"
-  local start_sec=$(date +%s)
-
-  cd "$project_path" || {
-    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
+  local log_file="$project_path/db_prepare.log"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  mkdir -p "$(dirname "$log_file")"
+  cd "$project_path" || return 1
+  env BUNDLE_PATH="$bundle_cache" timeout ${timeout_rspec_sec}s bash -c "
+    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee 'db_prepare.log'
+  " || {
+    echo "db_prepare failed for $test_env_number (check $log_file)" >&2
     return 1
   }
+  echo "db_prepare succeeded for $test_env_number"
+}
 
-  # Read prompt content and pass as message argument
-  local prompt_content
-  prompt_content=$(cat "$prompt_path")
-  # Escape the content for safe passing to bash -c
-  local escaped_content
-  escaped_content=$(printf '%q' "$prompt_content")
-  
-  # Run opencode with user's config (not isolated), but disable claude code import
-  # Pass API key env vars explicitly
-  env OPENCODE_DISABLE_CLAUDE_CODE=1 \
-    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
-    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
-    ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
-    GROQ_API_KEY="${GROQ_API_KEY:-}" \
-    DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
-    XAI_API_KEY="${XAI_API_KEY:-}" \
-    timeout "${timeout_opencode_sec}s" bash -c "opencode run $escaped_content --model '$MODEL' --dir . --attach" > "$log_path" 2>&1
+db_drop() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  cd "$project_path" || return 0
+  echo "Dropping DBs for $test_env_number: inventory_system_test${test_env_number}, inventory_system_test${test_env_number}_queue"
+  env BUNDLE_PATH="$bundle_cache" RAILS_ENV=test TEST_ENV_NUMBER="$test_env_number" ./bin/rails db:drop 2>/dev/null || true
+  echo "db_drop completed for $test_env_number"
+}
+
+rspec_run() {
+  local worktree_path="$1"
+  local test_env_number="$2"
+  local phase="$3"
+  local log_dir="$4"
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local log_path="$log_dir/rspec-${phase}.log"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  mkdir -p "$log_dir"
+
+  local start_sec=$(date +%s)
+
+  timeout "${timeout_rspec_sec}s" \
+    env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" \
+    bash -c "cd '$project_path' && bundle exec rspec" \
+    > "$log_path" 2>&1
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
+  # Parse failures count from rspec summary line like "31 examples, 14 failures"
+  local failures=$(tail -n 30 "$log_path" 2>/dev/null | grep -E "[0-9]+ failure" | tail -1 | sed -E 's/.*([0-9]+) failure.*/\1/' | grep -E "^[0-9]+$" || echo 0)
+  # Ensure failures is a single number
+  failures=$(echo "$failures" | head -1)
+  [[ -z "$failures" ]] && failures=0
+  local status=$( [[ "$failures" -eq 0 ]] && echo "PASS" || echo "FAIL" )
 
-  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
+  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"failures\":$failures,\"log_path\":\"$log_path\"}"
 }
 
 generate_prompt_md() {
@@ -278,49 +269,94 @@ See full details in AGENTS.md.
 
 HEADER
 
-  cat >> "$prompt_md" << EOF
-## Current Branch Being Repaired
-$FAIL_BRANCH
+  echo "" >> "$prompt_md"
+  echo "## Current Branch" >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "You are working on the \`v1/failing\` branch." >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "## Task" >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "Fix the failing tests so that \`bundle exec rspec\` passes." >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "- Do NOT change the intended business logic or introduce scope creep." >> "$prompt_md"
+  echo "- Do NOT modify database.yml or change database configuration." >> "$prompt_md"
+  echo "- Do NOT add new migrations or change the schema." >> "$prompt_md"
+  echo "- Focus only on fixing the failing test cases." >> "$prompt_md"
+  echo "- Make minimal changes to get tests passing." >> "$prompt_md"
+  echo "" >> "$prompt_md"
 
-## Goal
-Make \`bundle exec rspec\` pass completely.
-EOF
+  if [[ -f "$rspec_pre_log" ]]; then
+    echo "## Failing Test Output" >> "$prompt_md"
+    echo "" >> "$prompt_md"
+    echo '```' >> "$prompt_md"
+    tail -n 100 "$rspec_pre_log" >> "$prompt_md" 2>/dev/null || cat "$rspec_pre_log" >> "$prompt_md"
+    echo '```' >> "$prompt_md"
+    echo "" >> "$prompt_md"
+  fi
 
-  echo "## Failing RSpec Output" >> "$prompt_md"
-  echo "\`\`\`" >> "$prompt_md"
-  cat "$rspec_pre_log" >> "$prompt_md"
-  echo "\`\`\`" >> "$prompt_md"
-
-  cat >> "$prompt_md" << 'INSTRUCTIONS'
-
-## Instructions for AI Agent
-
-- Analyze the failing tests in the provided RSpec output.
-- Fix the code to make all tests pass.
-- **Do NOT change intended business rules** - preserve the exact logic described in AGENTS.md.
-- **Avoid scope creep**: Only fix what's necessary for tests to pass. Do not add new features or refactor unrelated code.
-- Use available tools (read, edit, lsp_*, bash for rspec, etc.) to diagnose and fix.
-- Run \`bundle exec rspec\` yourself to verify fixes.
-- If changes are made, commit them with a concise message like 'fix rspec failures'.
-- Operate non-interactively: no questions to user, complete autonomously.
-
-INSTRUCTIONS
+  echo "## Instructions" >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "1. Read the failing test output above." >> "$prompt_md"
+  echo "2. Identify the root cause of the failures." >> "$prompt_md"
+  echo "3. Make the minimal code changes needed to fix the tests." >> "$prompt_md"
+  echo "4. Run \`bundle exec rspec\` to verify your fixes." >> "$prompt_md"
+  echo "5. Commit your changes when all tests pass." >> "$prompt_md"
+  echo "" >> "$prompt_md"
+  echo "Do not ask the user questions - work autonomously." >> "$prompt_md"
 
   echo "Created PROMPT.md at $prompt_md"
+}
+
+opencode_run() {
+  local worktree_path="$1"
+  local prompt_path="$2"
+  local log_path="$3"
+
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local start_sec=$(date +%s)
+
+  cd "$project_path" || {
+    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
+    return 1
+  }
+
+  # Read prompt content and pass as message argument
+  local prompt_content
+  prompt_content=$(cat "$prompt_path")
+  # Escape the content for safe passing to bash -c
+  local escaped_content
+  escaped_content=$(printf '%q' "$prompt_content")
+  
+  # Run opencode with user's config (not isolated), but disable claude code import
+  # Pass API key env vars explicitly
+  env OPENCODE_DISABLE_CLAUDE_CODE=1 \
+    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
+    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+    ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
+    GROQ_API_KEY="${GROQ_API_KEY:-}" \
+    DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
+    XAI_API_KEY="${XAI_API_KEY:-}" \
+    timeout "${timeout_opencode_sec}s" bash -c "opencode run $escaped_content --model '$MODEL' --dir . --attach" > "$log_path" 2>&1
+
+  local exit_code=$?
+  local elapsed_sec=$(( $(date +%s) - start_sec ))
+
+  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
 }
 
 main() {
   local timestamp=$(date +%Y%m%d-%H%M%S)
   local log_root="$REPO_ROOT/.sisyphus/bench-logs-fast/$timestamp"
-  local log_dir="$log_root/$MODEL_SLUG"
-  mkdir -p "$log_dir"
+  mkdir -p "$log_root"
 
   results_init
 
-  git_create_fix_branch "$FAIL_BRANCH" "$FIX_BRANCH"
-
   local wt_path="$worktree_root/fast-$MODEL_SLUG"
-  worktrees_to_remove=("$wt_path")
+  local log_dir="$log_root/$MODEL_SLUG"
+  mkdir -p "$log_dir"
+
+  worktrees_to_remove+=("$wt_path")
+
   worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
 
   local test_env=""
@@ -366,15 +402,4 @@ main() {
   echo "Logs: $log_dir"
 }
 
-main
-opencode_setup_isolation() {
-  local worktree_path="$1"
-  local isolated_dir="$worktree_path/.opencode-isolated"
-  mkdir -p "$isolated_dir"/{config,share,cache,state}
-  export XDG_CONFIG_HOME="$isolated_dir/config"
-  export XDG_DATA_HOME="$isolated_dir/share"
-  export XDG_CACHE_HOME="$isolated_dir/cache"
-  export XDG_STATE_HOME="$isolated_dir/state"
-  export OPENCODE_DISABLE_CLAUDE_CODE=1
-  setup_opencode_config "$isolated_dir" "$opencode_config_path"
-}
+main "$@"
