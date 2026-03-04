@@ -8,7 +8,7 @@ readonly RELATIVE_PATH="benchmarks/rails-inventory-system"
 # Defaults
 branches="" # not used
 keep_worktrees=false
-worktree_root=".sisyphus/worktrees-fast"
+worktree_root="$REPO_ROOT/.sisyphus/worktrees-fast"
 timeout_opencode_sec=1800
 timeout_rspec_sec=300
 
