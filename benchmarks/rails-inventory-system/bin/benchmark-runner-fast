@@ -190,7 +190,7 @@ db_prepare() {
   local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
   mkdir -p "$(dirname "$log_file")"
   cd "$project_path" || return 1
-  env BUNDLE_PATH="$bundle_cache" timeout ${timeout_rspec_sec}s bash -c "
+  env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" timeout ${timeout_rspec_sec}s bash -c "
     RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee 'db_prepare.log'
   " || {
     echo "db_prepare failed for $test_env_number (check $log_file)" >&2
@@ -206,7 +206,7 @@ db_drop() {
   local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
   cd "$project_path" || return 0
   echo "Dropping DBs for $test_env_number: inventory_system_test${test_env_number}, inventory_system_test${test_env_number}_queue"
-  env BUNDLE_PATH="$bundle_cache" RAILS_ENV=test TEST_ENV_NUMBER="$test_env_number" ./bin/rails db:drop 2>/dev/null || true
+  env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" RAILS_ENV=test TEST_ENV_NUMBER="$test_env_number" ./bin/rails db:drop 2>/dev/null || true
   echo "db_drop completed for $test_env_number"
 }
 
@@ -223,7 +223,7 @@ rspec_run() {
   local start_sec=$(date +%s)
 
   timeout "${timeout_rspec_sec}s" \
-    env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" \
+    env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" PATH="$bundle_cache/bin:$PATH" \
     bash -c "cd '$project_path' && bundle exec rspec" \
     > "$log_path" 2>&1
 
@@ -364,9 +364,12 @@ main() {
   local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
 
   echo "Installing bundle..."
-  (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install 2>&1 | tee "$log_root/bundle-install.log") || {
-    echo "Bundle install failed" >&2
-    exit 1
+  (cd "$project_path" && BUNDLE_PATH="$bundle_cache" "$REPO_ROOT/.sisyphus/bundle-cache/bin/bundle" install 2>&1 | tee "$log_root/bundle-install.log") || {
+    echo "Bundle install failed, trying with system bundle..." >&2
+    (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install 2>&1 | tee "$log_root/bundle-install.log") || {
+      echo "Bundle install failed" >&2
+      exit 1
+    }
   }
 
   db_prepare "$wt_path" "$test_env"
