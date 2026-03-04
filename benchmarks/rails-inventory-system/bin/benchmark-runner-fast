@@ -5,6 +5,11 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
 readonly RELATIVE_PATH="benchmarks/rails-inventory-system"
 
+# Re-exec in nix shell if not already in one
+if [[ -z "${IN_NIX_SHELL:-}" ]] && [[ -f "$REPO_ROOT/flake.nix" ]]; then
+  exec nix develop "$REPO_ROOT" --impure --command bash "$0" "$@"
+fi
+
 # Defaults
 worktree_root="$REPO_ROOT/.sisyphus/worktrees-fast"
 timeout_opencode_sec=3600
