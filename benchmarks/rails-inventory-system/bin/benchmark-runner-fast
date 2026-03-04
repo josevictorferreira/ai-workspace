@@ -286,7 +286,6 @@ opencode_run() {
     return 1
   }
 
-    opencode_setup_isolation "$worktree_path"
   if [[ "$HAS_PROMPT_FILE" == true ]]; then
     timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
   elif [[ "$HAS_PROMPT" == true ]]; then
