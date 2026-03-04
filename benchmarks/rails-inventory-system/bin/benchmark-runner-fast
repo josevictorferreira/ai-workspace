@@ -376,7 +376,7 @@ main() {
   worktrees_to_remove=("$wt_path")
   worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
 
-  local test_env="bench_fast_$MODEL_SLUG"
+  local test_env=""
   local project_path="$wt_path/$RELATIVE_PATH"
   local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
 
