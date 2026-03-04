@@ -162,12 +162,14 @@ git_auto_commit() {
 
 results_init() {
   mkdir -p "$(dirname "$RESULTS_FILE")"
-  cat > "$RESULTS_FILE" << 'EOF'
+  if [[ ! -f "$RESULTS_FILE" ]]; then
+    cat > "$RESULTS_FILE" << 'EOF'
 # Fast Benchmark Results
 
-| timestamp | model | pre_failures | post_failures | fixed | status | commit | log_dir |
-|-----------|-------|--------------|---------------|-------|--------|--------|---------|
+| timestamp | model | pre_failures | post_failures | fixed | status | duration_sec | commit | log_dir |
+|-----------|-------|--------------|---------------|-------|--------|--------------|--------|---------|
 EOF
+  fi
 }
 
 results_add_row() {
@@ -177,10 +179,11 @@ results_add_row() {
   local post="$4"
   local fixed="$5"
   local status="$6"
-  local commit="$7"
-  local log_dir="$8"
+  local duration="$7"
+  local commit="$8"
+  local log_dir="$9"
 
-  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $commit | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $duration | $commit | $log_dir |" >> "$RESULTS_FILE"
 }
 
 db_test_env_number() {
@@ -450,6 +453,7 @@ main() {
   local opencode_log="$log_dir/opencode.log"
   local prompt_path="$wt_path/$RELATIVE_PATH/PROMPT.md"
   local opencode_result=$(opencode_run "$wt_path" "$prompt_path" "$opencode_log")
+  local opencode_duration=$(echo "$opencode_result" | jq -r .elapsed_sec)
 
   echo "=== RSpec POST ==="
   local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
@@ -462,7 +466,7 @@ main() {
     commit_sha=$(git_auto_commit "$wt_path" "$MODEL_SLUG")
   fi
 
-  results_add_row "$timestamp" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$commit_sha" "$log_dir"
+  results_add_row "$timestamp" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$opencode_duration" "$commit_sha" "$log_dir"
 
   db_drop "$wt_path" "$test_env"
 
