@@ -217,84 +217,30 @@ db_prepare() {
   local worktree_path="$1"
   local test_env_number="$2"
   local project_path="$worktree_path/$RELATIVE_PATH"
-  local log_file="$project_path/db_prepare.log"
-  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
-  mkdir -p "$(dirname "$log_file")"
-  cd "$project_path" || return 1
-  # Use just the filename for tee since we're already in project_path
-  env BUNDLE_PATH="$bundle_cache" timeout ${timeout_rspec_sec}s bash -c "
-    RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:prepare 2>&1 | tee 'db_prepare.log'
-  " || {
-    echo "db_prepare failed for $test_env_number (check $log_file)" >&2
-    return 1
-  }
-  echo "db_prepare succeeded for $test_env_number"
-}
-
-db_drop() {
-  local worktree_path="$1"
-  local test_env_number="$2"
-  local primary_db="inventory_system_test$test_env_number"
-  local queue_db="${primary_db}_queue"
-  cd "$worktree_path" || return 0
-  echo "Dropping DBs for $test_env_number: $primary_db, $queue_db"
-  RAILS_ENV=test TEST_ENV_NUMBER='$test_env_number' ./bin/rails db:drop 2>/dev/null || true
-  dropdb "$primary_db" >/dev/null 2>&1 || true
-  dropdb "$queue_db" >/dev/null 2>&1 || true
-  echo "db_drop completed for $test_env_number"
-}
-
-rspec_run() {
-  local worktree_path="$1"
-  local test_env_number="$2"
-  local phase="$3"
-  local log_dir="$4"
-  local repo_root="$(cd "$worktree_path" && git rev-parse --show-toplevel)"
-  local log_path="$log_dir/rspec-${phase}.log"
-  local bundle_cache="$repo_root/.sisyphus/bundle-cache"
-  mkdir -p "$bundle_cache" "$log_dir"
-
   local start_sec=$(date +%s)
 
-  cd "$worktree_path" || {
-    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"status\":\"FAIL\",\"failures\":0,\"log_path\":\"$log_path\"}"
-    return 1
-  }
-
-  timeout "${timeout_rspec_sec}s" \
-    env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" \
-    bundle exec rspec \
-    > "$log_path" 2>&1
-
-  local exit_code=$?
-  local elapsed_sec=$(( $(date +%s) - start_sec ))
-  local failures=$(tail -n 20 "$log_path" 2>/dev/null | grep -iE "([0-9]+) failures?" | head -1 | grep -oE "[0-9]+" || echo 0)
-  local status=$( [[ $failures -eq 0 ]] && echo "PASS" || echo "FAIL" )
-
-  echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"failures\":$failures,\"log_path\":\"$log_path\"}"
-}
-
-opencode_run() {
-  local worktree_path="$1"
-  local prompt_path="$2"
-  local log_path="$3"
-
-  local start_sec=$(date +%s)
-
-  cd "$worktree_path" || {
+  cd "$project_path" || {
     echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
     return 1
   }
 
-  if [[ "$HAS_PROMPT_FILE" == true ]]; then
-    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
-  elif [[ "$HAS_PROMPT" == true ]]; then
-    local prompt_content
-    prompt_content=$(cat "$prompt_path")
-    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt "$prompt_content" --dir . > "$log_path" 2>&1
-  else
-    timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --dir . < "$prompt_path" > "$log_path" 2>&1
-  fi
+  # Read prompt content and pass as message argument
+  local prompt_content
+  prompt_content=$(cat "$prompt_path")
+  # Escape the content for safe passing to bash -c
+  local escaped_content
+  escaped_content=$(printf '%q' "$prompt_content")
+  
+  # Run opencode with user's config (not isolated), but disable claude code import
+  # Pass API key env vars explicitly
+  env OPENCODE_DISABLE_CLAUDE_CODE=1 \
+    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
+    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+    ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
+    GROQ_API_KEY="${GROQ_API_KEY:-}" \
+    DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
+    XAI_API_KEY="${XAI_API_KEY:-}" \
+    timeout "${timeout_opencode_sec}s" bash -c "opencode run $escaped_content --model '$MODEL' --dir . --attach" > "$log_path" 2>&1
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
@@ -305,8 +251,9 @@ opencode_run() {
 generate_prompt_md() {
   local worktree_path="$1"
   local rspec_pre_log="$2"
+  local project_path="$worktree_path/$RELATIVE_PATH"
 
-  local prompt_md="$worktree_path/PROMPT.md"
+  local prompt_md="$project_path/PROMPT.md"
 
   cat > "$prompt_md" << 'HEADER'
 ## Project Context
