@@ -333,9 +333,10 @@ opencode_run() {
   local escaped_content
   escaped_content=$(printf '%q' "$prompt_content")
   
-  # Run opencode with user's config (not isolated), but disable claude code import
+  # Run opencode with benchmark config (auto-allows edits, blocks git/web)
   # Pass API key env vars explicitly
   env OPENCODE_DISABLE_CLAUDE_CODE=1 \
+    OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json.benchmark" \
     OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
     OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
     ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
