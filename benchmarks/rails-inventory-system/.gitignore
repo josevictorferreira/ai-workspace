@@ -1,1 +1,10 @@
 .bundle
+.sisyphus/
+log/*.log
+tmp/
+db/*.sqlite3
+db/*.sqlite3-journal
+public/assets
+.env*
+node_modules/
+bin/db_prepare.log
