@@ -166,8 +166,8 @@ results_init() {
     cat > "$RESULTS_FILE" << 'EOF'
 # Fast Benchmark Results
 
-| timestamp | model | pre_failures | post_failures | fixed | status | duration_sec | commit | log_dir |
-|-----------|-------|--------------|---------------|-------|--------|--------------|--------|---------|
+| timestamp | model | pre_failures | post_failures | fixed | status | duration_sec | tool_calls | commit | log_dir |
+|-----------|-------|--------------|---------------|-------|--------|--------------|------------|--------|---------|
 EOF
   fi
 }
@@ -180,10 +180,11 @@ results_add_row() {
   local fixed="$5"
   local status="$6"
   local duration="$7"
-  local commit="$8"
-  local log_dir="$9"
+  local tool_calls="$8"
+  local commit="$9"
+  local log_dir="${10}"
 
-  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $duration | $commit | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $duration | $tool_calls | $commit | $log_dir |" >> "$RESULTS_FILE"
 }
 
 db_test_env_number() {
@@ -233,8 +234,7 @@ rspec_run() {
 
   timeout "${timeout_rspec_sec}s" \
     env BUNDLE_PATH="$bundle_cache" TEST_ENV_NUMBER="$test_env_number" PATH="$bundle_cache/bin:$PATH" \
-    bash -c "cd '$project_path' && bundle exec rspec" \
-    > "$log_path" 2>&1
+    bash -c "cd '$project_path' && bundle exec rspec" 2>&1 | tee "$log_path" >&2
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
@@ -405,7 +405,7 @@ opencode_run() {
     GROQ_API_KEY="${GROQ_API_KEY:-}" \
     DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
     XAI_API_KEY="${XAI_API_KEY:-}" \
-    timeout "${timeout_opencode_sec}s" opencode run "Fix the failing tests" --model "$MODEL" --dir . -f "$prompt_path") > "$log_path" 2>&1
+    timeout "${timeout_opencode_sec}s" opencode run "Fix the failing tests" --model "$MODEL" --dir . -f "$prompt_path") 2>&1 | tee "$log_path" >&2
 
   local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
@@ -417,6 +417,7 @@ opencode_run() {
 
 main() {
   local timestamp=$(date +%Y%m%d-%H%M%S)
+  local display_time=$(date +"%Y-%m-%d %H:%M:%S")
   local log_root="$REPO_ROOT/.sisyphus/bench-logs-fast/$timestamp"
   mkdir -p "$log_root"
 
@@ -454,6 +455,7 @@ main() {
   local prompt_path="$wt_path/$RELATIVE_PATH/PROMPT.md"
   local opencode_result=$(opencode_run "$wt_path" "$prompt_path" "$opencode_log")
   local opencode_duration=$(echo "$opencode_result" | jq -r .elapsed_sec)
+  local tool_calls=$(grep -ao 'to=functions\.[a-z]*' "$opencode_log" 2>/dev/null | wc -l || echo 0)
 
   echo "=== RSpec POST ==="
   local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
@@ -466,12 +468,23 @@ main() {
     commit_sha=$(git_auto_commit "$wt_path" "$MODEL_SLUG")
   fi
 
-  results_add_row "$timestamp" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$opencode_duration" "$commit_sha" "$log_dir"
+  results_add_row "$display_time" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$opencode_duration" "$tool_calls" "$commit_sha" "$log_dir"
 
   db_drop "$wt_path" "$test_env"
 
-  echo "Benchmark complete. Results: $RESULTS_FILE"
-  echo "Logs: $log_dir"
+  echo ""
+  echo "=== Benchmark Final Results ==="
+  echo "Model:         $MODEL"
+  echo "Status:        $status"
+  echo "Fixed:         $fixed / $pre_failures (remaining: $post_failures)"
+  echo "Duration:      ${opencode_duration}s"
+  echo "Tool Calls:    $tool_calls"
+  if [[ -n "$commit_sha" ]]; then
+    echo "Commit:        $commit_sha"
+  fi
+  echo "Results saved: $RESULTS_FILE"
+  echo "Logs:          $log_dir"
+  echo "==============================="
 }
 
 main "$@"

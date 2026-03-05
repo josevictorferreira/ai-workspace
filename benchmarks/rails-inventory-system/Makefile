@@ -1,4 +1,4 @@
-.PHONY: benchmark clean-benchmark help
+.PHONY: benchmark benchmark-manual clean-benchmark help
 
 # Default model if none is specified
 MODEL ?= openrouter/openai/gpt-oss-120b:exacto
@@ -11,18 +11,24 @@ help:
 	@echo ""
 	@echo "Usage:"
 	@echo "  make benchmark MODEL=<model_identifier>"
+	@echo "  make benchmark-manual"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make benchmark MODEL=openrouter/openai/gpt-4o"
 	@echo "  make benchmark MODEL=openrouter/anthropic/claude-3.5-sonnet"
 	@echo ""
 	@echo "Targets:"
-	@echo "  benchmark        Clean old artifacts and run the benchmark for the specified MODEL"
+	@echo "  benchmark        Clean old artifacts and run the automated benchmark for the specified MODEL"
+	@echo "  benchmark-manual Setup interactive environment for manual agent testing and metric recording"
 	@echo "  clean-benchmark  Hard clean worktrees and branches for the current MODEL"
 
 benchmark: clean-benchmark
 	@echo "===> Starting benchmark for: $(MODEL)"
 	@MODEL="$(MODEL)" ./bin/benchmark-runner-fast
+
+benchmark-manual:
+	@echo "===> Starting interactive manual benchmark"
+	@./bin/benchmark-interactive
 
 clean-benchmark:
 	@echo "===> Cleaning artifacts for: $(MODEL_SLUG)"

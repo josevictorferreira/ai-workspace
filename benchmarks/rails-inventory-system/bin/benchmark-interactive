@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_ROOT="$SCRIPT_DIR/.."
+readonly RELATIVE_PATH="benchmarks/rails-inventory-system"
+
+# Re-exec in nix shell if not already in one
+if [[ -z "${IN_NIX_SHELL:-}" ]] && [[ -f "$REPO_ROOT/flake.nix" ]]; then
+  echo "Re-executing in nix develop..."
+  exec nix develop "$REPO_ROOT" --impure --command bash "$SCRIPT_DIR/benchmark-interactive" "$@"
+fi
+
+# Defaults
+worktree_root="$REPO_ROOT/.sisyphus/worktrees-interactive"
+keep_worktrees=false
+
+# Parse CLI args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --keep-worktrees)
+      keep_worktrees=true
+      shift
+      ;;
+    --worktree-root)
+      if [[ -z "${2:-}" ]]; then echo "Error: --worktree-root requires an argument" >&2; exit 1; fi
+      worktree_root="$2"
+      shift 2
+      ;;
+    -h|--help)
+      cat << 'EOF'
+Usage: ./bin/benchmark-interactive [options]
+
+Sets up the benchmark environment on the v1/failing branch and drops you into a bash shell.
+Useful for debugging why the agent is failing or testing opencode manually.
+
+Options:
+  --keep-worktrees
+  --worktree-root PATH (default: .sisyphus/worktrees-interactive)
+  -h, --help
+EOF
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+FAIL_BRANCH="v1/failing"
+FIX_BRANCH="v1/fix/interactive-$(date +%s)"
+
+# Array to track worktrees for cleanup
+declare -a worktrees_to_remove=()
+
+cleanup() {
+  if [[ "$keep_worktrees" != true ]]; then
+    echo "Cleaning up worktrees..."
+    for wt in "${worktrees_to_remove[@]}"; do
+      if [[ -d "$wt" ]]; then
+        git worktree remove --force "$wt" 2>/dev/null || true
+        rm -rf "$wt"
+      fi
+    done
+    git worktree prune 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+worktree_add() {
+  local fail_branch="$1"
+  local fix_branch="$2"
+  local wt_path="$3"
+
+  if git branch --list "$fix_branch" | grep -q "$fix_branch"; then
+    echo "Fix branch $fix_branch already exists"
+  else
+    git branch "$fix_branch" "$fail_branch"
+  fi
+
+  git worktree add "$wt_path" "$fix_branch" 2>/dev/null || {
+    echo "Worktree already exists at $wt_path, removing..." >&2
+    git worktree remove --force "$wt_path" 2>/dev/null || true
+    rm -rf "$wt_path"
+    git worktree add "$wt_path" "$fix_branch"
+  }
+  echo "Added worktree: $wt_path (fail: $fail_branch -> fix: $fix_branch)"
+}
+
+db_prepare() {
+  local worktree_path="$1"
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  cd "$project_path" || return 1
+  echo "Preparing database..."
+  env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" RAILS_ENV=test ./bin/rails db:prepare >/dev/null 2>&1 || {
+    echo "db_prepare failed!" >&2
+    return 1
+  }
+  echo "Database prepared."
+}
+
+db_drop() {
+  local worktree_path="$1"
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  cd "$project_path" || return 0
+  echo "Dropping database..."
+  env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" RAILS_ENV=test ./bin/rails db:drop >/dev/null 2>&1 || true
+}
+
+generate_prompt_md() {
+  local worktree_path="$1"
+  local project_path="$worktree_path/$RELATIVE_PATH"
+  local prompt_md="$project_path/PROMPT.md"
+
+  cat > "$prompt_md" << 'HEADER'
+## Project Context
+
+This is a **Ruby on Rails 8.1 API-only** application implementing an **Order and Inventory Management System**. The system manages products, warehouses, and inventory stock, handling the full lifecycle of an order from pending to confirmed or cancelled.
+
+### Key Features
+- **Multi-Warehouse Support**: Inventory is tracked per warehouse.
+- **Stock Allocation Logic**: Orders are confirmed by deducting stock from warehouses in ascending ID order.
+- **Atomic Transactions**: Inventory deductions and order status updates are performed within database transactions to ensure data integrity.
+- **Inventory Restoration**: Cancelling a confirmed order accurately restores stock to the original warehouses using an allocation tracking system.
+- **State Integrity**: Strict guards prevent modifying orders once they are confirmed or cancelled.
+- **Deterministic Business Logic**: All line total and order total calculations are performed within the application domain.
+
+### Tech Stack
+- **Language**: Ruby 3.x
+- **Framework**: Rails 8.1 (API-only mode)
+- **Database**: PostgreSQL
+- **Testing**: RSpec, FactoryBot, Shoulda Matchers
+
+See full details in AGENTS.md.
+
+## Current Branch
+
+You are working on the `v1/failing` branch.
+
+## Task
+
+Fix the failing tests so that `bundle exec rspec` passes.
+
+- Do NOT change the intended business logic or introduce scope creep.
+- Do NOT modify database.yml or change database configuration.
+- Do NOT add new migrations or change the schema.
+- Focus only on fixing the failing test cases.
+- Make minimal changes to get tests passing.
+
+## Instructions
+
+1. Identify the root cause of the failures.
+2. Make the minimal code changes needed to fix the tests.
+3. Run `bundle exec rspec` to verify your fixes.
+4. Commit your changes when all tests pass.
+
+Do not ask the user questions - work autonomously.
+HEADER
+
+  echo "Created PROMPT.md at $prompt_md"
+}
+
+generate_opencode_config() {
+  local config_path="$1"
+  mkdir -p "$(dirname "$config_path")"
+  cat > "$config_path" <<'EOF'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "name": "OpenRouter",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY_CODE_AGENT}",
+        "baseURL": "https://openrouter.ai/api/v1"
+      },
+      "models": {
+        "*": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16384
+            }
+          }
+        }
+      }
+    }
+  },
+  "permission": {
+    "bash": {
+      "bundle install*": "deny",
+      "npm install*": "deny",
+      "yarn install*": "deny",
+      "*": "allow"
+    },
+    "edit": "allow",
+    "write": "allow",
+    "read": "allow",
+    "list": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "lsp": "allow",
+    "skill": "allow",
+    "task": "allow",
+    "question": "allow",
+    "external_directory": "allow",
+    "external_bash": "allow"
+  }
+}
+EOF
+}
+
+main() {
+  local wt_path="$worktree_root/interactive"
+  mkdir -p "$worktree_root"
+
+  worktrees_to_remove+=("$wt_path")
+
+  worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
+
+  local project_path="$wt_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+
+  echo "Installing bundle..."
+  (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install >/dev/null 2>&1) || {
+    echo "Bundle install failed" >&2
+    exit 1
+  }
+
+  db_prepare "$wt_path"
+  generate_prompt_md "$wt_path"
+
+  local sandbox_dir="/tmp/opencode-sandbox-interactive"
+  local config_dir="$sandbox_dir/config"
+  local config_file="$config_dir/opencode/opencode.json"
+
+  mkdir -p "$config_dir/opencode"
+  generate_opencode_config "$config_file"
+
+  echo ""
+  echo "=================================================================="
+  echo "🟢 Interactive Benchmark Environment Ready!"
+  echo "=================================================================="
+  echo ""
+  echo "You have been dropped into a bash shell inside the project workspace."
+  echo "The environment is configured exactly how the agent runs it."
+  echo "Tests, database, and bundle are already set up."
+  echo ""
+  echo "Available Commands:"
+  echo "  - Run tests:  bundle exec rspec"
+  echo "  - Run agent:  opencode run \"Fix the failing tests\" --model openrouter/openai/gpt-oss-120b:exacto --dir . -f PROMPT.md"
+  echo ""
+  echo "Type 'exit' to leave this environment and clean up the worktree."
+  echo "=================================================================="
+  echo ""
+
+  (cd "$project_path" && env OPENCODE_DISABLE_PLUGINS=1 \
+    XDG_CONFIG_HOME="$config_dir" \
+    XDG_DATA_HOME="$sandbox_dir/data" \
+    BUNDLE_PATH="$bundle_cache" \
+    PATH="$bundle_cache/bin:$PATH" \
+    RAILS_ENV="test" \
+    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
+    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+    ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
+    GROQ_API_KEY="${GROQ_API_KEY:-}" \
+    DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
+    XAI_API_KEY="${XAI_API_KEY:-}" \
+    bash)
+
+  echo "Exiting interactive environment..."
+  db_drop "$wt_path"
+  rm -rf "$sandbox_dir"
+}
+
+main "$@"
