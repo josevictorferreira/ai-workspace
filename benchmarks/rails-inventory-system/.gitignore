@@ -8,3 +8,5 @@ public/assets
 .env*
 node_modules/
 bin/db_prepare.log
+log/*
+log

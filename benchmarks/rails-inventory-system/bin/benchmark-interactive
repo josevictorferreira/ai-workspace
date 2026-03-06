@@ -146,16 +146,15 @@ Fix the failing tests so that `bundle exec rspec` passes.
 
 - Do NOT change the intended business logic or introduce scope creep.
 - Do NOT modify database.yml or change database configuration.
-- Do NOT add new migrations or change the schema.
 - Focus only on fixing the failing test cases.
 - Make minimal changes to get tests passing.
+- Do not run any git commands, the user will handle commits and branch management, you can't even.
 
 ## Instructions
 
 1. Identify the root cause of the failures.
 2. Make the minimal code changes needed to fix the tests.
 3. Run `bundle exec rspec` to verify your fixes.
-4. Commit your changes when all tests pass.
 
 Do not ask the user questions - work autonomously.
 HEADER
@@ -171,29 +170,28 @@ generate_opencode_config() {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
     "openrouter": {
-      "name": "OpenRouter",
-      "npm": "@ai-sdk/anthropic",
       "options": {
         "apiKey": "{env:OPENROUTER_API_KEY_CODE_AGENT}",
-        "baseURL": "https://openrouter.ai/api/v1"
       },
-      "models": {
-        "*": {
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16384
-            }
-          }
-        }
-      }
-    }
+    },
+		"inception": {
+			"models": {
+				"options": {
+					"apiKey": "{env:INCEPTION_API_KEY}",
+				},
+				"mercury-2": {
+					"name": "Mercury 2",
+          "max_tokens": 16384,
+				}
+			}
+		}
   },
   "permission": {
     "bash": {
       "bundle install*": "deny",
       "npm install*": "deny",
       "yarn install*": "deny",
+			"git*": "deny",
       "*": "allow"
     },
     "edit": "allow",
@@ -205,9 +203,9 @@ generate_opencode_config() {
     "lsp": "allow",
     "skill": "allow",
     "task": "allow",
-    "question": "allow",
-    "external_directory": "allow",
-    "external_bash": "allow"
+    "question": "deny",
+    "external_directory": "deny",
+    "external_bash": "deny"
   }
 }
 EOF
