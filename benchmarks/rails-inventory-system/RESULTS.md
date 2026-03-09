@@ -8,15 +8,29 @@
 - Tool Calls: 24
 
 ## Openrouter Grok Code Fast 1
-- Time elapsed: 1m6s
+- Time elapsed: 1m 6s
 - Tests: 31/0 success/failures
 - Cost: 0.03
 - Context: 27785 tokens
 - Tool Calls: 27
 
 ## Openrouter Step 3.5 Flash
-- Time elapsed: 4m40s
+- Time elapsed: 4m 40s
 - Tests: 31/0 success/failures
 - Cost: 0.10
 - Context: 103096 tokens
 - Tool Calls: 21
+
+## Inception Mercury 2
+- Time elapsed: 2m 44s
+- Tests: 31/0 success/failures
+- Cost: 0.09
+- Context: 20.370 tokens
+- Tool Calls: 18
+
+## Minimax.io Minimax 2.5
+- Time elapsed: 5m 28s
+- Tests: 31/0 success/failures
+- Cost: 0.06
+- Context: 32.631 tokens
+- Tool Calls: 40
