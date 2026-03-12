@@ -608,6 +608,7 @@ opencode_setup_isolation() {
   local worktree_path="$1"
   local isolated_dir="$worktree_path/.opencode-isolated"
   mkdir -p "$isolated_dir"/{config,share,cache,state}
+  export HOME="$isolated_dir"
   export XDG_CONFIG_HOME="$isolated_dir/config"
   export XDG_DATA_HOME="$isolated_dir/share"
   export XDG_CACHE_HOME="$isolated_dir/cache"

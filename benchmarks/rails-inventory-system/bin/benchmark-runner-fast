@@ -397,6 +397,7 @@ opencode_run() {
   # Pass API key env vars explicitly
   # Use -f flag to attach the prompt file
   (cd "$project_path" && env OPENCODE_DISABLE_PLUGINS=1 \
+    HOME="$sandbox_dir" \
     XDG_CONFIG_HOME="$config_dir" \
     XDG_DATA_HOME="$sandbox_dir/data" \
     OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \

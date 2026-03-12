@@ -196,6 +196,15 @@ generate_opencode_config() {
 				},
 				"qwen/qwen3.5-9b": {
 					"name": "Qwen3.5-9b"
+				},
+				"qwen3.5-2b-claude-4.6-opus-reasoning-distilled": {
+					"name": "Qwen3.5-2b-Claude-4.6-Opus-Reasoning-Distilled"
+				},
+				"qwen3.5-9b-claude-4.6-opus-reasoning-distilled": {
+					"name": "Qwen3.5-9b-Claude-4.6-Opus-Reasoning-Distilled"
+				},
+				"nanbeige.nanbeige4.1-3b": {
+					"name": "Nanbeige4.1-3b"
 				}
       }
     },
@@ -352,6 +361,7 @@ main() {
   echo ""
 
   (cd "$project_path" && env OPENCODE_DISABLE_PLUGINS=1 \
+    HOME="$sandbox_dir" \
     XDG_CONFIG_HOME="$config_dir" \
     XDG_DATA_HOME="$sandbox_dir/data" \
     BUNDLE_PATH="$bundle_cache" \

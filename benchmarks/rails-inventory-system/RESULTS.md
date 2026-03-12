@@ -49,6 +49,18 @@
 - Context: 61.977 tokens
 - Tool Calls: 72
 
+## Local qwen/qwen3.5-9b Q4_K_M - KV Q4_0 - default params
+- Tool Failures: 42 (**Error**)
+
+
+## Local nanbeige_nanbeige4-3b-thinking-2511 Q8_0 - KV Cache
+- Time elapsed: 5m 49s
+- Tests: 6/25 success/failures
+- Cost: 0.00
+- Context: 54.311 tokens
+- Tool Calls: 40
+- Tool Errors: 9
+
 ## Local nanbeige_nanbeige4-3b-thinking-2511 Q8_0 default params
 - Time elapsed: FAIL (MODEL LOOP)
 
