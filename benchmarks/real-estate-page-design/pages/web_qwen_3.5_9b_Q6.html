@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Property Listings</title>
+
+  <!-- Typography: Inter (Closest web font to Helvetica/Akzidenz-Grotesk) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. DESIGN SYSTEM TOKENS (The DNA) --- */
+    :root {
+      /* Colors */
+      --swiss-white: #FFFFFF;
+      --swiss-black: #000000;
+      --swiss-muted: #F2F2F2;
+      --swiss-red: #FF3000;
+
+      /* Typography */
+      --font-main: 'Inter', sans-serif;
+
+      /* Textures */
+      --texture-grid-16: linear-gradient(#e5e5e5 1px, transparent 1px), linear-gradient(90deg, #e5e5e5 1px, transparent 1px);
+      --texture-grid-24: linear-gradient(#f7f7f7 1px, transparent 1px), linear-gradient(90deg, #f7f7f7 1px, transparent 1px);
+      --texture-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+
+      /* Spacing & Borders */
+      --border-thick: 4px solid var(--swiss-black);
+      --spacing-container: 8rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      color: var(--swiss-black);
+      background-color: var(--swiss-white);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+
+      /* Global Texture Layer */
+      background-image:
+        var(--texture-noise),
+        radial-gradient(var(--swiss-muted) 1px, transparent 1px);
+      background-size: cover, 24px 24px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* --- 2. TYPOGRAPHY SCALE & UTILITIES --- */
+    h1,
+    h2,
+    h3,
+    h4,
+    .label-up {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      /* Tight tracking for impact */
+      text-transform: uppercase;
+    }
+
+    .section-number {
+      display: block;
+      font-size: 12px;
+      color: var(--swiss-red);
+      border-top: var(--border-thick);
+      margin-bottom: 2rem;
+      padding-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      /* Slightly wider for numbers */
+    }
+
+    .label-up {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      /* Wide tracking for labels */
+      margin-bottom: 1rem;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    .text-massive {
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.9;
+    }
+
+    /* --- 3. LAYOUT PRIMITIVES (The Grid) --- */
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 calc(2rem / 2);
+      /* Safe margins */
+      position: relative;
+      background-color: var(--swiss-white);
+    }
+
+    /* Horizontal Grid Lines */
+    .grid-section-divider {
+      height: 4px;
+      background-color: var(--swiss-black);
+      width: 100%;
+    }
+
+    /* Texture Backgrounds */
+    .bg-grid-24 {
+      background-image: var(--texture-grid-24);
+      background-size: 24px 24px;
+    }
+
+    /* --- 4. COMPONENT STYLING --- */
+
+    /* Buttons & Interactions */
+    .btn {
+      display: inline-block;
+      padding: 1.5rem 3rem;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      border-width: var(--border-thick);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+      border-color: var(--swiss-black);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--swiss-white);
+      color: var(--swiss-black);
+      transform: translateY(-2px);
+      /* Lift */
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--swiss-black);
+      border-color: var(--swiss-black);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+    }
+
+    /* Cards (Real Estate) */
+    .card {
+      display: flex;
+      flex-direction: column;
+      border-right: 4px solid #000;
+      transition: all 0.2s ease-out;
+      position: relative;
+      background: var(--swiss-white);
+      overflow: hidden;
+      /* Crucial for the image swap clip */
+    }
+
+    .card:hover {
+      border-right-color: var(--swiss-red);
+      /* Signal change on hover */
+    }
+
+    .card-image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+      background-color: var(--swiss-muted);
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease-out;
+      /* Slight zoom */
+      filter: grayscale(20%);
+      /* Monochrome feel, removed on hover */
+    }
+
+    .card-image:hover {
+      filter: grayscale(0%);
+      /* Color pop */
+    }
+
+    .card-image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 48, 0, 0.1);
+      /* Subtle red tint */
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .card-image-wrapper:hover .card-image-overlay {
+      opacity: 1;
+    }
+
+    .card-content {
+      padding: 2rem;
+      border-top: var(--border-thick);
+      /* Horizontal line below image */
+      background-color: var(--swiss-white);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-price {
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--swiss-black);
+    }
+
+    /* Inputs & Filters */
+    .input-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 1.5rem;
+      font-size: 1.1rem;
+      font-family: var(--font-main);
+      border: none;
+      border-bottom: 2px solid #000;
+      background: transparent;
+      outline: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      border-bottom-color: var(--swiss-red);
+      background-color: var(--swiss-muted);
+    }
+
+    select option {
+      background-color: var(--swiss-white);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: flex-end;
+      /* Bottom alignment for dramatic effect */
+      padding-bottom: 4rem;
+      background-color: var(--swiss-muted);
+      /* Muted base */
+      border-bottom: var(--border-thick);
+    }
+
+    .hero-content {
+      max-width: 90%;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Asymmetry - A box behind text */
+    .hero-box {
+      width: 300px;
+      height: 400px;
+      background-color: var(--swiss-black);
+      position: absolute;
+      right: 10%;
+      bottom: 10%;
+      z-index: 1;
+    }
+
+    /* --- 5. GRID SYSTEMS FOR LISTINGS --- */
+
+    /* Mobile to Desktop Responsive Grid */
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 0px;
+      /* Zero gap for the thick borders to connect visually */
+      margin-bottom: 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .listings-grid {
+        grid-template-columns: repeat(3, 1fr);
+        border-top: var(--border-thick);
+        /* Top grid line */
+      }
+
+      /* The right borders of columns except the last one act as the vertical grid lines */
+      .col-right-border .card:last-child {
+        border-bottom: none;
+      }
+    }
+
+    /* --- 6. FOOTER & PAGINATION --- */
+
+    .pagination-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+      background-color: var(--swiss-white);
+    }
+
+    .page-btn {
+      width: 80px;
+      height: 80px;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+    }
+
+    .page-btn:hover {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+      border-color: var(--swiss-black);
+    }
+
+    /* Icon Rotation Animation Class */
+    .rotating-icon {
+      transition: transform 0.2s ease-out;
+    }
+
+    .page-btn:hover .rotating-icon {
+      transform: rotate(45deg);
+    }
+
+    footer {
+      background-color: var(--swiss-black);
+      color: var(--swiss-white);
+      padding: 6rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .footer-col h4 {
+      color: var(--swiss-red);
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-col li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* --- 7. SPECIFIC TEXTURE APPLIED TO FILTERS --- */
+    .filters-section {
+      background-color: #F8F8F8;
+      padding: 4rem 2rem;
+      border-top: var(--border-thick);
+      border-bottom: var(--border-thick);
+      position: relative;
+      /* Dot Matrix Effect */
+      background-image: radial-gradient(#ccc 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO SECTION -->
+  <header class="hero bg-grid-24">
+    <div class="container flex-container">
+      <div class="grid-section" style="position: relative;">
+        <span class="section-number">01. Portfolio</span>
+        <h1 class="text-massive" style="margin-bottom: 2rem;">
+          Living<br>Influence.
+        </h1>
+
+        <div style="display: flex; align-items: flex-start; gap: 4rem;">
+          <p style="font-size: 1.5rem; max-width: 600px;">
+            Precision meets comfort. Discover properties designed with architectural integrity in Parana. We curate
+            spaces where structure meets lifestyle.
+          </p>
+
+          <button class="btn btn-outline">View Manifesto</button>
+        </div>
+
+        <!-- Abstract Background Element -->
+        <div class="hero-box"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FILTERS SECTION -->
+  <section class="filters-section">
+    <div class="container">
+      <span class="section-number" style="border: none; margin-bottom: 2rem;">02. Parameters</span>
+
+      <form onsubmit="return false;">
+        <div class="input-group">
+          <label for="search" class="label-up" style="position:absolute; top:-40px; left:0;">Text Search</label>
+          <input type="text" id="search" placeholder="Keywords (e.g. modern, lake view)">
+        </div>
+
+        <div class="filter-row">
+          <div class="input-group">
+            <label for="price" class="label-up" style="position:absolute; top:-40px; left:0;">Value Range</label>
+            <select id="price">
+              <option value="">All Values</option>
+              <option value="50k-100k">$50,000 - $100,000</option>
+              <option value="100k-250k">$100,000 - $250,000</option>
+              <option value="250k+">$250,000+</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="location" class="label-up" style="position:absolute; top:-40px; left:0;">Location
+              (Paraná)</label>
+            <select id="location">
+              <option value="">All Cities</option>
+              <option value="Londrina">Londrina</option>
+              <option value="Ibipora">Ibipora</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" style="margin-top: 1.5rem;">Apply Filter</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- LISTINGS SECTION -->
+  <main class="listings-section">
+    <div class="container">
+      <span class="section-number">03. Properties</span>
+
+      <div class="listings-grid" id="property-grid">
+        <!-- Properties injected via JS to ensure clean DOM, though static is fine for mockup -->
+        <!-- Grid structure handles the heavy vertical borders automatically -->
+      </div>
+    </div>
+  </main>
+
+  <!-- PAGINATION SECTION -->
+  <section class="pagination-section">
+    <div class="container" style="position: relative; top: -4rem;">
+      <!-- Floating pagination over grid line -->
+      <span class="section-number" style="border:none; display:inline-block; margin-right: 2rem;">03.</span>
+      <div class="pagination-nav">
+        <button class="page-btn"><span class="rotating-icon">←</span></button>
+        <div style="display:flex; gap:1rem;">
+          <button class="btn btn-outline" style="padding: 0.5rem 1.5rem; font-size: 1rem;">Page 1</button>
+          <button class="btn btn-primary">View Next Page</button>
+        </div>
+        <button class="page-btn"><span class="rotating-icon">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4 style="font-size: 2rem; line-height: 1;">PARANA<br>ESTATES</h4>
+        </div>
+        <div class="footer-col">
+          <h4 style="margin-bottom: 0.5rem;">Contact</h4>
+          <ul style="display: block;">
+            <li><a href="#">Av. das Nações, Londrina - PR</a></li>
+            <li><a href="#">+55 (43) 3222-0000</a></li>
+            <li><a href="#">office@paranaestates.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div
+        style="border-top: 1px solid #fff; margin-top: 4rem; padding-top: 2rem; display: flex; justify-content: space-between;">
+        <p style="font-size: 12px;">© 2023 Swiss Estates. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT FOR INTERACTIVITY -->
+  <script>
+    // Property Data Mockup
+    const properties = [
+      {id: 1, title: "Londrina Heights", price: "$450,000", img1: "https://images.unsplash.com/photo-1600596542815-e32c8ec0486d?q=80&w=1000&auto=format&fit=crop", img2: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1000&auto=format&fit=crop"},
+      {id: 2, title: "Ibipora Villa", price: "$320,000", img1: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop", img2: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=1000&auto=format&fit=crop"},
+      {id: 3, title: "Modern Loft PR", price: "$285,000", img1: "https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=1000&auto=format&fit=crop", img2: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1000&auto=format&fit=crop"}
+    ];
+
+    // Render Cards
+    const grid = document.getElementById('property-grid');
+
+    properties.forEach(prop => {
+      const cardHTML = `
+                <article class="card">
+                    <div class="card-image-wrapper" id="img-${prop.id}">
+                        <img src="${prop.img1}" alt="${prop.title}" class="card-image" loading="lazy">
+                        <div class="card-image-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${prop.title}</h3>
+                        <p class="card-price">${prop.price}</p>
+                    </div>
+                </article>
+            `;
+      grid.innerHTML += cardHTML;
+    });
+
+    // Hover Logic for Image Swapping (CSS/JS Hybrid)
+    document.addEventListener('DOMContentLoaded', () => {
+      const wrappers = document.querySelectorAll('.card-image-wrapper');
+
+      wrappers.forEach((wrapper, index) => {
+        const image = wrapper.querySelector('img');
+        let currentIndex = 0;
+
+        // Define a swap logic
+        function swapImage() {
+          if (!image.dataset.src2 || image.dataset.src1 === null) return;
+
+          // Simple cycle toggle for mockup purposes without complex data binding
+          const isImg1 = image.src.includes(image.dataset.src1);
+          image.src = isImg1 ? image.dataset.src2 : image.dataset.src1;
+        }
+
+        wrapper.addEventListener('mouseenter', () => {
+          // Delay the swap to create that "reveal" effect
+          setTimeout(() => {
+            if (!image.src.startsWith("https://images.unsplash.com")) return;
+            // Only trigger if it's one of our dynamic images
+            currentIndex = currentIndex === 0 ? 1 : 0;
+            const newSrc = currentIndex === 0 ? image.dataset.src2 : image.dataset.src1;
+            image.src = newSrc;
+          }, 600);
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+          // Reset to first image on leave (optional, makes it feel like a carousel)
+          if (image.dataset.src1) {
+            image.src = image.dataset.src1;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
