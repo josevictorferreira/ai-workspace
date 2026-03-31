@@ -12,7 +12,7 @@ if [[ -z "${IN_NIX_SHELL:-}" ]] && [[ -f "$REPO_ROOT/flake.nix" ]]; then
 fi
 
 # Defaults
-worktree_root="$REPO_ROOT/.sisyphus/worktrees-interactive"
+worktree_root="$REPO_ROOT/worktrees-interactive"
 keep_worktrees=false
 
 # Parse CLI args
@@ -36,7 +36,7 @@ Useful for debugging why the agent is failing or testing opencode manually.
 
 Options:
   --keep-worktrees
-  --worktree-root PATH (default: .sisyphus/worktrees-interactive)
+  --worktree-root PATH (default: worktrees-interactive)
   -h, --help
 EOF
       exit 0
@@ -91,7 +91,7 @@ worktree_add() {
 db_prepare() {
   local worktree_path="$1"
   local project_path="$worktree_path/$RELATIVE_PATH"
-  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  local bundle_cache="$REPO_ROOT/bundle-cache"
   cd "$project_path" || return 1
   echo "Preparing database..."
   env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" RAILS_ENV=test ./bin/rails db:prepare >/dev/null 2>&1 || {
@@ -104,7 +104,7 @@ db_prepare() {
 db_drop() {
   local worktree_path="$1"
   local project_path="$worktree_path/$RELATIVE_PATH"
-  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  local bundle_cache="$REPO_ROOT/bundle-cache"
   cd "$project_path" || return 0
   echo "Dropping database..."
   env BUNDLE_PATH="$bundle_cache" PATH="$bundle_cache/bin:$PATH" RAILS_ENV=test ./bin/rails db:drop >/dev/null 2>&1 || true
@@ -170,17 +170,93 @@ generate_opencode_config() {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
     "openrouter": {
+			"npm": "@ai-sdk/openai-compatible",
+			"name": "OpenRouter",
       "options": {
-        "apiKey": "{env:OPENROUTER_API_KEY_CODE_AGENT}",
-      }
-    },
-		"inception": {
+				"baseURL": "https://openrouter.ai/api/v1",
+        "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}"
+      },
 			"models": {
-				"options": {
-					"apiKey": "{env:INCEPTION_API_KEY}",
+				"stepfun/step-3.5-flash": {
+					"name": "Step 3.5 Flash (OpenRouter)"
+				},
+				"qwen/qwen3-coder-next": {
+					"name": "Qwen3 Coder Next (OpenRouter)"
+				},
+				"z-ai/glm-4.7-flash": {
+					"name": "GLM-4.7 Flash (OpenRouter)"
+				},
+				"minimax/minimax-m2.7": {
+					"name": "MiniMax M2.7 (OpenRouter)"
+				},
+				"qwen/qwen3.5-27b": {
+					"name": "Qwen3.5 27B (OpenRouter)"
+				},
+				"qwen/qwen3.5-122b-a10b": {
+					"name": "Qwen3.5 122B A10B (OpenRouter)"
+				},
+				"qwen/qwen3.5-flash-02-23": {
+					"name": "Qwen3.5 Flash 02-23 (OpenRouter)"
+				},
+				"qwen/qwen3.5-35b-a3b": {
+					"name": "Qwen3.5 35B A3B (OpenRouter)"
+				},
+				"x-ai/grok-4.20-multi-agent-beta": {
+					"name": "Grok 4.20 Multi-Agent Beta (OpenRouter)"
+				},
+				"nvidia/nemotron-nano-9b-v2": {
+					"name": "NVIDIA NeMoTron Nano 9B v2 (OpenRouter)"
+				},
+				"qwen/qwen2.5-coder-7b-instruct": {
+					"name": "Qwen2.5 Coder 7B Instruct (OpenRouter)"
+				},
+				"qwen/qwen3-30b-a3b": {
+					"name": "Qwen3 30B A3B (OpenRouter)"
+				},
+				"openai/gpt-5.4-mini": {
+					"name": "GPT-5.4 Mini (OpenRouter)"
+				},
+				"nvidia/nemotron-3-super-120b-a12b:free": {
+					"name": "NVIDIA NeMoTron Super 120B A12B Free (OpenRouter)"
+				},
+				"openai/gpt-5.4-nano": {
+					"name": "GPT-5.4 Nano (OpenRouter)"
+				},
+				"bytedance-seed/seed-2.0-lite": {
+					"name": "Bytedance SEED 2.0 Lite (OpenRouter)"
+				},
+				"mistralai/mistral-small-2603": {
+					"name": "Mistral Small 2603 (OpenRouter)"
+				},
+				"nvidia/nemotron-3-nano-30b-a3b:nitro": {
+					"name": "NVIDIA NeMoTron Nano 30B A3B Nitro (OpenRouter)"
+				},
+				"qwen/qwen3.5-9b": {
+					"name": "Qwen3.5-9b (OpenRouter)",
+				},
+				"z-ai/glm-5-turbo": {
+					"name": "GLM-5 Turbo (OpenRouter)"
+				},
+				"minimax/minimax-m2.5:nitro": {
+					"name": "MiniMax M2.5 Nitro (OpenRouter)"
+				},
+				"openai/gpt-oss-120b": {
+					"name": "GPT-OSS 120B (OpenRouter)"
+				},
+				"openai/gpt-oss-120b:exacto": {
+					"name": "GPT-OSS 120B Exacto (OpenRouter)"
+				},
+				"openai/gpt-oss-120b:nitro": {
+					"name": "GPT-OSS 120B Nitro (OpenRouter)"
+				},
+				"inception/mercury-2": {
+					"name": "Mercury-2 (OpenRouter)"
+				},
+				"openai/gpt-oss-20b": {
+					"name": "GPT-OSS 20B (OpenRouter)"
 				}
 			}
-		},
+    },
     "local": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local",
@@ -188,23 +264,17 @@ generate_opencode_config() {
         "baseURL": "http://10.10.10.10:1234/v1",
       },
       "models": {
-				"qwen3.5-0.8b": {
-					"name": "Qwen3.5-0.8b"
+				"qwen3.5-2b-claude-4.6-opus-reasoning-distilled@q5_k_s": {
+					"name": "Qwen3.5-2b-Claude-4.6-Opus-Reasoning-Distilled Q5_K_S (Local)"
 				},
-				"qwen3.5-4b": {
-					"name": "Qwen3.5-4b"
+				"mistralai/devstral-small-2-2512": {
+					"name": "Mistral Small 2 2512 (Local)"
 				},
-				"qwen/qwen3.5-9b": {
-					"name": "Qwen3.5-9b"
-				},
-				"qwen3.5-2b-claude-4.6-opus-reasoning-distilled": {
-					"name": "Qwen3.5-2b-Claude-4.6-Opus-Reasoning-Distilled"
+				"tesslate_omnicoder-9b": {
+					"name": "Tesslate Omnicoder 9B (Local)"
 				},
 				"qwen3.5-9b-claude-4.6-opus-reasoning-distilled": {
-					"name": "Qwen3.5-9b-Claude-4.6-Opus-Reasoning-Distilled"
-				},
-				"nanbeige.nanbeige4.1-3b": {
-					"name": "Nanbeige4.1-3b"
+					"name": "Qwen3.5-9b-Claude-4.6-Opus-Reasoning-Distilled (Local)"
 				}
       }
     },
@@ -311,7 +381,8 @@ generate_opencode_config() {
     "question": "deny",
     "external_directory": "deny",
     "external_bash": "deny"
-  }
+  },
+	"model": "openrouter/qwen/qwen3.5-9b"
 }
 EOF
 }
@@ -325,7 +396,10 @@ main() {
   worktree_add "$FAIL_BRANCH" "$FIX_BRANCH" "$wt_path"
 
   local project_path="$wt_path/$RELATIVE_PATH"
-  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
+  local bundle_cache="$REPO_ROOT/bundle-cache"
+
+  # Remove local opencode.json to prevent it from overriding sandbox config
+  rm -f "$project_path/opencode.json"
 
   echo "Installing bundle..."
   (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install >/dev/null 2>&1) || {
@@ -367,12 +441,7 @@ main() {
     BUNDLE_PATH="$bundle_cache" \
     PATH="$bundle_cache/bin:$PATH" \
     RAILS_ENV="test" \
-    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
-    OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
-    ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
-    GROQ_API_KEY="${GROQ_API_KEY:-}" \
-    DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
-    XAI_API_KEY="${XAI_API_KEY:-}" \
+    OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
     bash)
 
   echo "Exiting interactive environment..."

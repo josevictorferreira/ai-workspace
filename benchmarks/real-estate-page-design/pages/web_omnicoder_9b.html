@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUISSE REALTY | Property Listings</title>
+
+  <!-- Typography: Inter (Closest free approximation to Helvetica/Akzidenz-Grotesk) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* 
+         * DESIGN TOKENS & RESET 
+         */
+    :root {
+      --color-bg: #FFFFFF;
+      --color-text: #000000;
+      --color-muted: #F2F2F2;
+      --color-accent: #FF3000;
+      /* Swiss Red */
+      --font-main: 'Inter', sans-serif;
+      --spacing-unit: 1rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+      overflow-x: hidden;
+
+      /* Swiss Pattern: Subtle Dot Matrix for Texture */
+      background-image: radial-gradient(var(--color-muted) 2px, transparent 2px);
+      background-size: 30px 30px;
+    }
+
+    /* 
+         * LAYOUT UTILITIES 
+         */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-unit);
+      border-left: 2px solid #E5E5E5;
+      /* Edge guard */
+    }
+
+    .grid-layout {
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        border-left: none;
+      }
+
+      /* Asymmetric Layout Strategy: 80% Content / 20% Sidebar on Desktop */
+      .layout-main {
+        grid-template-columns: 1fr 350px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .layout-main {
+        /* Classic Swiss Asymmetry */
+        grid-template-columns: 2.5fr 1fr;
+      }
+    }
+
+    /* 
+         * TYPOGRAPHY SYSTEM 
+         */
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      /* Tight tracking for impact */
+      line-height: 1.1;
+    }
+
+    .display-hero {
+      font-size: clamp(3rem, 8vw, 6rem);
+      margin-bottom: 2rem;
+      color: var(--color-text);
+    }
+
+    .label-sm {
+      display: inline-block;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      /* Wide tracking for labels */
+      font-size: 0.875rem;
+      color: var(--color-accent);
+      border-bottom: 2px solid var(--color-text);
+      margin-bottom: 1rem;
+    }
+
+    .body-copy {
+      font-weight: 400;
+      margin-top: 1.5rem;
+    }
+
+    /* 
+         * COMPONENTS: BUTTONS & FORMS 
+         */
+
+    /* Swiss Button Style: Rectangular, Thick Borders or Solid Blocks */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 3px solid var(--color-text);
+      background: transparent;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all 200ms ease-linear;
+      /* Snappy Swiss movement */
+      width: 100%;
+    }
+
+    .btn-primary {
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      border-width: 3px;
+      /* Thick border */
+    }
+
+    .btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      z-index: 10;
+    }
+
+    .btn-primary:hover {
+      background-color: #fff;
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+      /* Keep red border */
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--color-text);
+      color: #fff;
+    }
+
+    /* Input Styles */
+    .swiss-input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: inherit;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: none;
+      border-bottom: 3px solid var(--color-text);
+      /* Sharp underline */
+      background: transparent;
+      outline: none;
+      transition: all 200ms ease;
+    }
+
+    input:focus,
+    select:focus {
+      background-color: var(--color-muted);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* 
+         * COMPONENTS: CARDS & GRID 
+         */
+
+    .card-listing {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      border: 2px solid var(--color-text);
+      /* Visible Structure */
+      background-color: #fff;
+      transition: all 0.3s ease-out;
+      position: relative;
+    }
+
+    .card-listing:hover {
+      transform: translateY(-8px);
+    }
+
+    .image-wrapper {
+      height: 400px;
+      /* Fixed height for consistency */
+      overflow: hidden;
+      background-color: var(--color-muted);
+      position: relative;
+    }
+
+    .listing-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s ease-in-out, transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Image Hover Effect (Simulated YouTube style) */
+    .listing-img.active {
+      opacity: 1;
+      transform: scale(1.03);
+      z-index: 2;
+    }
+
+    .listing-img.inactive {
+      opacity: 0.4;
+      transform: scale(1);
+      filter: grayscale(80%);
+      /* Mute inactive image */
+    }
+
+    .card-details {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-image: linear-gradient(to bottom right, transparent, var(--color-muted));
+      /* Subtle fade effect at bottom */
+    }
+
+    .property-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .property-location {
+      color: #666;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+    }
+
+    .price-tag {
+      margin-top: 2rem;
+      font-size: 1.75rem;
+      font-weight: 900;
+    }
+
+    .feature-list {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-top: 2px solid #eee;
+      border-bottom: 2px solid #eee;
+      justify-content: space-between;
+    }
+
+    .feature-item span {
+      display: block;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      letter-spacing: 0.1em;
+    }
+
+    /* 
+         * SECTION: PAGINATION & FOOTER 
+         */
+    .pagination-wrapper {
+      margin-top: 4rem;
+      border-top: 3px solid var(--color-text);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .page-btn {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--color-text);
+      background: transparent;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover {
+      background-color: var(--color-text);
+      color: #fff;
+    }
+
+    .page-btn.active {
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    /* 
+         * UTILS & DECORATION 
+         */
+    .grid-pattern {
+      /* Background grid for specific sections to create depth */
+      background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 2rem;
+      gap: 1rem;
+    }
+
+    .red-text {
+      color: var(--color-accent);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container grid-layout layout-main">
+
+    <!-- LEFT COLUMN / MAIN CONTENT -->
+    <main class="grid-pattern">
+
+      <!-- HERO HEADER -->
+      <header style="margin-bottom: 4rem;">
+        <div class="label-sm" style="display:inline-block; margin-bottom:10px;">01. LISTINGS</div>
+        <h1 class="display-hero">Real Estate<br><span class="red-text">Paraná</span></h1>
+        <p class="body-copy">Objective selection of properties in the South.</p>
+      </header>
+
+      <!-- PROPERTY FEED -->
+      <section id="property-feed">
+
+        <!-- CARD 1 -->
+        <article class="card-listing" data-images='["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1000", "https://images.unsplash.com/photo-1600596542815-e32c2159f828?auto=format&fit=crop&q=80&w=1000"]">
+                <div class="image-wrapper">
+                    <!-- First Image -->
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1000" 
+                         class="listing-img active" id="img-1-a">
+                    <!-- Second Image -->
+                    <img src="https://images.unsplash.com/photo-1600596542815-e32c2159f828?auto=format&fit=crop&q=80&w=1000" 
+                         class="listing-img inactive" id="img-1-b">
+                </div>
+                <div class="card-details">
+                    <div>
+                        <h3 class="property-title">Vila das Águas</h3>
+                        <p class="property-location">Londrina, PR • 02. RESIDENCIAL</p>
+                        
+                        <div class="feature-list">
+                            <div class="feature-item"><span>Bedrooms</span>4</div>
+                            <div class="feature-item"><span>Bathrooms</span>3</div>
+                            <div class="feature-item"><span>Area</span>180m²</div>
+                        </div>
+                    </div>
+                    <div class="price-tag">R$ 2.450.000</div>
+                </div>
+            </article>
+
+            <!-- CARD 2 -->
+            <article class="card-listing" data-images='
+          ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=1000", "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000"
+          ]">
+          <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=1000"
+              class="listing-img active" id="img-2-a">
+            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000"
+              class="listing-img inactive" id="img-2-b">
+          </div>
+          <div class="card-details">
+            <div>
+              <h3 class="property-title">Residencial Pôr do Sol</h3>
+              <p class="property-location">Ibipora, PR • 03. LUXURY</p>
+
+              <div class="feature-list">
+                <div class="feature-item"><span>Bedrooms</span>5</div>
+                <div class="feature-item"><span>Bathrooms</span>4</div>
+                <div class="feature-item"><span>Area</span>240m²</div>
+              </div>
+            </div>
+            <div class="price-tag">R$ 3.800.000</div>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="card-listing" data-images='["https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&q=80&w=1000", "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=1000"]">
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?auto=format&fit=crop&q=80&w=1000" 
+                         class="listing-img active" id="img-3-a">
+                    <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=1000" 
+                         class="listing-img inactive" id="img-3-b">
+                </div>
+                <div class="card-details">
+                    <div>
+                        <h3 class="property-title">Loft Centro</h3>
+                        <p class="property-location">Londrina, PR • 04. URBANO</p>
+                        
+                        <div class="feature-list">
+                            <div class="feature-item"><span>Beds</span>2</div>
+                            <div class="feature-item"><span>Baths</span>2</div>
+                            <div class="feature-item"><span>Area</span>85m²</div>
+                        </div>
+                    </div>
+                    <div class="price-tag">R$ 980.000</div>
+                </div>
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- RIGHT COLUMN / FILTERS SIDEBAR -->
+    <aside style="background-color: var(--color-bg); border-left: 2px solid var(--color-text);">
+        
+        <div class="grid-pattern" style="padding-bottom: 1rem; margin-top: -3rem;">
+            <!-- Sticky Header for Sidebar on Desktop feel (simulated via padding) -->
+            <h4 style="font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #ccc; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Filter</h4>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="swiss-input-group">
+            <label style="font-weight:700; text-transform:uppercase; font-size: 0.8rem;">Search Property Name</label>
+            <input type="text" placeholder="Vila, Loft...">
+        </div>
+
+        <!-- PRICE RANGE -->
+        <div class="swiss-input-group">
+            <label style="font-weight:700; text-transform:uppercase; font-size: 0.8rem;">Max Price (R$)</label>
+            <select>
+                <option>500,000</option>
+                <option selected>1,000,000</option>
+                <option>2,000,000</option>
+                <option>5,000,000+</option>
+            </select>
+        </div>
+
+        <!-- LOCATION -->
+        <div class="swiss-input-group">
+            <label style="font-weight:700; text-transform:uppercase; font-size: 0.8rem;">State</label>
+            <input type="text" value="Paraná (PR)" readonly style="background-color: #F9F9F9;">
+        </div>
+
+        <div class="swiss-input-group">
+            <label style="font-weight:700; text-transform:uppercase; font-size: 0.8rem;">City</label>
+            <select>
+                <option>All Cities</option>
+                <option>Londrina</option>
+                <option>Ibipora</option>
+                <option>Maringá</option>
+            </select>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <button class="btn btn-primary" style="margin-bottom: 2rem;">
+            Apply Filters
+        </button>
+
+    </aside>
+
+</div>
+
+<!-- PAGINATION -->
+<footer class="container">
+    <div class="pagination-wrapper">
+        <button class="page-btn">&lt;</button> <!-- Arrow Left (SVG simulated) -->
+        <span style="font-weight:900; font-size: 1.2rem;">1</span>
+        <span style="color:#ccc; border-top:3px solid #ddd; padding-top:3px;">2</span>
+        <button class="page-btn active">&gt;</button> <!-- Arrow Right -->
+    </div>
+    
+    <p style="margin-top: 4rem; text-align:center; font-size: 0.8rem; opacity: 0.5;">&copy; 2023 SUISSE REALTY SYSTEM</p>
+</footer>
+
+<!-- Minimal Vanilla JS for Image Hover Logic -->
+<script>
+    document.addEventListener(' DOMContentLoaded', ()=> {
+          const cards = document.querySelectorAll('.card-listing');
+
+          cards.forEach(card => {
+          const imgs = card.querySelectorAll('.listing-img');
+
+          if (imgs.length >= 2) {
+          // Event Delegation for Hover
+          card.addEventListener('mouseenter', () => {
+          img1 = imgs[0];
+          img2 = imgs[1];
+
+          // Simple swap logic
+          // We use setTimeout to allow the CSS transition to start before swapping classes?
+          // Actually, changing class triggers 'transitionend'.
+          // To create the "next image" effect with delay:
+
+          // 1. Fade out current active
+          img1.classList.remove('active');
+          img2.classList.add('active');
+
+          // Optional: Swap back on mouse leave (YouTube style)
+          card.addEventListener('mouseleave', () => {
+          setTimeout(() => {
+          img1.classList.add('active');
+          img2.classList.remove('active');
+          }, 50);
+          });
+          });
+
+          }
+          });
+          });
+          </script>
+
+</body>
+
+</html>

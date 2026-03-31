@@ -335,7 +335,7 @@ generate_opencode_config() {
       "name": "OpenRouter",
       "npm": "@ai-sdk/anthropic",
       "options": {
-        "apiKey": "{env:OPENROUTER_API_KEY_CODE_AGENT}",
+        "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}",
         "baseURL": "https://openrouter.ai/api/v1"
       },
       "models": {
@@ -400,7 +400,7 @@ opencode_run() {
     HOME="$sandbox_dir" \
     XDG_CONFIG_HOME="$config_dir" \
     XDG_DATA_HOME="$sandbox_dir/data" \
-    OPENROUTER_API_KEY_CODE_AGENT="${OPENROUTER_API_KEY_CODE_AGENT:-}" \
+    OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
     OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
     ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
     GROQ_API_KEY="${GROQ_API_KEY:-}" \
