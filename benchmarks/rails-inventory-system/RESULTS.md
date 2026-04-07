@@ -14,12 +14,20 @@
 - Context: 103096 tokens
 - Tool Calls: 21
 
-## Inception Mercury 2
+## Openrouter Mercury 2
 - Time elapsed: 2m 44s
 - Tests: 31/0 success/failures
 - Cost: 0.09
 - Context: 20.370 tokens
 - Tool Calls: 18
+
+## Openrouter Mercury 2 HIGH
+- Time elapsed: 2m 31s
+- Tests: 31/0 success/failures
+- Cost: 0.0331
+- Context: 38145 tokens
+- Tool Calls: 43
+- Tool Errors: 2
 
 ## Minimax.io Minimax 2.5
 - Time elapsed: 5m 28s
@@ -75,6 +83,14 @@
 - Tool Calls: 24
 - Tool Errors: 1
 
+## Openrouter mistralai/devstral-small
+- Time elapsed: 37.8s
+- Tests: 31/0 success/failures
+- Cost: 0.026
+- Context: 19234 tokens
+- Tool Calls: 95
+- Tool Errors: 11
+
 ## Openrouter openai/gpt-5.4-nano
 - Time elapsed: 2m 17s
 - Tests: 31/0 success/failures
@@ -106,6 +122,14 @@
 - Context: 28.011 tokens
 - Tool Calls: 25
 - Tool Errors: 0
+
+## Openrouter nvidia/nemotron-3-super-120b-a12b
+- Time elapsed: 2m 29s
+- Tests: 84/0 success/failures
+- Cost: 0.253
+- Context: 47.394 tokens
+- Tool Calls: 84
+- Tool Errors: 3
 
 ## Openrouter qwen/qwen3.5-35b-a3b
 - Time elapsed: 1m 8s
@@ -155,6 +179,22 @@
 - Tool Calls: 24
 - Tool Errors: 0
 
+## Openrouter Qwen3.5 Flash
+- Time elapsed: 1m 13s
+- Tests: 31/0 success/failures
+- Cost: 0.0307
+- Context: 27479 tokens
+- Tool Calls: 26
+- Tool Errors: 0
+
+## Openrouter Gemma 26b-A4B
+- Time elapsed: 3m 11s
+- Tests: 31/0 success/failures
+- Cost: 0.0477
+- Context: 21662 tokens
+- Tool Calls: 19
+- Tool Errors: 0
+
 ## Minimax minimax/minimax-m2.7
 - Time elapsed: 3m 18s
 - Tests: 31/0 success/failures
@@ -162,6 +202,44 @@
 - Context: 27.732 tokens
 - Tool Calls: 25
 - Tool Errors: 0
+
+## Local tesslate_omnicoder-9b - Q4_K_S - KV Cache Q4_0 - Max Concurrent Prediction 6
+- Time elapsed: 6m 43s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 35.873 tokens
+- Tool Calls: 31
+- Tool Errors: 0
+
+## Local tesslate_omnicoder-9b - Q4_K_S - KV Cache Q4_0
+- Time elapsed: 4m 3s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 30.978 tokens
+- Tool Calls: 39
+- Tool Errors: 0
+- Last Prompt Eval: 346.43 tok/s
+- Last Eval: 43 tok/s
+
+## Local Gemma 4 26B A4B - Q3_K_M - KV Cache
+- Time elapsed: 2m 39s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 39845 tokens
+- Tool Calls: 31
+- Tool Errors: 0
+- Last Prompt Eval: 467 tok/s
+- Last Eval: 49 tok/s
+
+## 2nd RUN Local Gemma 4 26B A4B - Q3_K_M - KV Cache - NEW LLAMACPP VERSION
+- Time elapsed: 1m 59s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 26416 tokens
+- Tool Calls: 23
+- Tool Errors: 0
+- Last Prompt Eval: 496 tok/s
+- Last Eval: 58 tok/s
 
 ## Local qwen/qwen3.5-9b Q4_K_M - KV Q4_0 - default params
 - Time elapsed: 12m 21s
@@ -176,14 +254,6 @@
 - Cost: 0.00
 - Context: 63.033 tokens
 - Tool Calls: 78
-- Tool Errors: 0
-
-## Local tesslate_omnicoder-9b - Q4_K_S - KV Cache Q4_0 - Max Concurrent Prediction 6
-- Time elapsed: 6m 43s
-- Tests: 31/0 success/failures
-- Cost: 0.00
-- Context: 35.873 tokens
-- Tool Calls: 31
 - Tool Errors: 0
 
 ## Local nanbeige_nanbeige4-3b-thinking-2511 Q8_0 - KV Cache

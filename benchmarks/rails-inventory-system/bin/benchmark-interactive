@@ -177,6 +177,30 @@ generate_opencode_config() {
         "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}"
       },
 			"models": {
+				"qwen/qwen3.5-flash-02-23": {
+					"name": "Qwen3.5 Flash 02-23 (OpenRouter)"
+				},
+				"alibaba/tongyi-deepresearch-30b-a3b": {
+					"name": "Tongyi DeepResearch 30B A3B (OpenRouter)"
+				},
+				"x-ai/grok-4-fast": {
+					"name": "Grok 4 Fast (OpenRouter)"
+				},
+				"mistralai/devstral-small": {
+					"name": "Devstral Small 1.1 (OpenRouter)"
+				},
+				"google/gemma-4-31b-it": {
+					"name": "Gemma 4 31b it (OpenRouter)"
+				},
+				"nvidia/nemotron-3-super-120b-a12b": {
+					"name": "Nemotron 3 Super 120B A12B (OpenRouter)"
+				},
+				"google/gemma-4-31b-it": {
+					"name": "Gemma 4 31b (OpenRouter)"
+				},
+				"google/gemma-4-26b-a4b-it": {
+					"name": "Gemma 4 26b-A4B (OpenRouter)"
+				},
 				"stepfun/step-3.5-flash": {
 					"name": "Step 3.5 Flash (OpenRouter)"
 				},
@@ -261,9 +285,21 @@ generate_opencode_config() {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local",
       "options": {
-        "baseURL": "http://10.10.10.10:1234/v1",
+        "baseURL": "http://10.10.10.10:8080/v1",
       },
       "models": {
+				"gemma-4-26B-A4B-it-UD-Q3_K_M.gguf": {
+					"name": "Gemma 4 26B A4B it UD Q3_K_M (Local)"
+				},
+				"Qwen3.5-27B-TQ3_1S.gguf": {
+					"name": "Qwen3.5-27B-TQ3_1S (Local)"
+				},
+				"Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M.gguf": {
+					"name": "Qwen3.5-9b-Sushi-Coder-RL Q4_K_M (Local)"
+				},
+        "Tesslate_OmniCoder-9B-Q4_K_S.gguf": {
+          "name": "Tesslate Omnicoder 9B Q4_K_S (Local)"
+        },
 				"qwen3.5-2b-claude-4.6-opus-reasoning-distilled@q5_k_s": {
 					"name": "Qwen3.5-2b-Claude-4.6-Opus-Reasoning-Distilled Q5_K_S (Local)"
 				},
