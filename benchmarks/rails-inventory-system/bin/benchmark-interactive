@@ -288,6 +288,9 @@ generate_opencode_config() {
         "baseURL": "http://10.10.10.10:8080/v1",
       },
       "models": {
+				"929v8n68y4a6swrh8qffkfywfq7q1gk6-gemma-4-31b-jang-crack-Q4_K_M.gguf": {
+					"name": "Gemma 4 31b Jang Crack Q4_K_M (Local)"
+				},
 				"gemma-4-26B-A4B-it-UD-Q3_K_M.gguf": {
 					"name": "Gemma 4 26B A4B it UD Q3_K_M (Local)"
 				},

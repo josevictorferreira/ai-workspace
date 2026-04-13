@@ -48,6 +48,7 @@
           pkgs.ffmpeg
           pkgs.uv
           pkgs.wget
+          pkgs.glfw
         ];
 
         # Audio libraries needed by custom nodes (TTS, audio processing)
@@ -59,7 +60,7 @@
         # Additional libraries required by pip-installed PyTorch ROCm
         torchLibs = [
           pkgs.zstd
-          pkgs.libdrm  # Required for amdgpu.ids path resolution
+          pkgs.libdrm # Required for amdgpu.ids path resolution
         ];
 
         # Vulkan support for Aule Attention backend
@@ -99,6 +100,13 @@
             torchsde
             soundfile
             gitpython
+            # New deps for ComfyUI v0.18.x
+            blake3
+            simpleeval
+            filelock
+            requests
+            pyopengl
+            glfw
           ]
         );
 
@@ -116,10 +124,10 @@
           mkdir -p "$SNAPSHOT_DIR"
           TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
           SNAPSHOT_FILE="$SNAPSHOT_DIR/''${TIMESTAMP}_snapshot.json"
-          
+
           echo "Saving snapshot to $SNAPSHOT_FILE..."
           comfy node save-snapshot
-          
+
           # comfy-cli saves snapshots to ComfyUI/user/default/snapshots/
           LATEST=$(ls -t "$COMFYUI_WORKSPACE/ComfyUI/user/default/snapshots/"*.json 2>/dev/null | head -1)
           if [ -n "$LATEST" ]; then
@@ -135,25 +143,25 @@
         # Helper script to restore from latest versioned snapshot
         comfyRestore = pkgs.writeShellScriptBin "comfy-restore" ''
           SNAPSHOT_DIR="$COMFYUI_WORKSPACE/snapshots"
-          
+
           if [ ! -d "$SNAPSHOT_DIR" ]; then
             echo "No snapshots directory found"
             exit 1
           fi
-          
+
           LATEST=$(ls -t "$SNAPSHOT_DIR"/*.json 2>/dev/null | head -1)
           if [ -z "$LATEST" ]; then
             echo "No snapshots found in $SNAPSHOT_DIR"
             exit 1
           fi
-          
+
           echo "Restoring from: $LATEST"
-          
+
           # Copy snapshot to ComfyUI's snapshot directory
           COMFY_SNAP_DIR="$COMFYUI_WORKSPACE/ComfyUI/user/default/snapshots"
           mkdir -p "$COMFY_SNAP_DIR"
           cp "$LATEST" "$COMFY_SNAP_DIR/"
-          
+
           # Use cm-cli directly with absolute path for reliability
           cd "$COMFYUI_WORKSPACE/ComfyUI"
           "$VENV_DIR/bin/python" "custom_nodes/ComfyUI-Manager/cm-cli.py" restore-snapshot "$COMFY_SNAP_DIR/$(basename "$LATEST")"
@@ -176,13 +184,13 @@
           export PYTORCH_TUNABLEOP_ENABLED="0"
           export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
           export CM_SECURITY_LEVEL="weak"
-          
+
           echo "============================================"
           echo "  Launching ComfyUI with Aule Attention"
           echo "============================================"
-          
+
           cd "$COMFYUI_WORKSPACE/ComfyUI"
-          
+
           # Create a launcher script that installs shim before any imports
           exec python "$COMFYUI_WORKSPACE/scripts/comfy_aule_launcher.py" --listen 0.0.0.0 "$@"
         '';
@@ -228,11 +236,11 @@
           fi
 
           NODE_ARG="$1"
-          
+
           # Install the node (this may install CUDA torch)
           echo "Installing node: $NODE_ARG"
           comfy node install "$NODE_ARG"
-          
+
           # Find the installed node directory
           if [[ "$NODE_ARG" == http* ]]; then
             # Git URL - extract repo name
@@ -240,16 +248,16 @@
           else
             NODE_NAME="$NODE_ARG"
           fi
-          
+
           # Search for the node in custom_nodes
           NODE_DIR=$(find "$COMFYUI_WORKSPACE/ComfyUI/custom_nodes" -maxdepth 1 -type d -iname "*$NODE_NAME*" | head -1)
-          
+
           if [ -z "$NODE_DIR" ]; then
             echo "Warning: Could not find node directory for $NODE_NAME"
             echo "You may need to manually fix torch dependencies"
             exit 0
           fi
-          
+
           # Fix ROCm: uninstall any CUDA torch and reinstall requirements without torch
           echo "Fixing ROCm compatibility..."
           pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
@@ -257,20 +265,20 @@
             nvidia-cuda-runtime-cu12 nvidia-cudnn-cu12 nvidia-cufft-cu12 nvidia-cufile-cu12 \
             nvidia-curand-cu12 nvidia-cusolver-cu12 nvidia-cusparse-cu12 nvidia-cusparselt-cu12 \
             nvidia-nccl-cu12 nvidia-nvjitlink-cu12 nvidia-nvshmem-cu12 nvidia-nvtx-cu12 2>/dev/null || true
-          
+
           # Reinstall requirements without torch lines
           if [ -f "$NODE_DIR/requirements.txt" ]; then
             echo "Reinstalling dependencies (excluding torch)..."
             grep -v "^torch" "$NODE_DIR/requirements.txt" | grep -v "^#" | grep -v "^$" | \
               pip install -r /dev/stdin 2>&1 || true
           fi
-          
+
           # Run install.py if it exists (some nodes need this)
           if [ -f "$NODE_DIR/install.py" ]; then
             echo "Running install.py..."
             python "$NODE_DIR/install.py" 2>&1 || true
           fi
-          
+
           echo "Done! Node installed with ROCm torch preserved."
         '';
 
@@ -285,14 +293,14 @@
             echo "amdgpu.ids symlink already exists at /opt/amdgpu/share/libdrm/amdgpu.ids"
             exit 0
           fi
-          
+
           echo "Creating symlink for amdgpu.ids (fixes ROCm/Vulkan detection warnings)"
           echo "This requires sudo and only needs to be done once."
           echo ""
-          
+
           sudo mkdir -p /opt/amdgpu/share/libdrm
           sudo ln -sf "${pkgs.libdrm}/share/libdrm/amdgpu.ids" /opt/amdgpu/share/libdrm/amdgpu.ids
-          
+
           if [ -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
             echo "Success! Symlink created."
             ls -la /opt/amdgpu/share/libdrm/amdgpu.ids
@@ -306,13 +314,13 @@
         # Uses Triton for ROCm/CUDA or Vulkan for consumer AMD GPUs
         auleAttnInstall = pkgs.writeShellScriptBin "aule-attn-install" ''
           set -e
-          
+
           # Check if already installed
           if python -c "import aule; print(f'Aule Attention already installed')" 2>/dev/null; then
             python -c "from aule import get_available_backends; print(f'Available backends: {get_available_backends()}')"
             exit 0
           fi
-          
+
           echo "============================================"
           echo "  Installing Aule Attention"
           echo "  (Hardware-agnostic FlashAttention)"
@@ -320,9 +328,9 @@
           echo ""
           echo "This works on AMD RDNA2 (6900 XT) via Triton/Vulkan backends"
           echo ""
-          
+
           pip install --quiet aule-attention
-          
+
           # Verify installation
           if python -c "import aule; from aule import get_available_backends; print(f'Aule Attention installed! Backends: {get_available_backends()}')" 2>/dev/null; then
             echo ""
@@ -406,117 +414,137 @@
           ++ vulkanLibs;
 
           shellHook = ''
-            # --- 6900 XT (gfx1030) STABILITY FIXES ---
-            export HSA_OVERRIDE_GFX_VERSION="10.3.0"
-            export HSA_ENABLE_SDMA="0"
-            export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
-            export HIP_VISIBLE_DEVICES="0"
-            # Completely disable hipblaslt - gfx1030 lacks Tensile library support
-            # TunableOp uses hipblaslt internally which causes errors on RDNA2
-            export TORCH_BLAS_PREFER_HIPBLASLT="0"
-            export PYTORCH_TUNABLEOP_ENABLED="0"
-            export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
-            
-            # --- ROCm BUILD ENVIRONMENT ---
-            export ROCM_PATH="${pkgs.rocmPackages.clr}"
-            export HIP_PATH="${pkgs.rocmPackages.clr}"
-            export PYTORCH_ROCM_ARCH="gfx1030"
-            
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs ++ torchLibs ++ vulkanLibs)}:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
-            export PATH="${pkgs.rocmPackages.clr}/bin:$PATH"
-            
-            # --- FIX: libdrm amdgpu.ids path for Vulkan/ROCm detection ---
-            export LIBDRM_AMDGPU_IDS_PATH="${pkgs.libdrm}/share/libdrm/amdgpu.ids"
-            # Hint user about the symlink if not present
-            if [ ! -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
-              export AMDGPU_IDS_MISSING=1
-            fi
+                        # --- 6900 XT (gfx1030) STABILITY FIXES ---
+                        export HSA_OVERRIDE_GFX_VERSION="10.3.0"
+                        export HSA_ENABLE_SDMA="0"
+                        export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
+                        export HIP_VISIBLE_DEVICES="0"
+                        # Completely disable hipblaslt - gfx1030 lacks Tensile library support
+                        # TunableOp uses hipblaslt internally which causes errors on RDNA2
+                        export TORCH_BLAS_PREFER_HIPBLASLT="0"
+                        export PYTORCH_TUNABLEOP_ENABLED="0"
+                        export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
+                        
+                        # --- ROCm BUILD ENVIRONMENT ---
+                        export ROCM_PATH="${pkgs.rocmPackages.clr}"
+                        export HIP_PATH="${pkgs.rocmPackages.clr}"
+                        export PYTORCH_ROCM_ARCH="gfx1030"
+                        
+                        export LD_LIBRARY_PATH="${
+                          pkgs.lib.makeLibraryPath (rocmDependencies ++ audioLibs ++ torchLibs ++ vulkanLibs)
+                        }:${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+                        export PATH="${pkgs.rocmPackages.clr}/bin:$PATH"
+                        
+                        # --- FIX: libdrm amdgpu.ids path for Vulkan/ROCm detection ---
+                        export LIBDRM_AMDGPU_IDS_PATH="${pkgs.libdrm}/share/libdrm/amdgpu.ids"
+                        # Hint user about the symlink if not present
+                        if [ ! -f /opt/amdgpu/share/libdrm/amdgpu.ids ]; then
+                          export AMDGPU_IDS_MISSING=1
+                        fi
 
-            # --- VENV SETUP ---
-            VENV_DIR="$PWD/.venv"
-            export VENV_DIR
-            if [ ! -d "$VENV_DIR" ]; then
-              echo "Creating virtual environment..."
-              python -m venv "$VENV_DIR" --system-site-packages
-            fi
+                        # --- VENV SETUP ---
+                        VENV_DIR="$PWD/.venv"
+                        export VENV_DIR
+                        if [ ! -d "$VENV_DIR" ]; then
+                          echo "Creating virtual environment..."
+                          python -m venv "$VENV_DIR" --system-site-packages
+                        fi
             source "$VENV_DIR/bin/activate"
 
-            # Install comfy-cli if not present
-            if ! command -v comfy &> /dev/null; then
-              echo "Installing comfy-cli..."
-              pip install --quiet comfy-cli
-            fi
+                        # Keep pip from overriding nixpkgs ROCm torch with CUDA wheels from PyPI
+                        pip uninstall -y torch torchvision torchaudio triton cuda-bindings cuda-toolkit \
+                          nvidia-cublas-cu12 nvidia-cuda-cupti-cu12 nvidia-cuda-nvrtc-cu12 \
+                          nvidia-cuda-runtime-cu12 nvidia-cudnn-cu12 nvidia-cufft-cu12 nvidia-cufile-cu12 \
+                          nvidia-curand-cu12 nvidia-cusolver-cu12 nvidia-cusparse-cu12 nvidia-cusparselt-cu12 \
+                          nvidia-nccl-cu12 nvidia-nvjitlink-cu12 nvidia-nvshmem-cu12 nvidia-nvtx-cu12 \
+                          nvidia-cublas-cu13 nvidia-cuda-cupti-cu13 nvidia-cuda-nvrtc-cu13 \
+                          nvidia-cuda-runtime-cu13 nvidia-cudnn-cu13 nvidia-cufft-cu13 nvidia-cufile-cu13 \
+                          nvidia-curand-cu13 nvidia-cusolver-cu13 nvidia-cusparse-cu13 nvidia-cusparselt-cu13 \
+                          nvidia-nccl-cu13 nvidia-nvjitlink-cu13 nvidia-nvshmem-cu13 nvidia-nvtx-cu13 \
+                          2>/dev/null || true
 
-            # Set workspace to current directory
-            export COMFYUI_WORKSPACE="$PWD"
+                        # Sync new upstream requirements without replacing nixpkgs torch stack
+                        if [ -f "ComfyUI/requirements.txt" ]; then
+                          grep -vE '^(torch|torchvision|torchaudio)([[:space:]=<>!~].*)?$' ComfyUI/requirements.txt | grep -v '^#' | grep -v '^$' | \
+                            pip install --quiet -r /dev/stdin 2>/dev/null || true
+                        fi
 
-            ${pkgs.lib.getExe comfyHelp}
+                        # Install comfy-cli if not present
+                        if ! command -v comfy &> /dev/null; then
+                          echo "Installing comfy-cli..."
+                          pip install --quiet comfy-cli
+                        fi
 
-            # Auto-install ComfyUI if not present
-            if [ ! -d "ComfyUI" ]; then
-              echo "First run detected. Installing ComfyUI..."
-              comfy --here install
-              
-              # Auto-restore from latest versioned snapshot if available
-              if [ -d "snapshots" ] && ls snapshots/*.json &>/dev/null; then
-                echo ""
-                echo "Found versioned snapshots. Restoring configuration..."
-                comfy-restore
-              fi
-              
-              # Auto-sync models from models.yaml if present
-              if [ -f "models.yaml" ]; then
-                echo ""
-                echo "Found models.yaml. Syncing models..."
-                comfy-models-sync
-              fi
-            fi
+                        # Set workspace to current directory
+                        export COMFYUI_WORKSPACE="$PWD"
+
+                        ${pkgs.lib.getExe comfyHelp}
+
+                        # Auto-install ComfyUI if not present
+                        if [ ! -d "ComfyUI" ]; then
+                          echo "First run detected. Installing ComfyUI..."
+                          comfy --here install
+                          
+                          # Auto-restore from latest versioned snapshot if available
+                          if [ -d "snapshots" ] && ls snapshots/*.json &>/dev/null; then
+                            echo ""
+                            echo "Found versioned snapshots. Restoring configuration..."
+                            comfy-restore
+                          fi
+                          
+                          # Auto-sync models from models.yaml if present
+                          if [ -f "models.yaml" ]; then
+                            echo ""
+                            echo "Found models.yaml. Syncing models..."
+                            comfy-models-sync
+                          fi
+                        fi
 
 
-            # --- DECLARATIVE OUTPUT & WORKFLOW DIRECTORIES ---
-            OUTPUT_DIR="$HOME/Homelab/images/ai-generations"
-            WORKFLOW_DIR="$HOME/Homelab/backups/workflows"
-            COMFY_OUTPUT="$PWD/ComfyUI/output"
-            COMFY_WORKFLOWS="$PWD/ComfyUI/user/default/workflows"
+                        # --- DECLARATIVE OUTPUT & WORKFLOW DIRECTORIES ---
+                        OUTPUT_DIR="$HOME/Homelab/images/ai-generations"
+                        WORKFLOW_DIR="$HOME/Homelab/backups/workflows"
+                        COMFY_OUTPUT="$PWD/ComfyUI/output"
+                        COMFY_WORKFLOWS="$PWD/ComfyUI/user/default/workflows"
 
-            # Ensure target directories exist
-            mkdir -p "$OUTPUT_DIR"
-            mkdir -p "$WORKFLOW_DIR"
+                        # Ensure target directories exist
+                        mkdir -p "$OUTPUT_DIR"
+                        mkdir -p "$WORKFLOW_DIR"
 
-            # Setup output symlink (only if ComfyUI is installed)
-            if [ -d "$PWD/ComfyUI" ]; then
-              if [ -d "$COMFY_OUTPUT" ] && [ ! -L "$COMFY_OUTPUT" ]; then
-                # Move existing outputs to target dir and replace with symlink
-                if [ "$(ls -A "$COMFY_OUTPUT" 2>/dev/null)" ]; then
-                  mv "$COMFY_OUTPUT"/* "$OUTPUT_DIR/" 2>/dev/null || true
-                fi
-                rm -rf "$COMFY_OUTPUT"
-                ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
-                echo "Linked outputs -> $OUTPUT_DIR"
-              elif [ ! -e "$COMFY_OUTPUT" ]; then
-                ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
-                echo "Linked outputs -> $OUTPUT_DIR"
-              fi
+                        # Setup output symlink (only if ComfyUI is installed)
+                        if [ -d "$PWD/ComfyUI" ]; then
+                          if [ -d "$COMFY_OUTPUT" ] && [ ! -L "$COMFY_OUTPUT" ]; then
+                            # Move existing outputs to target dir and replace with symlink
+                            if [ "$(ls -A "$COMFY_OUTPUT" 2>/dev/null)" ]; then
+                              mv "$COMFY_OUTPUT"/* "$OUTPUT_DIR/" 2>/dev/null || true
+                            fi
+                            rm -rf "$COMFY_OUTPUT"
+                            ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
+                            echo "Linked outputs -> $OUTPUT_DIR"
+                          elif [ ! -e "$COMFY_OUTPUT" ]; then
+                            ln -sf "$OUTPUT_DIR" "$COMFY_OUTPUT"
+                            echo "Linked outputs -> $OUTPUT_DIR"
+                          fi
 
-              # Setup workflows symlink
-              mkdir -p "$PWD/ComfyUI/user/default"
-              if [ -d "$COMFY_WORKFLOWS" ] && [ ! -L "$COMFY_WORKFLOWS" ]; then
-                # Move existing workflows to target dir and replace with symlink
-                if [ "$(ls -A "$COMFY_WORKFLOWS" 2>/dev/null)" ]; then
-                  mv "$COMFY_WORKFLOWS"/* "$WORKFLOW_DIR/" 2>/dev/null || true
-                fi
-                rm -rf "$COMFY_WORKFLOWS"
-                ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
-                echo "Linked workflows -> $WORKFLOW_DIR"
-              elif [ ! -e "$COMFY_WORKFLOWS" ]; then
-                ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
-                echo "Linked workflows -> $WORKFLOW_DIR"
-              fi
-            fi
+                          # Setup workflows symlink
+                          mkdir -p "$PWD/ComfyUI/user/default"
+                          if [ -d "$COMFY_WORKFLOWS" ] && [ ! -L "$COMFY_WORKFLOWS" ]; then
+                            # Move existing workflows to target dir and replace with symlink
+                            if [ "$(ls -A "$COMFY_WORKFLOWS" 2>/dev/null)" ]; then
+                              mv "$COMFY_WORKFLOWS"/* "$WORKFLOW_DIR/" 2>/dev/null || true
+                            fi
+                            rm -rf "$COMFY_WORKFLOWS"
+                            ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
+                            echo "Linked workflows -> $WORKFLOW_DIR"
+                          elif [ ! -e "$COMFY_WORKFLOWS" ]; then
+                            ln -sf "$WORKFLOW_DIR" "$COMFY_WORKFLOWS"
+                            echo "Linked workflows -> $WORKFLOW_DIR"
+                          fi
+                        fi
 
-            # Set this workspace as default
-            comfy set-default "$PWD" 2>/dev/null || true
-            echo ""
+                        # Set this workspace as default
+                        comfy set-default "$PWD" 2>/dev/null || true
+                        echo ""
           '';
         };
       }

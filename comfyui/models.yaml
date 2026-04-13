@@ -42,6 +42,20 @@
 
 models:
   # ============================================================
+  # 3D GENERATION - Hunyuan3D-2.1
+  # ============================================================
+  # Hunyuan3D-2.1 - Image to 3D model generation
+  # Used by: ComfyUI-Hunyuan3d-2-1 custom node
+  # Single repackaged safetensors from Comfy-Org (DiT + VAE combined)
+
+  - name: "Hunyuan3D-2.1"
+    source: url
+    url: "https://huggingface.co/Comfy-Org/hunyuan3D_2.1_repackaged/resolve/main/hunyuan_3d_v2.1.safetensors"
+    path: "diffusion_models/hunyuan_3d_v2.1.safetensors"
+    tags: [3d, image-to-3d]
+
+
+  # ============================================================
   # VIDEO SUPER RESOLUTION
   # ============================================================
   # FlashVSR - Ultra fast video super resolution

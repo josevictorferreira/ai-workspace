@@ -40,7 +40,7 @@
           };
           "Bonsai-8B" = pkgs.fetchurl {
             url = "https://huggingface.co/prism-ml/Bonsai-8B-gguf/resolve/main/Bonsai-8B.gguf";
-            sha256 = "sha256-6tJYl7wDT6UladDG0FTOOCFvldsJkAyK3Y9rv7Nwz/E=";
+            sha256 = "sha256-KEozWqP7LO07GwH8tAsIqng+O3CDJ2fw3S4/36E0vVQ=";
           };
           "nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0" = pkgs.fetchurl {
             url = "https://huggingface.co/bartowski/nvidia_Nemotron-Cascade-2-30B-A3B-GGUF/resolve/main/nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0.gguf";
@@ -56,11 +56,15 @@
           };
           "gemma-4-E4B-it-Q4_K_S" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_K_S.gguf";
-            sha256 = "sha256-cP0tLujqQIxx3/r45arIwia4GkiCQzAEpIAx6mIZPWI=";
+            sha256 = "sha256-phdUsEKgWDyjaahQzDqtWcIAH62KIH3hi4i1sat87MM=";
           };
           "gemma-4-26B-A4B-it-UD-Q3_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/gemma-4-26B-A4B-it-UD-Q3_K_M.gguf";
-            sha256 = "sha256-tqp4CdJfcQMbglKOyIh3gwy4i/fSEP8pGhqfvkjn3zc=";
+            sha256 = "sha256-YpaznVgWaMS2VGF9bUnJ7coVY1+4A8PJ9tgTdx34XR4=";
+          };
+          "gemma-4-31b-jang-crack-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/douyamv/Gemma-4-31B-JANG_4M-CRACK-GGUF/resolve/main/gemma-4-31b-jang-crack-Q4_K_M.gguf";
+            sha256 = "sha256-sfyO4Q+RbaAZ27HRd4VPo7ZCH76h6Tg5ogYYYTCOHec=";
           };
         };
 
@@ -77,11 +81,11 @@
         llama-vulkan = llama-cpp.packages.${system}.vulkan;
 
         # --- Helper to create server/cli apps ---
-        mkServer = pkg: modelName: {
+        mkServer = pkg: model: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-server-wrapper" ''
             exec ${pkg}/bin/llama-server \
-              --model "${modelsDir}/${modelName}.gguf" \
+              --model "${model}" \
               --ctx-size "32768" \
               --n-gpu-layers "99" \
               --host "0.0.0.0" \
@@ -90,12 +94,12 @@
           ''}/bin/llama-server-wrapper";
         };
 
-        mkSpeculativeServer = pkg: modelName: draftModelName: ctxSize: {
+        mkSpeculativeServer = pkg: model: draftModel: ctxSize: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-omnicoder-wrapper" ''
             exec ${pkg}/bin/llama-server \
-              -m "${modelsDir}/${modelName}.gguf" \
-              -md "${modelsDir}/${draftModelName}.gguf" \
+              -m "${model}" \
+              -md "${draftModel}" \
               --parallel 1 \
               --ctx-size "${ctxSize}" \
               --n-gpu-layers "99" \
@@ -112,11 +116,11 @@
           ''}/bin/llama-omnicoder-wrapper";
         };
 
-        mkCli = pkg: modelName: {
+        mkCli = pkg: model: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-cli-wrapper" ''
             exec ${pkg}/bin/llama-cli \
-              -m "${modelsDir}/${modelName}.gguf" \
+              -m "${model}" \
               -p "Hello, how are you today?" \
               -n "128" \
               --n-gpu-layers "99" \
@@ -124,11 +128,11 @@
           ''}/bin/llama-cli-wrapper";
         };
 
-        mkGemma = pkg: modelName: {
+        mkGemma = pkg: model: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-gemma-wrapper" ''
             exec ${pkg}/bin/llama-server \
-              -m "${modelsDir}/${modelName}.gguf" \
+              -m "${model}" \
               --parallel 1 \
               --ctx-size "98304" \
               --jinja \
@@ -142,15 +146,15 @@
           ''}/bin/llama-gemma-wrapper";
         };
 
-        mkGemma26b = pkg: modelName: {
+        mkGemma26b = pkg: model: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-gemma-26b-wrapper" ''
             exec ${pkg}/bin/llama-server \
-              -m "${modelsDir}/${modelName}.gguf" \
-              --ctx-size "131072" \
+              -m "${model}" \
+              --ctx-size "16384" \
               --parallel 1 \
               --jinja \
-              --n-gpu-layers "99" \
+              --n-gpu-layers "50" \
               --cache-type-k "q4_0" \
               --cache-type-v "q4_0" \
               --flash-attn on \
@@ -158,6 +162,24 @@
               --port "8080" \
               "$@"
           ''}/bin/llama-gemma-26b-wrapper";
+        };
+
+        mkGemma31b = pkg: model: {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-gemma-31b-wrapper" ''
+            exec ${pkg}/bin/llama-server \
+              -m "${model}" \
+              --ctx-size "8192" \
+              --parallel 1 \
+              --jinja \
+              --n-gpu-layers "45" \
+              --cache-type-k "q4_0" \
+              --cache-type-v "q4_0" \
+              --flash-attn on \
+              --host "0.0.0.0" \
+              --port "8080" \
+              "$@"
+          ''}/bin/llama-gemma-31b-wrapper";
         };
 
       in
@@ -169,35 +191,38 @@
 
         # Apps for running the server easily
         # Usage: nix run .#omnicoder OR nix run .#omnicoder-vulkan
-        apps.omnicoder = mkSpeculativeServer llama-rocm "Tesslate_OmniCoder-9B-Q4_K_S" "Qwen3.5-0.8B.Q4_K_S" "32768";
-        apps.omnicoder-vulkan = mkSpeculativeServer llama-vulkan "Tesslate_OmniCoder-9B-Q4_K_S" "Qwen3.5-0.8B.Q4_K_S" "32768";
+        apps.omnicoder = mkSpeculativeServer llama-rocm models."Tesslate_OmniCoder-9B-Q4_K_S" models."Qwen3.5-0.8B.Q4_K_S" "32768";
+        apps.omnicoder-vulkan = mkSpeculativeServer llama-vulkan models."Tesslate_OmniCoder-9B-Q4_K_S" models."Qwen3.5-0.8B.Q4_K_S" "32768";
 
-        apps.sushi-coder = mkSpeculativeServer llama-rocm "Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M" "Qwen3.5-0.8B.Q4_K_S" "70000";
-        apps.sushi-coder-vulkan = mkSpeculativeServer llama-vulkan "Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M" "Qwen3.5-0.8B.Q4_K_S" "70000";
+        apps.sushi-coder = mkSpeculativeServer llama-rocm models."Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M" models."Qwen3.5-0.8B.Q4_K_S" "70000";
+        apps.sushi-coder-vulkan = mkSpeculativeServer llama-vulkan models."Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M" models."Qwen3.5-0.8B.Q4_K_S" "70000";
 
-        apps.bonsai = mkSpeculativeServer llama-rocm "Bonsai-8B" "Qwen3.5-0.8B.Q4_K_S" "70000";
-        apps.bonsai-vulkan = mkSpeculativeServer llama-vulkan "Bonsai-8B" "Qwen3.5-0.8B.Q4_K_S" "70000";
+        apps.bonsai = mkSpeculativeServer llama-rocm models."Bonsai-8B" models."Qwen3.5-0.8B.Q4_K_S" "70000";
+        apps.bonsai-vulkan = mkSpeculativeServer llama-vulkan models."Bonsai-8B" models."Qwen3.5-0.8B.Q4_K_S" "70000";
 
-        apps.nemotron = mkSpeculativeServer llama-rocm "nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0" "Qwen3.5-0.8B.Q4_K_S" "16384";
-        apps.nemotron-vulkan = mkSpeculativeServer llama-vulkan "nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0" "Qwen3.5-0.8B.Q4_K_S" "16384";
+        apps.nemotron = mkSpeculativeServer llama-rocm models."nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0" models."Qwen3.5-0.8B.Q4_K_S" "16384";
+        apps.nemotron-vulkan = mkSpeculativeServer llama-vulkan models."nvidia_Nemotron-Cascade-2-30B-A3B-Q4_0" models."Qwen3.5-0.8B.Q4_K_S" "16384";
 
-        apps.server = mkServer llama-rocm "Tesslate_OmniCoder-9B-Q4_K_S";
-        apps.server-vulkan = mkServer llama-vulkan "Tesslate_OmniCoder-9B-Q4_K_S";
+        apps.server = mkServer llama-rocm models."Tesslate_OmniCoder-9B-Q4_K_S";
+        apps.server-vulkan = mkServer llama-vulkan models."Tesslate_OmniCoder-9B-Q4_K_S";
 
-        apps.cli = mkCli llama-rocm "Tesslate_OmniCoder-9B-Q4_K_S";
-        apps.cli-vulkan = mkCli llama-vulkan "Tesslate_OmniCoder-9B-Q4_K_S";
+        apps.cli = mkCli llama-rocm models."Tesslate_OmniCoder-9B-Q4_K_S";
+        apps.cli-vulkan = mkCli llama-vulkan models."Tesslate_OmniCoder-9B-Q4_K_S";
 
-        apps.gemma = mkGemma llama-rocm "gemma-4-E4B-it-Q4_K_S";
-        apps.gemma-vulkan = mkGemma llama-vulkan "gemma-4-E4B-it-Q4_K_S";
+        apps.gemma = mkGemma llama-rocm models."gemma-4-E4B-it-Q4_K_S";
+        apps.gemma-vulkan = mkGemma llama-vulkan models."gemma-4-E4B-it-Q4_K_S";
 
-        apps.gemma-26b = mkGemma26b llama-rocm "gemma-4-26B-A4B-it-UD-Q3_K_M";
-        apps.gemma-26b-vulkan = mkGemma26b llama-vulkan "gemma-4-26B-A4B-it-UD-Q3_K_M";
+        apps.gemma-26b = mkGemma26b llama-rocm models."gemma-4-26B-A4B-it-UD-Q3_K_M";
+        apps.gemma-26b-vulkan = mkGemma26b llama-vulkan models."gemma-4-26B-A4B-it-UD-Q3_K_M";
+
+        apps.gemma-31b = mkGemma31b llama-rocm models."gemma-4-31b-jang-crack-Q4_K_M";
+        apps.gemma-31b-vulkan = mkGemma31b llama-vulkan models."gemma-4-31b-jang-crack-Q4_K_M";
 
         apps.qwen-27b = {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-qwen-27b" ''
             exec ${llama-rocm}/bin/llama-server \
-              -m "${modelsDir}/Qwen3.5-27B-TQ3_1S.gguf" \
+              -m "${models."Qwen3.5-27B-TQ3_1S"}" \
               --parallel 1 \
               --ctx-size "98304" \
               --n-gpu-layers "99" \
@@ -214,7 +239,7 @@
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-qwen-27b-vulkan" ''
             exec ${llama-vulkan}/bin/llama-server \
-              -m "${modelsDir}/Qwen3.5-27B-TQ3_1S.gguf" \
+              -m "${models."Qwen3.5-27B-TQ3_1S"}" \
               --parallel 1 \
               --ctx-size "98304" \
               --n-gpu-layers "99" \
@@ -231,7 +256,7 @@
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-qwopus-27b" ''
             exec ${llama-rocm}/bin/llama-server \
-              -m "${modelsDir}/Qwopus3.5-27B-v3-TQ3_4S.gguf" \
+              -m "${models."Qwopus3.5-27B-v3-TQ3_4S"}" \
               --parallel 1 \
               --ctx-size "98304" \
               --n-gpu-layers "99" \
@@ -248,7 +273,7 @@
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-qwopus-27b-vulkan" ''
             exec ${llama-vulkan}/bin/llama-server \
-              -m "${modelsDir}/Qwopus3.5-27B-v3-TQ3_4S.gguf" \
+              -m "${models."Qwopus3.5-27B-v3-TQ3_4S"}" \
               --parallel 1 \
               --ctx-size "98304" \
               --n-gpu-layers "99" \
@@ -266,11 +291,10 @@
           name = "llama-cpp-rocm-shell";
           buildInputs = [ llama-rocm ];
           shellHook = ''
-            export LLAMA_MODELS_DIR="${modelsDir}"
             echo "--- Llama-cpp (ROCm) Development Environment ---"
-            echo "Models directory: $LLAMA_MODELS_DIR"
             echo "To run gemma (4B active): nix run .#gemma"
             echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b"
+            echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b"
             echo "To run speculative server: nix run .#omnicoder"
           '';
         };
@@ -279,11 +303,10 @@
           name = "llama-cpp-vulkan-shell";
           buildInputs = [ llama-vulkan ];
           shellHook = ''
-            export LLAMA_MODELS_DIR="${modelsDir}"
             echo "--- Llama-cpp (Vulkan) Development Environment ---"
-            echo "Models directory: $LLAMA_MODELS_DIR"
             echo "To run gemma (4B active): nix run .#gemma-vulkan"
             echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b-vulkan"
+            echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b-vulkan"
             echo "To run speculative server: nix run .#omnicoder-vulkan"
           '';
         };
