@@ -169,6 +169,11 @@ generate_opencode_config() {
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
+    "inception": {
+      "options": {
+        "apiKey": "{env:INCEPTION_API_KEY}"
+      }
+    },
     "openrouter": {
 			"npm": "@ai-sdk/openai-compatible",
 			"name": "OpenRouter",
@@ -177,107 +182,44 @@ generate_opencode_config() {
         "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}"
       },
 			"models": {
-				"qwen/qwen3.5-flash-02-23": {
-					"name": "Qwen3.5 Flash 02-23 (OpenRouter)"
+				"google/gemini-2.5-flash-lite-preview-09-2025": {
+					"name": "Gemini 2.5 Flash Lite Preview 09-2025 (OpenRouter)"
 				},
-				"alibaba/tongyi-deepresearch-30b-a3b": {
-					"name": "Tongyi DeepResearch 30B A3B (OpenRouter)"
+				"inclusionai/ling-2.6-flash": {
+					"name": "Ling 2.6 Flash (OpenRouter)"
 				},
-				"x-ai/grok-4-fast": {
-					"name": "Grok 4 Fast (OpenRouter)"
+				"openai/gpt-oss-20b": {
+					"name": "GPT OSS 20b (OpenRouter)"
 				},
-				"mistralai/devstral-small": {
-					"name": "Devstral Small 1.1 (OpenRouter)"
+				"qwen/qwen3.6-35b-a3b": {
+					"name": "Qwen 3.6 35B A3B (OpenRouter)"
 				},
-				"google/gemma-4-31b-it": {
-					"name": "Gemma 4 31b it (OpenRouter)"
+				"qwen/qwen3.6-27b": {
+					"name": "Qwen 3.6 27B (OpenRouter)"
 				},
-				"nvidia/nemotron-3-super-120b-a12b": {
-					"name": "Nemotron 3 Super 120B A12B (OpenRouter)"
+				"arcee-ai/trinity-large-preview": {
+					"name": "Trinity Large Preview (OpenRouter)"
 				},
-				"google/gemma-4-31b-it": {
-					"name": "Gemma 4 31b (OpenRouter)"
+				"kwaipilot/kat-coder-pro-v2": {
+					"name": "Kat Coder Pro v2 (OpenRouter)"
 				},
-				"google/gemma-4-26b-a4b-it": {
-					"name": "Gemma 4 26b-A4B (OpenRouter)"
+				"google/gemini-2.5-flash-lite": {
+					"name": "Gemini 2.5 Flash Lite (OpenRouter)"
 				},
-				"stepfun/step-3.5-flash": {
-					"name": "Step 3.5 Flash (OpenRouter)"
+				"inclusionai/ling-2.6-flash": {
+					"name": "Ling 2.6 Flash (OpenRouter)"
 				},
-				"qwen/qwen3-coder-next": {
-					"name": "Qwen3 Coder Next (OpenRouter)"
-				},
-				"z-ai/glm-4.7-flash": {
-					"name": "GLM-4.7 Flash (OpenRouter)"
+				"deepseek/deepseek-v4-flash": {
+					"name": "DeepSeek V4 Flash (OpenRouter)"
 				},
 				"minimax/minimax-m2.7": {
 					"name": "MiniMax M2.7 (OpenRouter)"
 				},
-				"qwen/qwen3.5-27b": {
-					"name": "Qwen3.5 27B (OpenRouter)"
+				"mistralai/mistral-small-3.1-24b-instruct": {
+					"name": "Mistral Small 3.1 24B Instruct (OpenRouter)"
 				},
-				"qwen/qwen3.5-122b-a10b": {
-					"name": "Qwen3.5 122B A10B (OpenRouter)"
-				},
-				"qwen/qwen3.5-flash-02-23": {
-					"name": "Qwen3.5 Flash 02-23 (OpenRouter)"
-				},
-				"qwen/qwen3.5-35b-a3b": {
-					"name": "Qwen3.5 35B A3B (OpenRouter)"
-				},
-				"x-ai/grok-4.20-multi-agent-beta": {
-					"name": "Grok 4.20 Multi-Agent Beta (OpenRouter)"
-				},
-				"nvidia/nemotron-nano-9b-v2": {
-					"name": "NVIDIA NeMoTron Nano 9B v2 (OpenRouter)"
-				},
-				"qwen/qwen2.5-coder-7b-instruct": {
-					"name": "Qwen2.5 Coder 7B Instruct (OpenRouter)"
-				},
-				"qwen/qwen3-30b-a3b": {
-					"name": "Qwen3 30B A3B (OpenRouter)"
-				},
-				"openai/gpt-5.4-mini": {
-					"name": "GPT-5.4 Mini (OpenRouter)"
-				},
-				"nvidia/nemotron-3-super-120b-a12b:free": {
-					"name": "NVIDIA NeMoTron Super 120B A12B Free (OpenRouter)"
-				},
-				"openai/gpt-5.4-nano": {
-					"name": "GPT-5.4 Nano (OpenRouter)"
-				},
-				"bytedance-seed/seed-2.0-lite": {
-					"name": "Bytedance SEED 2.0 Lite (OpenRouter)"
-				},
-				"mistralai/mistral-small-2603": {
-					"name": "Mistral Small 2603 (OpenRouter)"
-				},
-				"nvidia/nemotron-3-nano-30b-a3b:nitro": {
-					"name": "NVIDIA NeMoTron Nano 30B A3B Nitro (OpenRouter)"
-				},
-				"qwen/qwen3.5-9b": {
-					"name": "Qwen3.5-9b (OpenRouter)",
-				},
-				"z-ai/glm-5-turbo": {
-					"name": "GLM-5 Turbo (OpenRouter)"
-				},
-				"minimax/minimax-m2.5:nitro": {
-					"name": "MiniMax M2.5 Nitro (OpenRouter)"
-				},
-				"openai/gpt-oss-120b": {
-					"name": "GPT-OSS 120B (OpenRouter)"
-				},
-				"openai/gpt-oss-120b:exacto": {
-					"name": "GPT-OSS 120B Exacto (OpenRouter)"
-				},
-				"openai/gpt-oss-120b:nitro": {
-					"name": "GPT-OSS 120B Nitro (OpenRouter)"
-				},
-				"inception/mercury-2": {
-					"name": "Mercury-2 (OpenRouter)"
-				},
-				"openai/gpt-oss-20b": {
-					"name": "GPT-OSS 20B (OpenRouter)"
+				"bytedance-seed/seed-2.0-mini": {
+					"name": "Seed 2.0 Mini (OpenRouter)"
 				}
 			}
     },
@@ -285,35 +227,15 @@ generate_opencode_config() {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local",
       "options": {
-        "baseURL": "http://10.10.10.10:8080/v1",
+        "baseURL": "http://10.10.10.10:8080/v1"
       },
       "models": {
-				"929v8n68y4a6swrh8qffkfywfq7q1gk6-gemma-4-31b-jang-crack-Q4_K_M.gguf": {
-					"name": "Gemma 4 31b Jang Crack Q4_K_M (Local)"
-				},
-				"gemma-4-26B-A4B-it-UD-Q3_K_M.gguf": {
-					"name": "Gemma 4 26B A4B it UD Q3_K_M (Local)"
-				},
-				"Qwen3.5-27B-TQ3_1S.gguf": {
-					"name": "Qwen3.5-27B-TQ3_1S (Local)"
-				},
-				"Qwen3.5-9b-Sushi-Coder-RL.Q4_K_M.gguf": {
-					"name": "Qwen3.5-9b-Sushi-Coder-RL Q4_K_M (Local)"
-				},
-        "Tesslate_OmniCoder-9B-Q4_K_S.gguf": {
-          "name": "Tesslate Omnicoder 9B Q4_K_S (Local)"
-        },
-				"qwen3.5-2b-claude-4.6-opus-reasoning-distilled@q5_k_s": {
-					"name": "Qwen3.5-2b-Claude-4.6-Opus-Reasoning-Distilled Q5_K_S (Local)"
-				},
-				"mistralai/devstral-small-2-2512": {
-					"name": "Mistral Small 2 2512 (Local)"
-				},
-				"tesslate_omnicoder-9b": {
-					"name": "Tesslate Omnicoder 9B (Local)"
-				},
-				"qwen3.5-9b-claude-4.6-opus-reasoning-distilled": {
-					"name": "Qwen3.5-9b-Claude-4.6-Opus-Reasoning-Distilled (Local)"
+				"4j2993b3x6g8219d44zyfnyyb67bd9sd-gemma4-coding-Q4_K_M.gguf": {
+					"name": "Gemma 12B Coding Q4_K_M (Local)",
+					"limit": {
+						"context": 16384,
+						"output": 4096
+					}
 				}
       }
     },
@@ -416,7 +338,7 @@ generate_opencode_config() {
     "grep": "allow",
     "lsp": "allow",
     "skill": "allow",
-    "task": "allow",
+    "task": "deny",
     "question": "deny",
     "external_directory": "deny",
     "external_bash": "deny"

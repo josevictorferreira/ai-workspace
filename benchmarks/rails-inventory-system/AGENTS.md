@@ -1,73 +1,106 @@
-# AGENTS.md
+# Rails Inventory System
+
+This is a Ruby on Rails 8.1 API-only application that implements an Order Inventory Management System. It is used as a benchmark target: an LLM agent is given failing tests and must fix the implementation while preserving the intended business rules.
 
 ## Project Overview
 
-This is a **Ruby on Rails 8.1 API-only** application implementing an **Order and Inventory Management System**. The system manages products, warehouses, and inventory stock, handling the full lifecycle of an order from pending to confirmed or cancelled.
+The system manages products, warehouses, and inventory stock. It handles the full lifecycle of an order from `pending` through `confirmed` to `cancelled`.
 
 ### Key Features
+
 - **Multi-Warehouse Support**: Inventory is tracked per warehouse.
-- **Stock Allocation Logic**: Orders are confirmed by deducting stock from warehouses in ascending ID order.
-- **Atomic Transactions**: Inventory deductions and order status updates are performed within database transactions to ensure data integrity.
-- **Inventory Restoration**: Cancelling a confirmed order accurately restores stock to the original warehouses using an allocation tracking system.
-- **State Integrity**: Strict guards prevent modifying orders once they are confirmed or cancelled.
-- **Deterministic Business Logic**: All line total and order total calculations are performed within the application domain.
+- **Stock Allocation Logic**: Confirmed orders deduct stock from warehouses in ascending order.
+- **Atomic Transactions**: Inventory deductions and order-status updates run inside database transactions.
+- **Inventory Restoration**: Cancelling a confirmed order restores stock to the original warehouses using allocation tracking.
+- **State Integrity**: Guards prevent modifying orders once they are confirmed or cancelled.
+- **Deterministic Business Logic**: All line totals and order totals are calculated in the application domain.
 
 ### Tech Stack
+
 - **Language**: Ruby 3.x
 - **Framework**: Rails 8.1 (API-only mode)
 - **Database**: PostgreSQL
 - **Testing**: RSpec, FactoryBot, Shoulda Matchers
 
----
-
 ## Building and Running
 
 ### Prerequisites
-- Ruby 3.x
-- PostgreSQL
+
+- Nix with flakes enabled, or Ruby 3.x and PostgreSQL installed locally
+- API key for the benchmark runner
 
 ### Setup
-```bash
-# Install dependencies
-bundle install
 
-# Setup database (create, migrate, seed)
+```bash
+cd benchmarks/rails-inventory-system
+nix develop
+
+# Install gems and set up the database
+bundle install
 bin/setup
 ```
 
 ### Running the Application
+
 ```bash
 bin/rails server
 ```
 
 ### Running Tests
+
 ```bash
-# Run all tests
+# All tests
 bundle exec rspec
 
-# Run specific tests
+# Specific files
 bundle exec rspec spec/models/order_spec.rb
 bundle exec rspec spec/services/order_confirmation_service_spec.rb
 ```
 
----
+## Benchmarking
 
-## Development Conventions
+This project is primarily exercised through benchmark runners that check out a failing branch, let an LLM fix it, and then run the test suite.
 
-### Architecture
-- **Service Objects**: Complex business logic (confirmation, cancellation) is encapsulated in service objects located in `app/services/`.
-- **Domain Errors**: Custom error classes are used for business rule violations to provide clear, actionable feedback.
-    - `InsufficientStockError`: Raised when inventory is insufficient for confirmation.
-    - `InvalidStateTransitionError`: Raised when attempting invalid status changes or modifying confirmed/cancelled orders.
-- **Database Constraints**: Data integrity is reinforced at the database level using `CHECK` constraints and `UNIQUE` indexes.
+```bash
+# Automated fast benchmark (single branch)
+make benchmark MODEL=openrouter/openai/gpt-4o
 
-### Models and Logic
-- **`Order`**: Manages status and total cents.
-- **`OrderItem`**: Calculates line totals (price * quantity * discount) and triggers order total recalculation. Prevents modifications if the parent order is not `pending`.
-- **`InventoryItem`**: Tracks stock quantity and ensures non-negative values via DB constraints.
-- **`OrderAllocation`**: Internal tracking model used to record exactly which warehouse stock was taken from during confirmation, enabling precise restoration on cancellation.
+# Interactive manual benchmark
+make benchmark-manual
 
-### Testing Practices
-- **RSpec**: Comprehensive test coverage for models and services.
-- **Factories**: Use `FactoryBot` in `spec/factories.rb` for test data generation.
-- **Transactional Tests**: RSpec is configured to run each test in a transaction to maintain a clean database state.
+# Clean artifacts for a model
+make clean-benchmark MODEL=openrouter/openai/gpt-4o
+```
+
+Results are written to `.sisyphus/benchmark-results-fast.md` or `.sisyphus/benchmark-results.md`.
+
+### Benchmark Files
+
+- `bin/benchmark-runner` — full multi-branch benchmark
+- `bin/benchmark-runner-fast` — fast single-branch benchmark (v1/failing)
+- `bin/benchmark-interactive` — interactive manual session
+- `PROMPT.md` — task description given to the LLM
+- `BENCHMARK_GUIDE.md` — detailed runner instructions
+
+## Architecture Notes
+
+- **Models**: `Product`, `Warehouse`, `InventoryStock`, `Order`, `OrderLine`, `StockAllocation`
+- **Services**: `OrderConfirmationService` and `OrderCancellationService` encapsulate state transitions.
+- **Controllers**: API-only controllers under `app/controllers/`.
+- **Database**: Migrations are in `db/migrate/`; seed data is in `db/seeds.rb`.
+
+## Development Guidelines
+
+1. **Use the Nix shell**: `nix develop` provides Ruby, PostgreSQL, and helper scripts.
+2. **Keep business logic in services**: Do not scatter confirmation/cancellation logic across controllers or callbacks.
+3. **Maintain transaction boundaries**: Stock changes and status changes must remain atomic.
+4. **Preserve state guards**: Once an order is `confirmed` or `cancelled`, it should not be editable through normal endpoints.
+5. **Run the full RSpec suite** before considering a change complete.
+6. **Benchmark responsibly**: The benchmark runners create Git worktrees and branches. Review `make clean-benchmark` before running it to avoid losing wanted results.
+
+## Common Gotchas
+
+- PostgreSQL must be running and reachable before `bin/setup` or tests will work. The Nix shell may provide a local PostgreSQL helper; check `flake.nix` for `db_reset`, `db_parallel_create`, and `db_parallel_drop`.
+- Parallel test databases are created/dropped with helper scripts based on `nproc`.
+- The benchmark branch `v1/fix/$(MODEL_SLUG)` is created and reused; clean it between runs if you want a fresh start.
+- Do not commit API keys or `.sisyphus/` benchmark outputs.

@@ -1,5 +1,173 @@
 # MODEL BENCHMARKS
 
+## Openrouter Qwen3.6 35b a3b
+- Time elapsed: 37.6s
+- Tests: 31/0 success/failures
+- Cost: 0.02
+- Context: 21975 tokens
+- Tool Calls: 24
+- Error Calls: 0
+- Session Size: 1116 lines
+
+## Openrouter Ling 2.6 Flash
+- Time elapsed: 5m 40s
+- Tests: 31/0 success/failures
+- Cost: 0.2
+- Context: 85554 tokens
+- Tool Calls: 99
+- Error Calls: 4
+- Session Size: 3904 lines
+
+## Openrouter Qwen3.6 27b
+- Time elapsed: 1m 40s
+- Tests: 31/0 success/failures
+- Cost: 0.11
+- Context: 26174 tokens
+- Tool Calls: 25
+- Error Calls: 1
+- Session Size: 1325 lines
+
+## Openrouter Seed 2.0 Mini
+- Time elapsed: 6m 29s
+- Tests: 31/0 success/failures
+- Cost: 0.07
+- Context: 27287 tokens
+- Tool Calls: 28
+- Error Calls: 0
+- Session Size: 1742 lines
+
+## Openrouter KAT Coder Pro V2
+- Time elapsed: 43.3s
+- Tests: 31/0 success/failures
+- Cost: 0.02
+- Context: 21997 tokens
+- Tool Calls: 20
+- Error Calls: 0
+- Session Size: 935 lines
+
+## Openrouter Minimax M2.7
+- Time elapsed: 38.1s
+- Tests: 31/0 success/failures
+- Cost: 0.10
+- Context: 23042 tokens
+- Tool Calls: 21
+- Error Calls: 0
+- Session Size: 1117 lines
+
+## Openrouter Deepseek V4 Flash (High)
+- Time elapsed: 4m 1s
+- Tests: 31/0 success/failures
+- Cost: 0.01
+- Context: 29466 tokens
+- Tool Calls: >14
+- Error Calls: 0
+- Session Size: 1836 lines
+
+## Openrouter Ling 2.6 Flash
+- Time elapsed: 16m 6s
+- Tests: 31/0 success/failures
+- Cost: 0.20
+- Context: 30601 tokens
+- Tool Calls: >99
+- Error Calls: 0
+- Session Size: 5155 lines
+
+## Openrouter Laguna XS.2 (free)
+- Time elapsed: 1m 6s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 30601 tokens
+- Tool Calls: 26
+- Error Calls: 0
+- Session Size: 1845 lines
+
+## Openrouter Laguna M.1 (free)
+- Time elapsed: 1m 19s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 25423 tokens
+- Tool Calls: 22
+- Error Calls: 0
+- Session Size: 1344 lines
+
+## Openrouter Trinity Mini
+- ERROR INFINITE THINKING LOOP
+
+## Openrouter Rnj 1 Instruct
+- ERROR CANT LOAD CONTEXT TO LARGE
+
+## Openrouter LLama 4 Scout
+- ERROR CANT call opencode tool properly: `[ 
+  bash(command="bundle exec rspec --fail-fast", description="Run rspec with fail fast to identify failing tests"), 
+  bash(command="bundle exec rspec --dry-run", description="Run rspec dry run to list all tests")
+]`
+
+## Openrouter Gemini 2.5 Flash Lite Preview 09 2025
+- Failed to fix, stuck after spending 77510 tokens and spent 0.14 dolars.
+
+## Openrouter Amazon Nova Lite v1
+- Failed to fix, stuck after 22.5s, sayed that all tests have been fixed, but didnt fix any, spent 12k tokens
+
+
+## Openrouter ArceeAI Trinity Large Thinking - High
+- Stuck after 37.8s, failed tool call execution.
+
+## Openrouter ArceeAI Trinity Large Thinking - Low
+- Stuck after a tool call failed in opencode.
+
+## Openrouter OpenAI Gpt 5.1 Codex Mini - High
+- Time elapsed: 7m 43s
+- Tests: 31/0 success/failures
+- Cost: 0.21
+- Context: 26687 tokens
+- Tool Calls: 33
+- Error Calls: 4
+
+## Openrouter Qwen3 Next 80b a3b Thinking
+- Stuck after the first tool call(bash) `bundle exec rspec` with 2.8s
+
+## Openrouter Gemini 3.1 Flash Lite Preview - High
+- Infinite loop tool calling `Read app/models/inventory_item.rb`
+
+## Openrouter Intellect 3 - High
+- Stuck after 4m 7s out of nowhere, only 1 missing failed test to fix
+- Stuck another time after 56.4s.
+- Stuck again after 31s asking to rerun tests.
+
+## Openrouter Inception Mercury 2 - Default Settings(no config)
+- Time elapsed: 35s
+- Tests: 31/0 success/failures
+- Cost: 0.05
+- Context: 21626 tokens
+- Tool Calls: 21
+- Error Calls: 0
+- Session Size: 997 lines
+
+## Inception Mercury 2 - 16384 max_tokens - High <-- Errored 1 time
+- Time elapsed: 1m 0s
+- Tests: 31/0 success/failures
+- Cost: 0.12
+- Context: 21845 tokens
+- Tool Calls: 25
+- Error Calls: 0
+- Session Size: 1017 lines
+
+## Openrouter Qwen 3.6 27b
+- Time elapsed: 2m 23s
+- Tests: 31/0 success/failures
+- Cost: 0.12
+- Context: 25590 tokens
+- Tool Calls: 25
+- Error Calls: 0
+
+## Openrouter Qwen 3.6 Flash
+- Time elapsed: 1m 3s
+- Tests: 31/0 success/failures
+- Cost: 0.10
+- Context: 26943 tokens
+- Tool Calls: 23
+- Error Calls: 0
+
 ## Openrouter Grok Code Fast 1
 - Time elapsed: 1m 6s
 - Tests: 31/0 success/failures
@@ -65,6 +233,22 @@
 - Cost: 0.03
 - Context: 26291 tokens
 - Tool Calls: 23
+- Error Calls: 0
+
+## Openrouter Grok 4 Fast
+- Time elapsed: 1m 20s
+- Tests: 31/0 success/failures
+- Cost: 0.02
+- Context: 22681 tokens
+- Tool Calls: 21
+- Error Calls: 0
+
+## Openrouter Grok 4.1 Fast
+- Time elapsed: 2m 37s
+- Tests: 31/0 success/failures
+- Cost: 0.02
+- Context: 21368 tokens
+- Tool Calls: 19
 - Error Calls: 0
 
 ## Openrouter Mercury 2
@@ -203,6 +387,16 @@
 - Tool Calls: 25
 - Tool Errors: 0
 
+## Local Gemma 4 12B Q4 - KV Cache
+- Time elapsed: 10m 5s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 38.957 tokens
+- Tool Calls: 33
+- Tool Errors: 0
+- Last Prompt Eval: 495.69 tok/s
+- Last Eval: 30.79 tok/s
+
 ## Local tesslate_omnicoder-9b - Q4_K_S - KV Cache Q4_0 - Max Concurrent Prediction 6
 - Time elapsed: 6m 43s
 - Tests: 31/0 success/failures
@@ -220,6 +414,16 @@
 - Tool Errors: 0
 - Last Prompt Eval: 346.43 tok/s
 - Last Eval: 43 tok/s
+
+## Local Qwen3.5 9B GLM5.1 Distill v1 Q6_K
+- Time elapsed: 5m 33s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 36.628 tokens
+- Tool Calls: 62
+- Tool Errors: 0
+- Last Prompt Eval: 700.79 tok/s
+- Last Eval: 35 tok/s
 
 ## Local Gemma 4 26B A4B - Q3_K_M - KV Cache
 - Time elapsed: 2m 39s
@@ -240,6 +444,26 @@
 - Tool Errors: 0
 - Last Prompt Eval: 496 tok/s
 - Last Eval: 58 tok/s
+
+## Local Qwen3.6 35b Q3_K_M 61k context, 99 gpu layers, 24 cpu moe, kv cacke q8_0, reasoning-budge -1
+- Time elapsed: 6m 27s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 27111 tokens
+- Tool Calls: 26
+- Tool Errors: 0
+- Last Prompt Eval: 326 tok/s
+- Last Eval: 17 tok/s
+
+## Local Qwen3.6 35b Q4_K_M 30k context, 99 gpu layers, 20 cpu moe, kv cacke q8_0, reasoning-budge -1
+- Time elapsed: 5m 38s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 25809 tokens
+- Tool Calls: 25
+- Tool Errors: 0
+- Last Prompt Eval: 85 tok/s
+- Last Eval: 22 tok/s
 
 ## Local qwen/qwen3.5-9b Q4_K_M - KV Q4_0 - default params
 - Time elapsed: 12m 21s

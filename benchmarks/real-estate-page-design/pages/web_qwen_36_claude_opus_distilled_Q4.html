@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Real Estate - Property Listings</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+           1. DESIGN TOKENS & RESET
+           ========================================= */
+    :root {
+      /* Colors */
+      --color-bg: #FFFFFF;
+      --color-fg: #000000;
+      --color-muted: #F2F2F2;
+      --color-accent: #FF3000;
+      /* Swiss Red */
+      --color-border: #000000;
+
+      /* Typography */
+      --font-family: 'Inter', sans-serif;
+      --font-weight-bold: 700;
+      --font-weight-black: 900;
+
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 8rem;
+
+      /* Borders */
+      --border-thick: 4px solid var(--color-border);
+      --border-thin: 1px solid var(--color-border);
+
+      /* Patterns */
+      --pattern-grid: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      --pattern-dots: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      --pattern-diagonal: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-family);
+      background-color: var(--color-bg);
+      color: var(--color-fg);
+      line-height: 1.4;
+    }
+
+    body {
+      /* Noise Texture Overlay */
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* =========================================
+           2. TYPOGRAPHY & UTILITIES
+           ========================================= */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      text-transform: uppercase;
+      font-weight: var(--font-weight-black);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-fg);
+    }
+
+    .accent-text {
+      color: var(--color-accent);
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 1rem;
+      font-weight: var(--font-weight-black);
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0.05em;
+    }
+
+    /* =========================================
+           3. PATTERNS & TEXTURES
+           ========================================= */
+    .pattern-grid {
+      background-image: var(--pattern-grid);
+      background-size: 24px 24px;
+    }
+
+    .pattern-dots {
+      background-image: var(--pattern-dots);
+      background-size: 16px 16px;
+    }
+
+    .pattern-diagonal {
+      background-image: var(--pattern-diagonal);
+    }
+
+    /* =========================================
+           4. LAYOUT & GRID
+           ========================================= */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .header {
+      border-bottom: var(--border-thick);
+      padding: var(--space-md) 0;
+      position: sticky;
+      top: 0;
+      background: var(--color-bg);
+      z-index: 100;
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: var(--font-weight-black);
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+    }
+
+    .nav {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--color-fg);
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: color 150ms ease-in-out;
+    }
+
+    .nav-link:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-accent);
+      transition: width 200ms ease-out;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: var(--space-xl) 0;
+      border-bottom: var(--border-thick);
+      position: relative;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 6rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-title {
+        font-size: 10rem;
+      }
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      font-weight: var(--font-weight-bold);
+      max-width: 600px;
+      margin-top: var(--space-md);
+    }
+
+    /* Abstract Geometric Composition */
+    .hero-composition {
+      position: absolute;
+      right: 10%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      height: 300px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .geo-shape {
+      position: absolute;
+      border: 2px solid var(--color-fg);
+    }
+
+    .geo-circle {
+      border-radius: 50%;
+    }
+
+    .geo-rect {
+      transform: rotate(45deg);
+    }
+
+    /* =========================================
+           5. FILTERS
+           ========================================= */
+    .filters-section {
+      padding: var(--space-lg) 0;
+      border-bottom: var(--border-thick);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 768px) {
+      .filters-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-input,
+    .filter-select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--color-border);
+      border-radius: 0;
+      font-family: var(--font-family);
+      font-size: 1rem;
+      background: var(--color-bg);
+      color: var(--color-fg);
+      outline: none;
+      transition: border-color 150ms ease-in-out;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: var(--color-accent);
+    }
+
+    .filter-btn {
+      align-self: flex-start;
+      padding: 1rem 2rem;
+      background: var(--color-fg);
+      color: var(--color-bg);
+      border: 2px solid var(--color-fg);
+      font-family: var(--font-family);
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+      margin-top: 1.5rem;
+    }
+
+    .filter-btn:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-bg);
+    }
+
+    /* =========================================
+           6. PROPERTY LISTINGS
+           ========================================= */
+    .listings-section {
+      padding: var(--space-lg) 0;
+    }
+
+    .listings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 768px) {
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .listings-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Property Card */
+    .property-card {
+      border: var(--border-thick);
+      background: var(--color-bg);
+      transition: background 200ms ease-in-out;
+      text-decoration: none;
+      color: var(--color-fg);
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-card:hover {
+      background: var(--color-fg);
+      color: var(--color-bg);
+    }
+
+    .card-image-container {
+      width: 100%;
+      aspect-ratio: 4/3;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid var(--color-fg);
+    }
+
+    .property-card:hover .card-image-container {
+      border-bottom-color: var(--color-bg);
+    }
+
+    .card-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1000ms ease-in-out;
+    }
+
+    .card-image.active {
+      opacity: 1;
+    }
+
+    .card-content {
+      padding: var(--space-md);
+      position: relative;
+    }
+
+    .card-number {
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-accent);
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+
+    .property-card:hover .card-number {
+      color: var(--color-accent);
+      /* Keep accent even on dark bg */
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: var(--font-weight-black);
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      line-height: 1.2;
+    }
+
+    .card-price {
+      font-size: 1.5rem;
+      font-weight: var(--font-weight-black);
+      color: var(--color-accent);
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: var(--space-md);
+      right: var(--space-md);
+      font-size: 1.5rem;
+      transition: transform 200ms ease-in-out;
+    }
+
+    .property-card:hover .card-arrow {
+      transform: rotate(0deg);
+    }
+
+    /* =========================================
+           7. PAGINATION
+           ========================================= */
+    .pagination {
+      padding: var(--space-lg) 0;
+      border-top: var(--border-thick);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .page-btn {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--color-fg);
+      font-weight: var(--font-weight-bold);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+      background: transparent;
+      color: var(--color-fg);
+      text-decoration: none;
+    }
+
+    .page-btn:hover {
+      background: var(--color-fg);
+      color: var(--color-bg);
+    }
+
+    .page-btn.active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-bg);
+    }
+
+    /* =========================================
+           8. FOOTER
+           ========================================= */
+    .footer {
+      padding: var(--space-xl) 0;
+      border-top: var(--border-thick);
+      background: var(--color-muted);
+      position: relative;
+    }
+
+    .footer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: var(--pattern-diagonal);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .footer-content {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .footer-col h4 {
+      font-size: 1rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col li {
+      margin-bottom: var(--space-xs);
+    }
+
+    .footer-col a {
+      color: var(--color-fg);
+      text-decoration: none;
+      font-weight: var(--font-weight-bold);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      transition: color 150ms ease-in-out;
+    }
+
+    .footer-col a:hover {
+      color: var(--color-accent);
+    }
+
+    .footer-bottom {
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 2px solid var(--color-fg);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 767px) {
+      .nav {
+        display: none;
+      }
+
+      .hero-composition {
+        display: none;
+      }
+
+      .filter-btn {
+        width: 100%;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <div class="logo">
+        <span class="accent-text">01.</span> SWISS<span style="font-weight: 400;">REALTY</span>
+      </div>
+      <nav class="nav">
+        <a href="#" class="nav-link">Properties</a>
+        <a href="#" class="nav-link">Agents</a>
+        <a href="#" class="nav-link">Journal</a>
+        <a href="#" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero pattern-dots">
+    <div class="container hero-content">
+      <div>
+        <span class="section-label">02. LISTINGS</span>
+        <h1 class="hero-title">
+          FIND<br>YOUR<br>SPACE
+        </h1>
+        <p class="hero-subtitle">
+          Objective clarity in property search. Filter by precision, not emotion.
+        </p>
+      </div>
+      <!-- Geometric Composition -->
+      <div class="hero-composition">
+        <div class="geo-shape geo-circle" style="width: 200px; height: 200px; top: 50px; left: 50px;"></div>
+        <div class="geo-shape geo-rect" style="width: 150px; height: 150px; top: 0; left: 100px;"></div>
+        <div class="geo-shape"
+          style="width: 100px; height: 100px; top: 150px; left: 0; background: var(--color-accent);"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Search</label>
+          <input type="text" class="filter-input" placeholder="Keywords...">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Location</label>
+          <select class="filter-select">
+            <option value="">Any City</option>
+            <option value="parana">Parana</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">City</label>
+          <select class="filter-select">
+            <option value="">Any City</option>
+            <option value="londrina">Londrina</option>
+            <option value="ibipora">Ibipora</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Price Range</label>
+          <select class="filter-select">
+            <option value="">Any Price</option>
+            <option value="0-100000">Up to 100k</option>
+            <option value="100000-300000">100k - 300k</option>
+            <option value="300000+">Over 300k</option>
+          </select>
+        </div>
+      </div>
+      <button class="filter-btn">Apply Filters</button>
+    </div>
+  </section>
+
+  <!-- Listings Section -->
+  <section class="listings-section pattern-grid">
+    <div class="container">
+      <div class="listings-grid">
+
+        <!-- Property Card 1 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" class="card-image active"
+              alt="Property 1">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" class="card-image"
+              alt="Property 1 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">01.</span>
+            <h3 class="card-title">Modern Villa<br>Londrina</h3>
+            <div class="card-price">R$ 450.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Property Card 2 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80", "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" class="card-image active"
+              alt="Property 2">
+            <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80" class="card-image"
+              alt="Property 2 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">02.</span>
+            <h3 class="card-title">Urban Loft<br>Ibipora</h3>
+            <div class="card-price">R$ 280.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Property Card 3 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80", "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80" class="card-image active"
+              alt="Property 3">
+            <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80" class="card-image"
+              alt="Property 3 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">03.</span>
+            <h3 class="card-title">Penthouse<br>Londrina</h3>
+            <div class="card-price">R$ 890.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Property Card 4 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600047509358-9dc411993949?w=800&q=80", "https://images.unsplash.com/photo-1600566753190-179094757c98?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600047509358-9dc411993949?w=800&q=80" class="card-image active"
+              alt="Property 4">
+            <img src="https://images.unsplash.com/photo-1600566753190-179094757c98?w=800&q=80" class="card-image"
+              alt="Property 4 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">04.</span>
+            <h3 class="card-title">Family Home<br>Ibipora</h3>
+            <div class="card-price">R$ 320.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Property Card 5 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=800&q=80", "https://images.unsplash.com/photo-1600573472551-31c1e3c1c1c1?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?w=800&q=80" class="card-image active"
+              alt="Property 5">
+            <img src="https://images.unsplash.com/photo-1600573472551-31c1e3c1c1c1?w=800&q=80" class="card-image"
+              alt="Property 5 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">05.</span>
+            <h3 class="card-title">Studio Unit<br>Londrina</h3>
+            <div class="card-price">R$ 180.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Property Card 6 -->
+        <a href="#" class="property-card"
+          data-images='["https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80"]'>
+          <div class="card-image-container">
+            <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80" class="card-image active"
+              alt="Property 6">
+            <img src="https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80" class="card-image"
+              alt="Property 6 Interior">
+          </div>
+          <div class="card-content">
+            <span class="card-number">06.</span>
+            <h3 class="card-title">Commercial<br>Space Londrina</h3>
+            <div class="card-price">R$ 650.000</div>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="page-btn">←</button>
+        <button class="page-btn active">01</button>
+        <button class="page-btn">02</button>
+        <button class="page-btn">03</button>
+        <button class="page-btn">04</button>
+        <button class="page-btn">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#">Properties</a></li>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">Agents</a></li>
+            <li><a href="#">Journal</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Locations</h4>
+          <ul>
+            <li><a href="#">Londrina</a></li>
+            <li><a href="#">Ibipora</a></li>
+            <li><a href="#">Curitiba</a></li>
+            <li><a href="#">Maringá</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 SWISS REALTY</span>
+        <span>DESIGNED WITH OBJECTIVITY</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Minimal JavaScript for Image Slideshow on Hover
+    // This implements the YouTube-like thumbnail preview effect
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const cards = document.querySelectorAll('.property-card');
+
+      cards.forEach(card => {
+        const images = card.querySelectorAll('.card-image');
+        let currentImageIndex = 0;
+        let slideshowInterval = null;
+
+        // Function to show next image
+        const showNextImage = () => {
+          // Hide current
+          images[currentImageIndex].classList.remove('active');
+
+          // Move to next
+          currentImageIndex = (currentImageIndex + 1) % images.length;
+
+          // Show new
+          images[currentImageIndex].classList.add('active');
+        };
+
+        // On hover: start slideshow
+        card.addEventListener('mouseenter', () => {
+          slideshowInterval = setInterval(showNextImage, 1000);
+        });
+
+        // On mouse leave: stop slideshow and reset to first image
+        card.addEventListener('mouseleave', () => {
+          clearInterval(slideshowInterval);
+
+          // Reset to first image
+          images.forEach((img, index) => {
+            if (index === 0) {
+              img.classList.add('active');
+            } else {
+              img.classList.remove('active');
+            }
+          });
+          currentImageIndex = 0;
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>
