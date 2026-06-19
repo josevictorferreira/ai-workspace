@@ -1076,6 +1076,7 @@
               --port "8080" \
               "$@"
           ''}/bin/llama-granite-4.1-8b-vulkan";
+    };
 
           apps.vibe-thinker = {
             type = "app";
