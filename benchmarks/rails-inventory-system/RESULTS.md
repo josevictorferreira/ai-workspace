@@ -387,6 +387,16 @@
 - Tool Calls: 25
 - Tool Errors: 0
 
+## Local Ornith 1.0 9B Q4_K_M - KV Cache
+- Time elapsed: 2m 25s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 26840 tokens
+- Tool Calls: 25
+- Tool Errors: 1
+- Last Prompt Eval: 335 tok/s
+- Last Eval: 51 tok/s
+
 ## Local Gemma 4 12B Q4 - KV Cache
 - Time elapsed: 10m 5s
 - Tests: 31/0 success/failures

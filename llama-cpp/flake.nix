@@ -74,6 +74,15 @@
             url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/gemma-4-26B-A4B-it-UD-Q3_K_M.gguf";
             sha256 = "sha256-YpaznVgWaMS2VGF9bUnJ7coVY1+4A8PJ9tgTdx34XR4=";
           };
+
+          "gemma-4-26B-A4B-it-qat-UD-Q4_K_XL" = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-qat-GGUF/resolve/main/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf";
+            sha256 = "sha256-3PF5qRFT46fs55LkjvhyGA2dbvm3Z38KC9PoPP5iTV4=";
+          };
+          "Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/HauhauCS/Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-MTP/resolve/main/Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M.gguf";
+            sha256 = "sha256-PBMTNGnkMTEv/7ix2cha5CGZ5rtXRuodqE6N3yCX1zw=";
+          };
           "gemma-4-31b-jang-crack-Q4_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/douyamv/Gemma-4-31B-JANG_4M-CRACK-GGUF/resolve/main/gemma-4-31b-jang-crack-Q4_K_M.gguf";
             sha256 = "sha256-sfyO4Q+RbaAZ27HRd4VPo7ZCH76h6Tg5ogYYYTCOHec=";
@@ -81,6 +90,10 @@
           "gemma-4-12b-coder-Q4_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF/resolve/main/gemma4-coding-Q4_K_M.gguf";
             sha256 = "0lfp7hc5sxzf0ar9v9ggbcwxhbja64klkdakln1pfn1aay3bn4a0";
+          };
+          "Ornith-1.0-9B-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/main/ornith-1.0-9b-Q4_K_M.gguf";
+            sha256 = "sha256-VyDR9nG0mWSBJ0//4Bhow8Nuh8E1zIU4RxzHvWCHsQY=";
           };
           "Qwen3.6-35B-A3B-UD-Q4_K_XL" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
@@ -126,6 +139,10 @@
             url = "https://huggingface.co/unsloth/Qwen3.5-9B-MTP-GGUF/resolve/main/Qwen3.5-9B-Q4_K_M.gguf";
             sha256 = "1zj150imw8r68xn624vv6xw9j9hqhh39s102j69w1mlmgs0r9pg8";
           };
+          "Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/resolve/main/Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf";
+            sha256 = "sha256-DeQf9Wq07/JnZEN7J28L1dIPRCMq3TThTE9ZP6GusI8=";
+          };
           "Qwopus3.5-9B-coder-Exp-Q4_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/Jackrong/Qwopus3.5-9B-Coder-GGUF/resolve/main/Qwopus3.5-9B-coder-Exp-Q4_K_M.gguf";
             sha256 = "0la0ava76rdwlc52mj4frm1s5qhmvm6l6ccr5azyj0gy99n873sf";
@@ -135,9 +152,9 @@
             sha256 = "09b7krzhf1shrkp7sj76jb9wycwzj46rwrazz9mwy680x6a3a6mh";
           };
 
-          "VibeThinker-3B-Q4_K_M" = pkgs.fetchurl {
-            url = "https://huggingface.co/prithivMLmods/VibeThinker-3B-GGUF/resolve/main/VibeThinker-3B.Q4_K_M.gguf";
-            sha256 = "0y8dr13s6dymqvknrdbgv3jjgq1sbkjf66z2b4fvh3r2rhcbk0lp";
+          "VibeThinker-3B-Q8_0" = pkgs.fetchurl {
+            url = "https://huggingface.co/prithivMLmods/VibeThinker-3B-GGUF/resolve/main/VibeThinker-3B.Q8_0.gguf";
+            sha256 = "03jjckmfvfir895vsf91rvx9sgig0mnjyp50vzrpvpgycglbr04f";
           };
         };
 
@@ -169,8 +186,8 @@
         hipfire-src = pkgs.fetchFromGitHub {
           owner = "Kaden-Schutt";
           repo = "hipfire";
-          rev = "master";
-          hash = "sha256-pcKKft5KhXWQNkwB+KvTxaW3A/sXN3aHcDPGz6gz1aA=";
+          rev = "5ca8ed83da5372ffc559f5603206869a758226c4";
+          hash = "sha256-gEg6XV9pBKctefVD2wM8bPZA9LN/SEsNOxkYbRPq7Xc=";
         };
 
         hipfire-engine = pkgs.rustPlatform.buildRustPackage {
@@ -256,6 +273,19 @@
           ''}/bin/llama-server-wrapper";
         };
 
+        mkServerWithCtx = pkg: model: ctxSize: {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-server-wrapper" ''
+            exec ${pkg}/bin/llama-server \
+              --model "${model}" \
+              --ctx-size "${ctxSize}" \
+              --n-gpu-layers "99" \
+              --host "0.0.0.0" \
+              --port "8080" \
+              "$@"
+          ''}/bin/llama-server-wrapper";
+        };
+
         mkSpeculativeServer = pkg: model: draftModel: ctxSize: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-omnicoder-wrapper" ''
@@ -321,21 +351,21 @@
             ''}/bin/llama-gemma-wrapper";
           };
 
-        mkGemma26b = pkg: model: {
+        mkGemma26b = pkg: model: cacheType: ctxSize: {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-gemma-26b-wrapper" ''
-            exec ${pkg}/bin/llama-server \
-              -m "${model}" \
-              --ctx-size "32768" \
-              --parallel 1 \
-              --jinja \
-              --n-gpu-layers "50" \
-              --cache-type-k "q4_0" \
-              --cache-type-v "q4_0" \
-              --flash-attn on \
-              --host "0.0.0.0" \
-              --port "8080" \
-              "$@"
+              exec ${pkg}/bin/llama-server \
+                -m "${model}" \
+                --ctx-size "${ctxSize}" \
+                --parallel 1 \
+                --jinja \
+                --n-gpu-layers "50" \
+            --cache-type-k "${cacheType}" \
+            --cache-type-v "${cacheType}" \
+                --flash-attn on \
+                --host "0.0.0.0" \
+                --port "8080" \
+                "$@"
           ''}/bin/llama-gemma-26b-wrapper";
         };
 
@@ -381,6 +411,32 @@
               "$@"
           ''}/bin/llama-lfm-wrapper";
         };
+
+        mkQwythos =
+          pkg: model:
+          let
+            chatTemplate = pkgs.writeText "qwythos-9b-chat-template" (
+              builtins.readFile ./templates/qwythos-9b-chat.jinja
+            );
+          in
+          {
+            type = "app";
+            program = "${pkgs.writeShellScriptBin "llama-qwythos-9b-wrapper" ''
+                          exec ${pkg}/bin/llama-server \
+                      --model "${model}" \
+                            --parallel 1 \
+              --ctx-size "65536" \
+                            --jinja \
+                            --chat-template "''$(cat "${chatTemplate}")" \
+                            --n-gpu-layers "99" \
+                            --cache-type-k "q4_0" \
+                            --cache-type-v "q4_0" \
+                  --flash-attn on \
+                            --host "0.0.0.0" \
+                            --port "8080" \
+                            "$@"
+            ''}/bin/llama-qwythos-9b-wrapper";
+          };
 
       in
       {
@@ -440,8 +496,26 @@
 
         apps.gemma-12b-coder = mkGemma llama-rocm models."gemma-4-12b-coder-Q4_K_M";
         apps.gemma-12b-coder-vulkan = mkGemma llama-vulkan models."gemma-4-12b-coder-Q4_K_M";
-        apps.gemma-26b = mkGemma26b llama-rocm models."gemma-4-26B-A4B-it-UD-Q3_K_M";
-        apps.gemma-26b-vulkan = mkGemma26b llama-vulkan models."gemma-4-26B-A4B-it-UD-Q3_K_M";
+        apps.gemma-26b = mkGemma26b llama-rocm models."gemma-4-26B-A4B-it-UD-Q3_K_M" "q4_0" "32768";
+        apps.gemma-26b-vulkan =
+          mkGemma26b llama-vulkan models."gemma-4-26B-A4B-it-UD-Q3_K_M" "q4_0"
+            "32768";
+
+        apps.gemma-26b-qat =
+          mkGemma26b llama-rocm models."gemma-4-26B-A4B-it-qat-UD-Q4_K_XL" "q8_0"
+            "32768";
+        apps.gemma-26b-qat-vulkan =
+          mkGemma26b llama-vulkan models."gemma-4-26B-A4B-it-qat-UD-Q4_K_XL" "q8_0"
+            "32768";
+        apps.gemma-26b-hauhaucs-qat =
+          mkGemma26b llama-rocm models."Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M" "q4_0"
+            "65536";
+        apps.gemma-26b-hauhaucs-qat-vulkan =
+          mkGemma26b llama-vulkan models."Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M" "q4_0"
+            "65536";
+
+        apps.ornith-9b = mkServerWithCtx llama-rocm models."Ornith-1.0-9B-Q4_K_M" "81920";
+        apps.ornith-9b-vulkan = mkServerWithCtx llama-vulkan models."Ornith-1.0-9B-Q4_K_M" "81920";
 
         apps.gemma-31b = mkGemma31b llama-rocm models."gemma-4-31b-jang-crack-Q4_K_M";
         apps.gemma-31b-vulkan = mkGemma31b llama-vulkan models."gemma-4-31b-jang-crack-Q4_K_M";
@@ -482,6 +556,9 @@
               "$@"
           ''}/bin/llama-qwen-27b-vulkan";
         };
+
+        apps.qwythos-9b = mkQwythos llama-rocm models."Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M";
+        apps.qwythos-9b-vulkan = mkQwythos llama-vulkan models."Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M";
 
         apps.qwopus-27b = {
           type = "app";
@@ -1076,44 +1153,59 @@
               --port "8080" \
               "$@"
           ''}/bin/llama-granite-4.1-8b-vulkan";
-    };
+        };
 
-          apps.vibe-thinker = {
+        apps.vibe-thinker =
+          let
+            chatTemplate = pkgs.writeText "qwen2-chat-template" (
+              builtins.readFile ./templates/qwen2-chat.jinja
+            );
+          in
+          {
             type = "app";
             program = "${pkgs.writeShellScriptBin "llama-vibe-thinker" ''
               exec ${llama-rocm}/bin/llama-server \
-                --model "${models."VibeThinker-3B-Q4_K_M"}" \
-                --parallel 1 \
-                --ctx-size "8192" \
-                --n-gpu-layers "99" \
-                --cache-type-k "q4_0" \
-                --cache-type-v "q4_0" \
-                --flash-attn \
-                --no-context-shift \
-                --host "0.0.0.0" \
-                --port "8080" \
-                "$@"
+              --model "${models."VibeThinker-3B-Q8_0"}" \
+              --parallel 1 \
+              --ctx-size "32768" \
+              --jinja \
+              --chat-template "''$(cat "${chatTemplate}")" \
+              --n-gpu-layers "99" \
+              --cache-type-k "q8_0" \
+              --cache-type-v "q8_0" \
+              --flash-attn on \
+              --no-context-shift \
+              --host "0.0.0.0" \
+              --port "8080" \
+              "$@"
             ''}/bin/llama-vibe-thinker";
           };
 
-          apps.vibe-thinker-vulkan = {
+        apps.vibe-thinker-vulkan =
+          let
+            chatTemplate = pkgs.writeText "qwen2-chat-template-vulkan" (
+              builtins.readFile ./templates/qwen2-chat.jinja
+            );
+          in
+          {
             type = "app";
             program = "${pkgs.writeShellScriptBin "llama-vibe-thinker-vulkan" ''
               exec ${llama-vulkan}/bin/llama-server \
-                --model "${models."VibeThinker-3B-Q4_K_M"}" \
-                --parallel 1 \
-                --ctx-size "8192" \
-                --n-gpu-layers "99" \
-                --cache-type-k "q4_0" \
-                --cache-type-v "q4_0" \
-                --flash-attn \
-                --no-context-shift \
-                --host "0.0.0.0" \
-                --port "8080" \
-                "$@"
+              --model "${models."VibeThinker-3B-Q8_0"}" \
+              --parallel 1 \
+              --ctx-size "32768" \
+              --jinja \
+              --chat-template "''$(cat "${chatTemplate}")" \
+              --n-gpu-layers "99" \
+              --cache-type-k "q8_0" \
+              --cache-type-v "q8_0" \
+              --flash-attn on \
+              --no-context-shift \
+              --host "0.0.0.0" \
+              --port "8080" \
+              "$@"
             ''}/bin/llama-vibe-thinker-vulkan";
           };
-        };
 
         # --- Hipfire Apps ---
         apps.hipfire = {

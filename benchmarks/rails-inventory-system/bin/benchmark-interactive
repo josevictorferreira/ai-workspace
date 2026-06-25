@@ -236,6 +236,18 @@ generate_opencode_config() {
 						"context": 16384,
 						"output": 4096
 					}
+				},
+				"f2z0434wpz13hs8xf0f420i1vxhfcdsq-VibeThinker-3B.Q8_0.gguf": {
+					"name": "VibeThinker 3B Q8_0 (Local)"
+				},
+				"2pr8my8jfkfpsdh5ds04w0ifiam6id7b-gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf": {
+					"name": "Gemma 4 26B IT QAT (Local)"
+				},
+				"dhqls34cm9p68wy1ynr0c4hxm0rprpm3-Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf": {
+					"name": "Qwythos 9B Q4_K_M (Local)"
+				},
+				"fpxbjn3cys9vq8mifxmps3igwkra74h5-ornith-1.0-9b-Q4_K_M.gguf": {
+					"name": "Ornith 1.0 9B Q4_K_M (Local)"
 				}
       }
     },
