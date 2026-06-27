@@ -95,6 +95,10 @@
             url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/main/ornith-1.0-9b-Q4_K_M.gguf";
             sha256 = "sha256-VyDR9nG0mWSBJ0//4Bhow8Nuh8E1zIU4RxzHvWCHsQY=";
           };
+          "Ornith-1.0-35B-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-35B-GGUF/resolve/main/ornith-1.0-35b-Q4_K_M.gguf";
+            sha256 = "sha256-/yUpGyWZ+5J6g15iTSs1QBBq9hdhw/pXrEJkBG2+wAI=";
+          };
           "Qwen3.6-35B-A3B-UD-Q4_K_XL" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
             sha256 = "sha256-cHpVqKQ5fs3kTeDEmdPmjBrR0kDR2mWCa0lJ0QQ/RFA=";
@@ -268,23 +272,42 @@
               --ctx-size "32768" \
               --n-gpu-layers "99" \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-server-wrapper";
         };
 
-        mkServerWithCtx = pkg: model: ctxSize: {
-          type = "app";
-          program = "${pkgs.writeShellScriptBin "llama-server-wrapper" ''
-            exec ${pkg}/bin/llama-server \
-              --model "${model}" \
-              --ctx-size "${ctxSize}" \
-              --n-gpu-layers "99" \
-              --host "0.0.0.0" \
-              --port "8080" \
-              "$@"
-          ''}/bin/llama-server-wrapper";
-        };
+        mkServerWithCtx =
+          {
+            pkg,
+            model,
+            ctxSize ? "32768",
+            nGpuLayers ? "99",
+            cacheTypeK ? "q8_0",
+            cacheTypeV ? "q8_0",
+            batchSize ? "512",
+            ubatchSize ? "512",
+            flashAttn ? "on",
+            fit ? "on",
+          }:
+          {
+            type = "app";
+            program = "${pkgs.writeShellScriptBin "llama-server-wrapper" ''
+              exec ${pkg}/bin/llama-server \
+                --model "${model}" \
+                --ctx-size "${ctxSize}" \
+                --n-gpu-layers "${nGpuLayers}" \
+                --fit "${fit}" \
+                --cache-type-k "${cacheTypeK}" \
+                --cache-type-v "${cacheTypeV}" \
+                --flash-attn "${flashAttn}" \
+                --batch-size "${batchSize}" \
+                --ubatch-size "${ubatchSize}" \
+                --host "0.0.0.0" \
+                --port "11434" \
+                "$@"
+            ''}/bin/llama-server-wrapper";
+          };
 
         mkSpeculativeServer = pkg: model: draftModel: ctxSize: {
           type = "app";
@@ -300,10 +323,10 @@
               --cache-type-v "q4_0" \
               --cache-type-k-draft "q4_0" \
               --cache-type-v-draft "q4_0" \
-              --draft-n 16 \
+              --spec-draft-n-max 16 \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-omnicoder-wrapper";
         };
@@ -345,7 +368,7 @@
                 --no-context-shift \
                 --cache-reuse 256 \
                 --host "0.0.0.0" \
-                --port "8080" \
+                --port "11434" \
                 --temp "0" \
                 "''$@"
             ''}/bin/llama-gemma-wrapper";
@@ -364,7 +387,7 @@
             --cache-type-v "${cacheType}" \
                 --flash-attn on \
                 --host "0.0.0.0" \
-                --port "8080" \
+                --port "11434" \
                 "$@"
           ''}/bin/llama-gemma-26b-wrapper";
         };
@@ -382,7 +405,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-gemma-31b-wrapper";
         };
@@ -407,7 +430,7 @@
               --threads "$(nproc)" \
               --threads-batch "$(nproc)" \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-lfm-wrapper";
         };
@@ -433,7 +456,7 @@
                             --cache-type-v "q4_0" \
                   --flash-attn on \
                             --host "0.0.0.0" \
-                            --port "8080" \
+                            --port "11434" \
                             "$@"
             ''}/bin/llama-qwythos-9b-wrapper";
           };
@@ -514,8 +537,39 @@
           mkGemma26b llama-vulkan models."Gemma4-26B-A4B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M" "q4_0"
             "65536";
 
-        apps.ornith-9b = mkServerWithCtx llama-rocm models."Ornith-1.0-9B-Q4_K_M" "81920";
-        apps.ornith-9b-vulkan = mkServerWithCtx llama-vulkan models."Ornith-1.0-9B-Q4_K_M" "81920";
+        apps.ornith-9b = mkServerWithCtx {
+          pkg = llama-rocm;
+          model = models."Ornith-1.0-9B-Q4_K_M";
+          ctxSize = "81920";
+          nGpuLayers = "99";
+        };
+        apps.ornith-9b-vulkan = mkServerWithCtx {
+          pkg = llama-vulkan;
+          model = models."Ornith-1.0-9B-Q4_K_M";
+          ctxSize = "81920";
+          nGpuLayers = "99";
+        };
+
+        apps.ornith-35b = mkServerWithCtx {
+          pkg = llama-rocm;
+          model = models."Ornith-1.0-35B-Q4_K_M";
+          ctxSize = "16384";
+          nGpuLayers = "60";
+          cacheTypeK = "q4_0";
+          cacheTypeV = "q4_0";
+          batchSize = "1024";
+          ubatchSize = "512";
+        };
+        apps.ornith-35b-vulkan = mkServerWithCtx {
+          pkg = llama-vulkan;
+          model = models."Ornith-1.0-35B-Q4_K_M";
+          ctxSize = "16384";
+          nGpuLayers = "60";
+          cacheTypeK = "q4_0";
+          cacheTypeV = "q4_0";
+          batchSize = "1024";
+          ubatchSize = "512";
+        };
 
         apps.gemma-31b = mkGemma31b llama-rocm models."gemma-4-31b-jang-crack-Q4_K_M";
         apps.gemma-31b-vulkan = mkGemma31b llama-vulkan models."gemma-4-31b-jang-crack-Q4_K_M";
@@ -535,7 +589,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-27b";
         };
@@ -552,7 +606,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-27b-vulkan";
         };
@@ -572,7 +626,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-27b";
         };
@@ -589,7 +643,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-27b-vulkan";
         };
@@ -661,7 +715,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-glm-18b";
         };
@@ -681,7 +735,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-glm-18b-vulkan";
         };
@@ -701,7 +755,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-glm-18b-healed";
         };
@@ -721,7 +775,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-glm-18b-healed-vulkan";
         };
@@ -741,7 +795,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-9b-glm";
         };
@@ -761,7 +815,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-9b-glm-vulkan";
         };
@@ -781,7 +835,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-9b-glm-120k";
         };
@@ -801,7 +855,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen-9b-glm-120k-vulkan";
         };
@@ -822,7 +876,7 @@
               --no-context-shift \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-35b";
         };
@@ -843,7 +897,7 @@
               --no-context-shift \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus-35b-vulkan";
         };
@@ -860,7 +914,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-27b";
         };
@@ -877,7 +931,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-27b-speed";
         };
@@ -898,7 +952,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 2 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus36-27b-mtp";
         };
@@ -915,7 +969,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-27b-vulkan";
         };
@@ -932,7 +986,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-27b-speed-vulkan";
         };
@@ -953,7 +1007,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 2 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus36-27b-mtp-vulkan";
         };
@@ -973,7 +1027,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 2 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus35-9b-coder-mtp";
         };
@@ -994,7 +1048,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 2 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus35-9b-coder-mtp-vulkan";
         };
@@ -1014,7 +1068,7 @@
               --flash-attn on \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus35-9b-coder";
         };
@@ -1034,7 +1088,7 @@
               --flash-attn on \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwopus35-9b-coder-vulkan";
         };
@@ -1054,7 +1108,7 @@
               --flash-attn on \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-12b-heretic";
         };
@@ -1074,7 +1128,7 @@
               --flash-attn on \
               --reasoning-budget -1 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen36-12b-heretic-vulkan";
         };
@@ -1095,7 +1149,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 6 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen35-9b-mtp";
         };
@@ -1116,7 +1170,7 @@
               --spec-type draft-mtp \
               --spec-draft-n-max 6 \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-qwen35-9b-mtp-vulkan";
         };
@@ -1133,7 +1187,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-granite-4.1-8b";
         };
@@ -1150,7 +1204,7 @@
               --cache-type-v "q4_0" \
               --flash-attn on \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
           ''}/bin/llama-granite-4.1-8b-vulkan";
         };
@@ -1176,7 +1230,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
             ''}/bin/llama-vibe-thinker";
           };
@@ -1202,7 +1256,7 @@
               --flash-attn on \
               --no-context-shift \
               --host "0.0.0.0" \
-              --port "8080" \
+              --port "11434" \
               "$@"
             ''}/bin/llama-vibe-thinker-vulkan";
           };

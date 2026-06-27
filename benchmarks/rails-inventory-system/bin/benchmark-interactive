@@ -227,9 +227,15 @@ generate_opencode_config() {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local",
       "options": {
-        "baseURL": "http://10.10.10.10:8080/v1"
+        "baseURL": "http://10.10.10.10:11434/v1"
       },
       "models": {
+				"12x596csad8ny9vvshzjaj7sqsf8c9r5-Tesslate_OmniCoder-9B-Q4_K_S.gguf": {
+					"name": "OmniCoder 9B Q4_K_M (Local)"
+				},
+				"rws7jqi02i53zszzsl0vlp38d8a4l6zk-ornith-1.0-35b-Q4_K_M.gguf": {
+					"name": "Ornith 1.0 35B Q4_K_M (Local)"
+				},
 				"4j2993b3x6g8219d44zyfnyyb67bd9sd-gemma4-coding-Q4_K_M.gguf": {
 					"name": "Gemma 12B Coding Q4_K_M (Local)",
 					"limit": {

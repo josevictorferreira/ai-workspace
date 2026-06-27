@@ -387,6 +387,16 @@
 - Tool Calls: 25
 - Tool Errors: 0
 
+## Local OmniCoder(tesslate) 9B Q4_K_M - KV Cache
+- Time elapsed: 3m 42s
+- Tests: 31/0 success/failures
+- Cost: 0.00
+- Context: 30794 tokens
+- Tool Calls: 45
+- Tool Errors: 0
+- Last Prompt Eval: 680 tok/s
+- Last Eval: 37 tok/s
+
 ## Local Ornith 1.0 9B Q4_K_M - KV Cache
 - Time elapsed: 2m 25s
 - Tests: 31/0 success/failures
