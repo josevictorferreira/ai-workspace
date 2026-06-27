@@ -2,16 +2,26 @@
 
 Task 1 exposes the seven reserved command groups (``profile``, ``run``,
 ``resume``, ``report``, ``recommend``, ``smoke``, ``agent``) as a typed,
-documented help tree. No behavior is wired up yet: each command fails fast
-with a typed ``CommandNotScaffoldedError`` translated into a clean nonzero
-exit and no traceback.
+documented help tree. Task 2 wires ``profile validate`` to real behavior
+(parse the immutable TOML profile and emit canonical deterministic JSON);
+the remaining six groups still fail fast with a typed
+``CommandNotScaffoldedError`` translated into a clean nonzero exit.
 """
 
 from __future__ import annotations
 
-from typing import NoReturn, final
+from typing import Annotated, Final, NoReturn, final
 
 import typer
+
+from llama_optimizer.models import SchemaError
+from llama_optimizer.profile_errors import ProfileParseError
+from llama_optimizer.profiles import (
+    build_manifest,
+    canonical_manifest_json,
+    parse_profile,
+)
+from llama_optimizer.search_space import SearchSpaceError
 
 app = typer.Typer(
     name="llama-cpp-opt",
@@ -39,10 +49,35 @@ def _fail_not_scaffolded(command: str) -> NoReturn:
     raise typer.Exit(code=2) from error
 
 
+# Typed validation errors translated into a clean nonzero CLI exit.
+_PROFILE_ERRORS: Final[tuple[type[Exception], ...]] = (
+    ProfileParseError,
+    SchemaError,
+    SearchSpaceError,
+    FileNotFoundError,
+    OSError,
+)
+
+
 @profile_app.command("validate")
-def profile_validate() -> None:
-    """Validate a profile document (reserved for a later task)."""
-    _fail_not_scaffolded("profile validate")
+def profile_validate(
+    *,
+    profile: Annotated[str, typer.Option(help="Path to the TOML profile to validate.")],
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Emit canonical deterministic JSON.")
+    ] = False,
+) -> None:
+    """Validate an immutable profile document and optionally emit its canonical manifest."""
+    try:
+        parsed = parse_profile(profile)
+    except _PROFILE_ERRORS as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    if json_output:
+        manifest = build_manifest(parsed)
+        typer.echo(canonical_manifest_json(manifest), nl=False)
+        return
+    typer.echo(f"ok: profile {parsed.profile_id!r} validated (context={int(parsed.context_size)})")
 
 
 @app.command()

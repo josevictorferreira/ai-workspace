@@ -1,0 +1,156 @@
+# Ornith 1.0 9B optimizer profile.
+#
+# Immutable contract for the llama.cpp self-optimizer. Publisher Q4_K_M,
+# Q5_K_M, Q6_K, and Q8_0 are the search candidates; BF16 is an optional
+# high-precision reference/source only. Every candidate URL pins the immutable
+# Hugging Face revision and records the publisher LFS SHA-256 (never a Nix SRI
+# hash). Context is exactly 32768 and the total-device VRAM ceiling is exactly
+# 13 GiB for this profile.
+
+[profile]
+id = "ornith-1.0-9b"
+version = "1.0.0"
+optimizer_version = "0.1.0"
+context_size = 32768
+vram_limit_bytes = 13958643712
+seed = 1729
+
+# llama.cpp fork/build identity placeholders. T3 binds the real Nix package;
+# these labels only record which fork/build produced comparable trials.
+[llama_cpp]
+build_label = "llama.cpp-rocm-local-pinned"
+fork_ref = "local-pinned-build"
+
+# Hardware/driver placeholders. T5 binds the live driver snapshot; the hard
+# channel here is total-device VRAM measured via rocm-smi.
+[hardware]
+gpu = "amd-radeon-rx-6900-xt"
+rocm_driver_label = "rocm-smi"
+vram_total_bytes = 17179869184
+
+# Chat-template identity. The GGUF repository embeds a tool-call-capable
+# template; this hash is the declared provenance target bound to the manifest
+# and pinned for every comparable trial.
+[template]
+name = "ornith-1.0-9b-chat"
+sha256 = "8b2e93558f2c1db595417095f2f78ed49c602f506364ab74ed5571cf31450613"
+
+# Search candidates: publisher-provided weight quanta at the immutable revision.
+[[candidates]]
+id = "ornith-1.0-9b-q4_k_m"
+weight_quant = "Q4_K_M"
+role = "candidate"
+file_sha256 = "5720d1f671b4996481274fffe01868c3c36e87c135cc8538471cc7bd6087b106"
+file_bytes = 5629108704
+revision = "3296bc7a404871a72ac3f1903f561459c09b5c17"
+url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q4_K_M.gguf"
+filename = "ornith-1.0-9b-Q4_K_M.gguf"
+nix_package = "Ornith-1.0-9B-Q4_K_M"
+
+[[candidates]]
+id = "ornith-1.0-9b-q5_k_m"
+weight_quant = "Q5_K_M"
+role = "candidate"
+file_sha256 = "d1b36095636c096b04ea09e798a7a378956f2fa9099340bd54add1954aaf149c"
+file_bytes = 6467969472
+revision = "3296bc7a404871a72ac3f1903f561459c09b5c17"
+url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q5_K_M.gguf"
+filename = "ornith-1.0-9b-Q5_K_M.gguf"
+nix_package = "Ornith-1.0-9B-Q5_K_M"
+
+[[candidates]]
+id = "ornith-1.0-9b-q6_k"
+weight_quant = "Q6_K"
+role = "candidate"
+file_sha256 = "33b6f6a3e3f05078438e12df8a4b55c8acf78ceadcc639d2af1cf35a026e8387"
+file_bytes = 7359259072
+revision = "3296bc7a404871a72ac3f1903f561459c09b5c17"
+url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q6_K.gguf"
+filename = "ornith-1.0-9b-Q6_K.gguf"
+nix_package = "Ornith-1.0-9B-Q6_K"
+
+[[candidates]]
+id = "ornith-1.0-9b-q8_0"
+weight_quant = "Q8_0"
+role = "candidate"
+file_sha256 = "d0e4bebaa8b3450c62090df1408f2ee5ccb2094f9c610ffde564a654483d4f37"
+file_bytes = 9527500992
+revision = "3296bc7a404871a72ac3f1903f561459c09b5c17"
+url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q8_0.gguf"
+filename = "ornith-1.0-9b-Q8_0.gguf"
+nix_package = "Ornith-1.0-9B-Q8_0"
+
+# Optional high-precision reference/source only. Never a search candidate and
+# never realized by default validation (it does not fit the 13 GiB budget).
+[[candidates]]
+id = "ornith-1.0-9b-bf16"
+weight_quant = "BF16"
+role = "reference"
+file_sha256 = "27bc753487eed85539c3aef63dd602b79cd060401b928c9ff7d30d5556eca260"
+file_bytes = 17920696512
+revision = "3296bc7a404871a72ac3f1903f561459c09b5c17"
+url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-BF16.gguf"
+filename = "ornith-1.0-9b-BF16.gguf"
+nix_package = "Ornith-1.0-9B-BF16"
+
+# Measured outer backend identities. ROCm is the primary backend; Vulkan is the
+# measured baseline. Backend is an outer identity, never an inferable flag.
+[[backends]]
+id = "rocm"
+backend = "rocm"
+nix_package = "llama-cpp-rocm"
+
+[[backends]]
+id = "vulkan"
+backend = "vulkan"
+nix_package = "llama-cpp-vulkan"
+
+# Versioned workload corpora. Hashes are the declared provenance targets bound
+# to the manifest; the corpus files arrive in a later task.
+[[corpora]]
+id = "coding-smoke"
+sha256 = "440cf4b9241ff2c2fac42f91adbb2ee4c96d98b2ed4c4c25583d79f202598bd8"
+
+[[corpora]]
+id = "tool-use-smoke"
+sha256 = "5095aeb2d8eff2cb08b49674f1d9405920ad286b1c47e0a56c1bf15da6879514"
+
+[[corpora]]
+id = "long-context-smoke"
+sha256 = "3c78d1c1c2ac2b22a7263d224abcae52dc191d6b5989b4b1cc68b05bbd8ee019"
+
+# Balanced recommendation weights. These six sum to exactly 1.0.
+[recommendation]
+prompt_throughput_weight = 0.20
+generation_throughput_weight = 0.30
+ttft_p95_weight = 0.15
+request_latency_p95_weight = 0.15
+quality_margin_weight = 0.15
+vram_headroom_weight = 0.05
+
+# Quality policy: screening-only validation is permitted without calibrated
+# thresholds, but the finalist recommendation stays typed "blocked" until the
+# identity-bound reference calibration exists.
+[quality]
+recommendation_status = "blocked"
+reason = "reference calibration not yet measured"
+
+# Bounded screening/search dimensions. Each dimension is finite and bounded;
+# the native Cartesian product (108) stays under max_native_combinations (128).
+# ubatch <= batch is enforced by the applicability checker.
+[search]
+max_native_combinations = 128
+kv_cache_types = [{ value = "f16" }, { value = "q8_0" }, { value = "q4_0" }]
+flash_attention = { values = [true, false] }
+threads = { values = [16] }
+
+[search.gpu_layers]
+min = 60
+max = 99
+step = 39
+
+[search.batch]
+values = [512, 1024, 2048]
+
+[search.ubatch]
+values = [128, 256, 512]

@@ -20,7 +20,6 @@ from llama_optimizer.cli import app
 EXPECTED_GROUPS = {"profile", "run", "resume", "report", "recommend", "smoke", "agent"}
 
 UNIMPLEMENTED_INVOCATIONS: list[list[str]] = [
-    ["profile", "validate"],
     ["run"],
     ["resume"],
     ["report"],
