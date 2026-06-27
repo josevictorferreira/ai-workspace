@@ -92,9 +92,22 @@
             sha256 = "0lfp7hc5sxzf0ar9v9ggbcwxhbja64klkdakln1pfn1aay3bn4a0";
           };
           "Ornith-1.0-9B-Q4_K_M" = pkgs.fetchurl {
-            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/main/ornith-1.0-9b-Q4_K_M.gguf";
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q4_K_M.gguf";
             sha256 = "sha256-VyDR9nG0mWSBJ0//4Bhow8Nuh8E1zIU4RxzHvWCHsQY=";
           };
+          "Ornith-1.0-9B-Q5_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q5_K_M.gguf";
+            sha256 = "sha256-0bNglWNsCWsE6gnnmKejeJVvL6kJk0C9VK3RlUqvFJw=";
+          };
+          "Ornith-1.0-9B-Q6_K" = pkgs.fetchurl {
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q6_K.gguf";
+            sha256 = "sha256-M7b2o+PwUHhDjhLfiktVyKz3jOrcxjnSrxzzWgJug4c=";
+          };
+          "Ornith-1.0-9B-Q8_0" = pkgs.fetchurl {
+            url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q8_0.gguf";
+            sha256 = "sha256-0OS+uqizRQxiCQ3xQI8u5cyyCU+cYQ/95WSmVEg9Tzc=";
+          };
+
           "Ornith-1.0-35B-Q4_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-35B-GGUF/resolve/main/ornith-1.0-35b-Q4_K_M.gguf";
             sha256 = "sha256-/yUpGyWZ+5J6g15iTSs1QBBq9hdhw/pXrEJkBG2+wAI=";
@@ -169,6 +182,36 @@
             inherit path;
           }) models
         );
+
+        # Immutable copy of the optimizer project for the deterministic wrapper.
+        # Excludes Python caches and the local virtualenv so the store path is
+        # reproducible and minimal.
+        optimizer-src = pkgs.lib.cleanSourceWith {
+          src = ./optimizer;
+          filter =
+            path: type:
+            baseNameOf path != ".venv"
+            && baseNameOf path != ".pytest_cache"
+            && baseNameOf path != ".ruff_cache"
+            && baseNameOf path != "__pycache__";
+        };
+
+        # Minimal deterministic wrapper that runs the locked optimizer project
+        # without realizing any model derivation. Forwards arguments unchanged.
+        llama-cpp-optimizer = pkgs.writeShellApplication {
+          name = "llama-cpp-optimizer";
+          runtimeInputs = [
+            pkgs.python313
+            pkgs.uv
+          ];
+          text = ''
+            # Keep the project source immutable in the store; place the
+            # virtualenv in a writable per-user cache so --help (and any
+            # command) works without realizing a model derivation.
+            export UV_PROJECT_ENVIRONMENT="''${UV_PROJECT_ENVIRONMENT:-''${XDG_CACHE_HOME:-$HOME/.cache}/llama-cpp-optimizer/.venv}"
+            exec uv run --frozen --project "${optimizer-src}" llama-cpp-opt "$@"
+          '';
+        };
 
         # --- Backends ---
         llama-rocm = llama-cpp.packages.${system}.rocm.overrideAttrs (oldAttrs: {
@@ -468,6 +511,14 @@
         packages.vulkan = llama-vulkan;
         packages.models = modelsDir;
 
+        # Separately-buildable Ornith 1.0 9B optimizer candidate packages.
+        packages."Ornith-1.0-9B-Q4_K_M" = models."Ornith-1.0-9B-Q4_K_M";
+        packages."Ornith-1.0-9B-Q5_K_M" = models."Ornith-1.0-9B-Q5_K_M";
+        packages."Ornith-1.0-9B-Q6_K" = models."Ornith-1.0-9B-Q6_K";
+        packages."Ornith-1.0-9B-Q8_0" = models."Ornith-1.0-9B-Q8_0";
+
+        packages.llama-cpp-optimizer = llama-cpp-optimizer;
+
         # Apps for running the server easily
         # Usage: nix run .#omnicoder OR nix run .#omnicoder-vulkan
         apps.omnicoder =
@@ -540,13 +591,13 @@
         apps.ornith-9b = mkServerWithCtx {
           pkg = llama-rocm;
           model = models."Ornith-1.0-9B-Q4_K_M";
-          ctxSize = "81920";
+          ctxSize = "32768";
           nGpuLayers = "99";
         };
         apps.ornith-9b-vulkan = mkServerWithCtx {
           pkg = llama-vulkan;
           model = models."Ornith-1.0-9B-Q4_K_M";
-          ctxSize = "81920";
+          ctxSize = "32768";
           nGpuLayers = "99";
         };
 
@@ -1293,6 +1344,11 @@
             echo "Endpoint: http://localhost:8080/v1/chat/completions"
             exec ${hipfire-cli}/bin/hipfire serve 8080 "$@"
           ''}/bin/hipfire-server";
+        };
+
+        apps.optimizer = {
+          type = "app";
+          program = "${llama-cpp-optimizer}/bin/llama-cpp-optimizer";
         };
 
         # Development shell
