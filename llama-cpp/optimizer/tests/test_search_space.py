@@ -9,6 +9,7 @@ any process is launched.
 from __future__ import annotations
 
 from dataclasses import FrozenInstanceError
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
@@ -162,3 +163,26 @@ class TestSearchSpaceImmutability:
         # Then it exposes the typed reason field and a non-empty message.
         assert err.reason == "example"
         assert str(err)
+
+
+class TestNoTypingEscapeHatches:
+    """First-party source must not contain `# type: ignore` or other suppressions.
+
+    The loaded programming rules prohibit type escape hatches. This static guard
+    fails if any first-party module silences the type checker, since a runtime
+    test cannot expose a static-only defect.
+    """
+
+    def test_no_type_ignore_in_first_party_source(self) -> None:
+        # Given every first-party module under src/llama_optimizer.
+        src_dir = Path(__file__).resolve().parent.parent / "src" / "llama_optimizer"
+        py_files = sorted(src_dir.rglob("*.py"))
+        assert py_files, "expected first-party source files to scan"
+        # When scanning each file for `# type: ignore`.
+        offenders: list[str] = []
+        for py_file in py_files:
+            for line_no, line in enumerate(py_file.read_text().splitlines(), start=1):
+                if "type: ignore" in line:
+                    offenders.append(f"{py_file.name}:{line_no}: {line.strip()}")
+        # Then no file silences the type checker.
+        assert not offenders, "type: ignore escape hatches found:\n" + "\n".join(offenders)

@@ -227,9 +227,7 @@ def _parse_dimension(dimension_id: DimensionId, raw: object) -> Dimension | None
         return DiscreteDimension(
             dimension_id=dimension_id,
             values=tuple(
-                _coerce_discrete(item["value"])  # type: ignore[index]
-                for item in raw
-                if _is_str_mapping(item) and "value" in item
+                _coerce_discrete(value) for item in raw if (value := _value_of(item)) is not None
             ),
         )
     return None
@@ -255,3 +253,10 @@ def _coerce_discrete(value: object) -> DiscreteValue:
         dimension_id=DimensionId("discrete"),
         reason=f"discrete value must be bool/int/str, got {type(value).__name__}",
     )
+
+
+def _value_of(item: object) -> object | None:
+    """Return the ``value`` entry if ``item`` is a mapping containing it, else None."""
+    if _is_str_mapping(item) and "value" in item:
+        return item["value"]
+    return None
