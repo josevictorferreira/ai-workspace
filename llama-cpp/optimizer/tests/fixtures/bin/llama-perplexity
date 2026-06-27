@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of `llama-perplexity` for the optimizer test suite.
+# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+set -euo pipefail
+printf 'perplexity deterministic fake: final=%s\n' '7.2500'

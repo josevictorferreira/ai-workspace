@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of `llama-bench` for the optimizer test suite.
+# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+set -euo pipefail
+printf 'model,name,size,tg128,pp512\nfake-model,bench,0.000,42.50,250.00\n'

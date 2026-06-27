@@ -1,0 +1,65 @@
+[project]
+name = "llama-optimizer"
+version = "0.1.0"
+description = "Deterministic llama.cpp optimizer scaffold: typed CLI and artifact-path contracts."
+requires-python = ">=3.13,<3.14"
+license = "MIT"
+authors = [{ name = "llama-cpp optimizer" }]
+dependencies = [
+  "optuna==4.9.0",
+  "typer>=0.12,<1",
+]
+
+[project.scripts]
+llama-cpp-opt = "llama_optimizer.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+  "basedpyright>=1.19",
+  "pytest>=8",
+  "ruff>=0.6",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llama_optimizer"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812", # conflicts with the ruff formatter
+  "D104",  # missing-docstring-in-public-package: __init__ is intentionally minimal
+  "D203",  # conflicts with D211 (no-blank-line-before-class)
+  "D107",  # __init__ is documented via the class docstring
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+  "S101",   # asserts are the point of tests
+  "D",      # docstrings not required on every test helper
+  "PLR2004",# magic values fine in tests
+  "SLF001", # private member access fine in tests
+]
+
+[tool.basedpyright]
+include = ["src", "tests"]
+extraPaths = ["src"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.13"
+typeCheckingMode = "all"
+reportAny = "none"
+reportMissingTypeStubs = "none"

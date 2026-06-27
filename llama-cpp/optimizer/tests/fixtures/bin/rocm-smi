@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of `rocm-smi` for the optimizer test suite.
+# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+set -euo pipefail
+printf 'GPU0 deterministic fake: VRAM=8192MB USE=0%%\n'

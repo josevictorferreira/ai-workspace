@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of `llama-imatrix` for the optimizer test suite.
+# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+set -euo pipefail
+echo 'llama-imatrix deterministic fake: wrote imatrix.dat (0 bytes)'

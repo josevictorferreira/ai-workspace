@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of `llama-server` for the optimizer test suite.
+# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+set -euo pipefail
+echo 'llama-server deterministic fake: listening on 127.0.0.1:0'

@@ -1365,6 +1365,19 @@
                         echo "General hipfire usage: hipfire --help"
           '';
         };
+
+        devShells.optimizer = pkgs.mkShell {
+          name = "llama-cpp-optimizer-shell";
+          buildInputs = [
+            pkgs.python313
+            pkgs.uv
+          ];
+          shellHook = ''
+            echo "--- Llama-cpp Optimizer (Python 3.13) Development Environment ---"
+            echo "Run the optimizer CLI: uv run --project optimizer llama-cpp-opt --help"
+            echo "Run the test suite: uv run --project optimizer --frozen pytest optimizer/tests"
+          '';
+        };
       }
     );
 }

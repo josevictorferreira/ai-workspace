@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Deterministic offline fake of the `opencode` agent launcher for the optimizer
+# test suite. Not the real binary. Later tasks consume it; T1 ships the fixture.
+set -euo pipefail
+echo 'opencode deterministic fake: agent adapter ready'
