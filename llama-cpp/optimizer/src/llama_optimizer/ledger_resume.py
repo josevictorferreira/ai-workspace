@@ -13,7 +13,7 @@ import hashlib
 from typing import TYPE_CHECKING
 
 from llama_optimizer import ledger_evidence as evidence
-from llama_optimizer import ledger_io
+from llama_optimizer import ledger_ids, ledger_io
 from llama_optimizer import ledger_store as store
 from llama_optimizer.ledger_records import CheckpointRecord, ResumeResult, RunRecord
 from llama_optimizer.lifecycle import CheckpointStatus, Generation, ResumeMode
@@ -43,7 +43,7 @@ def publish_checkpoint(
     rel = f"checkpoints/gen-{int(generation):04d}.ckpt"
     ledger_io.atomic_publish(root.resolve_artifact(rel), content)
     content_hash = hashlib.sha256(content).hexdigest()
-    now = store.utc_now_iso()
+    now = ledger_ids.utc_now_iso()
     row = CheckpointRecord(
         generation,
         run.run_id,

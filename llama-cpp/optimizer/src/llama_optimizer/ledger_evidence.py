@@ -11,12 +11,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from llama_optimizer.ledger_ids import utc_now_iso
+from llama_optimizer.ledger_io import fetch_row
 from llama_optimizer.ledger_materialize import row_to_checkpoint
 from llama_optimizer.ledger_records import (
     CheckpointRecord,
     exec_write,
 )
-from llama_optimizer.ledger_store import utc_now_iso
 from llama_optimizer.lifecycle import CheckpointStatus
 
 if TYPE_CHECKING:
@@ -111,7 +112,5 @@ def set_checkpoint_committed(
 
 def select_checkpoint(conn: sqlite3.Connection, generation: Generation) -> CheckpointRecord | None:
     """Return the checkpoint row for a generation, or None."""
-    row = conn.execute(
-        "SELECT * FROM checkpoints WHERE generation = ?", (int(generation),)
-    ).fetchone()
+    row = fetch_row(conn, "SELECT * FROM checkpoints WHERE generation = ?", (int(generation),))
     return None if row is None else row_to_checkpoint(row)

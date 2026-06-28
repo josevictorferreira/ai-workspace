@@ -14,7 +14,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from llama_optimizer import ledger_evidence as evidence
-from llama_optimizer import ledger_io
+from llama_optimizer import ledger_ids, ledger_io
 from llama_optimizer import ledger_store as store
 from llama_optimizer.ledger_records import (
     AttemptRecord,
@@ -52,8 +52,8 @@ def create_trial(
     existing = store.select_trial_by_config(conn, run_id, chash)
     if existing is not None:
         return existing
-    trial_id = store.derive_trial_id(run_id, config.config_id, chash)
-    now = store.utc_now_iso()
+    trial_id = ledger_ids.derive_trial_id(run_id, config.config_id, chash)
+    now = ledger_ids.utc_now_iso()
     record = TrialRecord(
         trial_id,
         run_id,
@@ -81,7 +81,9 @@ def start_trial(conn: sqlite3.Connection, trial_id: TrialId) -> TrialRecord:
     trial = store.select_trial(conn, trial_id)
     assert_trial_transition(trial.phase, TrialPhase.RUNNING, trial_id=trial_id)
     with ledger_io.transaction(conn):
-        store.update_trial_phase(conn, trial_id, TrialPhase.RUNNING, updated_at=store.utc_now_iso())
+        store.update_trial_phase(
+            conn, trial_id, TrialPhase.RUNNING, updated_at=ledger_ids.utc_now_iso()
+        )
     return store.select_trial(conn, trial_id)
 
 
@@ -101,7 +103,7 @@ def commit_trial(
             trial_id,
             generation,
             optuna_trial_number,
-            updated_at=store.utc_now_iso(),
+            updated_at=ledger_ids.utc_now_iso(),
         )
 
 
@@ -116,7 +118,7 @@ def abandon_trial(
     trial = store.select_trial(conn, trial_id)
     assert_trial_transition(trial.phase, TrialPhase.ABANDONED, trial_id=trial_id)
     with ledger_io.transaction(conn):
-        store.abandon_trial(conn, trial_id, outcome, reason, updated_at=store.utc_now_iso())
+        store.abandon_trial(conn, trial_id, outcome, reason, updated_at=ledger_ids.utc_now_iso())
 
 
 def start_attempt(
@@ -130,11 +132,11 @@ def start_attempt(
     number = store.next_attempt_number(conn, trial_id)
     parent = parent_attempt_id
     if number > 1:
-        prior = store.select_attempt(conn, store.derive_attempt_id(trial_id, number - 1))
+        prior = store.select_attempt(conn, ledger_ids.derive_attempt_id(trial_id, number - 1))
         parent = prior.attempt_id
         enforce_retry_eligibility(run, prior, number - 1)
-    attempt_id = store.derive_attempt_id(trial_id, number)
-    now = store.utc_now_iso()
+    attempt_id = ledger_ids.derive_attempt_id(trial_id, number)
+    now = ledger_ids.utc_now_iso()
     record = AttemptRecord(
         attempt_id,
         trial_id,
@@ -186,7 +188,7 @@ def succeed_attempt(conn: sqlite3.Connection, attempt_id: AttemptId) -> None:
     """Move an attempt IN_PROGRESS -> SUCCEEDED."""
     _assert_in_progress(conn, attempt_id, AttemptPhase.SUCCEEDED)
     with ledger_io.transaction(conn):
-        store.succeed_attempt(conn, attempt_id, ended_at=store.utc_now_iso())
+        store.succeed_attempt(conn, attempt_id, ended_at=ledger_ids.utc_now_iso())
 
 
 def end_attempt_nonscored(
@@ -199,7 +201,7 @@ def end_attempt_nonscored(
     """Move an attempt IN_PROGRESS -> NON_SCORED with a closed outcome."""
     _assert_in_progress(conn, attempt_id, AttemptPhase.NON_SCORED)
     with ledger_io.transaction(conn):
-        store.nonscore_attempt(conn, attempt_id, outcome, reason, ended_at=store.utc_now_iso())
+        store.nonscore_attempt(conn, attempt_id, outcome, reason, ended_at=ledger_ids.utc_now_iso())
 
 
 def _assert_in_progress(

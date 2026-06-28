@@ -12,12 +12,16 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sqlite3
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 import pytest
 
-from llama_optimizer import ledger_store
+from llama_optimizer import ledger_io, ledger_materialize, ledger_store
 from llama_optimizer.artifacts import RunArtifactRoot
 from llama_optimizer.ledger import Ledger
 from llama_optimizer.ledger_records import (
@@ -26,7 +30,7 @@ from llama_optimizer.ledger_records import (
     SchemaMismatchError,
     TrialConfig,
 )
-from llama_optimizer.ledger_schema import SCHEMA_VERSION
+from llama_optimizer.ledger_schema import SCHEMA_VERSION, schema_version
 from llama_optimizer.lifecycle import (
     Generation,
     NonScoredOutcome,
@@ -75,9 +79,8 @@ class TestSchemaVersioning:
     def test_fresh_db_stamps_pinned_version(self, run_root_base: Path) -> None:
         root = _root("schema-1", run_root_base)
         with Ledger.create_run(root, _identity()) as ledger:
-            conn = ledger._conn
-            row = conn.execute("SELECT schema_version FROM schema_meta").fetchone()
-        assert row["schema_version"] == SCHEMA_VERSION
+            version = schema_version(ledger.connection)
+        assert version == SCHEMA_VERSION
 
     def test_incompatible_version_fails_closed(self, run_root_base: Path) -> None:
         root = _root("schema-2", run_root_base)
@@ -85,27 +88,28 @@ class TestSchemaVersioning:
             pass
         db = root.resolve_artifact("study.sqlite3")
         conn = sqlite3.connect(db)
-        conn.execute("UPDATE schema_meta SET schema_version = ?", (SCHEMA_VERSION + 1,))
+        _ = conn.execute("UPDATE schema_meta SET schema_version = ?", (SCHEMA_VERSION + 1,))
         conn.commit()
         conn.close()
         with pytest.raises(SchemaMismatchError) as exc_info:
-            Ledger.open(root)
+            _ = Ledger.open(root)
         assert exc_info.value.expected == SCHEMA_VERSION
         assert exc_info.value.actual == SCHEMA_VERSION + 1
 
     def test_foreign_keys_are_enabled(self, run_root_base: Path) -> None:
         root = _root("schema-3", run_root_base)
         with Ledger.create_run(root, _identity()) as ledger:
-            fk = ledger._conn.execute("PRAGMA foreign_keys").fetchone()
-        assert fk[0] == 1
+            fk = ledger_io.fetch_row(ledger.connection, "PRAGMA foreign_keys")
+        assert fk is not None
+        assert ledger_materialize.row_index_int(fk) == 1
 
     def test_fk_blocks_dangling_attempt(self, run_root_base: Path) -> None:
         root = _root("schema-4", run_root_base)
         with Ledger.create_run(root, _identity()) as ledger, pytest.raises(sqlite3.IntegrityError):
-            ledger._conn.execute(
-                "INSERT INTO attempts(attempt_id, trial_id, run_id, attempt_number, "
-                "phase, process_group_pid, started_at, termination_reason) "
-                "VALUES ('a-x','t-fake','schema-4',1,'pending',1,'now','')"
+            _ = ledger.connection.execute(
+                """INSERT INTO attempts(attempt_id, trial_id, run_id, attempt_number,
+                   phase, process_group_pid, started_at, termination_reason)
+                   VALUES ('a-x','t-fake','schema-4',1,'pending',1,'now','')"""
             )
 
 
@@ -117,7 +121,7 @@ class TestExclusiveRunLock:
         root = _root("lock-1", run_root_base)
 
         with Ledger.create_run(root, _identity()), pytest.raises(RunLockHeldError):
-            Ledger.create_run(root, _identity())
+            _ = Ledger.create_run(root, _identity())
 
     def test_lock_is_released_on_close(self, run_root_base: Path) -> None:
         root = _root("lock-2", run_root_base)
@@ -133,6 +137,77 @@ class TestExclusiveRunLock:
             pass
         lock = root.resolve_artifact("run.lock")
         assert int(lock.read_text().strip()) == os.getpid()
+
+
+# A child OS process that acquires and holds the run lock, then blocks until
+# terminated. run_id/base/ready-marker are passed via argv (no string formatting,
+# so paths with special characters are safe).
+_CHILD_ACQUIRE_LOCK = """
+import os
+import re
+import sys
+import time
+from pathlib import Path
+
+from llama_optimizer.artifacts import RunArtifactRoot
+from llama_optimizer.ledger import Ledger
+from llama_optimizer.ledger_records import RunIdentity
+
+root = RunArtifactRoot.for_run(sys.argv[1], base=Path(sys.argv[2]))
+identity = RunIdentity(
+    manifest_hash="child",
+    config_hash="child",
+    optimizer_version="0.1.0",
+    optuna_version="4.9.0",
+    checkpoint_format="pickle.v1",
+    max_retries=1,
+    seed=1,
+    process_group_pid=os.getpid(),
+)
+ledger = Ledger.create_run(root, identity)
+Path(sys.argv[3]).write_text("ready")
+time.sleep(30)
+"""
+
+
+class TestCrossProcessLockContention:
+    """A second OS process cannot acquire the exclusive run lock (real subprocess)."""
+
+    def test_subprocess_holding_lock_blocks_parent(self, run_root_base: Path) -> None:
+        # Given a child process that acquires and holds the run lock.
+        root = _root("lock-subproc", run_root_base)
+        ready = run_root_base / "child-ready"
+        proc = subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                _CHILD_ACQUIRE_LOCK,
+                "lock-subproc",
+                str(run_root_base),
+                str(ready),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        try:
+            # Wait until the child has acquired the lock (ready marker appears).
+            for _ in range(100):
+                if ready.exists():
+                    break
+                if proc.poll() is not None:
+                    _out, err = proc.communicate()
+                    pytest.fail(f"child exited {proc.returncode}: {err.decode()}")
+                time.sleep(0.05)
+            else:
+                proc.kill()
+                pytest.fail("child never signaled lock acquisition")
+            # When the parent (this process) tries to acquire the same lock.
+            # Then it fails with RunLockHeldError (real cross-process flock exclusion).
+            with pytest.raises(RunLockHeldError):
+                _ = Ledger.create_run(root, _identity())
+        finally:
+            proc.terminate()
+            _ = proc.wait(timeout=10)
 
 
 # --- Deterministic IDs and idempotent trial creation ------------------------
@@ -159,7 +234,7 @@ class TestDeterministicIds:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("c"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             ledger.succeed_attempt(attempt.attempt_id)
             ledger.commit_trial(trial.trial_id, generation=Generation(1), optuna_trial_number=0)
@@ -177,7 +252,7 @@ class TestPersistence:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("p"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
         with Ledger.open(root) as ledger2:
             assert ledger2.run.phase is RunPhase.RUNNING
             t2 = ledger2.create_trial(_config("p"))
@@ -188,7 +263,7 @@ class TestPersistence:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("d"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             ledger.succeed_attempt(attempt.attempt_id)
             ledger.record_metrics(attempt.attempt_id, {"prompt_throughput": 100.0})
@@ -231,13 +306,13 @@ class TestIllegalTransitionsAreNoOps:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("t"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             ledger.succeed_attempt(attempt.attempt_id)
             ledger.commit_trial(trial.trial_id, generation=Generation(1), optuna_trial_number=0)
             db_before = root.resolve_artifact("study.sqlite3").read_bytes()
             with pytest.raises(TransitionError):
-                ledger.start_trial(trial.trial_id)
+                _ = ledger.start_trial(trial.trial_id)
             db_after = root.resolve_artifact("study.sqlite3").read_bytes()
         assert db_before == db_after
 
@@ -250,7 +325,7 @@ class TestBoundedTransientRetry:
         ledger = Ledger.create_run(root, _identity())
         ledger.start_run()
         trial = ledger.create_trial(_config("r"))
-        ledger.start_trial(trial.trial_id)
+        _ = ledger.start_trial(trial.trial_id)
         return ledger, trial.trial_id
 
     def test_transient_failure_within_bound_permits_retry(self, run_root_base: Path) -> None:
@@ -286,7 +361,7 @@ class TestBoundedTransientRetry:
             )
             # 3 attempts = 1 initial + 2 retries (max_retries=2); 4th must fail.
             with pytest.raises(RetryExhaustedError):
-                ledger.start_attempt(trial_id)
+                _ = ledger.start_attempt(trial_id)
         finally:
             ledger.close()
 
@@ -304,7 +379,7 @@ class TestBoundedTransientRetry:
             a1 = ledger.start_attempt(trial_id)
             ledger.end_attempt_nonscored(a1.attempt_id, outcome=outcome, reason="x")
             with pytest.raises(RetryExhaustedError):
-                ledger.start_attempt(trial_id)
+                _ = ledger.start_attempt(trial_id)
         finally:
             ledger.close()
 
@@ -318,7 +393,7 @@ class TestOrphanRecovery:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("o"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             # Leave the attempt IN_PROGRESS (simulate crash) and close without ending it.
         with Ledger.open(root) as ledger2:
@@ -333,8 +408,8 @@ class TestOrphanRecovery:
             ledger.publish_checkpoint(generation=Generation(1), content=b"ckpt-1")
             boundary_before = ledger.run.committed_generation
             trial = ledger.create_trial(_config("o2"))
-            ledger.start_trial(trial.trial_id)
-            ledger.start_attempt(trial.trial_id)  # orphaned
+            _ = ledger.start_trial(trial.trial_id)
+            _ = ledger.start_attempt(trial.trial_id)  # orphaned
         with Ledger.open(root) as ledger2:
             assert ledger2.run.committed_generation == boundary_before
             assert ledger2.recovery.committed_boundary_unchanged is True
@@ -344,17 +419,20 @@ class TestOrphanRecovery:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("o3"))
-            ledger.start_trial(trial.trial_id)
-            ledger.start_attempt(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
+            _ = ledger.start_attempt(trial.trial_id)
         with Ledger.open(root):
             pass
         conn = sqlite3.connect(root.resolve_artifact("study.sqlite3"))
         conn.row_factory = sqlite3.Row
-        count = conn.execute(
-            "SELECT COUNT(*) FROM trials WHERE config_hash = ?", ("hash-o3",)
-        ).fetchone()[0]
+        row = ledger_io.fetch_row(
+            conn,
+            "SELECT COUNT(*) FROM trials WHERE config_hash = ?",
+            ("hash-o3",),
+        )
         conn.close()
-        assert count == 1
+        assert row is not None
+        assert ledger_materialize.row_index_int(row) == 1
 
 
 # --- Atomic checkpoint publication -----------------------------------------
@@ -423,7 +501,7 @@ class TestResumeSemantics:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("res"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             ledger.succeed_attempt(attempt.attempt_id)
             ledger.commit_trial(trial.trial_id, generation=Generation(1), optuna_trial_number=0)
@@ -461,8 +539,8 @@ class TestResumeSemantics:
             ledger.start_run()
             ledger.publish_checkpoint(generation=Generation(1), content=b"ckpt")
             # Manually regress the committed boundary to simulate a stale checkpoint.
-            conn = ledger._conn
-            conn.execute("UPDATE runs SET committed_generation = 0")
+            conn = ledger.connection
+            _ = conn.execute("UPDATE runs SET committed_generation = 0")
             conn.commit()
         with Ledger.open(root) as ledger:
             result = ledger.resume(ResumeMode.EXACT, _V)
@@ -473,8 +551,8 @@ class TestResumeSemantics:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             # Set a committed boundary without publishing a checkpoint (corrupt state).
-            conn = ledger._conn
-            conn.execute("UPDATE runs SET committed_generation = 5")
+            conn = ledger.connection
+            _ = conn.execute("UPDATE runs SET committed_generation = 5")
             conn.commit()
         with Ledger.open(root) as ledger:
             result = ledger.resume(ResumeMode.EXACT, _V)
@@ -490,7 +568,7 @@ class TestNormalizedDump:
         with Ledger.create_run(root, _identity()) as ledger:
             ledger.start_run()
             trial = ledger.create_trial(_config("dump"))
-            ledger.start_trial(trial.trial_id)
+            _ = ledger.start_trial(trial.trial_id)
             attempt = ledger.start_attempt(trial.trial_id)
             ledger.succeed_attempt(attempt.attempt_id)
             ledger.record_metrics(attempt.attempt_id, {"tok_s": 50.0, "ttft": 0.1})
@@ -534,3 +612,28 @@ class TestNoTypingEscapeHatchesInLedger:
                 if "noqa" in line:
                     offenders.append(f"{py_file.name}:{line_no}: {line.strip()}")
         assert not offenders, "noqa escape hatches found:\n" + "\n".join(offenders)
+
+    def test_no_any_or_cast_imported_in_ledger_source(self) -> None:
+        """No first-party module may import ``Any`` or ``cast`` (typing escape hatches).
+
+        Import-scanning is bulletproof: if the names are never imported they cannot be
+        used as annotations, while docstring prose mentioning the words is unaffected.
+        """
+        src_dir = Path(__file__).resolve().parent.parent / "src" / "llama_optimizer"
+        offenders: list[str] = []
+        for py_file in sorted(src_dir.rglob("*.py")):
+            for line_no, line in enumerate(py_file.read_text().splitlines(), start=1):
+                if "from typing import" in line and re.search(r"\b(Any|cast)\b", line):
+                    offenders.append(f"{py_file.name}:{line_no}: {line.strip()}")
+                if re.search(r"\btyping\.(Any|cast)\b", line):
+                    offenders.append(f"{py_file.name}:{line_no}: {line.strip()}")
+        assert not offenders, "Any/cast escape hatches found:\n" + "\n".join(offenders)
+
+    def test_no_typing_config_weakening(self) -> None:
+        """The locked basedpyright gate must not disable strict typing rules."""
+        pyproject = Path(__file__).resolve().parent.parent / "pyproject.toml"
+        text = pyproject.read_text()
+        assert 'reportAny = "none"' not in text, "reportAny weakened to none"
+        assert 'reportMissingTypeStubs = "none"' not in text, (
+            "reportMissingTypeStubs weakened to none"
+        )

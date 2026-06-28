@@ -18,7 +18,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import TYPE_CHECKING, Self, final
 
-from llama_optimizer import ledger_dump, ledger_io
+from llama_optimizer import ledger_dump, ledger_ids, ledger_io
 from llama_optimizer import ledger_ops as ops
 from llama_optimizer import ledger_resume as resume_ops
 from llama_optimizer import ledger_store as store
@@ -83,6 +83,11 @@ class Ledger:
         """The current run record (refreshed after boundary-advancing writes)."""
         return self._run
 
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """The underlying connection (read/inspection access for tests and evidence)."""
+        return self._conn
+
     def close(self) -> None:
         """Close the connection and release the exclusive run lock."""
         self._conn.close()
@@ -100,8 +105,8 @@ class Ledger:
             raise
         assert_schema_compatible(conn)
         if schema_version(conn) is None:
-            initialize_schema(conn, applied_at=store.utc_now_iso())
-        now = store.utc_now_iso()
+            initialize_schema(conn, applied_at=ledger_ids.utc_now_iso())
+        now = ledger_ids.utc_now_iso()
         run = RunRecord.initial(run_id, identity, now=now)
         with ledger_io.transaction(conn):
             store.insert_run(conn, run)
@@ -129,7 +134,7 @@ class Ledger:
         if not orphans:
             return RecoveryReport()
         orphan_ids: list[str] = []
-        now = store.utc_now_iso()
+        now = ledger_ids.utc_now_iso()
         with ledger_io.transaction(self._conn):
             for att in orphans:
                 store.nonscore_attempt(
@@ -154,7 +159,9 @@ class Ledger:
 
     def _advance_run(self, phase: RunPhase) -> None:
         with ledger_io.transaction(self._conn):
-            store.update_run_phase(self._conn, self._run_id, phase, updated_at=store.utc_now_iso())
+            store.update_run_phase(
+                self._conn, self._run_id, phase, updated_at=ledger_ids.utc_now_iso()
+            )
         self._run = store.select_run(self._conn, self._run_id)
 
     def create_trial(self, config: TrialConfig) -> TrialRecord:
@@ -271,6 +278,6 @@ class Ledger:
         )
         return replace(result, recovery=self.recovery)
 
-    def dump(self) -> dict[str, object]:
+    def dump(self) -> ledger_dump.LedgerDump:
         """Return a normalized, JSON-serializable snapshot of the whole ledger."""
         return ledger_dump.dump(self._conn, self._run_id)

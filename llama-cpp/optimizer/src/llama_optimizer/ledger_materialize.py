@@ -3,7 +3,9 @@
 ``sqlite3.Row`` values are dynamically typed; the public ``row_*`` accessors
 parse a cell exactly once at the boundary (narrowing via ``isinstance``, so no
 ``Any`` leaks), and ``row_to_*`` build typed records. Interior code receives
-typed records and never re-validates (parse, don't validate).
+typed records and never re-validates (parse, don't validate). Accessors take
+:class:`RowLike` so cell reads yield ``object`` rather than the stdlib
+typeshed's ``Any``.
 """
 
 from __future__ import annotations
@@ -29,10 +31,10 @@ from llama_optimizer.lifecycle import (
 )
 
 if TYPE_CHECKING:
-    import sqlite3
+    from llama_optimizer.ledger_io import RowLike
 
 
-def row_str(row: sqlite3.Row, key: str) -> str:
+def row_str(row: RowLike, key: str) -> str:
     """Read a required string cell, raising ``TypeError`` if the type differs."""
     value: object = row[key]
     if not isinstance(value, str):
@@ -41,7 +43,7 @@ def row_str(row: sqlite3.Row, key: str) -> str:
     return value
 
 
-def row_int(row: sqlite3.Row, key: str) -> int:
+def row_int(row: RowLike, key: str) -> int:
     """Read a required integer cell, raising ``TypeError`` if the type differs."""
     value: object = row[key]
     if not isinstance(value, int):
@@ -50,7 +52,7 @@ def row_int(row: sqlite3.Row, key: str) -> int:
     return value
 
 
-def row_float(row: sqlite3.Row, key: str) -> float:
+def row_float(row: RowLike, key: str) -> float:
     """Read a required float cell, raising ``TypeError`` if the type differs."""
     value: object = row[key]
     if not isinstance(value, (float, int)):
@@ -59,25 +61,25 @@ def row_float(row: sqlite3.Row, key: str) -> float:
     return float(value)
 
 
-def row_opt_str(row: sqlite3.Row, key: str) -> str | None:
+def row_opt_str(row: RowLike, key: str) -> str | None:
     """Read an optional string cell (None preserved)."""
     value: object = row[key]
     return value if isinstance(value, str) else None
 
 
-def row_opt_int(row: sqlite3.Row, key: str) -> int | None:
+def row_opt_int(row: RowLike, key: str) -> int | None:
     """Read an optional integer cell (None preserved)."""
     value: object = row[key]
     return value if isinstance(value, int) else None
 
 
-def row_opt_gen(row: sqlite3.Row, key: str) -> Generation | None:
+def row_opt_gen(row: RowLike, key: str) -> Generation | None:
     """Read an optional generation (integer) cell as a :class:`Generation`."""
     value: object = row[key]
     return Generation(int(value)) if isinstance(value, int) else None
 
 
-def row_index_int(row: sqlite3.Row, index: int = 0) -> int:
+def row_index_int(row: RowLike, index: int = 0) -> int:
     """Read a required integer cell by positional index (for COUNT/MAX aggregates)."""
     value: object = row[index]
     if not isinstance(value, int):
@@ -86,13 +88,13 @@ def row_index_int(row: sqlite3.Row, index: int = 0) -> int:
     return value
 
 
-def row_index_opt_int(row: sqlite3.Row, index: int = 0) -> int | None:
+def row_index_opt_int(row: RowLike, index: int = 0) -> int | None:
     """Read an optional integer cell by positional index (None preserved for empty MAX)."""
     value: object = row[index]
     return value if isinstance(value, int) else None
 
 
-def row_to_run(row: sqlite3.Row) -> RunRecord:
+def row_to_run(row: RowLike) -> RunRecord:
     """Materialize a runs row into a :class:`RunRecord`."""
     return RunRecord(
         run_id=RunId(row_str(row, "run_id")),
@@ -112,7 +114,7 @@ def row_to_run(row: sqlite3.Row) -> RunRecord:
     )
 
 
-def row_to_trial(row: sqlite3.Row) -> TrialRecord:
+def row_to_trial(row: RowLike) -> TrialRecord:
     """Materialize a trials row into a :class:`TrialRecord`."""
     outcome = row_opt_str(row, "outcome")
     retry = row_opt_str(row, "retry_parent_attempt_id")
@@ -135,7 +137,7 @@ def row_to_trial(row: sqlite3.Row) -> TrialRecord:
     )
 
 
-def row_to_attempt(row: sqlite3.Row) -> AttemptRecord:
+def row_to_attempt(row: RowLike) -> AttemptRecord:
     """Materialize an attempts row into an :class:`AttemptRecord`."""
     outcome = row_opt_str(row, "outcome")
     parent = row_opt_str(row, "parent_attempt_id")
@@ -155,7 +157,7 @@ def row_to_attempt(row: sqlite3.Row) -> AttemptRecord:
     )
 
 
-def row_to_checkpoint(row: sqlite3.Row) -> CheckpointRecord:
+def row_to_checkpoint(row: RowLike) -> CheckpointRecord:
     """Materialize a checkpoints row into a :class:`CheckpointRecord`."""
     return CheckpointRecord(
         generation=Generation(row_int(row, "generation")),

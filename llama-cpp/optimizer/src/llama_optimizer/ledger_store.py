@@ -7,10 +7,9 @@ same trial+attempt number -> the same attempt (idempotent, no duplicates).
 
 from __future__ import annotations
 
-import hashlib
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+from llama_optimizer.ledger_io import fetch_row, fetch_rows
 from llama_optimizer.ledger_materialize import (
     row_index_int,
     row_index_opt_int,
@@ -37,23 +36,6 @@ from llama_optimizer.lifecycle import (
 
 if TYPE_CHECKING:
     import sqlite3
-
-
-def utc_now_iso() -> str:
-    """Return the current UTC instant as a deterministic ISO-8601 string."""
-    return datetime.now(UTC).isoformat()
-
-
-def derive_trial_id(run_id: str, config_id: str, config_hash: ConfigHash) -> TrialId:
-    """Derive a deterministic trial id from run + config identity."""
-    digest = hashlib.sha256(f"{run_id}\x1f{config_id}\x1f{config_hash}".encode()).hexdigest()
-    return TrialId("t-" + digest[:16])
-
-
-def derive_attempt_id(trial_id: TrialId, attempt_number: int) -> AttemptId:
-    """Derive a deterministic attempt id from trial + attempt number."""
-    digest = hashlib.sha256(f"{trial_id}\x1f{attempt_number}".encode()).hexdigest()
-    return AttemptId("a-" + digest[:16])
 
 
 # --- runs -------------------------------------------------------------------
@@ -85,7 +67,7 @@ def insert_run(conn: sqlite3.Connection, row: RunRecord) -> None:
 
 def select_run(conn: sqlite3.Connection, run_id: str) -> RunRecord:
     """Return the run row, raising KeyError if absent."""
-    row = conn.execute("SELECT * FROM runs WHERE run_id = ?", (run_id,)).fetchone()
+    row = fetch_row(conn, "SELECT * FROM runs WHERE run_id = ?", (run_id,))
     if row is None:
         raise KeyError(run_id)
     return row_to_run(row)
@@ -118,9 +100,11 @@ def select_trial_by_config(
     conn: sqlite3.Connection, run_id: str, config_hash: ConfigHash
 ) -> TrialRecord | None:
     """Return the existing trial for a config, or None (idempotent create basis)."""
-    row = conn.execute(
-        "SELECT * FROM trials WHERE run_id = ? AND config_hash = ?", (run_id, config_hash)
-    ).fetchone()
+    row = fetch_row(
+        conn,
+        "SELECT * FROM trials WHERE run_id = ? AND config_hash = ?",
+        (run_id, config_hash),
+    )
     return None if row is None else row_to_trial(row)
 
 
@@ -150,7 +134,7 @@ def insert_trial(conn: sqlite3.Connection, row: TrialRecord) -> None:
 
 def select_trial(conn: sqlite3.Connection, trial_id: TrialId) -> TrialRecord:
     """Return the trial row, raising KeyError if absent."""
-    row = conn.execute("SELECT * FROM trials WHERE trial_id = ?", (trial_id,)).fetchone()
+    row = fetch_row(conn, "SELECT * FROM trials WHERE trial_id = ?", (trial_id,))
     if row is None:
         raise KeyError(trial_id)
     return row_to_trial(row)
@@ -203,21 +187,24 @@ def abandon_trial(
 
 def latest_committed_trial_generation(conn: sqlite3.Connection, run_id: str) -> Generation | None:
     """Return the highest committed_generation among COMMITTED trials, or None."""
-    row = conn.execute(
+    rows = fetch_rows(
+        conn,
         "SELECT MAX(committed_generation) FROM trials WHERE run_id = ? AND phase = ?",
         (run_id, TrialPhase.COMMITTED.value),
-    ).fetchone()
-    value = row_index_opt_int(row)
+    )
+    value = row_index_opt_int(rows[0])
     return Generation(value) if value is not None else None
 
 
 # --- attempts ---------------------------------------------------------------
 def next_attempt_number(conn: sqlite3.Connection, trial_id: TrialId) -> int:
     """Return the next 1-based attempt number for a trial."""
-    row = conn.execute(
-        "SELECT COALESCE(MAX(attempt_number), 0) FROM attempts WHERE trial_id = ?", (trial_id,)
-    ).fetchone()
-    return row_index_int(row) + 1
+    rows = fetch_rows(
+        conn,
+        "SELECT COALESCE(MAX(attempt_number), 0) FROM attempts WHERE trial_id = ?",
+        (trial_id,),
+    )
+    return row_index_int(rows[0]) + 1
 
 
 def insert_attempt(conn: sqlite3.Connection, row: AttemptRecord) -> None:
@@ -246,7 +233,7 @@ def insert_attempt(conn: sqlite3.Connection, row: AttemptRecord) -> None:
 
 def select_attempt(conn: sqlite3.Connection, attempt_id: AttemptId) -> AttemptRecord:
     """Return the attempt row, raising KeyError if absent."""
-    row = conn.execute("SELECT * FROM attempts WHERE attempt_id = ?", (attempt_id,)).fetchone()
+    row = fetch_row(conn, "SELECT * FROM attempts WHERE attempt_id = ?", (attempt_id,))
     if row is None:
         raise KeyError(attempt_id)
     return row_to_attempt(row)
@@ -289,14 +276,15 @@ def nonscore_attempt(
 
 def orphaned_in_progress_attempts(conn: sqlite3.Connection, run_id: str) -> list[AttemptRecord]:
     """Return every still-IN_PROGRESS attempt (orphans when reopening a run)."""
-    rows = conn.execute(
+    rows = fetch_rows(
+        conn,
         "SELECT * FROM attempts WHERE run_id = ? AND phase = ?",
         (run_id, AttemptPhase.IN_PROGRESS.value),
-    ).fetchall()
+    )
     return [row_to_attempt(r) for r in rows]
 
 
 def attempt_count(conn: sqlite3.Connection, trial_id: TrialId) -> int:
     """Return the total number of attempts (terminal + in-progress) for a trial."""
-    row = conn.execute("SELECT COUNT(*) FROM attempts WHERE trial_id = ?", (trial_id,)).fetchone()
-    return row_index_int(row)
+    rows = fetch_rows(conn, "SELECT COUNT(*) FROM attempts WHERE trial_id = ?", (trial_id,))
+    return row_index_int(rows[0])

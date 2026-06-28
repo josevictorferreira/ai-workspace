@@ -1,15 +1,17 @@
 """Normalized ledger dump for evidence and inspection (T4).
 
-Reads every committed row into a JSON-serializable mapping using the typed
-boundary accessors. The dump is read-only and never mutates the ledger; callers
-serialize it with ``json.dumps(..., sort_keys=True, indent=2)`` for byte-stable
-evidence.
+Reads every committed row into a JSON-serializable, precisely-typed mapping using
+the typed boundary accessors. The dump is read-only and never mutates the ledger;
+callers serialize it with ``json.dumps(..., sort_keys=True, indent=2)`` for
+byte-stable evidence. Rows are read through :func:`fetch_row`/:func:`fetch_rows`
+so the stdlib sqlite ``Any`` never reaches the accessors.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
+from llama_optimizer.ledger_io import fetch_row, fetch_rows
 from llama_optimizer.ledger_materialize import (
     row_float,
     row_int,
@@ -22,8 +24,89 @@ from llama_optimizer.ledger_materialize import (
 if TYPE_CHECKING:
     import sqlite3
 
+    from llama_optimizer.lifecycle import Generation
 
-def dump(conn: sqlite3.Connection, run_id: str) -> dict[str, object]:
+
+class TelemetrySample(TypedDict):
+    """One telemetry sample in a dump."""
+
+    vram_used_bytes: int
+    peak_vram_bytes: int
+    breached: bool
+    sampled_at: str
+
+
+class ArtifactEntry(TypedDict):
+    """One raw artifact reference in a dump."""
+
+    kind: str
+    relative_path: str
+    content_hash: str
+    recorded_at: str
+
+
+class AttemptDump(TypedDict):
+    """One attempt row in a dump (with nested metrics/telemetry/artifacts)."""
+
+    attempt_id: str
+    attempt_number: int
+    phase: str
+    outcome: str | None
+    process_group_pid: int
+    parent_attempt_id: str | None
+    started_at: str
+    ended_at: str | None
+    phase_deadline: str | None
+    termination_reason: str
+    metrics: dict[str, float]
+    telemetry: list[TelemetrySample]
+    artifacts: list[ArtifactEntry]
+
+
+class TrialDump(TypedDict):
+    """One trial row in a dump (with nested attempts)."""
+
+    trial_id: str
+    config_id: str
+    config_hash: str
+    candidate_id: str
+    backend: str
+    quant: str
+    phase: str
+    outcome: str | None
+    optuna_trial_number: int | None
+    committed_generation: Generation | None
+    retry_parent_attempt_id: str | None
+    termination_reason: str
+    created_at: str
+    updated_at: str
+    attempts: list[AttemptDump]
+
+
+class CheckpointDump(TypedDict):
+    """One checkpoint row in a dump."""
+
+    generation: int
+    status: str
+    relative_path: str
+    content_hash: str
+    optimizer_version: str
+    optuna_version: str
+    checkpoint_format: str
+    published_at: str
+
+
+class LedgerDump(TypedDict):
+    """The normalized, JSON-serializable ledger snapshot."""
+
+    run_id: str
+    schema_version: int
+    run: dict[str, object]
+    trials: list[TrialDump]
+    checkpoints: list[CheckpointDump]
+
+
+def dump(conn: sqlite3.Connection, run_id: str) -> LedgerDump:
     """Return a normalized, JSON-serializable snapshot of the whole ledger."""
     return {
         "run_id": run_id,
@@ -34,13 +117,13 @@ def dump(conn: sqlite3.Connection, run_id: str) -> dict[str, object]:
     }
 
 
-def _scalar(conn: sqlite3.Connection, sql: str) -> object:
-    row = conn.execute(sql).fetchone()
-    return row[0]
+def _scalar(conn: sqlite3.Connection, sql: str) -> int:
+    row = fetch_row(conn, sql)
+    return 0 if row is None else row_int(row, "schema_version")
 
 
 def _run(conn: sqlite3.Connection, run_id: str) -> dict[str, object]:
-    row = conn.execute("SELECT * FROM runs WHERE run_id = ?", (run_id,)).fetchone()
+    row = fetch_row(conn, "SELECT * FROM runs WHERE run_id = ?", (run_id,))
     if row is None:
         return {}
     return {
@@ -59,11 +142,11 @@ def _run(conn: sqlite3.Connection, run_id: str) -> dict[str, object]:
     }
 
 
-def _trials(conn: sqlite3.Connection, run_id: str) -> list[dict[str, object]]:
-    trials = conn.execute(
-        "SELECT * FROM trials WHERE run_id = ? ORDER BY created_at", (run_id,)
-    ).fetchall()
-    result: list[dict[str, object]] = []
+def _trials(conn: sqlite3.Connection, run_id: str) -> list[TrialDump]:
+    trials = fetch_rows(
+        conn, "SELECT * FROM trials WHERE run_id = ? ORDER BY created_at", (run_id,)
+    )
+    result: list[TrialDump] = []
     for t in trials:
         trial_id = row_str(t, "trial_id")
         result.append(
@@ -88,11 +171,11 @@ def _trials(conn: sqlite3.Connection, run_id: str) -> list[dict[str, object]]:
     return result
 
 
-def _attempts(conn: sqlite3.Connection, trial_id: str) -> list[dict[str, object]]:
-    rows = conn.execute(
-        "SELECT * FROM attempts WHERE trial_id = ? ORDER BY attempt_number", (trial_id,)
-    ).fetchall()
-    result: list[dict[str, object]] = []
+def _attempts(conn: sqlite3.Connection, trial_id: str) -> list[AttemptDump]:
+    rows = fetch_rows(
+        conn, "SELECT * FROM attempts WHERE trial_id = ? ORDER BY attempt_number", (trial_id,)
+    )
+    result: list[AttemptDump] = []
     for a in rows:
         attempt_id = row_str(a, "attempt_id")
         result.append(
@@ -116,18 +199,21 @@ def _attempts(conn: sqlite3.Connection, trial_id: str) -> list[dict[str, object]
 
 
 def _metrics(conn: sqlite3.Connection, attempt_id: str) -> dict[str, float]:
-    rows = conn.execute(
-        "SELECT name, value FROM metrics WHERE attempt_id = ? ORDER BY name", (attempt_id,)
-    ).fetchall()
+    rows = fetch_rows(
+        conn, "SELECT name, value FROM metrics WHERE attempt_id = ? ORDER BY name", (attempt_id,)
+    )
     return {row_str(r, "name"): row_float(r, "value") for r in rows}
 
 
-def _telemetry(conn: sqlite3.Connection, attempt_id: str) -> list[dict[str, object]]:
-    rows = conn.execute(
-        """SELECT vram_used_bytes, peak_vram_bytes, breached, sampled_at
-           FROM telemetry WHERE attempt_id = ? ORDER BY sampled_at""",
+def _telemetry(conn: sqlite3.Connection, attempt_id: str) -> list[TelemetrySample]:
+    rows = fetch_rows(
+        conn,
+        """
+        SELECT vram_used_bytes, peak_vram_bytes, breached, sampled_at
+        FROM telemetry WHERE attempt_id = ? ORDER BY sampled_at
+        """,
         (attempt_id,),
-    ).fetchall()
+    )
     return [
         {
             "vram_used_bytes": row_int(r, "vram_used_bytes"),
@@ -139,12 +225,15 @@ def _telemetry(conn: sqlite3.Connection, attempt_id: str) -> list[dict[str, obje
     ]
 
 
-def _artifacts(conn: sqlite3.Connection, attempt_id: str) -> list[dict[str, str]]:
-    rows = conn.execute(
-        """SELECT kind, relative_path, content_hash, recorded_at
-           FROM artifacts WHERE attempt_id = ? ORDER BY kind""",
+def _artifacts(conn: sqlite3.Connection, attempt_id: str) -> list[ArtifactEntry]:
+    rows = fetch_rows(
+        conn,
+        """
+        SELECT kind, relative_path, content_hash, recorded_at
+        FROM artifacts WHERE attempt_id = ? ORDER BY kind
+        """,
         (attempt_id,),
-    ).fetchall()
+    )
     return [
         {
             "kind": row_str(r, "kind"),
@@ -156,10 +245,10 @@ def _artifacts(conn: sqlite3.Connection, attempt_id: str) -> list[dict[str, str]
     ]
 
 
-def _checkpoints(conn: sqlite3.Connection, run_id: str) -> list[dict[str, object]]:
-    rows = conn.execute(
-        "SELECT * FROM checkpoints WHERE run_id = ? ORDER BY generation", (run_id,)
-    ).fetchall()
+def _checkpoints(conn: sqlite3.Connection, run_id: str) -> list[CheckpointDump]:
+    rows = fetch_rows(
+        conn, "SELECT * FROM checkpoints WHERE run_id = ? ORDER BY generation", (run_id,)
+    )
     return [
         {
             "generation": row_int(r, "generation"),

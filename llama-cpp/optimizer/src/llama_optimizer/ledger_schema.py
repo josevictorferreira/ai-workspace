@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from llama_optimizer.ledger_io import fetch_row
+from llama_optimizer.ledger_materialize import row_index_int
 from llama_optimizer.ledger_records import SchemaMismatchError, exec_write
 
 if TYPE_CHECKING:
@@ -129,13 +131,14 @@ def enable_foreign_keys(conn: sqlite3.Connection) -> None:
 
 def schema_version(conn: sqlite3.Connection) -> int | None:
     """Return the on-disk schema version from ``schema_meta``, or None if absent."""
-    exists = conn.execute(
-        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_meta'"
-    ).fetchone()
+    exists = fetch_row(
+        conn,
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_meta'",
+    )
     if exists is None:
         return None
-    row = conn.execute("SELECT schema_version FROM schema_meta LIMIT 1").fetchone()
-    return None if row is None else int(row[0])
+    row = fetch_row(conn, "SELECT schema_version FROM schema_meta LIMIT 1")
+    return None if row is None else row_index_int(row)
 
 
 def initialize_schema(conn: sqlite3.Connection, *, applied_at: str) -> None:

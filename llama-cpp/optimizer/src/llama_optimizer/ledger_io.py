@@ -2,7 +2,13 @@
 
 Exclusive run locking via ``flock`` (one writer), SQLite connection setup
 (Row factory + foreign keys + autocommit), an explicit transaction context,
-and the atomic file-publication protocol (temp + fsync + rename + dirfsync).
+the atomic file-publication protocol (temp + fsync + rename + dirfsync), and a
+typed read boundary (:class:`RowLike` + :func:`fetch_row`/:func:`fetch_rows`).
+
+The stdlib ``sqlite3`` typeshed types ``Cursor.fetchone``/``Row.__getitem__`` as
+returning ``Any``; first-party code never sees that ``Any`` because every read
+goes through the typed boundary here, which yields ``RowLike`` (cell access ->
+``object``) so callers narrow once at the parse boundary.
 """
 
 from __future__ import annotations
@@ -11,7 +17,7 @@ import fcntl
 import os
 import sqlite3
 from contextlib import contextmanager
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from llama_optimizer.ledger_records import RunLockHeldError, exec_write
 
@@ -38,6 +44,41 @@ def connect(db_path: Path) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     exec_write(conn, "PRAGMA foreign_keys = ON")
     return conn
+
+
+class RowLike(Protocol):
+    """Read interface over a sqlite row whose cell access yields ``object`` (not ``Any``).
+
+    ``sqlite3.Row`` is structurally compatible: its ``__getitem__ -> Any`` is
+    assignable to ``-> object``. First-party code reads cells through this
+    protocol so the value is ``object``, narrowed once via ``isinstance`` at the
+    materialize boundary.
+    """
+
+    def __getitem__(self, key: str | int, /) -> object:
+        """Read a cell by column name or positional index, yielding ``object``."""
+        ...
+
+
+def fetch_rows(
+    conn: sqlite3.Connection, sql: str, params: tuple[object, ...] = ()
+) -> list[RowLike]:
+    """Execute a read and return every row through the typed boundary.
+
+    ``fetchall`` is used (not ``fetchone``) because the sqlite stubs type the
+    latter's nullable return as the stdlib top type; a list result assigned to a
+    typed local keeps the declared type instead.
+    """
+    rows: list[RowLike] = conn.execute(sql, params).fetchall()
+    return rows
+
+
+def fetch_row(
+    conn: sqlite3.Connection, sql: str, params: tuple[object, ...] = ()
+) -> RowLike | None:
+    """Execute a read and return at most one row through the typed boundary."""
+    rows = fetch_rows(conn, sql, params)
+    return rows[0] if rows else None
 
 
 def acquire_lock(lock_path: Path) -> int:

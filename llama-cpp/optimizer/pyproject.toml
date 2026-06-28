@@ -47,6 +47,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
+"tests/test_ledger.py" = [
+    "S603",  # cross-process lock-contention test spawns a fully-trusted sys.executable child
+]
 "tests/**/*.py" = [
   "S101",   # asserts are the point of tests
   "D",      # docstrings not required on every test helper
@@ -61,5 +64,3 @@ venvPath = "."
 venv = ".venv"
 pythonVersion = "3.13"
 typeCheckingMode = "all"
-reportAny = "none"
-reportMissingTypeStubs = "none"
