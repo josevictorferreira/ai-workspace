@@ -1,5 +1,281 @@
-#!/usr/bin/env bash
-# Deterministic offline fake of `llama-bench` for the optimizer test suite.
-# Not the real binary. Later tasks consume it; T1 only ships the fixture.
-set -euo pipefail
-printf 'model,name,size,tg128,pp512\nfake-model,bench,0.000,42.50,250.00\n'
+#!/usr/bin/env python3
+"""Deterministic offline fake of ``llama-bench`` for the optimizer test suite.
+
+Not the real binary. Emits JSONL on stdout. Behaviour is controlled by a JSON
+file whose path is in the ``LLAMA_BENCH_FAKE_CONTROL`` environment variable so
+that parallel test runs do not collide.
+
+Control file schema::
+
+    {
+        "mode": "happy|malformed|wrong-identity|nan-throughput|negative-throughput"
+                "|missing-samples|unsupported|load-fail|transient",
+        "model": "model.gguf",          // echoed in JSONL identity (happy mode)
+        "build": 1234,
+        "n_gpu_layers": 99,
+        "n_batch": 2048,
+        "n_ubatch": 512,
+        "type_k": "f16",
+        "type_v": "f16",
+        "n_threads": 16,
+        "flash_attn": 1,
+        "use_mmap": 1,
+        "pp_avg_ts": 250.0,
+        "tg_avg_ts": 42.5,
+        "pp_samples_ts": [248.0, 250.0, 252.0],
+        "tg_samples_ts": [41.5, 42.5, 43.5],
+        "pp_samples_ns": [4000000, 4032000, 4000000],
+        "tg_samples_ns": [3000000, 3000000, 2990000],
+        "transient_fail_count": 1       // first N calls exit 1, then succeed
+    }
+
+Modes:
+  happy              – valid JSONL matching the requested identity.
+  malformed          – garbage text on stdout (not valid JSONL).
+  wrong-identity     – valid JSONL but with a mismatched model field.
+  nan-throughput     – valid JSONL but avg_ts is NaN.
+  negative-throughput– valid JSONL but avg_ts is negative.
+  missing-samples    – valid JSONL but samples_ns/samples_ts omitted.
+  unsupported        – exit 1 with "unsupported" on stderr.
+  load-fail          – exit 1 with model-load error message on stderr.
+  transient          – first N calls exit 1, then succeed.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+
+def _load_control() -> dict[str, object]:
+    """Load the JSON control file from the environment, or return defaults."""
+    path = os.environ.get("LLAMA_BENCH_FAKE_CONTROL")
+    if path and Path(path).exists():
+        with Path(path).open() as fh:
+            data: object = json.load(fh)
+            if isinstance(data, dict):
+                return data
+    return {"mode": "happy"}
+
+
+def _parse_int(argv: list[str], *flags: str, default: int = 0) -> int:
+    """Extract the value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            try:
+                return int(argv[i + 1])
+            except ValueError:
+                return default
+    return default
+
+
+def _parse_str(argv: list[str], *flags: str, default: str = "") -> str:
+    """Extract the string value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            return argv[i + 1]
+    return default
+
+
+def _parse_model(argv: list[str]) -> str:
+    """Extract the model filename from ``-m`` or the first positional arg."""
+    model = _parse_str(argv, "-m", "--model", default="")
+    if model:
+        return Path(model).name
+    return model or "fake-model.gguf"
+
+
+def _emit_line(
+    *,
+    model: str,
+    build: int,
+    n_gpu_layers: int,
+    n_batch: int,
+    n_ubatch: int,
+    type_k: str,
+    type_v: str,
+    n_threads: int,
+    flash_attn: int,
+    use_mmap: int,
+    name: str,
+    n_prompt: int,
+    n_gen: int,
+    n_depth: int,
+    avg_ts: float,
+    samples_ns: list[int],
+    samples_ts: list[float],
+) -> None:
+    """Print one JSONL line matching the llama-bench machine output schema."""
+    avg_ns = sum(samples_ns) // len(samples_ns) if samples_ns else 0
+    stddev_ns = 0
+    stddev_ts = 0.0
+    payload: dict[str, object] = {
+        "build": build,
+        "model": model,
+        "model_filename": model,
+        "model_type": "test-model",
+        "model_size": 5629108704,
+        "model_n_params": 9000000000,
+        "model_bits_per_weight": 5.0,
+        "name": name,
+        "n_gpu_layers": n_gpu_layers,
+        "main_gpu": 0,
+        "no_kv_offload": False,
+        "flash_attn": flash_attn,
+        "n_threads": n_threads,
+        "cpu_mask": "0x0",
+        "cpu_strict": False,
+        "poll": 50,
+        "type_k": type_k,
+        "type_v": type_v,
+        "n_batch": n_batch,
+        "n_ubatch": n_ubatch,
+        "split_mode": "layer",
+        "tensor_split": "0",
+        "embeddings": False,
+        "no_op_offload": False,
+        "no_host": False,
+        "use_mmap": bool(use_mmap),
+        "use_direct_io": False,
+        "n_prompt": n_prompt,
+        "n_gen": n_gen,
+        "n_depth": n_depth,
+        "test_time": "2025-01-01T00:00:00Z",
+        "avg_ns": avg_ns,
+        "stddev_ns": stddev_ns,
+        "avg_ts": avg_ts,
+        "stddev_ts": stddev_ts,
+        "samples_ns": samples_ns,
+        "samples_ts": samples_ts,
+    }
+    sys.stdout.write(json.dumps(payload))
+    sys.stdout.write("\n")
+    sys.stdout.flush()
+
+
+def main(argv: list[str]) -> int:
+    """Run the fake and return the exit code."""
+    ctrl = _load_control()
+    mode = ctrl.get("mode", "happy")
+    assert isinstance(mode, str)
+
+    if mode == "unsupported":
+        sys.stderr.write("error: unsupported combination of parameters\n")
+        return 1
+
+    if mode == "load-fail":
+        sys.stderr.write("error: failed to load model\n")
+        return 1
+
+    if mode == "transient":
+        state_path = os.environ.get("LLAMA_BENCH_FAKE_STATE", "")
+        fail_count = int(ctrl.get("transient_fail_count", 1))
+        if state_path:
+            calls = 0
+            sp = Path(state_path)
+            if sp.exists():
+                calls = int(sp.read_text().strip() or "0")
+            calls += 1
+            sp.write_text(str(calls))
+            if calls <= fail_count:
+                sys.stderr.write("error: transient launch failure\n")
+                return 1
+        else:
+            sys.stderr.write("error: transient launch failure\n")
+            return 1
+
+    # Extract requested identity from argv.
+    model = _parse_model(argv)
+    n_depth = _parse_int(argv, "-d", "--n-depth", default=0)
+
+    # Override with control-file values (for wrong-identity tests).
+    ctrl_model = ctrl.get("model")
+    if isinstance(ctrl_model, str) and ctrl_model and mode != "wrong-identity":
+        model = ctrl_model
+
+    wrong_model = "wrong-model.gguf" if mode == "wrong-identity" else model
+    build = int(ctrl.get("build", 1234))
+    ngl = int(ctrl.get("n_gpu_layers", 99))
+    n_batch = int(ctrl.get("n_batch", 2048))
+    n_ubatch = int(ctrl.get("n_ubatch", 512))
+    type_k = str(ctrl.get("type_k", "f16"))
+    type_v = str(ctrl.get("type_v", "f16"))
+    n_threads = int(ctrl.get("n_threads", 16))
+    flash_attn = int(ctrl.get("flash_attn", 1))
+    use_mmap = int(ctrl.get("use_mmap", 1))
+
+    pp_avg = float(ctrl.get("pp_avg_ts", 250.0))
+    tg_avg = float(ctrl.get("tg_avg_ts", 42.5))
+    pp_ts = ctrl.get("pp_samples_ts", [248.0, 250.0, 252.0])
+    tg_ts = ctrl.get("tg_samples_ts", [41.5, 42.5, 43.5])
+    pp_ns = ctrl.get("pp_samples_ns", [4000000, 4032000, 4000000])
+    tg_ns = ctrl.get("tg_samples_ns", [3000000, 3000000, 2990000])
+    pp_ts_list = [float(v) for v in pp_ts] if isinstance(pp_ts, list) else [250.0]
+    tg_ts_list = [float(v) for v in tg_ts] if isinstance(tg_ts, list) else [42.5]
+    pp_ns_list = [int(v) for v in pp_ns] if isinstance(pp_ns, list) else [4000000]
+    tg_ns_list = [int(v) for v in tg_ns] if isinstance(tg_ns, list) else [3000000]
+
+    if mode == "nan-throughput":
+        pp_avg = float("nan")
+        tg_avg = float("nan")
+    if mode == "negative-throughput":
+        pp_avg = -1.0
+        tg_avg = -1.0
+
+    include_samples = mode not in {"missing-samples"}
+    pp_sns = pp_ns_list if include_samples else []
+    pp_sts = pp_ts_list if include_samples else []
+    tg_sns = tg_ns_list if include_samples else []
+    tg_sts = tg_ts_list if include_samples else []
+
+    if mode == "malformed":
+        sys.stdout.write("this is not json\n")
+        sys.stdout.flush()
+        return 0
+
+    # Emit one line per workload (pp512, tg128).
+    _emit_line(
+        model=wrong_model,
+        build=build,
+        n_gpu_layers=ngl,
+        n_batch=n_batch,
+        n_ubatch=n_ubatch,
+        type_k=type_k,
+        type_v=type_v,
+        n_threads=n_threads,
+        flash_attn=flash_attn,
+        use_mmap=use_mmap,
+        name="pp512",
+        n_prompt=512,
+        n_gen=0,
+        n_depth=n_depth,
+        avg_ts=pp_avg,
+        samples_ns=pp_sns,
+        samples_ts=pp_sts,
+    )
+    _emit_line(
+        model=wrong_model,
+        build=build,
+        n_gpu_layers=ngl,
+        n_batch=n_batch,
+        n_ubatch=n_ubatch,
+        type_k=type_k,
+        type_v=type_v,
+        n_threads=n_threads,
+        flash_attn=flash_attn,
+        use_mmap=use_mmap,
+        name="tg128",
+        n_prompt=0,
+        n_gen=128,
+        n_depth=n_depth,
+        avg_ts=tg_avg,
+        samples_ns=tg_sns,
+        samples_ts=tg_sts,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

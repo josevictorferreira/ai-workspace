@@ -168,6 +168,16 @@ def native_combination_count(space: SearchSpace) -> int:
     return total
 
 
+def dimension_values(dimension: Dimension) -> tuple[DiscreteValue, ...]:
+    """Return every concrete value of a bounded range or discrete dimension.
+
+    Used by T6 native screening to build llama-bench comma-joined sweep arguments.
+    """
+    if isinstance(dimension, BoundedRange):
+        return tuple(dimension.lo + i * dimension.step for i in range(dimension.cardinality()))
+    return dimension.values
+
+
 def validate_applicability(space: SearchSpace, config: Mapping[str, object]) -> list[str]:
     """Return applicability violations for ``config``, raising on the ubatch invariant.
 
