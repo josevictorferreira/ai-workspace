@@ -44,11 +44,22 @@ ignore = [
   "D104",  # missing-docstring-in-public-package: __init__ is intentionally minimal
   "D203",  # conflicts with D211 (no-blank-line-before-class)
   "D107",  # __init__ is documented via the class docstring
+  "ISC003", # conflicts with basedpyright reportImplicitStringConcatenation (prefer explicit +)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/test_ledger.py" = [
     "S603",  # cross-process lock-contention test spawns a fully-trusted sys.executable child
+]
+"tests/test_supervisor.py" = [
+    "S603",  # supervisor tests spawn fully-trusted sys.executable children in dedicated process groups
+]
+
+"src/llama_optimizer/telemetry.py" = [
+  "S603",  # trusted v1 rocm-smi subprocess for the hard channel; binary path is caller-validated
+]
+"src/llama_optimizer/supervisor.py" = [
+  "S603",  # trial children are trusted optimizer-constructed commands, exec'd in a dedicated session
 ]
 "tests/**/*.py" = [
   "S101",   # asserts are the point of tests

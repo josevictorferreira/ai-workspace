@@ -1,5 +1,68 @@
 #!/usr/bin/env bash
 # Deterministic offline fake of `rocm-smi` for the optimizer test suite.
-# Not the real binary. Later tasks consume it; T1 only ships the fixture.
+# Not the real binary. Driven by ROCM_SMI_MODE (and a few ROCM_SMI_* knobs).
+#
+# Hard channel shape (verified locally):
+#   rocm-smi --showmeminfo vram --json
+#   -> {"card0":{"VRAM Total Memory (B)":"17163091968","VRAM Total Used Memory (B)":"807677952"}}
+# Values are string-encoded bytes; the device key is "card0".
+#
+# Diagnostics (best-effort, never a hard gate) come from a non-json invocation.
 set -euo pipefail
-printf 'GPU0 deterministic fake: VRAM=8192MB USE=0%%\n'
+
+mode="${ROCM_SMI_MODE:-auto}"
+total="${ROCM_SMI_TOTAL_BYTES:-17163091968}"
+
+emit_hard() {
+    local used="${1:-${ROCM_SMI_USED_BYTES:-807677952}}"
+    printf '{"card0":{"VRAM Total Memory (B)":"%s","VRAM Total Used Memory (B)":"%s"}}\n' \
+        "$total" "$used"
+}
+
+emit_diag() {
+    printf '================================= ROCm System Interface =================================\n'
+    printf 'GPU[0]              : temperature: %s\n' "${ROCM_SMI_TEMP:-46.0c}"
+    printf 'GPU[0]              :     average power: %s\n' "${ROCM_SMI_POWER:-118.0W}"
+    printf 'GPU[0]              : GPU use: %s\n' "${ROCM_SMI_GPU_USE:-6%}"
+    printf 'GPU[0]              : GPU-CLK: %s\n' "${ROCM_SMI_SCLK:-2528MHz}"
+    printf 'GPU[0]              : PCIe (TX/RX): %s / %s\n' \
+        "${ROCM_SMI_PCIE_TX:-0.23GB/s}" "${ROCM_SMI_PCIE_RX:-1.04GB/s}"
+    printf '=========================================================================================\n'
+}
+
+case "$mode" in
+    auto)
+        # Decide by args: --json -> hard channel, otherwise diagnostics table.
+        if [[ "$*" == *"--json"* ]]; then
+            emit_hard
+        else
+            emit_diag
+        fi
+        ;;
+    valid) emit_hard ;;
+    exact) emit_hard "13958643712" ;;
+    breach) emit_hard "${ROCM_SMI_USED_BYTES:-13958643713}" ;;
+    malformed) printf '{"card0": this is not json\n' ;;
+    empty) : ;;
+    missing_field) printf '{"card0":{"VRAM Total Memory (B)":"%s"}}\n' "$total" ;;
+    nonstring) printf '{"card0":{"VRAM Total Memory (B)":%s,"VRAM Total Used Memory (B)":807677952}}\n' "$total" ;;
+    no_card) printf '{"gpu":{}}\n' ;;
+    extra_device)
+        printf '{"card0":{"VRAM Total Memory (B)":"%s","VRAM Total Used Memory (B)":"100"},"card1":{"VRAM Total Memory (B)":"%s","VRAM Total Used Memory (B)":"200"}}\n' "$total" "$total"
+        ;;
+    negative) printf '{"card0":{"VRAM Total Memory (B)":"%s","VRAM Total Used Memory (B)":"-100"}}\n' "$total" ;;
+    stale)
+        sleep "${ROCM_SMI_STALE_SECONDS:-2}"
+        emit_hard
+        ;;
+    hang)
+        # Long enough to exceed any bounded deadline/grace; supervisor will kill the group.
+        sleep 120
+        ;;
+    diagnostics) emit_diag ;;
+    diag_malformed) printf 'totally not a rocm-smi table\n' ;;
+    *)
+        printf 'rocm-smi: unknown fake mode %q\n' "$mode" >&2
+        exit 2
+        ;;
+esac
