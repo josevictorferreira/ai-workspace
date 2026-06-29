@@ -1,0 +1,5 @@
+{"id":"coding-001","category":"coding","prompt":"Write a Python function that reverses a linked list in place.","expected_keywords":["prev","next","current"],"language":"python"}
+{"id":"coding-002","category":"coding","prompt":"Implement binary search on a sorted array. Return the index or -1.","expected_keywords":["mid","left","right"],"language":"python"}
+{"id":"coding-003","category":"coding","prompt":"Write a function to detect a cycle in a directed graph using DFS.","expected_keywords":["visited","recursion_stack","neighbor"],"language":"python"}
+{"id":"coding-004","category":"coding","prompt":"Implement a thread-safe bounded queue using a condition variable.","expected_keywords":["lock","not_full","not_empty"],"language":"python"}
+{"id":"coding-005","category":"coding","prompt":"Write a SQL query to find the second-highest salary in an employees table.","expected_keywords":["SELECT","MAX","WHERE"],"language":"sql"}

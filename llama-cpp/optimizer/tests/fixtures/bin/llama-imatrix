@@ -1,5 +1,82 @@
-#!/usr/bin/env bash
-# Deterministic offline fake of `llama-imatrix` for the optimizer test suite.
-# Not the real binary. Later tasks consume it; T1 only ships the fixture.
-set -euo pipefail
-echo 'llama-imatrix deterministic fake: wrote imatrix.dat (0 bytes)'
+#!/usr/bin/env python3
+"""Deterministic offline fake of ``llama-imatrix`` for the optimizer test suite.
+
+Not the real binary. Writes a deterministic imatrix file. Behaviour is
+controlled by a JSON file whose path is in the ``LLAMA_IMATRIX_FAKE_CONTROL``
+environment variable so that parallel test runs do not collide.
+
+Control file schema::
+
+    {
+        "mode": "happy|malformed|load-fail",
+        "model": "model.gguf"
+    }
+
+Modes:
+  happy     – writes a deterministic imatrix.dat file at the -o path.
+  malformed – exit 0 but writes no file.
+  load-fail – exit 1 with model-load error on stderr.
+
+This fake NEVER emits or accepts ``--allow-requantize``. The optimizer
+pipeline explicitly prohibits low-bit requantization.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+
+def _load_control() -> dict[str, object]:
+    """Load the JSON control file from the environment, or return defaults."""
+    path = os.environ.get("LLAMA_IMATRIX_FAKE_CONTROL")
+    if path and Path(path).exists():
+        with Path(path).open() as fh:
+            data: object = json.load(fh)
+            if isinstance(data, dict):
+                return data
+    return {"mode": "happy"}
+
+
+def _parse_str(argv: list[str], *flags: str, default: str = "") -> str:
+    """Extract the string value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            return argv[i + 1]
+    return default
+
+
+def main(argv: list[str]) -> int:
+    """Run the fake imatrix and return the exit code."""
+    ctrl = _load_control()
+    mode = ctrl.get("mode", "happy")
+    assert isinstance(mode, str)
+
+    if mode == "load-fail":
+        sys.stderr.write("error: failed to load model for imatrix\n")
+        return 1
+
+    # Reject --allow-requantize if it ever appears in argv.
+    if "--allow-requantize" in argv:
+        sys.stderr.write("error: --allow-requantize is prohibited\n")
+        return 1
+
+    output = _parse_str(argv, "-o", "--output", default="imatrix.dat")
+
+    if mode == "malformed":
+        sys.stdout.write("imatrix: no file written\n")
+        sys.stdout.flush()
+        return 0
+
+    # Write a deterministic fake imatrix file.
+    Path(output).parent.mkdir(parents=True, exist_ok=True)
+    Path(output).write_bytes(b"FAKE_IMATRIX_v1\n")
+    sys.stdout.write(f"imatrix: wrote {output}\n")
+    sys.stdout.flush()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

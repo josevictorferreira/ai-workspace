@@ -61,6 +61,14 @@ ignore = [
 "src/llama_optimizer/supervisor.py" = [
   "S603",  # trial children are trusted optimizer-constructed commands, exec'd in a dedicated session
 ]
+"src/llama_optimizer/quality_gates.py" = [
+  "S603",  # perplexity subprocess uses a caller-validated binary path
+]
+"tests/test_quality.py" = [
+  "S603",  # fake-binary subprocess tests spawn fully-trusted fixture executables
+  "S108",  # test helper default output_dir is an ephemeral path used only during tests
+  "ARG002", # some test methods accept tmp_path for consistency even when unused
+]
 "tests/**/*.py" = [
   "S101",   # asserts are the point of tests
   "D",      # docstrings not required on every test helper

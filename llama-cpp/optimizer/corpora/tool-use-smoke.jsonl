@@ -1,0 +1,5 @@
+{"id":"tool-001","category":"tool-use","prompt":"Search for recent papers on quantization-aware training.","expected_tool":"search","expected_args":{"query":"quantization-aware training"}}
+{"id":"tool-002","category":"tool-use","prompt":"Read the file at /etc/hosts and show its contents.","expected_tool":"read_file","expected_args":{"path":"/etc/hosts"}}
+{"id":"tool-003","category":"tool-use","prompt":"List all running processes sorted by memory usage.","expected_tool":"run_command","expected_args":{"command":"ps aux --sort=-%mem"}}
+{"id":"tool-004","category":"tool-use","prompt":"Create a new Git branch named feature-auth and switch to it.","expected_tool":"run_command","expected_args":{"command":"git checkout -b feature-auth"}}
+{"id":"tool-005","category":"tool-use","prompt":"Calculate the SHA-256 hash of the file config.toml.","expected_tool":"run_command","expected_args":{"command":"sha256sum config.toml"}}

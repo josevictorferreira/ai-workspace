@@ -1,5 +1,86 @@
-#!/usr/bin/env bash
-# Deterministic offline fake of `llama-perplexity` for the optimizer test suite.
-# Not the real binary. Later tasks consume it; T1 only ships the fixture.
-set -euo pipefail
-printf 'perplexity deterministic fake: final=%s\n' '7.2500'
+#!/usr/bin/env python3
+"""Deterministic offline fake of ``llama-perplexity`` for the optimizer test suite.
+
+Not the real binary. Emits perplexity text on stdout. Behaviour is controlled by
+a JSON file whose path is in the ``LLAMA_PERPLEXITY_FAKE_CONTROL`` environment
+variable so that parallel test runs do not collide.
+
+Control file schema::
+
+    {
+        "mode": "happy|malformed|load-fail",
+        "ppl": 7.2500,
+        "model": "model.gguf"
+    }
+
+Modes:
+  happy     – valid perplexity output parseable by the quality module.
+  malformed – garbage text on stdout (no parseable perplexity).
+  load-fail – exit 1 with model-load error on stderr.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+
+def _load_control() -> dict[str, object]:
+    """Load the JSON control file from the environment, or return defaults."""
+    path = os.environ.get("LLAMA_PERPLEXITY_FAKE_CONTROL")
+    if path and Path(path).exists():
+        with Path(path).open() as fh:
+            data: object = json.load(fh)
+            if isinstance(data, dict):
+                return data
+    return {"mode": "happy", "ppl": 7.25}
+
+
+def _parse_str(argv: list[str], *flags: str, default: str = "") -> str:
+    """Extract the string value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            return argv[i + 1]
+    return default
+
+
+def _parse_int(argv: list[str], *flags: str, default: int = 0) -> int:
+    """Extract the integer value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            try:
+                return int(argv[i + 1])
+            except ValueError:
+                return default
+    return default
+
+
+def main(argv: list[str]) -> int:
+    """Run the fake perplexity and return the exit code."""
+    ctrl = _load_control()
+    mode = ctrl.get("mode", "happy")
+    assert isinstance(mode, str)
+
+    if mode == "load-fail":
+        sys.stderr.write("error: failed to load model\n")
+        return 1
+
+    ppl = float(ctrl.get("ppl", 7.25))
+    model = _parse_str(argv, "-m", "--model", default="fake-model.gguf")
+    ctx = _parse_int(argv, "-c", "--ctx-size", default=0)
+
+    if mode == "malformed":
+        sys.stdout.write("this is not perplexity output\n")
+        sys.stdout.flush()
+        return 0
+
+    sys.stdout.write(f"perplexity: model={Path(model).name} ctx={ctx}\n")
+    sys.stdout.write(f"perplexity: final = {ppl:.4f}\n")
+    sys.stdout.flush()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
