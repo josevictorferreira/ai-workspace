@@ -1,5 +1,171 @@
-#!/usr/bin/env bash
-# Deterministic offline fake of `llama-server` for the optimizer test suite.
-# Not the real binary. Later tasks consume it; T1 only ships the fixture.
-set -euo pipefail
-echo 'llama-server deterministic fake: listening on 127.0.0.1:0'
+#!/usr/bin/env python3
+"""Deterministic offline fake of ``llama-server`` for the optimizer test suite.
+
+Not the real binary. Simulates a llama-server lifecycle (readiness, request
+workloads, metrics/slots, raw responses) and self-terminates so the T5
+:class:`ProcessSupervisor` can wrap it exactly like llama-bench. Behaviour is
+controlled by a JSON file whose path is in the
+``LLAMA_SERVER_FAKE_CONTROL`` environment variable so parallel runs do not
+collide.
+
+Control file schema::
+
+    {
+        "mode": "happy|crash|hang-readiness|request-error|quality-regress"
+               "|malformed-metrics|sigterm-ignore",
+        "output_dir": "/path/to/artifacts",
+        "ready_after_ms": 10,
+        "slots": 2,
+        "model": "model.gguf",
+        "backend": "rocm",
+        "prompt_throughput": 250.0,
+        "generation_throughput": 42.5,
+        "ttft_ms": [120.0, 130.0, 140.0],
+        "request_latency_ms": [500.0, 600.0, 700.0],
+        "request_count": 6,
+        "response_text": "def solve():\\n    return 42",
+        "quality_pass": true
+    }
+
+Artifacts written to ``output_dir``:
+  readiness.json  - ``{"ready": true, "ready_at_ms": <int>, "slots": <int>}``
+  metrics.json    - throughput/TTFT/latency/slots/errors
+  responses.jsonl - one line per request with raw text and timing
+
+Modes:
+  happy            - full lifecycle, quality-passing responses, exit 0.
+  crash            - exit 1 with model-load error (startup/load failure).
+  hang-readiness   - never write readiness; sleep until killed (deadline).
+  request-error    - ready, but metrics report request errors.
+  quality-regress  - ready, but responses fail the quality check.
+  malformed-metrics- ready, but metrics.json is garbage text.
+  sigterm-ignore   - ready then ignore SIGTERM until SIGKILL.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import signal
+import sys
+import time
+from pathlib import Path
+
+
+def _load_control() -> dict[str, object]:
+    """Load the JSON control file from the environment, or return defaults."""
+    path = os.environ.get("LLAMA_SERVER_FAKE_CONTROL")
+    if path and Path(path).exists():
+        with Path(path).open() as fh:
+            data: object = json.load(fh)
+            if isinstance(data, dict):
+                return data
+    return {"mode": "happy"}
+
+
+def _parse_str(argv: list[str], *flags: str, default: str = "") -> str:
+    """Extract the string value following any of ``flags`` in ``argv``."""
+    for i, arg in enumerate(argv):
+        if arg in flags and i + 1 < len(argv):
+            return argv[i + 1]
+    return default
+
+
+def _parse_int(argv: list[str], *flags: str, default: int = 0) -> int:
+    """Extract the integer value following any of ``flags`` in ``argv``."""
+    val = _parse_str(argv, *flags, default=str(default))
+    try:
+        return int(val)
+    except ValueError:
+        return default
+
+
+def main(argv: list[str]) -> int:
+    """Run the fake server lifecycle and return the exit code."""
+    ctrl = _load_control()
+    mode = ctrl.get("mode", "happy")
+    assert isinstance(mode, str)
+
+    output_dir = Path(str(ctrl.get("output_dir", ".")))
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if mode == "crash":
+        sys.stderr.write("error: failed to load model\n")
+        return 1
+
+    ready_after_ms = int(ctrl.get("ready_after_ms", 10))
+    slots = int(ctrl.get("slots", 2))
+
+    if mode == "hang-readiness":
+        time.sleep(300)
+        return 0
+
+    # --- Readiness marker -------------------------------------------------
+    time.sleep(ready_after_ms / 1000.0)
+    readiness = {"ready": True, "ready_at_ms": ready_after_ms, "slots": slots}
+    _ = (output_dir / "readiness.json").write_text(json.dumps(readiness))
+
+    model = _parse_str(argv, "-m", "--model", default="fake-model.gguf")
+    backend = str(ctrl.get("backend", "rocm"))
+
+    if mode == "sigterm-ignore":
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        time.sleep(300)
+        return 0
+
+    # --- Metrics + responses ----------------------------------------------
+    prompt_ts = float(ctrl.get("prompt_throughput", 250.0))
+    gen_ts = float(ctrl.get("generation_throughput", 42.5))
+    ttft = ctrl.get("ttft_ms", [120.0, 130.0, 140.0])
+    lat = ctrl.get("request_latency_ms", [500.0, 600.0, 700.0])
+    ttft_list = [float(v) for v in ttft] if isinstance(ttft, list) else [120.0]
+    lat_list = [float(v) for v in lat] if isinstance(lat, list) else [500.0]
+
+    errors = 0
+    if mode == "request-error":
+        errors = int(ctrl.get("request_count", 6))
+
+    response_text = str(ctrl.get("response_text", "def solve():\n    return 42"))
+    quality_pass = bool(ctrl.get("quality_pass", True))
+    if mode == "quality-regress":
+        quality_pass = False
+        response_text = "ERROR: malformed response"
+
+    metrics = {
+        "model": Path(model).name,
+        "backend": backend,
+        "slots": slots,
+        "prompt_throughput": prompt_ts,
+        "generation_throughput": gen_ts,
+        "ttft_ms": ttft_list,
+        "request_latency_ms": lat_list,
+        "errors": errors,
+        "quality_pass": quality_pass,
+    }
+
+    if mode == "malformed-metrics":
+        _ = (output_dir / "metrics.json").write_text("this is { not json")
+    else:
+        _ = (output_dir / "metrics.json").write_text(json.dumps(metrics))
+
+    request_count = int(ctrl.get("request_count", len(ttft_list)))
+    lines: list[str] = []
+    for i in range(request_count):
+        idx = i % len(lat_list)
+        lines.append(
+            json.dumps(
+                {
+                    "index": i,
+                    "response": response_text,
+                    "ttft_ms": ttft_list[idx % len(ttft_list)],
+                    "latency_ms": lat_list[idx],
+                    "quality_pass": quality_pass,
+                }
+            )
+        )
+    _ = (output_dir / "responses.jsonl").write_text("\n".join(lines) + "\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
