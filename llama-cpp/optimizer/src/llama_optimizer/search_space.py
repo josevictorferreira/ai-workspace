@@ -11,12 +11,15 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import TypeIs
+from typing import TYPE_CHECKING, TypeIs
 
 from llama_optimizer.models import (
     DimensionId,
     MaxNativeCombinations,
 )
+
+if TYPE_CHECKING:
+    import optuna
 
 # A discrete value is one of a known primitive set (never an untyped ``object``).
 DiscreteValue = bool | int | str
@@ -176,6 +179,22 @@ def dimension_values(dimension: Dimension) -> tuple[DiscreteValue, ...]:
     if isinstance(dimension, BoundedRange):
         return tuple(dimension.lo + i * dimension.step for i in range(dimension.cardinality()))
     return dimension.values
+
+
+def suggest_dimension(trial: optuna.Trial, dimension: Dimension) -> DiscreteValue:
+    """Suggest a value for the dimension on the given Optuna trial."""
+    if isinstance(dimension, BoundedRange):
+        return trial.suggest_int(
+            str(dimension.dimension_id),
+            dimension.lo,
+            dimension.hi,
+            step=dimension.step,
+        )
+    res = trial.suggest_categorical(str(dimension.dimension_id), dimension.values)
+    if isinstance(res, bool | int | str):
+        return res
+    msg = f"Unexpected categorical value: {res}"
+    raise ValueError(msg)
 
 
 def validate_applicability(space: SearchSpace, config: Mapping[str, object]) -> list[str]:

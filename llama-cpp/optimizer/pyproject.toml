@@ -45,6 +45,8 @@ ignore = [
   "D203",  # conflicts with D211 (no-blank-line-before-class)
   "D107",  # __init__ is documented via the class docstring
   "ISC003", # conflicts with basedpyright reportImplicitStringConcatenation (prefer explicit +)
+  "S301",   # Optuna checkpoints are serialized using pickle
+
 ]
 
 [tool.ruff.lint.per-file-ignores]
