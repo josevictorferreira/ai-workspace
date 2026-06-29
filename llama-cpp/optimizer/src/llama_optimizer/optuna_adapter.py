@@ -222,10 +222,7 @@ class OptunaAdapter:
         study_dirs = len(study_val.directions)
         expected_dirs = len(inst.directions)
         if study_dirs != expected_dirs:
-            msg = (
-                f"Directions count mismatch: study={study_dirs} "
-                + f"expected={expected_dirs}"
-            )
+            msg = f"Directions count mismatch: study={study_dirs} " + f"expected={expected_dirs}"
             raise OptunaResumeError(msg)
         for d1, d2 in zip(study_val.directions, inst.directions, strict=True):
             if d1 != d2:

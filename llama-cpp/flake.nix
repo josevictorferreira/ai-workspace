@@ -1429,9 +1429,10 @@
             pkgs.uv
           ];
           shellHook = ''
-            echo "--- Llama-cpp Optimizer (Python 3.13) Development Environment ---"
-            echo "Run the optimizer CLI: uv run --project optimizer llama-cpp-opt --help"
-            echo "Run the test suite: uv run --project optimizer --frozen pytest optimizer/tests"
+            export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+            echo "--- Llama-cpp Optimizer (Python 3.13 Development Environment) ---"
+            echo "Run optimizer CLI: uv run --project optimizer llama-cpp-opt --help"
+            echo "Run test suite: uv run --project optimizer --frozen pytest optimizer/tests"
           '';
         };
       }
