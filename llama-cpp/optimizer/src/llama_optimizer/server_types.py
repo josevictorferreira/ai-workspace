@@ -31,6 +31,16 @@ class RequestKind(StrEnum):
     LATENCY = "latency"
 
 
+class EligibilityStatus(StrEnum):
+    """Runtime eligibility gate state for a finalist before launch."""
+
+    INFEASIBLE = "infeasible"
+    UNSCREENED = "unscreened"
+    SCREENED_REJECT = "screened-reject"
+    QUALITY_FAIL = "quality-fail"
+    ELIGIBLE = "eligible"
+
+
 @dataclass(frozen=True, slots=True)
 class RequestSpec:
     """One versioned workload request specification."""
@@ -139,6 +149,7 @@ class FinalistEntry:
     finalist_id: str
     identity: ServerIdentity
     trial_id: TrialId
+    eligibility: EligibilityStatus = EligibilityStatus.UNSCREENED
 
 
 @dataclass(frozen=True, slots=True)
@@ -169,11 +180,28 @@ class FinalistResult:
     raw_readiness: str
     raw_metrics: str
     raw_responses: str
+    raw_dispatch: str
     supervisor_result: SupervisorResult
+    lifecycle: LifecycleRecord
     trial_id: TrialId
     attempt_id: AttemptId
     metrics_map: Mapping[str, float] = field(default_factory=dict[str, float])
     reason: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class LifecycleRecord:
+    """Typed lifecycle trace of one supervised finalist run."""
+
+    launched: bool
+    ready: bool
+    dispatched: bool
+    port: int | None
+    request_count: int
+    delay_applied: bool
+    cooldown_applied: bool
+    terminated: bool
+    failure: str
 
 
 # --- Typed boundary errors -------------------------------------------------

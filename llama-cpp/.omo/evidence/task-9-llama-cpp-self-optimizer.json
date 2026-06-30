@@ -1,0 +1,23 @@
+{
+  "task": "T9 - Validate exact-32K llama-server finalists with drift-aware scheduling",
+  "status": "passed",
+  "happy_path": {
+    "finalists": 3,
+    "workloads": ["warmup", "concurrency-one", "configured-parallel"],
+    "deterministic_order": true,
+    "metrics_captured": ["prompt_throughput", "generation_throughput", "ttft_p95", "request_latency_p95", "errors", "slots", "vram_telemetry"],
+    "raw_artifacts_linked": true,
+    "quality_pass": true,
+    "clean_shutdown": true,
+    "context_size": 32768
+  },
+  "tests": {
+    "t9_files_passed": 41,
+    "full_suite_passed": 368
+  },
+  "gates": {
+    "ruff_check": "pass",
+    "ruff_format": "pass",
+    "basedpyright": "pass"
+  }
+}

@@ -3,16 +3,19 @@
 Parses readiness.json, metrics.json, and responses.jsonl written by
 llama-server. Every field is typed at the boundary; missing, malformed, or
 identity-mismatched data fails closed as a typed :class:`ServerError`.
+
+JSON is parsed via :mod:`server_json` which validates standards-compliant
+JSON first (rejecting Python-only syntax) then extracts typed objects.
 """
 
 from __future__ import annotations
 
-import json
 import math
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypeIs
 
+from llama_optimizer.server_json import loads_mapping
 from llama_optimizer.server_types import (
     MetricsParseError,
     ReadinessTimeoutError,
@@ -44,20 +47,9 @@ class ParsedResponse:
     quality_pass: bool
 
 
-def _is_mapping(value: object) -> TypeIs[Mapping[str, object]]:
-    """Narrow ``object`` to a string-keyed mapping."""
-    return isinstance(value, Mapping)
-
-
-def _loads_mapping(raw: str, *, error: type) -> Mapping[str, object]:
-    """Parse JSON into a string-keyed mapping or raise the given typed error."""
-    try:
-        parsed: object = json.loads(raw)  # pyright: ignore[reportAny]
-    except json.JSONDecodeError as exc:
-        raise error(reason=f"malformed JSON: {exc}") from exc
-    if not _is_mapping(parsed):
-        raise error(reason="expected a JSON object")
-    return parsed
+def _is_object_sequence(value: object) -> TypeIs[Sequence[object]]:
+    """Narrow ``object`` to a sequence of objects (element types checked per-item)."""
+    return isinstance(value, Sequence) and not isinstance(value, str | bytes | bytearray)
 
 
 def _req_str(obj: Mapping[str, object], key: str, *, error: type) -> str:
@@ -74,9 +66,16 @@ def _req_int(obj: Mapping[str, object], key: str, *, error: type) -> int:
     return value
 
 
+def _req_float(obj: Mapping[str, object], key: str, *, error: type) -> float:
+    value = obj.get(key)
+    if isinstance(value, int | float) and not isinstance(value, bool):
+        return float(value)
+    raise error(reason=f"missing or non-numeric field {key!r}")
+
+
 def _req_float_list(obj: Mapping[str, object], key: str, *, error: type) -> list[float]:
     value = obj.get(key)
-    if not isinstance(value, list):
+    if not _is_object_sequence(value):
         raise error(reason=f"missing or non-list field {key!r}")
     result: list[float] = []
     for item in value:
@@ -91,7 +90,7 @@ def parse_readiness(raw: str) -> ReadinessResult:
     """Parse readiness.json strictly; empty/missing raises ReadinessTimeoutError."""
     if not raw.strip():
         raise ReadinessTimeoutError(reason="readiness marker not written")
-    obj = _loads_mapping(raw, error=ReadinessTimeoutError)
+    obj = loads_mapping(raw, error=ReadinessTimeoutError)
     ready = obj.get("ready")
     if not isinstance(ready, bool) or not ready:
         raise ReadinessTimeoutError(reason="server reported not-ready")
@@ -102,17 +101,11 @@ def parse_readiness(raw: str) -> ReadinessResult:
     )
 
 
-def _req_float(obj: Mapping[str, object], key: str, *, error: type) -> float:
-    value = obj.get(key)
-    if isinstance(value, int | float) and not isinstance(value, bool):
-        return float(value)
-    raise error(reason=f"missing or non-numeric field {key!r}")
-
 def parse_server_metrics(raw: str, expected: ServerIdentity) -> ServerMetrics:
     """Parse metrics.json strictly, cross-check identity, or raise MetricsParseError."""
     if not raw.strip():
         raise MetricsParseError(reason="metrics artifact not written")
-    obj = _loads_mapping(raw, error=MetricsParseError)
+    obj = loads_mapping(raw, error=MetricsParseError)
     model = _req_str(obj, "model", error=MetricsParseError)
     if model != expected.model_filename:
         raise ServerIdentityMismatchError(
@@ -151,7 +144,7 @@ def parse_responses(raw: str) -> tuple[ParsedResponse, ...]:
         raise MetricsParseError(reason="empty responses output")
     results: list[ParsedResponse] = []
     for line in lines:
-        obj = _loads_mapping(line, error=MetricsParseError)
+        obj = loads_mapping(line, error=MetricsParseError)
         quality = obj.get("quality_pass")
         if not isinstance(quality, bool):
             raise MetricsParseError(reason="missing or non-bool 'quality_pass' in response")

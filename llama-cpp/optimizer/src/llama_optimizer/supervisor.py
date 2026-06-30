@@ -29,7 +29,7 @@ import subprocess
 import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from typing import Final, final
+from typing import TYPE_CHECKING, Final, final
 
 from llama_optimizer.lifecycle import NonScoredOutcome
 from llama_optimizer.telemetry import (
@@ -42,6 +42,8 @@ from llama_optimizer.telemetry import (
     is_stale,
 )
 
+if TYPE_CHECKING:
+    import threading
 __all__ = ("ChildExit", "ProcessSupervisor", "SupervisorConfig", "SupervisorResult")
 
 _TERMINATE_POLL: Final[timedelta] = timedelta(milliseconds=20)
@@ -78,6 +80,7 @@ class SupervisorResult:
     launched: bool
     terminated_group: bool
     process_group_pid: int | None = None
+    escalated_to_sigkill: bool = False
 
 
 @dataclass
@@ -89,6 +92,7 @@ class _RunState:
     started_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     proc: subprocess.Popen[bytes] | None = None
     terminated_group: bool = False
+    escalated_to_sigkill: bool = False
 
 
 @final
@@ -101,8 +105,15 @@ class ProcessSupervisor:
         *,
         provider: HardChannelProvider,
         config: SupervisorConfig,
+        cancel: threading.Event | None = None,
     ) -> SupervisorResult:
-        """Supervise ``command`` against the hard channel; never leaves an orphan."""
+        """Supervise ``command`` against the hard channel; never leaves an orphan.
+
+        When ``cancel`` is provided and set by the caller, the supervisor terminates
+        the process group (SIGTERM -> bounded grace -> SIGKILL -> reap) and returns
+        a :class:`ChildExit` with the signal exit code, letting a long-lived server
+        be explicitly stopped after successful workloads.
+        """
         state = _RunState()
         outcome: NonScoredOutcome | ChildExit
         try:
@@ -110,13 +121,30 @@ class ProcessSupervisor:
             if block is not None:
                 return self._finish(block, state)
             state.proc = subprocess.Popen(command, start_new_session=True)
-            outcome = self._loop(state.proc, provider, config, state)
+            outcome = self._loop(state.proc, provider, config, state, cancel)
         except KeyboardInterrupt:
             outcome = NonScoredOutcome.CANCELLED
 
-        if state.proc is not None and state.proc.poll() is None:
-            self._terminate_group(state.proc, config.grace)
-            state.terminated_group = True
+        if state.proc is not None:
+            if state.proc.poll() is None:
+                state.escalated_to_sigkill = self._terminate_group(state.proc, config.grace)
+                state.terminated_group = True
+            else:
+                self._reap(state.proc)
+            pgid = state.proc.pid
+            group_gone = False
+            cleanup_deadline = time.monotonic() + 2.0
+            while time.monotonic() < cleanup_deadline:
+                try:
+                    os.killpg(pgid, 0)
+                except ProcessLookupError:
+                    group_gone = True
+                    break
+                except PermissionError:
+                    break
+                time.sleep(0.05)
+            if not group_gone:
+                outcome = NonScoredOutcome.CLEANUP_FAILURE
         return self._finish(outcome, state)
 
     def _preflight(
@@ -139,10 +167,15 @@ class ProcessSupervisor:
         provider: HardChannelProvider,
         config: SupervisorConfig,
         state: _RunState,
+        cancel: threading.Event | None = None,
     ) -> NonScoredOutcome | ChildExit:
-        """Sample the hard channel until the child exits or a fail-closed condition fires."""
+        """Sample until the child exits, a fail-closed condition fires, or cancel is set."""
         deadline = time.monotonic() + config.deadline.total_seconds()
         while True:
+            if cancel is not None and cancel.is_set():
+                state.escalated_to_sigkill = self._terminate_group(proc, config.grace)
+                state.terminated_group = True
+                return ChildExit(proc.returncode)
             try:
                 sample = provider.sample()
             except TelemetryLossError:
@@ -163,22 +196,24 @@ class ProcessSupervisor:
                 return NonScoredOutcome.HANG
             time.sleep(config.interval.total_seconds())
 
-    def _terminate_group(self, proc: subprocess.Popen[bytes], grace: timedelta) -> None:
-        """SIGTERM the group, escalate to SIGKILL after ``grace``, then reap the child."""
+    def _terminate_group(self, proc: subprocess.Popen[bytes], grace: timedelta) -> bool:
+        """SIGTERM the group; escalate to SIGKILL after ``grace`` if still alive."""
         pgid = proc.pid
         try:
             os.killpg(pgid, signal.SIGTERM)
         except ProcessLookupError:
             self._reap(proc)
-            return
+            return False
         deadline = time.monotonic() + grace.total_seconds()
         while time.monotonic() < deadline:
             if proc.poll() is not None:
                 break
             time.sleep(_TERMINATE_POLL.total_seconds())
+        sigkill_needed = proc.poll() is None
         with contextlib.suppress(ProcessLookupError):
             os.killpg(pgid, signal.SIGKILL)
         self._reap(proc)
+        return sigkill_needed
 
     @staticmethod
     def _reap(proc: subprocess.Popen[bytes]) -> None:
@@ -200,5 +235,6 @@ class ProcessSupervisor:
             ended_at=datetime.now(UTC),
             launched=launched,
             terminated_group=state.terminated_group if launched else False,
+            escalated_to_sigkill=state.escalated_to_sigkill,
             process_group_pid=state.proc.pid if state.proc is not None else None,
         )

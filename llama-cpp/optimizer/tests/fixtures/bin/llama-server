@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 """Deterministic offline fake of ``llama-server`` for the optimizer test suite.
 
-Not the real binary. Simulates a llama-server lifecycle (readiness, request
-workloads, metrics/slots, raw responses) and self-terminates so the T5
-:class:`ProcessSupervisor` can wrap it exactly like llama-bench. Behaviour is
-controlled by a JSON file whose path is in the
+Not the real binary. Implements a REAL long-lived HTTP server lifecycle: binds
+a port, writes readiness, serves chat-completion workloads, records raw
+per-request responses, writes aggregate metrics, then STAYS ALIVE until the
+runner explicitly terminates it via the supervisor's process-group
+SIGTERM/SIGKILL sequence.
+
+This exercises the T9 runner's active readiness probing, actual workload
+dispatch, configured delay/cooldown, and explicit server termination -- never
+relying on fake self-exit.
+
+Behaviour is controlled by a JSON file whose path is in the
 ``LLAMA_SERVER_FAKE_CONTROL`` environment variable so parallel runs do not
 collide.
 
@@ -12,7 +19,7 @@ Control file schema::
 
     {
         "mode": "happy|crash|hang-readiness|request-error|quality-regress"
-               "|malformed-metrics|sigterm-ignore",
+               "|malformed-metrics|sigterm-ignore|identity-mismatch",
         "output_dir": "/path/to/artifacts",
         "ready_after_ms": 10,
         "slots": 2,
@@ -28,18 +35,27 @@ Control file schema::
     }
 
 Artifacts written to ``output_dir``:
+  port.txt        - the bound TCP port (written before readiness)
   readiness.json  - ``{"ready": true, "ready_at_ms": <int>, "slots": <int>}``
-  metrics.json    - throughput/TTFT/latency/slots/errors
-  responses.jsonl - one line per request with raw text and timing
+  responses.jsonl - one line per served request with raw text and timing
+  metrics.json    - aggregate throughput/TTFT/latency/slots/errors
+
+Lifecycle phases:
+  1. Bind port, write port.txt, wait ready_after_ms, write readiness.json.
+  2. Serve exactly ``request_count`` HTTP requests (handle_request loop).
+  3. Write aggregate metrics.json and responses.jsonl.
+  4. STAY ALIVE indefinitely until the supervisor SIGTERMs/SIGKILLs the group.
+     This proves the runner performs real lifecycle cleanup, not fake self-exit.
 
 Modes:
-  happy            - full lifecycle, quality-passing responses, exit 0.
-  crash            - exit 1 with model-load error (startup/load failure).
-  hang-readiness   - never write readiness; sleep until killed (deadline).
-  request-error    - ready, but metrics report request errors.
-  quality-regress  - ready, but responses fail the quality check.
-  malformed-metrics- ready, but metrics.json is garbage text.
-  sigterm-ignore   - ready then ignore SIGTERM until SIGKILL.
+  happy             - full lifecycle, quality-passing responses.
+  crash             - exit 1 immediately with model-load error.
+  hang-readiness    - never write readiness; sleep until killed.
+  request-error     - ready, respond HTTP 500 to every request.
+  quality-regress   - ready, but responses fail the quality check.
+  malformed-metrics - ready, serve requests, but metrics.json is garbage text.
+  sigterm-ignore    - ready, serve requests, ignore SIGTERM until SIGKILL.
+  identity-mismatch - ready, serve requests, but metrics has wrong model/backend.
 """
 
 from __future__ import annotations
@@ -48,7 +64,9 @@ import json
 import os
 import signal
 import sys
+import threading
 import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 
@@ -72,12 +90,17 @@ def _parse_str(argv: list[str], *flags: str, default: str = "") -> str:
 
 
 def _parse_int(argv: list[str], *flags: str, default: int = 0) -> int:
-    """Extract the integer value following any of ``flags`` in ``argv``."""
-    val = _parse_str(argv, *flags, default=str(default))
+    """Extract the int value following any of ``flags`` in ``argv``."""
+    raw = _parse_str(argv, *flags, default=str(default))
     try:
-        return int(val)
+        return int(raw)
     except ValueError:
         return default
+
+
+def _has_flag(argv: list[str], *flags: str) -> bool:
+    """Return True if any of ``flags`` is present as a bare flag in ``argv``."""
+    return any(arg in flags for arg in argv)
 
 
 def main(argv: list[str]) -> int:
@@ -86,7 +109,13 @@ def main(argv: list[str]) -> int:
     mode = ctrl.get("mode", "happy")
     assert isinstance(mode, str)
 
-    output_dir = Path(str(ctrl.get("output_dir", ".")))
+    model_arg = _parse_str(argv, "-m", "--model", default="fake-model.gguf")
+    actual_model = Path(model_arg).name
+    finalists_map = ctrl.get("finalists")
+    if isinstance(finalists_map, dict) and actual_model in finalists_map:
+        output_dir = Path(str(finalists_map[actual_model]))
+    else:
+        output_dir = Path(str(ctrl.get("output_dir", ".")))
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if mode == "crash":
@@ -100,71 +129,214 @@ def main(argv: list[str]) -> int:
         time.sleep(300)
         return 0
 
-    # --- Readiness marker -------------------------------------------------
-    time.sleep(ready_after_ms / 1000.0)
-    readiness = {"ready": True, "ready_at_ms": ready_after_ms, "slots": slots}
-    _ = (output_dir / "readiness.json").write_text(json.dumps(readiness))
-
-    model = _parse_str(argv, "-m", "--model", default="fake-model.gguf")
+    ctx = _parse_int(argv, "--ctx-size", default=0)
+    if ctx != 32768:
+        sys.stderr.write(f"error: ctx-size must be 32768, got {ctx}\n")
+        return 1
+    parallel_arg = _parse_int(argv, "--parallel", default=0)
+    if parallel_arg < 1:
+        sys.stderr.write(f"error: parallel must be >= 1, got {parallel_arg}\n")
+        return 1
+    for flag in ("--metrics", "--slots", "--warmup"):
+        if not _has_flag(argv, flag):
+            sys.stderr.write(f"error: missing required flag {flag}\n")
+            return 1
+    if "n_gpu_layers" in ctrl:
+        ngl = _parse_int(argv, "-ngl", default=-1)
+        expected_ngl = int(ctrl.get("n_gpu_layers", 99))
+        if ngl != expected_ngl:
+            sys.stderr.write(f"error: n_gpu_layers must be {expected_ngl}, got {ngl}\n")
+            return 1
+    if "n_batch" in ctrl:
+        b = _parse_int(argv, "-b", default=-1)
+        expected_b = int(ctrl.get("n_batch", 2048))
+        if b != expected_b:
+            sys.stderr.write(f"error: n_batch must be {expected_b}, got {b}\n")
+            return 1
+    if "n_ubatch" in ctrl:
+        ub = _parse_int(argv, "-ub", default=-1)
+        expected_ub = int(ctrl.get("n_ubatch", 512))
+        if ub != expected_ub:
+            sys.stderr.write(f"error: n_ubatch must be {expected_ub}, got {ub}\n")
+            return 1
+    if "type_k" in ctrl:
+        ctk = _parse_str(argv, "-ctk", default="")
+        expected_ctk = str(ctrl.get("type_k", "f16"))
+        if ctk != expected_ctk:
+            sys.stderr.write(f"error: type_k must be {expected_ctk}, got {ctk}\n")
+            return 1
+    if "type_v" in ctrl:
+        ctv = _parse_str(argv, "-ctv", default="")
+        expected_ctv = str(ctrl.get("type_v", "f16"))
+        if ctv != expected_ctv:
+            sys.stderr.write(f"error: type_v must be {expected_ctv}, got {ctv}\n")
+            return 1
+    if "n_threads" in ctrl:
+        t = _parse_int(argv, "-t", default=-1)
+        expected_t = int(ctrl.get("n_threads", 16))
+        if t != expected_t:
+            sys.stderr.write(f"error: n_threads must be {expected_t}, got {t}\n")
+            return 1
+    if "flash_attn" in ctrl:
+        fa = _parse_str(argv, "-fa", default="")
+        expected_fa = "on" if ctrl.get("flash_attn", 1) == 1 else "off"
+        if fa != expected_fa:
+            sys.stderr.write(f"error: flash_attn must be {expected_fa}, got {fa}\n")
+            return 1
+    if "use_mmap" in ctrl:
+        mmp = _parse_str(argv, "-mmp", default="")
+        expected_mmp = "1" if ctrl.get("use_mmap", True) else "0"
+        if mmp != expected_mmp:
+            sys.stderr.write(f"error: use_mmap must be {expected_mmp}, got {mmp}\n")
+            return 1
+    model_arg = _parse_str(argv, "-m", "--model", default="fake-model.gguf")
     backend = str(ctrl.get("backend", "rocm"))
-
-    if mode == "sigterm-ignore":
-        signal.signal(signal.SIGTERM, signal.SIG_IGN)
-        time.sleep(300)
-        return 0
-
-    # --- Metrics + responses ----------------------------------------------
-    prompt_ts = float(ctrl.get("prompt_throughput", 250.0))
-    gen_ts = float(ctrl.get("generation_throughput", 42.5))
-    ttft = ctrl.get("ttft_ms", [120.0, 130.0, 140.0])
-    lat = ctrl.get("request_latency_ms", [500.0, 600.0, 700.0])
-    ttft_list = [float(v) for v in ttft] if isinstance(ttft, list) else [120.0]
-    lat_list = [float(v) for v in lat] if isinstance(lat, list) else [500.0]
-
-    errors = 0
-    if mode == "request-error":
-        errors = int(ctrl.get("request_count", 6))
-
     response_text = str(ctrl.get("response_text", "def solve():\n    return 42"))
     quality_pass = bool(ctrl.get("quality_pass", True))
     if mode == "quality-regress":
         quality_pass = False
         response_text = "ERROR: malformed response"
 
-    metrics = {
-        "model": Path(model).name,
-        "backend": backend,
-        "slots": slots,
-        "prompt_throughput": prompt_ts,
-        "generation_throughput": gen_ts,
-        "ttft_ms": ttft_list,
-        "request_latency_ms": lat_list,
-        "errors": errors,
-        "quality_pass": quality_pass,
-    }
+    ttft_list = ctrl.get("ttft_ms", [120.0, 130.0, 140.0])
+    lat_list = ctrl.get("request_latency_ms", [500.0, 600.0, 700.0])
+    ttft_vals = [float(v) for v in ttft_list] if isinstance(ttft_list, list) else [120.0]
+    lat_vals = [float(v) for v in lat_list] if isinstance(lat_list, list) else [500.0]
+
+    request_count = int(ctrl.get("request_count", len(ttft_vals)))
+    prompt_ts = float(ctrl.get("prompt_throughput", 250.0))
+    gen_ts = float(ctrl.get("generation_throughput", 42.5))
+
+    served_count = 0
+    error_count = 0
+    response_lines: list[str] = []
+    lock = threading.Lock()
+    active_requests = 0
+    max_concurrent = 0
+
+    class Handler(BaseHTTPRequestHandler):
+        """Minimal chat-completion handler for the fake server."""
+
+        def do_POST(self) -> None:  # noqa: N802 - http.server convention
+            """Serve one request, record raw response, return HTTP result."""
+            nonlocal served_count, error_count, active_requests, max_concurrent
+            with lock:
+                active_requests += 1
+                if active_requests > max_concurrent:
+                    max_concurrent = active_requests
+            content_length = int(self.headers.get("Content-Length", 0))
+            body_bytes = self.rfile.read(content_length)
+            try:
+                body_json = json.loads(body_bytes.decode())
+            except Exception:
+                body_json = {}
+            req_metadata = {
+                "method": "POST",
+                "path": self.path,
+                "headers": dict(self.headers),
+            }
+            idx = served_count
+            with lock:
+                served_count += 1
+            if mode == "request-error":
+                with lock:
+                    error_count += 1
+                response_lines.append(
+                    json.dumps(
+                        {
+                            "index": idx,
+                            "response": "",
+                            "ttft_ms": ttft_vals[idx % len(ttft_vals)],
+                            "latency_ms": lat_vals[idx % len(lat_vals)],
+                            "quality_pass": False,
+                            "request_body": body_json,
+                            "request_metadata": req_metadata,
+                        }
+                    )
+                )
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                _ = self.wfile.write(b'{"error": "internal error"}')
+                with lock:
+                    active_requests -= 1
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            body = json.dumps(
+                {"choices": [{"message": {"content": response_text}}]}
+            ).encode()
+            _ = self.wfile.write(body)
+            response_lines.append(
+                json.dumps(
+                    {
+                        "index": idx,
+                        "response": response_text,
+                        "ttft_ms": ttft_vals[idx % len(ttft_vals)],
+                        "latency_ms": lat_vals[idx % len(lat_vals)],
+                        "quality_pass": quality_pass,
+                        "request_body": body_json,
+                        "request_metadata": req_metadata,
+                    }
+                )
+            )
+            with lock:
+                active_requests -= 1
+
+        def log_message(self, fmt: str, *args: object) -> None:
+            """Suppress default stderr logging."""
+
+    if mode == "sigterm-ignore":
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    port = httpd.server_address[1]
+    _ = (output_dir / "port.txt").write_text(str(port))
+    httpd.timeout = 0.5
+
+    time.sleep(ready_after_ms / 1000.0)
+    readiness = {"ready": True, "ready_at_ms": ready_after_ms, "slots": slots}
+    _ = (output_dir / "readiness.json").write_text(json.dumps(readiness))
+
+    # Phase 1: serve the expected number of requests.
+    for _ in range(request_count):
+        httpd.handle_request()
+
+    # Phase 2: write aggregate artifacts.
+    actual_model = Path(model_arg).name
+    if mode == "identity-mismatch":
+        actual_model = "WRONG-MODEL.gguf"
+        backend = "WRONG-backend"
 
     if mode == "malformed-metrics":
         _ = (output_dir / "metrics.json").write_text("this is { not json")
     else:
+        metrics = {
+            "model": actual_model,
+            "backend": backend,
+            "slots": slots,
+            "prompt_throughput": prompt_ts,
+            "generation_throughput": gen_ts,
+            "ttft_ms": ttft_vals,
+            "request_latency_ms": lat_vals,
+            "errors": error_count,
+            "quality_pass": quality_pass and error_count == 0,
+            "max_concurrent": max_concurrent,
+            "parallel": parallel_arg,
+        }
         _ = (output_dir / "metrics.json").write_text(json.dumps(metrics))
 
-    request_count = int(ctrl.get("request_count", len(ttft_list)))
-    lines: list[str] = []
-    for i in range(request_count):
-        idx = i % len(lat_list)
-        lines.append(
-            json.dumps(
-                {
-                    "index": i,
-                    "response": response_text,
-                    "ttft_ms": ttft_list[idx % len(ttft_list)],
-                    "latency_ms": lat_list[idx],
-                    "quality_pass": quality_pass,
-                }
-            )
+    if response_lines:
+        _ = (output_dir / "responses.jsonl").write_text(
+            "\n".join(response_lines) + "\n"
         )
-    _ = (output_dir / "responses.jsonl").write_text("\n".join(lines) + "\n")
-    return 0
+
+    # Phase 3: STAY ALIVE until the runner terminates the process group.
+    # The runner sets a cancel event -> supervisor SIGTERMs (or SIGKILLs if
+    # ignored) the group -> this process is killed. Never exit on our own;
+    # this proves the runner performs real lifecycle cleanup.
+    while True:
+        httpd.handle_request()
 
 
 if __name__ == "__main__":

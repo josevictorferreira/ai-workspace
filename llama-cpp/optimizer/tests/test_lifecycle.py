@@ -70,6 +70,7 @@ class TestClosedOutcomeTaxonomy:
             "hang",
             "transient-failure",
             "cancelled",
+            "cleanup-failure",
         }
         # When reading the enum members.
         actual = {member.value for member in NonScoredOutcome}

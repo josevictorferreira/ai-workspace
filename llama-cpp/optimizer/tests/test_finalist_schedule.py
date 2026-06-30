@@ -19,6 +19,7 @@ from llama_optimizer.server_types import (
     DEFAULT_SERVER_CONFIG,
     LATENCY_SPEC,
     TOOL_USE_SPEC,
+    EligibilityStatus,
     FinalistEntry,
     ServerConfig,
     ServerIdentity,
@@ -46,6 +47,7 @@ def _finalist(name: str) -> FinalistEntry:
         finalist_id=f"f-{name}",
         identity=_identity(name),
         trial_id=TrialId(f"t-{name}"),
+        eligibility=EligibilityStatus.ELIGIBLE,
     )
 
 

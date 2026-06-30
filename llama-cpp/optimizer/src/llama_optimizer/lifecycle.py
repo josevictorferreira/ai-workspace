@@ -70,6 +70,7 @@ class NonScoredOutcome(StrEnum):
     HANG = "hang"
     TRANSIENT_FAILURE = "transient-failure"
     CANCELLED = "cancelled"
+    CLEANUP_FAILURE = "cleanup-failure"
 
 
 class ResumeMode(StrEnum):

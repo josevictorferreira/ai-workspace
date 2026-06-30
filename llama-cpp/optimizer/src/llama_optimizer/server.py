@@ -9,7 +9,9 @@ metrics/responses, and synchronized telemetry are captured per finalist.
 
 from __future__ import annotations
 
+from llama_optimizer.server_classify import classify_server_exit
 from llama_optimizer.server_command import build_server_command
+from llama_optimizer.server_http import WorkloadRecord
 from llama_optimizer.server_parser import (
     ParsedResponse,
     ReadinessResult,
@@ -17,9 +19,8 @@ from llama_optimizer.server_parser import (
     parse_responses,
     parse_server_metrics,
 )
-from llama_optimizer.server_runner import classify_server_exit, run_supervised_server
+from llama_optimizer.server_runner import ValidationPlan, run_supervised_server, validate_finalists
 from llama_optimizer.server_schedule import (
-    ScheduledFinalist,
     ScheduledRequest,
     interleave_requests,
     schedule_finalists,
@@ -31,13 +32,16 @@ from llama_optimizer.server_types import (
     DEFAULT_SERVER_CONFIG,
     LATENCY_SPEC,
     TOOL_USE_SPEC,
+    EligibilityStatus,
     FinalistEntry,
     FinalistRequest,
     FinalistResult,
+    LifecycleRecord,
     MetricsParseError,
     ReadinessTimeoutError,
     RequestKind,
     RequestSpec,
+    ScheduledFinalist,
     ServerConfig,
     ServerError,
     ServerIdentity,
@@ -51,9 +55,11 @@ __all__ = [
     "DEFAULT_SERVER_CONFIG",
     "LATENCY_SPEC",
     "TOOL_USE_SPEC",
+    "EligibilityStatus",
     "FinalistEntry",
     "FinalistRequest",
     "FinalistResult",
+    "LifecycleRecord",
     "MetricsParseError",
     "ParsedResponse",
     "ReadinessResult",
@@ -67,6 +73,8 @@ __all__ = [
     "ServerIdentity",
     "ServerIdentityMismatchError",
     "ServerMetrics",
+    "ValidationPlan",
+    "WorkloadRecord",
     "build_server_command",
     "classify_server_exit",
     "interleave_requests",
@@ -76,4 +84,5 @@ __all__ = [
     "run_supervised_server",
     "schedule_finalists",
     "total_request_count",
+    "validate_finalists",
 ]
