@@ -57,6 +57,13 @@ ignore = [
     "S603",  # supervisor tests spawn fully-trusted sys.executable children in dedicated process groups
 ]
 
+"src/llama_optimizer/adapters/opencode.py" = [
+    "S603",  # subprocess calls to trusted CLI binary
+]
+"src/llama_optimizer/adapters/pi.py" = [
+    "S603",  # subprocess calls to trusted CLI binary
+]
+
 "src/llama_optimizer/telemetry.py" = [
   "S603",  # trusted v1 rocm-smi subprocess for the hard channel; binary path is caller-validated
 ]

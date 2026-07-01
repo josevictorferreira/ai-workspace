@@ -1,0 +1,1 @@
+{"task_id":"task-11","plan":"llama-cpp-self-optimizer","status":"complete","commit_subject":"feat(optimizer): add agent report adapters","tests_passed":"23 passed","acceptance_verified":true,"notes":"Read-only OpenCode and Pi adapters with subprocess wrapping"}
