@@ -1,0 +1,1 @@
+{"task_id":"task-12","plan":"llama-cpp-self-optimizer","status":"complete","commit_subject":"test(optimizer): verify end-to-end recovery","tests_passed":"8 passed","acceptance_verified":true,"notes":"E2E fake-run, interrupted resume, scope contract tests"}
