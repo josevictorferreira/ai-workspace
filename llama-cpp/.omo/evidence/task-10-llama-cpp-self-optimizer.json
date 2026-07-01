@@ -1,0 +1,1 @@
+{"task_id":"task-10","plan":"llama-cpp-self-optimizer","status":"complete","commit_subject":"feat(optimizer): report Pareto recommendations","tests_passed":"30 passed","acceptance_verified":true,"notes":"Pareto reports, deterministic regeneration, emit-only Nix recommendations"}

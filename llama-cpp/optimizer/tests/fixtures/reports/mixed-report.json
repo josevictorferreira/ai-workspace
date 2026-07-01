@@ -1,0 +1,510 @@
+{
+  "frontier": [
+    {
+      "config": {
+        "config_id": "alpha",
+        "constraint_violations": [],
+        "model_path": "/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-ornith-alpha.gguf",
+        "nix_package": "Ornith-alpha",
+        "server_flags": [
+          "--ctx-size",
+          "32768",
+          "--flash-attn",
+          "on"
+        ]
+      },
+      "contributions": [
+        {
+          "contribution": 0.2,
+          "direction": "benefit",
+          "maximum": 100.0,
+          "minimum": 90.0,
+          "name": "prompt_throughput",
+          "normalized": 1.0,
+          "value": 100.0,
+          "weight": 0.2
+        },
+        {
+          "contribution": 0.0,
+          "direction": "benefit",
+          "maximum": 45.0,
+          "minimum": 40.0,
+          "name": "generation_throughput",
+          "normalized": 0.0,
+          "value": 40.0,
+          "weight": 0.3
+        },
+        {
+          "contribution": 0.0,
+          "direction": "cost",
+          "maximum": 200.0,
+          "minimum": 180.0,
+          "name": "ttft_p95",
+          "normalized": 0.0,
+          "value": 200.0,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.0,
+          "direction": "cost",
+          "maximum": 500.0,
+          "minimum": 450.0,
+          "name": "request_latency_p95",
+          "normalized": 0.0,
+          "value": 500.0,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.0,
+          "direction": "benefit",
+          "maximum": 0.3,
+          "minimum": 0.2,
+          "name": "quality_margin",
+          "normalized": 0.0,
+          "value": 0.2,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.0,
+          "direction": "benefit",
+          "maximum": 2000.0,
+          "minimum": 1000.0,
+          "name": "vram_headroom",
+          "normalized": 0.0,
+          "value": 1000.0,
+          "weight": 0.05
+        }
+      ],
+      "metrics": {
+        "generation_throughput": 40.0,
+        "prompt_throughput": 100.0,
+        "quality_margin": 0.2,
+        "request_latency_p95": 500.0,
+        "ttft_p95": 200.0,
+        "vram_headroom": 1000.0
+      },
+      "score": 0.2
+    },
+    {
+      "config": {
+        "config_id": "beta",
+        "constraint_violations": [],
+        "model_path": "/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-ornith-beta.gguf",
+        "nix_package": "Ornith-beta",
+        "server_flags": [
+          "--ctx-size",
+          "32768",
+          "--flash-attn",
+          "on"
+        ]
+      },
+      "contributions": [
+        {
+          "contribution": 0.0,
+          "direction": "benefit",
+          "maximum": 100.0,
+          "minimum": 90.0,
+          "name": "prompt_throughput",
+          "normalized": 0.0,
+          "value": 90.0,
+          "weight": 0.2
+        },
+        {
+          "contribution": 0.3,
+          "direction": "benefit",
+          "maximum": 45.0,
+          "minimum": 40.0,
+          "name": "generation_throughput",
+          "normalized": 1.0,
+          "value": 45.0,
+          "weight": 0.3
+        },
+        {
+          "contribution": 0.15,
+          "direction": "cost",
+          "maximum": 200.0,
+          "minimum": 180.0,
+          "name": "ttft_p95",
+          "normalized": 1.0,
+          "value": 180.0,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.15,
+          "direction": "cost",
+          "maximum": 500.0,
+          "minimum": 450.0,
+          "name": "request_latency_p95",
+          "normalized": 1.0,
+          "value": 450.0,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.15,
+          "direction": "benefit",
+          "maximum": 0.3,
+          "minimum": 0.2,
+          "name": "quality_margin",
+          "normalized": 1.0,
+          "value": 0.3,
+          "weight": 0.15
+        },
+        {
+          "contribution": 0.05,
+          "direction": "benefit",
+          "maximum": 2000.0,
+          "minimum": 1000.0,
+          "name": "vram_headroom",
+          "normalized": 1.0,
+          "value": 2000.0,
+          "weight": 0.05
+        }
+      ],
+      "metrics": {
+        "generation_throughput": 45.0,
+        "prompt_throughput": 90.0,
+        "quality_margin": 0.3,
+        "request_latency_p95": 450.0,
+        "ttft_p95": 180.0,
+        "vram_headroom": 2000.0
+      },
+      "score": 0.8
+    }
+  ],
+  "incomplete": [],
+  "ledger": {
+    "checkpoints": [],
+    "run": {
+      "manifest_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "optimizer_version": "0.1.0",
+      "phase": "completed"
+    },
+    "run_id": "run-10",
+    "schema_version": 1,
+    "trials": [
+      {
+        "attempts": [
+          {
+            "artifacts": [
+              {
+                "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "kind": "server-metrics",
+                "recorded_at": "2026-06-30T12:01:00+00:00",
+                "relative_path": "raw/attempt-alpha/metrics.json"
+              }
+            ],
+            "attempt_id": "attempt-alpha",
+            "attempt_number": 1,
+            "ended_at": "2026-06-30T12:01:00+00:00",
+            "metrics": {
+              "generation_throughput": 40.0,
+              "prompt_throughput": 100.0,
+              "quality_margin": 0.2,
+              "request_latency_ms_p95": 500.0,
+              "ttft_ms_p95": 200.0,
+              "vram_headroom": 1000.0
+            },
+            "outcome": null,
+            "parent_attempt_id": null,
+            "phase": "succeeded",
+            "phase_deadline": null,
+            "process_group_pid": 123,
+            "started_at": "2026-06-30T12:00:00+00:00",
+            "telemetry": [
+              {
+                "breached": false,
+                "peak_vram_bytes": 1000,
+                "sampled_at": "2026-06-30T12:00:00+00:00",
+                "vram_used_bytes": 1000
+              }
+            ],
+            "termination_reason": ""
+          }
+        ],
+        "backend": "rocm",
+        "candidate_id": "model-alpha",
+        "committed_generation": null,
+        "config_hash": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8",
+        "config_id": "alpha",
+        "created_at": "2026-06-30T12:00:00+00:00",
+        "optuna_trial_number": 1,
+        "outcome": null,
+        "phase": "committed",
+        "quant": "Q4_K_M",
+        "retry_parent_attempt_id": null,
+        "termination_reason": "",
+        "trial_id": "trial-alpha",
+        "updated_at": "2026-06-30T12:01:00+00:00"
+      },
+      {
+        "attempts": [
+          {
+            "artifacts": [
+              {
+                "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "kind": "server-metrics",
+                "recorded_at": "2026-06-30T12:01:00+00:00",
+                "relative_path": "raw/attempt-beta/metrics.json"
+              }
+            ],
+            "attempt_id": "attempt-beta",
+            "attempt_number": 1,
+            "ended_at": "2026-06-30T12:01:00+00:00",
+            "metrics": {
+              "generation_throughput": 45.0,
+              "prompt_throughput": 90.0,
+              "quality_margin": 0.3,
+              "request_latency_ms_p95": 450.0,
+              "ttft_ms_p95": 180.0,
+              "vram_headroom": 2000.0
+            },
+            "outcome": null,
+            "parent_attempt_id": null,
+            "phase": "succeeded",
+            "phase_deadline": null,
+            "process_group_pid": 123,
+            "started_at": "2026-06-30T12:00:00+00:00",
+            "telemetry": [
+              {
+                "breached": false,
+                "peak_vram_bytes": 1000,
+                "sampled_at": "2026-06-30T12:00:00+00:00",
+                "vram_used_bytes": 1000
+              }
+            ],
+            "termination_reason": ""
+          }
+        ],
+        "backend": "rocm",
+        "candidate_id": "model-beta",
+        "committed_generation": null,
+        "config_hash": "f44e64e75f3948e9f73f8dfa94721c4ce8cbb4f265c4790c702b2d41cfbf2753",
+        "config_id": "beta",
+        "created_at": "2026-06-30T12:00:00+00:00",
+        "optuna_trial_number": 1,
+        "outcome": null,
+        "phase": "committed",
+        "quant": "Q4_K_M",
+        "retry_parent_attempt_id": null,
+        "termination_reason": "",
+        "trial_id": "trial-beta",
+        "updated_at": "2026-06-30T12:01:00+00:00"
+      },
+      {
+        "attempts": [
+          {
+            "artifacts": [
+              {
+                "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "kind": "server-metrics",
+                "recorded_at": "2026-06-30T12:01:00+00:00",
+                "relative_path": "raw/attempt-dominated/metrics.json"
+              }
+            ],
+            "attempt_id": "attempt-dominated",
+            "attempt_number": 1,
+            "ended_at": "2026-06-30T12:01:00+00:00",
+            "metrics": {
+              "generation_throughput": 35.0,
+              "prompt_throughput": 80.0,
+              "quality_margin": 0.1,
+              "request_latency_ms_p95": 600.0,
+              "ttft_ms_p95": 250.0,
+              "vram_headroom": 500.0
+            },
+            "outcome": null,
+            "parent_attempt_id": null,
+            "phase": "succeeded",
+            "phase_deadline": null,
+            "process_group_pid": 123,
+            "started_at": "2026-06-30T12:00:00+00:00",
+            "telemetry": [
+              {
+                "breached": false,
+                "peak_vram_bytes": 1000,
+                "sampled_at": "2026-06-30T12:00:00+00:00",
+                "vram_used_bytes": 1000
+              }
+            ],
+            "termination_reason": ""
+          }
+        ],
+        "backend": "rocm",
+        "candidate_id": "model-dominated",
+        "committed_generation": null,
+        "config_hash": "607ffa76241bed79cc696c5d7e4defcee0efff6a0d28c9e9baeba0ec1f120733",
+        "config_id": "dominated",
+        "created_at": "2026-06-30T12:00:00+00:00",
+        "optuna_trial_number": 1,
+        "outcome": null,
+        "phase": "committed",
+        "quant": "Q4_K_M",
+        "retry_parent_attempt_id": null,
+        "termination_reason": "",
+        "trial_id": "trial-dominated",
+        "updated_at": "2026-06-30T12:01:00+00:00"
+      },
+      {
+        "attempts": [
+          {
+            "artifacts": [
+              {
+                "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "kind": "server-metrics",
+                "recorded_at": "2026-06-30T12:01:00+00:00",
+                "relative_path": "raw/attempt-failed/metrics.json"
+              }
+            ],
+            "attempt_id": "attempt-failed",
+            "attempt_number": 1,
+            "ended_at": "2026-06-30T12:01:00+00:00",
+            "metrics": {},
+            "outcome": "crash",
+            "parent_attempt_id": null,
+            "phase": "non_scored",
+            "phase_deadline": null,
+            "process_group_pid": 123,
+            "started_at": "2026-06-30T12:00:00+00:00",
+            "telemetry": [
+              {
+                "breached": false,
+                "peak_vram_bytes": 1000,
+                "sampled_at": "2026-06-30T12:00:00+00:00",
+                "vram_used_bytes": 1000
+              }
+            ],
+            "termination_reason": "crash"
+          }
+        ],
+        "backend": "rocm",
+        "candidate_id": "model-failed",
+        "committed_generation": null,
+        "config_hash": "5d28a90f4498a81461efbaf6f628a19d9778390bb5c81a393dd936181cc3d826",
+        "config_id": "failed",
+        "created_at": "2026-06-30T12:00:00+00:00",
+        "optuna_trial_number": 1,
+        "outcome": "crash",
+        "phase": "abandoned",
+        "quant": "Q4_K_M",
+        "retry_parent_attempt_id": null,
+        "termination_reason": "crash",
+        "trial_id": "trial-failed",
+        "updated_at": "2026-06-30T12:01:00+00:00"
+      }
+    ]
+  },
+  "metadata": {
+    "drift_diagnostics": [
+      "no drift detected"
+    ],
+    "environment": [
+      "gpu=AMD Radeon",
+      "rocm=6.4"
+    ],
+    "manifest_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "manifest_id": "manifest-ornith-v1",
+    "provenance": [
+      "optimizer=0.1.0",
+      "profile=ornith"
+    ],
+    "reproduction_commands": [
+      "nix develop .#optimizer --command uv run --project optimizer --frozen pytest optimizer/tests -q"
+    ],
+    "resume_mode": "exact"
+  },
+  "run_id": "run-10",
+  "schema_version": 1,
+  "selected": {
+    "config": {
+      "config_id": "beta",
+      "constraint_violations": [],
+      "model_path": "/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-ornith-beta.gguf",
+      "nix_package": "Ornith-beta",
+      "server_flags": [
+        "--ctx-size",
+        "32768",
+        "--flash-attn",
+        "on"
+      ]
+    },
+    "contributions": [
+      {
+        "contribution": 0.0,
+        "direction": "benefit",
+        "maximum": 100.0,
+        "minimum": 90.0,
+        "name": "prompt_throughput",
+        "normalized": 0.0,
+        "value": 90.0,
+        "weight": 0.2
+      },
+      {
+        "contribution": 0.3,
+        "direction": "benefit",
+        "maximum": 45.0,
+        "minimum": 40.0,
+        "name": "generation_throughput",
+        "normalized": 1.0,
+        "value": 45.0,
+        "weight": 0.3
+      },
+      {
+        "contribution": 0.15,
+        "direction": "cost",
+        "maximum": 200.0,
+        "minimum": 180.0,
+        "name": "ttft_p95",
+        "normalized": 1.0,
+        "value": 180.0,
+        "weight": 0.15
+      },
+      {
+        "contribution": 0.15,
+        "direction": "cost",
+        "maximum": 500.0,
+        "minimum": 450.0,
+        "name": "request_latency_p95",
+        "normalized": 1.0,
+        "value": 450.0,
+        "weight": 0.15
+      },
+      {
+        "contribution": 0.15,
+        "direction": "benefit",
+        "maximum": 0.3,
+        "minimum": 0.2,
+        "name": "quality_margin",
+        "normalized": 1.0,
+        "value": 0.3,
+        "weight": 0.15
+      },
+      {
+        "contribution": 0.05,
+        "direction": "benefit",
+        "maximum": 2000.0,
+        "minimum": 1000.0,
+        "name": "vram_headroom",
+        "normalized": 1.0,
+        "value": 2000.0,
+        "weight": 0.05
+      }
+    ],
+    "metrics": {
+      "generation_throughput": 45.0,
+      "prompt_throughput": 90.0,
+      "quality_margin": 0.3,
+      "request_latency_p95": 450.0,
+      "ttft_p95": 180.0,
+      "vram_headroom": 2000.0
+    },
+    "score": 0.8
+  },
+  "stage_counts": {
+    "attempts": 4,
+    "failed_attempts": 1,
+    "frontier": 2,
+    "incomplete": 0,
+    "trials": 4
+  },
+  "status": "selected"
+}
