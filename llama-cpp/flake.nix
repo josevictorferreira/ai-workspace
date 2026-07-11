@@ -6,6 +6,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     llama-cpp.url = "github:am17an/llama.cpp/mtp-clean";
     llama-cpp.inputs.nixpkgs.follows = "nixpkgs";
+    supertonic-py-src = {
+      url = "github:supertone-inc/supertonic-py/v1.3.1";
+      flake = false;
+    };
   };
 
   outputs =
@@ -14,6 +18,7 @@
       nixpkgs,
       flake-utils,
       llama-cpp,
+      supertonic-py-src,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -504,6 +509,38 @@
             ''}/bin/llama-qwythos-9b-wrapper";
           };
 
+        # --- Supertonic 3 TTS ---
+
+        supertonic-py = pkgs.python313Packages.buildPythonPackage rec {
+          pname = "supertonic";
+          version = "1.3.1";
+          format = "pyproject";
+
+          src = supertonic-py-src;
+
+          nativeBuildInputs = with pkgs.python313Packages; [
+            setuptools
+            wheel
+          ];
+
+          propagatedBuildInputs = with pkgs.python313Packages; [
+            onnxruntime
+            numpy
+            soundfile
+            sounddevice
+            huggingface-hub
+            fastapi
+            python-multipart
+            uvicorn
+          ];
+
+          meta = {
+            description = "Lightning-fast on-device multilingual TTS with ONNX Runtime";
+            homepage = "https://github.com/supertone-inc/supertonic-py";
+            license = pkgs.lib.licenses.mit;
+          };
+        };
+
       in
       {
         # Default package is ROCm version
@@ -518,6 +555,60 @@
         packages."Ornith-1.0-9B-Q8_0" = models."Ornith-1.0-9B-Q8_0";
 
         packages.llama-cpp-optimizer = llama-cpp-optimizer;
+
+        packages.supertonic-py = supertonic-py;
+
+        # --- Help listing all commands ---
+        apps.help = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "flake-help" ''
+                printf '%s\n' \
+                  "=== Available Commands (nix run .#<command>) ===" \
+                  "" \
+                  "  nix run .#help              Show this help" \
+                  "  nix run .#cli                CLI chat" \
+                  "  nix run .#server             Start default LLM server" \
+                  "  nix run .#optimizer          Model optimizer" \
+                  "" \
+                  "  nix run .#supertonic-serve   Start TTS server" \
+                  "  nix run .#supertonic-say      Speak text via TTS" \
+                  "" \
+                  "  nix run .#omnicoder          OmniCoder 9B" \
+                  "  nix run .#sushi-coder        Sushi Coder 9B" \
+                  "  nix run .#bonsai             Bonsai 8B" \
+                  "  nix run .#nemotron           Nemotron 30B" \
+                  "  nix run .#gemma              Gemma 4B" \
+                  "  nix run .#gemma-12b          Gemma 12B" \
+                  "  nix run .#gemma-26b          Gemma 26B" \
+                  "  nix run .#gemma-12b-coder    Gemma 12B Coder" \
+                  "  nix run .#ornith-9b          Ornith 9B" \
+                  "  nix run .#ornith-35b         Ornith 35B" \
+                  "  nix run .#qwythos-9b         Qwythos 9B" \
+                  "  nix run .#qwen-*             Qwen variants" \
+                  "  nix run .#qwopus-*           Qwopus variants" \
+                  "  nix run .#qwopus36-27b-mtp   Qwopus 3.6 27B MTP" \
+                  "  nix run .#qwen36-12b-heretic Qwen 3.6 12B Heretic" \
+                  "  nix run .#granite-4-1-8b     Granite 4.1 8B" \
+                  "  nix run .#vibe-thinker       Vibe Thinker" \
+                  "  nix run .#lfm-8b             LFM 2.5 8B" \
+                  "" \
+                  "=== Backend variants ===" \
+                  "" \
+                  "  Append -vulkan to any model for Vulkan backend" \
+                  "  (e.g. nix run .#omnicoder-vulkan)" \
+                  "" \
+                  "=== HIP Kernel Tools ===" \
+                  "" \
+                  "  nix run .#hipfire            HIP kernel fire" \
+                  "  nix run .#hipfire-setup       Setup HIP environment" \
+                  "  nix run .#hipfire-qwen        HIP + Qwen server" \
+                  "  nix run .#hipfire-server      HIP persistent server"
+              '';
+            in
+            "${script}/bin/flake-help";
+        };
 
         # Apps for running the server easily
         # Usage: nix run .#omnicoder OR nix run .#omnicoder-vulkan
@@ -1351,6 +1442,29 @@
           program = "${llama-cpp-optimizer}/bin/llama-cpp-optimizer";
         };
 
+        # --- Supertonic 3 TTS Apps ---
+        apps.supertonic-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "supertonic-serve" ''
+                exec ${supertonic-py}/bin/supertonic serve "$@"
+              '';
+            in
+            "${script}/bin/supertonic-serve";
+        };
+
+        apps.supertonic-say = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "supertonic-say" ''
+                exec ${supertonic-py}/bin/supertonic say "$@"
+              '';
+            in
+            "${script}/bin/supertonic-say";
+        };
+
         # Development shell
         devShells.default = pkgs.mkShell {
           name = "llama-cpp-rocm-shell";
@@ -1359,31 +1473,35 @@
             hipfire-cli
           ];
           shellHook = ''
-                        echo "--- Llama-cpp (ROCm) Development Environment ---"
-                        echo "To run gemma (4B active): nix run .#gemma"
-                        echo "To run gemma-12b (Gemma 4 12B): nix run .#gemma-12b"
-                        echo "To run gemma-12b-q8 (Gemma 4 12B Q8): nix run .#gemma-12b-q8"
-                        echo "To run gemma-12b-coder (Gemma 4 12B Coder, Q4_K_M, velocity): nix run .#gemma-12b-coder"
-                        echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b"
-                        echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b"
-                        echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5"
-                        echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k"
-                        echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b"
-                        echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b"
-                        echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed"
-                        echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp"
-                        echo "To run granite-4.1-8b (IBM Granite 4.1 8B, 80k context): nix run .#granite-4-1-8b"
-                        echo "To run qwopus35-9b-coder (Qwopus 3.5 9B Coder): nix run .#qwopus35-9b-coder"
-                        echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic"
-                        echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp"
-            echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker"
-                        echo "To run speculative server: nix run .#omnicoder"
-                        echo ""
-                        echo "--- Hipfire (RDNA Native) ---"
-                        echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
-                        echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
-                        echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"
-                        echo "General hipfire usage: hipfire --help"
+                                  echo "--- Llama-cpp (ROCm) Development Environment ---"
+                                  echo "To run gemma (4B active): nix run .#gemma"
+                                  echo "To run gemma-12b (Gemma 4 12B): nix run .#gemma-12b"
+                                  echo "To run gemma-12b-q8 (Gemma 4 12B Q8): nix run .#gemma-12b-q8"
+                                  echo "To run gemma-12b-coder (Gemma 4 12B Coder, Q4_K_M, velocity): nix run .#gemma-12b-coder"
+                                  echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b"
+                                  echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b"
+                                  echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5"
+                                  echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k"
+                                  echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b"
+                                  echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b"
+                                  echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed"
+                                  echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp"
+                                  echo "To run granite-4.1-8b (IBM Granite 4.1 8B, 80k context): nix run .#granite-4-1-8b"
+                                  echo "To run qwopus35-9b-coder (Qwopus 3.5 9B Coder): nix run .#qwopus35-9b-coder"
+                                  echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic"
+                                  echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp"
+                      echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker"
+                                  echo "To run speculative server: nix run .#omnicoder"
+            echo "--- Supertonic 3 TTS ---"
+            echo "To start TTS server: nix run .#supertonic-serve"
+            echo "To speak text: nix run .#supertonic-say -- "Hello world""
+            echo
+                                  echo ""
+                                  echo "--- Hipfire (RDNA Native) ---"
+                                  echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
+                                  echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
+                                  echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"
+                                  echo "General hipfire usage: hipfire --help"
           '';
         };
 
@@ -1394,31 +1512,35 @@
             hipfire-cli
           ];
           shellHook = ''
-                        echo "--- Llama-cpp (Vulkan) Development Environment ---"
-                        echo "To run gemma (4B active): nix run .#gemma-vulkan"
-                        echo "To run gemma-12b (Gemma 4 12B): nix run .#gemma-12b-vulkan"
-                        echo "To run gemma-12b-q8 (Gemma 4 12B Q8): nix run .#gemma-12b-q8-vulkan"
-                        echo "To run gemma-12b-coder (Gemma 4 12B Coder, Q4_K_M, velocity): nix run .#gemma-12b-coder-vulkan"
-                        echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b-vulkan"
-                        echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b-vulkan"
-                        echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5-vulkan"
-                        echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k-vulkan"
-                        echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b-vulkan"
-                        echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b-vulkan"
-                        echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed-vulkan"
-                        echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp-vulkan"
-                        echo "To run granite-4.1-8b (IBM Granite 4.1 8B, 80k context): nix run .#granite-4-1-8b-vulkan"
-                        echo "To run qwopus35-9b-coder (Qwopus 3.5 9B Coder): nix run .#qwopus35-9b-coder-vulkan"
-                        echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic-vulkan"
-                        echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp-vulkan"
-            echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker-vulkan"
-                        echo "To run speculative server: nix run .#omnicoder-vulkan"
-                        echo ""
-                        echo "--- Hipfire (RDNA Native) ---"
-                        echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
-                        echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
-                        echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"
-                        echo "General hipfire usage: hipfire --help"
+                                  echo "--- Llama-cpp (Vulkan) Development Environment ---"
+                                  echo "To run gemma (4B active): nix run .#gemma-vulkan"
+                                  echo "To run gemma-12b (Gemma 4 12B): nix run .#gemma-12b-vulkan"
+                                  echo "To run gemma-12b-q8 (Gemma 4 12B Q8): nix run .#gemma-12b-q8-vulkan"
+                                  echo "To run gemma-12b-coder (Gemma 4 12B Coder, Q4_K_M, velocity): nix run .#gemma-12b-coder-vulkan"
+                                  echo "To run gemma-26b (4B active, 256k ctx): nix run .#gemma-26b-vulkan"
+                                  echo "To run gemma-31b (Gemma 4 31B): nix run .#gemma-31b-vulkan"
+                                  echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5-vulkan"
+                                  echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k-vulkan"
+                                  echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b-vulkan"
+                                  echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b-vulkan"
+                                  echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed-vulkan"
+                                  echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp-vulkan"
+                                  echo "To run granite-4.1-8b (IBM Granite 4.1 8B, 80k context): nix run .#granite-4-1-8b-vulkan"
+                                  echo "To run qwopus35-9b-coder (Qwopus 3.5 9B Coder): nix run .#qwopus35-9b-coder-vulkan"
+                                  echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic-vulkan"
+                                  echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp-vulkan"
+                      echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker-vulkan"
+                                  echo "To run speculative server: nix run .#omnicoder-vulkan"
+            echo "--- Supertonic 3 TTS ---"
+            echo "To start TTS server: nix run .#supertonic-serve"
+            echo "To speak text: nix run .#supertonic-say -- "Hello world""
+            echo
+                                  echo ""
+                                  echo "--- Hipfire (RDNA Native) ---"
+                                  echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
+                                  echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
+                                  echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"
+                                  echo "General hipfire usage: hipfire --help"
           '';
         };
 

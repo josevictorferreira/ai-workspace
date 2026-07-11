@@ -1,4 +1,6 @@
 .env
+.omo/
+.omc/
 invokeai/*
 data/*
 data/

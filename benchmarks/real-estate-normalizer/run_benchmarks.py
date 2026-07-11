@@ -171,7 +171,7 @@ def run_benchmarks(model_name, api_url, temperature=None, use_openrouter=False):
             ) if debug else None
 
             result_json = make_api_request_with_retry(api_url, payload, headers)
-            print(f"[DEBUG] API response received successfully") if debug else None
+            print("[DEBUG] API response received successfully") if debug else None
             print(f"API response: {result_json}") if debug else None
             duration = time.time() - start_time
 

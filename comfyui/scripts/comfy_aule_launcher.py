@@ -22,7 +22,6 @@ flash_attn_shim.install_shim()
 
 # Verify it's installed
 assert "flash_attn" in sys.modules, "flash_attn shim not installed!"
-from flash_attn import flash_attn_func  # This should work now
 
 print("Flash attention shim verified!")
 

@@ -104,7 +104,7 @@ def install_shim():
     
     # Create fake package metadata so importlib.metadata.version() works
     try:
-        from importlib.metadata import Distribution, PackageNotFoundError
+        from importlib.metadata import Distribution
         import importlib.metadata
         
         class FakeFlashAttnDistribution(Distribution):

@@ -1,0 +1,40 @@
+=== Available Commands (nix run .#<command>) ====
+
+  nix run .#help              Show this help
+  nix run .#cli                CLI chat
+  nix run .#server             Start default LLM server
+  nix run .#optimizer          Model optimizer
+
+  nix run .#supertonic-serve   Start TTS server
+  nix run .#supertonic-say      Speak text via TTS
+
+  nix run .#omnicoder          OmniCoder 9B
+  nix run .#sushi-coder        Sushi Coder 9B
+  nix run .#bonsai             Bonsai 8B
+  nix run .#nemotron           Nemotron 30B
+  nix run .#gemma              Gemma 4B
+  nix run .#gemma-12b          Gemma 12B
+  nix run .#gemma-26b          Gemma 26B
+  nix run .#gemma-12b-coder    Gemma 12B Coder
+  nix run .#ornith-9b          Ornith 9B
+  nix run .#ornith-35b         Ornith 35B
+  nix run .#qwythos-9b         Qwythos 9B
+  nix run .#qwen-*             Qwen variants
+  nix run .#qwopus-*           Qwopus variants
+  nix run .#qwopus36-27b-mtp   Qwopus 3.6 27B MTP
+  nix run .#qwen36-12b-heretic Qwen 3.6 12B Heretic
+  nix run .#granite-4-1-8b     Granite 4.1 8B
+  nix run .#vibe-thinker       Vibe Thinker
+  nix run .#lfm-8b             LFM 2.5 8B
+
+=== Backend variants ===
+
+  Append -vulkan to any model for Vulkan backend
+  (e.g. nix run .#omnicoder-vulkan)
+
+=== HIP Kernel Tools ===
+
+  nix run .#hipfire            HIP kernel fire
+  nix run .#hipfire-setup       Setup HIP environment
+  nix run .#hipfire-qwen        HIP + Qwen server
+  nix run .#hipfire-server      HIP persistent server

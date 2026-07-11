@@ -93,7 +93,25 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "llama-cpp": "llama-cpp",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "supertonic-py-src": "supertonic-py-src"
+      }
+    },
+    "supertonic-py-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779097455,
+        "narHash": "sha256-FEs511UjMTkgDptxDuBNUTkhTwuv/vp3R3cDfApsNKA=",
+        "owner": "supertone-inc",
+        "repo": "supertonic-py",
+        "rev": "908a56486e821e833a80530ff0cae3ad0b046fce",
+        "type": "github"
+      },
+      "original": {
+        "owner": "supertone-inc",
+        "ref": "v1.3.1",
+        "repo": "supertonic-py",
+        "type": "github"
       }
     },
     "systems": {

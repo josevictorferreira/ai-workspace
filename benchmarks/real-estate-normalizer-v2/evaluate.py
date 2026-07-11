@@ -8,11 +8,10 @@ and generates evaluation.json and index.html report.
 
 import json
 import re
-import sys
 import argparse
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from html import escape as html_escape
 
 
@@ -693,7 +692,7 @@ def generate_html_report(results: List[ModelResult], output_file: str):
 
         html_parts.extend(
             [
-                f"            <tr>",
+                "            <tr>",
                 f'                <td class="model-name">{html_escape(model.model_name)}</td>',
                 f"                <td>{html_escape(model.model_size)}</td>",
                 f"                <td>{html_escape(model.platform)}</td>",
@@ -701,9 +700,9 @@ def generate_html_report(results: List[ModelResult], output_file: str):
                 f"                <td>{model.total_tokens:,}</td>",
                 f'                <td class="{score_class}">{model.overall_score:.1f}</td>',
                 f'                <td><button class="toggle-btn" onclick="toggleDetails(\'{html_escape(model.model_name)}\')">Show</button></td>',
-                f"            </tr>",
+                "            </tr>",
                 f'            <tr class="details" id="details-{html_escape(model.model_name)}">',
-                f'                <td colspan="7">',
+                '                <td colspan="7">',
             ]
         )
 
@@ -718,11 +717,11 @@ def generate_html_report(results: List[ModelResult], output_file: str):
 
             html_parts.extend(
                 [
-                    f'                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">',
+                    '                        <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">',
                     f"                            <strong>Case {case_id}</strong>: {case.total_score:.1f}/100",
-                    f'                            <div class="score-bar" style="margin-top: 5px;">',
+                    '                            <div class="score-bar" style="margin-top: 5px;">',
                     f'                                <div class="score-fill {case_bar_class}" style="width: {case.total_score}%"></div>',
-                    f"                            </div>",
+                    "                            </div>",
                 ]
             )
 
@@ -744,20 +743,20 @@ def generate_html_report(results: List[ModelResult], output_file: str):
                 errors.extend(case.value_errors)
 
             if errors:
-                html_parts.append(f'                            <div class="error">')
+                html_parts.append('                            <div class="error">')
                 for error in errors:
                     html_parts.append(
                         f"                                <div>• {html_escape(error)}</div>"
                     )
-                html_parts.append(f"                            </div>")
+                html_parts.append("                            </div>")
 
-            html_parts.append(f"                        </div>")
+            html_parts.append("                        </div>")
 
         html_parts.extend(
             [
-                f"                    </div>",
-                f"                </td>",
-                f"            </tr>",
+                "                    </div>",
+                "                </td>",
+                "            </tr>",
             ]
         )
 

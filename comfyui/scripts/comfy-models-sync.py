@@ -194,13 +194,13 @@ def download_git(model: dict, dest_dir: Path, use_path_directly: bool = False) -
     # Pull LFS files if present
     gitattributes = dest_path / ".gitattributes"
     if gitattributes.exists() and "lfs" in gitattributes.read_text():
-        print(f"  [LFS] Fetching large files...")
+        print("  [LFS] Fetching large files...")
         lfs_result = subprocess.run(
             ["git", "lfs", "pull", "--include=*"],
             cwd=str(dest_path)
         )
         if lfs_result.returncode != 0:
-            print(f"  [WARN] LFS pull failed, some files may be incomplete")
+            print("  [WARN] LFS pull failed, some files may be incomplete")
     
     return True
 
