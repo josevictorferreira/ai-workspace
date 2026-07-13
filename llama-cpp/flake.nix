@@ -10,6 +10,10 @@
       url = "github:supertone-inc/supertonic-py/v1.3.1";
       flake = false;
     };
+    gepard-inference-src = {
+      url = "git+https://github.com/nineninesix-ai/gepard-inference";
+      flake = false;
+    };
   };
 
   outputs =
@@ -19,6 +23,7 @@
       flake-utils,
       llama-cpp,
       supertonic-py-src,
+      gepard-inference-src,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -541,6 +546,94 @@
           };
         };
 
+        # --- Gepard TTS (ROCm hybrid: Nix torch + uv venv for NeMo/transformers) ---
+
+        pkgs-rocm = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            rocmSupport = true;
+          };
+        };
+
+        rocmDependencies = with pkgs-rocm.rocmPackages; [
+          rocm-runtime
+          rocm-smi
+          rocminfo
+          hip-common
+          miopen
+          rocblas
+          rocsolver
+          rocfft
+          clr
+        ];
+
+        # Nix-managed Python: torchWithRocm + base libs.
+        # NeMo + transformers==5.3.0 + gepard go in a uv venv (--system-site-packages).
+        gepard-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            scipy
+            librosa
+            soundfile
+            safetensors
+            huggingface-hub
+            hydra-core
+            omegaconf
+            rich
+            pyyaml
+            fastapi
+            uvicorn
+            pydantic
+          ]
+        );
+
+        # Shared ROCm env vars for Gepard apps (gfx1030 / 6900 XT stability)
+        gepard-rocm-env = ''
+          export HSA_OVERRIDE_GFX_VERSION="''${HSA_OVERRIDE_GFX_VERSION:-10.3.0}"
+          export PYTORCH_ROCM_ARCH="''${PYTORCH_ROCM_ARCH:-gfx1030}"
+          export PYTORCH_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
+          export TORCH_BLAS_PREFER_HIPBLASLT="0"
+          export PYTORCH_TUNABLEOP_ENABLED="0"
+          export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
+          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath rocmDependencies}:${pkgs.stdenv.cc.cc.lib}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        '';
+
+        # Shared venv setup: creates a uv venv with --system-site-packages,
+        # then pip-installs nemo-toolkit + transformers==5.3.0.
+        # Gepard itself is NOT installed (its source is read-only in the Nix store;
+        # it runs directly via PYTHONPATH/GEPARD_SRC).
+        # Cached at $XDG_CACHE_HOME/gepard-venv; first run takes ~3 min.
+        gepard-venv-setup = ''
+              VENV="''${GEPARD_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/gepard-venv}"
+              # Validate sentinel: qwen3_5 importable AND torch is the ROCm build
+              # (nemo-toolkit pulls a CUDA torch wheel that shadows torchWithRocm;
+              # we uninstall it so the Nix ROCm torch shows through system-site-packages).
+              VENV_OK=0
+              if [ -f "$VENV/.gepard-ready" ]; then
+                "$VENV/bin/python" -c "
+          from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5DynamicCache
+          import torch; assert torch.version.hip
+                " 2>/dev/null && VENV_OK=1
+              fi
+              if [ "$VENV_OK" != "1" ]; then
+                echo "Setting up Gepard venv at $VENV..." >&2
+                ${gepard-python}/bin/uv venv --python ${gepard-python}/bin/python --system-site-packages "$VENV"
+                echo "Installing nemo-toolkit[tts]==2.4.0..." >&2
+                "$VENV/bin/python" -m uv pip install "nemo-toolkit[tts]==2.4.0"
+                echo "Re-pinning transformers==5.3.0 (NeMo pulls an older version)..." >&2
+                "$VENV/bin/python" -m uv pip install "transformers==5.3.0"
+                echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+                "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+                touch "$VENV/.gepard-ready"
+                echo "Gepard venv ready (ROCm torch "$("$VENV/bin/python" -c 'import torch;print(torch.__version__)')")." >&2
+              fi
+        '';
+
       in
       {
         # Default package is ROCm version
@@ -575,6 +668,10 @@
                   "  nix run .#supertonic-serve   Start TTS server" \
                   "  nix run .#supertonic-say      Speak text via TTS" \
                   "" \
+                  "  nix run .#gepard-serve     Gepard TTS server (FastAPI, ROCm)" \
+                  "  nix run .#gepard-say        Gepard voice cloning TTS (ROCm)" \
+                  "" \
+                  "  nix run .#omnicoder          OmniCoder 9B" \
                   "  nix run .#omnicoder          OmniCoder 9B" \
                   "  nix run .#sushi-coder        Sushi Coder 9B" \
                   "  nix run .#bonsai             Bonsai 8B" \
@@ -1465,6 +1562,40 @@
             "${script}/bin/supertonic-say";
         };
 
+        # --- Gepard TTS Apps (ROCm) ---
+        apps.gepard-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "gepard-serve" ''
+                ${gepard-rocm-env}
+                ${gepard-venv-setup}
+                export GEPARD_SRC="${gepard-inference-src}"
+                export GEPARD_SRC="${gepard-inference-src}"
+                # serve.py defaults --config to relative "config.yaml";
+                # pass absolute path if user didn't override.
+                if [[ " $* " != *" --config "* ]]; then
+                  set -- --config "${gepard-inference-src}/config.yaml" "$@"
+                fi
+                exec "$VENV/bin/python" "${gepard-inference-src}/serve.py" "$@"
+              '';
+            in
+            "${script}/bin/gepard-serve";
+        };
+
+        apps.gepard-say = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "gepard-say" ''
+                ${gepard-rocm-env}
+                ${gepard-venv-setup}
+                export GEPARD_SRC="${gepard-inference-src}"
+                exec "$VENV/bin/python" ${./scripts/gepard_say.py} "$@"
+              '';
+            in
+            "${script}/bin/gepard-say";
+        };
         # Development shell
         devShells.default = pkgs.mkShell {
           name = "llama-cpp-rocm-shell";
@@ -1496,6 +1627,10 @@
             echo "To start TTS server: nix run .#supertonic-serve"
             echo "To speak text: nix run .#supertonic-say -- "Hello world""
             echo
+            echo ""
+            echo "--- Gepard TTS (ROCm) ---"
+            echo "To start Gepard server: nix run .#gepard-serve"
+            echo "To speak with Gepard: nix run .#gepard-say -- 'Hello world'"
                                   echo ""
                                   echo "--- Hipfire (RDNA Native) ---"
                                   echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
