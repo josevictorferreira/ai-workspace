@@ -1,0 +1,12 @@
+{%- for message in messages -%}
+	{%- if message["role"] == "system" -%}
+		{{- message["content"] -}}
+	{%- elif message["role"] == "user" -%}
+		{{- "<|TEXT_PROMPT_START|>" -}}
+		{{- message["content"] -}}
+		{{- "<|TEXT_PROMPT_END|>" -}}
+	{%- elif message["role"] == "assistant" -%}
+		{{- "<|SPEECH_GENERATION_START|>" -}}
+		{{- message["content"] -}}
+	{%- endif -%}
+{%- endfor -%}

@@ -14,6 +14,10 @@
       url = "git+https://github.com/nineninesix-ai/gepard-inference";
       flake = false;
     };
+    fish-speech-src = {
+      url = "github:fishaudio/fish-speech";
+      flake = false;
+    };
   };
 
   outputs =
@@ -24,6 +28,7 @@
       llama-cpp,
       supertonic-py-src,
       gepard-inference-src,
+      fish-speech-src,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -70,7 +75,7 @@
           };
           "gemma-4-E4B-it-Q4_K_S" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_K_S.gguf";
-            sha256 = "sha256-phdUsEKgWDyjaahQzDqtWcIAH62KIH3hi4i1sat87MM=";
+            sha256 = "sha256-D9vW30TlBUgaBjb+MWDSMNbeLs8PiiDwalxkre8MrgA=";
           };
           "gemma-4-12b-it-Q4_K_M" = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/gemma-4-12b-it-GGUF/resolve/main/gemma-4-12b-it-Q4_K_M.gguf";
@@ -116,6 +121,18 @@
           "Ornith-1.0-9B-Q8_0" = pkgs.fetchurl {
             url = "https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF/resolve/3296bc7a404871a72ac3f1903f561459c09b5c17/ornith-1.0-9b-Q8_0.gguf";
             sha256 = "sha256-0OS+uqizRQxiCQ3xQI8u5cyyCU+cYQ/95WSmVEg9Tzc=";
+          };
+
+          "Ornith-1.5-9B-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF/resolve/85bf2b98cdcbad4291cb4f46943526cc089f75a0/Ornith-1.5-9B-Q4_K_M.gguf";
+            sha256 = "sha256-fXka/LMYEqzIjNWq/GdTkd8oxvw9jq4AK7TmzD2M/Y0=";
+          };
+
+          # 11.27 GB: largest quant of Ornith-1.5-35B that fits in the ~13 GB
+          # VRAM budget (Hipfire daemon reserves ~3 GB of the 16 GB card).
+          "Ornith-1.5-35B-A3B-IQ2_XS" = pkgs.fetchurl {
+            url = "https://huggingface.co/bartowski/Ornith-1.5-35B-A3B-GGUF/resolve/main/Ornith-1.5-35B-A3B-IQ2_XS.gguf";
+            sha256 = "sha256-K8gHwTl5jNKY6pNx0eJO+FHCfsihlk52HVWuAV3hNzc=";
           };
 
           "Ornith-1.0-35B-Q4_K_M" = pkgs.fetchurl {
@@ -183,6 +200,18 @@
             url = "https://huggingface.co/prithivMLmods/VibeThinker-3B-GGUF/resolve/main/VibeThinker-3B.Q8_0.gguf";
             sha256 = "03jjckmfvfir895vsf91rvx9sgig0mnjyp50vzrpvpgycglbr04f";
           };
+          "NeuTTS-2E-Q8_0" = pkgs.fetchurl {
+            url = "https://huggingface.co/neuphonic/neutts-2e-q8-gguf/resolve/main/neutts-2e-Q8_0.gguf";
+            sha256 = "sha256-ChFi7HHbgiOoGIGuPX66IuSlQTErKg7pv/FB6v2TDNA=";
+          };
+          "NuExtract3-Q4_K_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/numind/NuExtract3-GGUF/resolve/main/NuExtract3-Q4_K_M.gguf";
+            sha256 = "sha256-Ejq6y87Ef1dPX+2GQKZQwgkr19cgfQQxSLEQVr1bdx8=";
+          };
+          "mmproj-NuExtract3-BF16" = pkgs.fetchurl {
+            url = "https://huggingface.co/numind/NuExtract3-GGUF/resolve/main/mmproj-NuExtract3-BF16.gguf";
+            sha256 = "sha256-mlBs5DVEaR9PVvFTN2j0PhiH72m4zXSy56RsTZoVWgE=";
+          };
         };
 
         # Create a directory containing all defined models
@@ -224,7 +253,50 @@
         };
 
         # --- Backends ---
-        llama-rocm = llama-cpp.packages.${system}.rocm.overrideAttrs (oldAttrs: {
+
+        # llama-server reports the --model path as the API model id, which under
+        # Nix is a store-hashed name like "ds90...-Ornith-1.5-9B-Q4_K_M.gguf".
+        # Wrap the binary so it derives a stable id ("Ornith-1.5-9B-Q4_K_M")
+        # from the model file, unless the caller passed --alias explicitly.
+        llamaServerAliasWrapper =
+          pkg:
+          pkgs.writeShellScript "llama-server-alias" ''
+            model=
+            prev=
+            hasAlias=
+            for arg in "$@"; do
+              case "$prev" in
+                -m | --model) model=$arg ;;
+              esac
+              case "$arg" in
+                -a | --alias | --alias=*) hasAlias=1 ;;
+                -m=* | --model=*) model=''${arg#*=} ;;
+              esac
+              prev=$arg
+            done
+            if [ -z "$hasAlias" ] && [ -n "$model" ]; then
+              modelAlias=''${model##*/}
+              modelAlias=''${modelAlias%.gguf}
+              case "$model" in
+                /nix/store/*) modelAlias=''${modelAlias#*-} ;;
+              esac
+              set -- --alias "$modelAlias" "$@"
+            fi
+            exec ${pkg}/bin/llama-server "$@"
+          '';
+
+        withModelAlias =
+          pkg:
+          pkgs.symlinkJoin {
+            name = "${pkg.name}-aliased";
+            paths = [ pkg ];
+            postBuild = ''
+              rm "$out/bin/llama-server"
+              ln -s ${llamaServerAliasWrapper pkg} "$out/bin/llama-server"
+            '';
+          };
+
+        llama-rocm-unwrapped = llama-cpp.packages.${system}.rocm.overrideAttrs (oldAttrs: {
           cmakeFlags =
             builtins.map (
               flag:
@@ -237,7 +309,8 @@
             ) oldAttrs.cmakeFlags
             ++ [ "-DLLAMA_BUILD_UI:BOOL=FALSE" ];
         });
-        llama-vulkan = llama-cpp.packages.${system}.vulkan;
+        llama-rocm = withModelAlias llama-rocm-unwrapped;
+        llama-vulkan = withModelAlias llama-cpp.packages.${system}.vulkan;
 
         # --- Hipfire Integration ---
         hipfire-src = pkgs.fetchFromGitHub {
@@ -600,7 +673,9 @@
           export TORCH_BLAS_PREFER_HIPBLASLT="0"
           export PYTORCH_TUNABLEOP_ENABLED="0"
           export PYTORCH_TUNABLEOP_HIPBLASLT_ENABLED="0"
-          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath rocmDependencies}:${pkgs.stdenv.cc.cc.lib}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export LD_LIBRARY_PATH="${
+            pkgs.lib.makeLibraryPath (rocmDependencies ++ [ pkgs.zlib ])
+          }:${pkgs.stdenv.cc.cc.lib}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         '';
 
         # Shared venv setup: creates a uv venv with --system-site-packages,
@@ -632,6 +707,397 @@
                 touch "$VENV/.gepard-ready"
                 echo "Gepard venv ready (ROCm torch "$("$VENV/bin/python" -c 'import torch;print(torch.__version__)')")." >&2
               fi
+        '';
+
+        # --- Fish Speech S2 Pro TTS (ROCm hybrid: Nix torch + uv venv) ---
+
+        fish-speech-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            huggingface-hub
+            pyaudio
+          ]
+        );
+
+        # S2 Pro defaults to a 32k-token KV cache and a FP32 codec, which do not
+        # fit beside the model on a 16 GB GPU. Keep 4k tokens and use FP16 codec.
+        fish-speech-low-vram-src = pkgs.runCommand "fish-speech-low-vram-src" { } ''
+          cp -r ${fish-speech-src} "$out"
+          chmod -R u+w "$out"
+          substituteInPlace "$out/fish_speech/models/text2semantic/inference.py" \
+            --replace-fail \
+              'DualARTransformer.from_pretrained(checkpoint_path, load_weights=True)' \
+              'DualARTransformer.from_pretrained(checkpoint_path, load_weights=True, max_length=4096)'
+          substituteInPlace "$out/fish_speech/models/dac/inference.py" \
+            --replace-fail \
+              'def load_model(config_name, checkpoint_path, device="cuda"):' \
+              'def load_model(config_name, checkpoint_path, device="cuda", precision=torch.float16):' \
+            --replace-fail 'model.to(device)' 'model.to(device=device, dtype=precision)'
+        '';
+
+        # Cached at $XDG_CACHE_HOME/fish-speech-venv; model weights are cached
+        # separately at $XDG_CACHE_HOME/fish-speech/checkpoints/s2-pro.
+        fish-speech-venv-setup = ''
+                        FISH_SPEECH_VENV="''${FISH_SPEECH_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/fish-speech-venv}"
+                        FISH_SPEECH_CHECKPOINTS="''${FISH_SPEECH_CHECKPOINTS:-''${XDG_CACHE_HOME:-$HOME/.cache}/fish-speech/checkpoints}"
+                        set -e
+                        GCROOT="''${HOME}/.local/share/nix-gcroots/fish-speech-venv"
+                        export PYTHONPATH="${fish-speech-low-vram-src}''${PYTHONPATH:+:$PYTHONPATH}"
+
+                        VENV_OK=0
+                        if [ -f "$FISH_SPEECH_VENV/.fish-speech-ready" ] && [ -e "$FISH_SPEECH_VENV/bin/python" ]; then
+                          "$FISH_SPEECH_VENV/bin/python" -c 'import torch; assert torch.version.hip; import fish_speech; import pyrootutils; import numba' 2>/dev/null && VENV_OK=1
+                        fi
+
+                        if [ "$VENV_OK" != "1" ]; then
+                          echo "Setting up Fish Speech venv at $FISH_SPEECH_VENV..." >&2
+                          rm -rf "$FISH_SPEECH_VENV"
+                          ${fish-speech-python}/bin/uv venv --python ${fish-speech-python}/bin/python --system-site-packages "$FISH_SPEECH_VENV"
+                          "$FISH_SPEECH_VENV/bin/python" -m uv pip install \
+                            numpy "transformers<=4.57.3" datasets lightning hydra-core natsort einops \
+                            librosa rich "gradio>5.0.0" wandb grpcio kui uvicorn loguru loralib \
+                            pyrootutils resampy "numba>=0.60" "einx[torch]==0.2.2" zstandard pydub \
+                            "modelscope==1.17.1" "opencc-python-reimplemented==0.1.7" silero-vad \
+                            ormsgpack tiktoken "pydantic==2.9.2" cachetools safetensors soundfile \
+                            vector-quantize-pytorch argbind flatten-dict pyloudnorm importlib-resources julius \
+                            ffmpy ipython pystoi torch-stoi markdown2 randomname tensorboard
+                          "$FISH_SPEECH_VENV/bin/python" -m uv pip install --no-deps descript-audiotools descript-audio-codec
+                          "$FISH_SPEECH_VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+                          "$FISH_SPEECH_VENV/bin/python" -c 'import audiotools; import dac; import pyrootutils; import torch; assert torch.version.hip'
+                          mkdir -p "$(dirname "$GCROOT")"
+                          nix-store --add-root "$GCROOT" --indirect -r ${fish-speech-python} >/dev/null 2>&1 || true
+                          touch "$FISH_SPEECH_VENV/.fish-speech-ready"
+                        fi
+
+                        if [ ! -f "$FISH_SPEECH_CHECKPOINTS/s2-pro/codec.pth" ]; then
+                          echo "Downloading fishaudio/s2-pro model weights to $FISH_SPEECH_CHECKPOINTS/s2-pro..." >&2
+                          export FISH_SPEECH_CHECKPOINTS
+                          "$FISH_SPEECH_VENV/bin/python" -c '
+          from huggingface_hub import snapshot_download
+          import os
+          snapshot_download("fishaudio/s2-pro", local_dir=os.path.join(os.environ["FISH_SPEECH_CHECKPOINTS"], "s2-pro"))
+                          '
+                        fi
+        '';
+
+        # --- OmniVoice TTS (ROCm hybrid: Nix torch + uv venv) ---
+
+        omnivoice-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            librosa
+            soundfile
+            huggingface-hub
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/omnivoice-venv; first run takes ~3 min.
+        omnivoice-venv-setup = ''
+          OMNIVOICE_PYTHON="${omnivoice-python}/bin/python"
+          VENV="''${OMNIVOICE_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/omnivoice-venv}"
+          GCROOT="''${HOME}/.local/share/nix-gcroots/omnivoice-venv"
+
+          # Validate sentinel: venv exists, interpreter symlinks resolve,
+          # store paths are still present, and omnivoice+ROCm torch are importable.
+          VENV_OK=0
+          if [ -f "$VENV/.omnivoice-ready" ] && [ -e "$VENV/bin/python" ]; then
+            VENV_PYTHON_REAL="$(readlink -f "$VENV/bin/python" 2>/dev/null || true)"
+            case "$VENV_PYTHON_REAL" in
+              /nix/store/*)
+                if [ -e "$VENV_PYTHON_REAL" ]; then
+                  "$VENV/bin/python" -c "
+                    import omnivoice
+                    import torch; assert torch.version.hip
+                  " 2>/dev/null && VENV_OK=1
+                fi
+                ;;
+            esac
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up OmniVoice venv at $VENV..." >&2
+            rm -rf "''$VENV"
+            ${omnivoice-python}/bin/uv venv --python "$OMNIVOICE_PYTHON" --system-site-packages "$VENV"
+            echo "Installing omnivoice..." >&2
+            "$VENV/bin/python" -m uv pip install "omnivoice"
+            echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+            "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+
+            # Pin the whole Python environment (with torchWithRocm) in the Nix store
+            # so GC does not delete the interpreter/ROCm libs that the venv symlinks to.
+            mkdir -p "$(dirname "$GCROOT")"
+            nix-store --add-root "$GCROOT" --indirect -r ${omnivoice-python} >/dev/null 2>&1 || true
+
+            touch "''$VENV/.omnivoice-ready"
+            echo "OmniVoice venv ready (ROCm torch "$('$VENV/bin/python' -c 'import torch;print(torch.__version__)')")." >&2
+          fi
+        '';
+
+        # --- Qwen3-TTS (ROCm hybrid: Nix torch + uv venv) ---
+
+        qwen-tts-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            librosa
+            soundfile
+            huggingface-hub
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/qwen-tts-venv; first run takes ~3 min.
+        qwen-tts-venv-setup = ''
+          QWEN_TTS_PYTHON="${qwen-tts-python}/bin/python"
+          VENV="''${QWEN_TTS_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/qwen-tts-venv}"
+          GCROOT="''${HOME}/.local/share/nix-gcroots/qwen-tts-venv"
+
+          # Validate sentinel: venv exists, interpreter symlinks resolve,
+          # store paths are still present, and qwen-tts+ROCm torch are importable.
+          VENV_OK=0
+          if [ -f "$VENV/.qwen-tts-ready" ] && [ -e "$VENV/bin/python" ]; then
+            VENV_PYTHON_REAL="$(readlink -f "$VENV/bin/python" 2>/dev/null || true)"
+            case "$VENV_PYTHON_REAL" in
+              /nix/store/*)
+                if [ -e "$VENV_PYTHON_REAL" ]; then
+                  "$VENV/bin/python" -c "
+                    from qwen_tts import Qwen3TTSModel
+                    import torch; assert torch.version.hip
+                  " 2>/dev/null && VENV_OK=1
+                fi
+                ;;
+            esac
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up Qwen3-TTS venv at $VENV..." >&2
+            rm -rf "$VENV"
+            ${qwen-tts-python}/bin/uv venv --python "$QWEN_TTS_PYTHON" --system-site-packages "$VENV"
+            echo "Installing qwen-tts..." >&2
+            "$VENV/bin/python" -m uv pip install "qwen-tts"
+            echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+            "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+
+            # Pin the whole Python environment (with torchWithRocm) in the Nix store
+            # so GC does not delete the interpreter/ROCm libs that the venv symlinks to.
+            mkdir -p "$(dirname "$GCROOT")"
+            nix-store --add-root "$GCROOT" --indirect -r ${qwen-tts-python} >/dev/null 2>&1 || true
+
+            touch "$VENV/.qwen-tts-ready"
+            echo "Qwen3-TTS venv ready." >&2
+          fi
+        '';
+
+        # --- Dia2 TTS (ROCm hybrid: Nix torch + uv venv) ---
+
+        dia2-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            soundfile
+            huggingface-hub
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/dia2-venv; first run takes ~2 min.
+        dia2-venv-setup = ''
+          DIA2_PYTHON="${dia2-python}/bin/python"
+          VENV="''${DIA2_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/dia2-venv}"
+          GCROOT="''${HOME}/.local/share/nix-gcroots/dia2-venv"
+
+          # Validate sentinel
+          VENV_OK=0
+          if [ -f "$VENV/.dia2-ready" ] && [ -e "$VENV/bin/python" ]; then
+            VENV_PYTHON_REAL="$(readlink -f "$VENV/bin/python" 2>/dev/null || true)"
+            case "$VENV_PYTHON_REAL" in
+              /nix/store/*)
+                if [ -e "$VENV_PYTHON_REAL" ]; then
+                  "$VENV/bin/python" -c "import torch; assert torch.version.hip; import dia2" 2>/dev/null && VENV_OK=1
+                fi
+                ;;
+            esac
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up Dia2 venv at $VENV..." >&2
+            rm -rf "$VENV"
+            ${dia2-python}/bin/uv venv --python "$DIA2_PYTHON" --system-site-packages "$VENV"
+            echo "Cloning dia2..." >&2
+            mkdir -p "$VENV/src"
+            git clone --depth 1 https://github.com/nari-labs/dia2.git "$VENV/src/dia2"
+            echo "Installing dia2..." >&2
+            "$VENV/bin/python" -m uv pip install --no-deps -e "$VENV/src/dia2"
+            "$VENV/bin/python" -m uv pip install "numpy>=2.1.0,<3.0" "transformers>=4.45.0" "safetensors" "huggingface-hub>=0.24.7" "sphn>=0.2.0" "soundfile>=0.12.1" "whisper-timestamped>=1.14.2" "gradio>=4.44.1" "numba>=0.60" fastapi uvicorn
+            echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+            "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+
+            mkdir -p "$(dirname "$GCROOT")"
+            nix-store --add-root "$GCROOT" --indirect -r ${dia2-python} >/dev/null 2>&1 || true
+
+            touch "$VENV/.dia2-ready"
+            echo "Dia2 venv ready." >&2
+          fi
+        '';
+
+        # --- Higgs Audio v3 TTS (ROCm hybrid: Nix torch + uv venv) ---
+        # bosonai/higgs-tts-3-4b has no native transformers class; we load the
+        # multimodalart trust_remote_code port (identical Boson weights) which
+        # rides plain torch+transformers on top of Nix torchWithRocm (gfx1030).
+        # bf16 backbone + fp32 codec, ~11 GB VRAM on a 16 GB card.
+
+        higgs-tts-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            soundfile
+            huggingface-hub
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/higgs-tts-venv; first run takes ~2 min.
+        higgs-tts-venv-setup = ''
+          HIGGS_TTS_PYTHON="${higgs-tts-python}/bin/python"
+          VENV="''${HIGGS_TTS_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/higgs-tts-venv}"
+          GCROOT="''${HOME}/.local/share/nix-gcroots/higgs-tts-venv"
+
+          VENV_OK=0
+          if [ -f "$VENV/.higgs-tts-ready" ] && [ -e "$VENV/bin/python" ]; then
+            VENV_PYTHON_REAL="$(readlink -f "$VENV/bin/python" 2>/dev/null || true)"
+            case "$VENV_PYTHON_REAL" in
+              /nix/store/*)
+                if [ -e "$VENV_PYTHON_REAL" ]; then
+                  "$VENV/bin/python" -c "
+                    import torch; assert torch.version.hip
+                    import transformers, fastapi, uvicorn
+                  " 2>/dev/null && VENV_OK=1
+                fi
+                ;;
+            esac
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up Higgs TTS venv at $VENV..." >&2
+            rm -rf "$VENV"
+            ${higgs-tts-python}/bin/uv venv --python "$HIGGS_TTS_PYTHON" --system-site-packages "$VENV"
+            echo "Installing transformers>=5.5 + server deps..." >&2
+            "$VENV/bin/python" -m uv pip install "transformers>=5.5" fastapi uvicorn requests soundfile
+            echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+            "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+
+            mkdir -p "$(dirname "$GCROOT")"
+            nix-store --add-root "$GCROOT" --indirect -r ${higgs-tts-python} >/dev/null 2>&1 || true
+
+            touch "$VENV/.higgs-tts-ready"
+            echo "Higgs TTS venv ready." >&2
+          fi
+        '';
+
+        # --- NeuTTS-2E TTS (CPU: neutts + llama-cpp-python) ---
+
+        neutts-tts-python = pkgs.python312.withPackages (
+          ps: with ps; [
+            pip
+            uv
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/neutts-tts-venv; first run ~2 min.
+        neutts-tts-venv-setup = ''
+          NEUTTS_TTS_PYTHON="${neutts-tts-python}/bin/python"
+          VENV="''${NEUTTS_TTS_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/neutts-tts-venv}"
+
+          VENV_OK=0
+          if [ -f "$VENV/.neutts-ready" ] && [ -e "$VENV/bin/python" ]; then
+            "$VENV/bin/python" -c "from neutts import NeuTTS2E; import fastapi, uvicorn, soundfile" 2>/dev/null && VENV_OK=1
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up NeuTTS venv at $VENV..." >&2
+            rm -rf "$VENV"
+            ${neutts-tts-python}/bin/uv venv --python "$NEUTTS_TTS_PYTHON" "$VENV"
+            echo "Installing neutts + server deps..." >&2
+            ${neutts-tts-python}/bin/uv pip install --python "$VENV/bin/python" "neutts[llama]" fastapi uvicorn soundfile
+            touch "$VENV/.neutts-ready"
+            echo "NeuTTS venv ready." >&2
+          fi
+        '';
+
+        # --- Inflect-Micro-v2 TTS (ROCm hybrid: Nix torch + uv venv) ---
+
+        inflect-micro-v2-python = pkgs-rocm.python312.withPackages (
+          ps: with ps; [
+            torchWithRocm
+            torchaudio
+            pip
+            uv
+            numpy
+            scipy
+            soundfile
+            huggingface-hub
+          ]
+        );
+
+        # Cached at $XDG_CACHE_HOME/inflect-micro-v2-venv; first run ~2 min.
+        inflect-micro-v2-venv-setup = ''
+          INFLECT_PYTHON="${inflect-micro-v2-python}/bin/python"
+          VENV="''${INFLECT_VENV:-''${XDG_CACHE_HOME:-$HOME/.cache}/inflect-micro-v2-venv}"
+          MODEL_DIR="''${INFLECT_MODEL_DIR:-''${XDG_CACHE_HOME:-$HOME/.cache}/inflect-micro-v2}"
+          GCROOT="''${HOME}/.local/share/nix-gcroots/inflect-micro-v2-venv"
+
+          VENV_OK=0
+          if [ -f "$VENV/.inflect-ready" ] && [ -e "$VENV/bin/python" ]; then
+            VENV_PYTHON_REAL="$(readlink -f "$VENV/bin/python" 2>/dev/null || true)"
+            case "$VENV_PYTHON_REAL" in
+              /nix/store/*)
+                if [ -e "$VENV_PYTHON_REAL" ]; then
+                  "$VENV/bin/python" -c "
+                    import torch; assert torch.version.hip
+                    import fastapi, uvicorn
+                  " 2>/dev/null && VENV_OK=1
+                fi
+                ;;
+            esac
+          fi
+
+          if [ "$VENV_OK" != "1" ]; then
+            echo "Setting up Inflect Micro v2 venv at $VENV..." >&2
+            rm -rf "$VENV"
+            ${inflect-micro-v2-python}/bin/uv venv --python "$INFLECT_PYTHON" --system-site-packages "$VENV"
+            echo "Installing dependencies..." >&2
+            "$VENV/bin/python" -m uv pip install "fastapi" "uvicorn" "phonemizer" "espeakng-loader" "num2words" "Unidecode"
+            echo "Removing CUDA torch/torchaudio/torchcodec wheels (shadow Nix ROCm builds)..." >&2
+            "$VENV/bin/python" -m uv pip uninstall torch torchaudio torchcodec >/dev/null 2>&1 || true
+
+            mkdir -p "$(dirname "$GCROOT")"
+            nix-store --add-root "$GCROOT" --indirect -r ${inflect-micro-v2-python} >/dev/null 2>&1 || true
+
+            touch "$VENV/.inflect-ready"
+            echo "Inflect Micro v2 venv ready." >&2
+          fi
+
+          if [ ! -f "$MODEL_DIR/model.pth" ]; then
+            echo "Downloading owensong/Inflect-Micro-v2 weights to $MODEL_DIR..." >&2
+            "$VENV/bin/python" -c "
+          from huggingface_hub import snapshot_download
+          import os
+          snapshot_download('owensong/Inflect-Micro-v2', local_dir='$MODEL_DIR')
+            "
+          fi
         '';
 
       in
@@ -671,6 +1137,14 @@
                   "  nix run .#gepard-serve     Gepard TTS server (FastAPI, ROCm)" \
                   "  nix run .#gepard-say        Gepard voice cloning TTS (ROCm)" \
                   "" \
+                  "  nix run .#omnivoice-serve  OmniVoice TTS server (Gradio demo, ROCm)" \
+                  "  nix run .#fish-speech-serve Fish Speech S2 Pro API server (ROCm)" \
+                  "  nix run .#qwen-tts-serve   Qwen3-TTS server (Gradio demo, ROCm)" \
+                  "  nix run .#higgs-tts-serve  Higgs Audio v3 TTS server (ROCm, ~11 GB VRAM)" \
+                  "  nix run .#neutts-2e-serve  NeuTTS-2E emotional TTS server (CPU, ~236 MB)" \
+                  "  nix run .#dia2-serve       Dia2-2B dialogue TTS server (Gradio demo, ROCm)" \
+                  "  nix run .#inflect-micro-v2-serve Inflect-Micro-v2 TTS server (ROCm, 0.0.0.0, ~37 MB)" \
+                  "" \
                   "  nix run .#omnicoder          OmniCoder 9B" \
                   "  nix run .#omnicoder          OmniCoder 9B" \
                   "  nix run .#sushi-coder        Sushi Coder 9B" \
@@ -681,6 +1155,7 @@
                   "  nix run .#gemma-26b          Gemma 26B" \
                   "  nix run .#gemma-12b-coder    Gemma 12B Coder" \
                   "  nix run .#ornith-9b          Ornith 9B" \
+                  "  nix run .#ornith-15-35b      Ornith 1.5 35B A3B IQ2_XS (13 GB VRAM cap)" \
                   "  nix run .#ornith-35b         Ornith 35B" \
                   "  nix run .#qwythos-9b         Qwythos 9B" \
                   "  nix run .#qwen-*             Qwen variants" \
@@ -689,7 +1164,9 @@
                   "  nix run .#qwen36-12b-heretic Qwen 3.6 12B Heretic" \
                   "  nix run .#granite-4-1-8b     Granite 4.1 8B" \
                   "  nix run .#vibe-thinker       Vibe Thinker" \
+                  "  nix run .#neutts-2e          NeuTTS-2E emotional TTS" \
                   "  nix run .#lfm-8b             LFM 2.5 8B" \
+                  "  nix run .#nuextract3         NuExtract3 4B (document extraction VLM)" \
                   "" \
                   "=== Backend variants ===" \
                   "" \
@@ -787,6 +1264,48 @@
           model = models."Ornith-1.0-9B-Q4_K_M";
           ctxSize = "32768";
           nGpuLayers = "99";
+        };
+
+        apps.ornith-15-9b = mkServerWithCtx {
+          pkg = llama-rocm;
+          model = models."Ornith-1.5-9B-Q4_K_M";
+          ctxSize = "65536";
+          nGpuLayers = "99";
+          cacheTypeK = "q8_0";
+          cacheTypeV = "q8_0";
+          batchSize = "2048";
+          ubatchSize = "512";
+        };
+        apps.ornith-15-9b-vulkan = mkServerWithCtx {
+          pkg = llama-vulkan;
+          model = models."Ornith-1.5-9B-Q4_K_M";
+          ctxSize = "65536";
+          nGpuLayers = "99";
+          cacheTypeK = "q8_0";
+          cacheTypeV = "q8_0";
+          batchSize = "2048";
+          ubatchSize = "512";
+        };
+
+        apps.ornith-15-35b = mkServerWithCtx {
+          pkg = llama-rocm;
+          model = models."Ornith-1.5-35B-A3B-IQ2_XS";
+          ctxSize = "65536";
+          nGpuLayers = "99";
+          cacheTypeK = "q4_0";
+          cacheTypeV = "q4_0";
+          batchSize = "2048";
+          ubatchSize = "512";
+        };
+        apps.ornith-15-35b-vulkan = mkServerWithCtx {
+          pkg = llama-vulkan;
+          model = models."Ornith-1.5-35B-A3B-IQ2_XS";
+          ctxSize = "65536";
+          nGpuLayers = "99";
+          cacheTypeK = "q4_0";
+          cacheTypeV = "q4_0";
+          batchSize = "2048";
+          ubatchSize = "512";
         };
 
         apps.ornith-35b = mkServerWithCtx {
@@ -1448,6 +1967,44 @@
           ''}/bin/llama-granite-4.1-8b-vulkan";
         };
 
+        apps.nuextract3 = {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-nuextract3" ''
+            exec ${llama-rocm}/bin/llama-server \
+              -m "${models."NuExtract3-Q4_K_M"}" \
+              --mmproj "${models."mmproj-NuExtract3-BF16"}" \
+              --parallel 1 \
+              --ctx-size "32768" \
+              --jinja \
+              --n-gpu-layers "99" \
+              --cache-type-k "q8_0" \
+              --cache-type-v "q8_0" \
+              --flash-attn on \
+              --host "0.0.0.0" \
+              --port "11434" \
+              "$@"
+          ''}/bin/llama-nuextract3";
+        };
+
+        apps.nuextract3-vulkan = {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-nuextract3-vulkan" ''
+            exec ${llama-vulkan}/bin/llama-server \
+              -m "${models."NuExtract3-Q4_K_M"}" \
+              --mmproj "${models."mmproj-NuExtract3-BF16"}" \
+              --parallel 1 \
+              --ctx-size "32768" \
+              --jinja \
+              --n-gpu-layers "99" \
+              --cache-type-k "q8_0" \
+              --cache-type-v "q8_0" \
+              --flash-attn on \
+              --host "0.0.0.0" \
+              --port "11434" \
+              "$@"
+          ''}/bin/llama-nuextract3-vulkan";
+        };
+
         apps.vibe-thinker =
           let
             chatTemplate = pkgs.writeText "qwen2-chat-template" (
@@ -1500,6 +2057,50 @@
             ''}/bin/llama-vibe-thinker-vulkan";
           };
 
+        apps.neutts-2e =
+          let
+            chatTemplate = pkgs.writeText "neutts-2e-chat-template" (
+              builtins.readFile ./templates/neutts-2e-chat.jinja
+            );
+          in
+          {
+            type = "app";
+            program = "${pkgs.writeShellScriptBin "llama-neutts-2e" ''
+              exec ${llama-rocm}/bin/llama-server \
+                -m "${models."NeuTTS-2E-Q8_0"}" \
+                --parallel 1 \
+                --ctx-size "32768" \
+                --jinja \
+                --chat-template "''$(cat "${chatTemplate}")" \
+                --n-gpu-layers "99" \
+                --host "0.0.0.0" \
+                --port "11434" \
+                "$@"
+            ''}/bin/llama-neutts-2e";
+          };
+
+        apps.neutts-2e-vulkan =
+          let
+            chatTemplate = pkgs.writeText "neutts-2e-chat-template-vulkan" (
+              builtins.readFile ./templates/neutts-2e-chat.jinja
+            );
+          in
+          {
+            type = "app";
+            program = "${pkgs.writeShellScriptBin "llama-neutts-2e-vulkan" ''
+              exec ${llama-vulkan}/bin/llama-server \
+                -m "${models."NeuTTS-2E-Q8_0"}" \
+                --parallel 1 \
+                --ctx-size "32768" \
+                --jinja \
+                --chat-template "''$(cat "${chatTemplate}")" \
+                --n-gpu-layers "99" \
+                --host "0.0.0.0" \
+                --port "11434" \
+                "$@"
+            ''}/bin/llama-neutts-2e-vulkan";
+          };
+
         # --- Hipfire Apps ---
         apps.hipfire = {
           type = "app";
@@ -1545,7 +2146,7 @@
           program =
             let
               script = pkgs.writeShellScriptBin "supertonic-serve" ''
-                exec ${supertonic-py}/bin/supertonic serve "$@"
+                exec ${supertonic-py}/bin/supertonic serve --host 0.0.0.0 "$@"
               '';
             in
             "${script}/bin/supertonic-serve";
@@ -1596,6 +2197,140 @@
             in
             "${script}/bin/gepard-say";
         };
+
+        apps.omnivoice-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "omnivoice-serve" ''
+                ${gepard-rocm-env}
+                ${omnivoice-venv-setup}
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                if [[ " $* " != *" --ip "* ]]; then
+                  set -- --ip 0.0.0.0 "$@"
+                fi
+                if [[ " $* " != *" --port "* ]]; then
+                  set -- --port 8001 "$@"
+                fi
+                exec "$VENV/bin/omnivoice-demo" "$@"
+              '';
+            in
+            "${script}/bin/omnivoice-serve";
+        };
+
+        apps.fish-speech-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "fish-speech-serve" ''
+                ${gepard-rocm-env}
+                ${fish-speech-venv-setup}
+                export FISH_SPEECH_CHECKPOINTS
+                export PYTHONPATH="${fish-speech-low-vram-src}''${PYTHONPATH:+:$PYTHONPATH}"
+                exec "$FISH_SPEECH_VENV/bin/python" "${fish-speech-low-vram-src}/tools/api_server.py" \
+                  --listen 0.0.0.0:8080 \
+                  --llama-checkpoint-path "$FISH_SPEECH_CHECKPOINTS/s2-pro" \
+                  --decoder-checkpoint-path "$FISH_SPEECH_CHECKPOINTS/s2-pro/codec.pth" \
+                  --decoder-config-name modded_dac_vq \
+                  --half \
+                  "$@"
+              '';
+            in
+            "${script}/bin/fish-speech-serve";
+        };
+
+        apps.qwen-tts-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "qwen-tts-serve" ''
+                ${gepard-rocm-env}
+                ${qwen-tts-venv-setup}
+                export PATH="${pkgs.lib.makeBinPath [ pkgs.sox pkgs.ffmpeg ]}:''$PATH"
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                if [[ " $* " != *" --ip "* ]]; then
+                  set -- --ip 0.0.0.0 "$@"
+                fi
+                if [[ " $* " != *" --port "* ]]; then
+                  set -- --port 8000 "$@"
+                fi
+                if [[ " $* " != *" --flash-attn "* && " $* " != *" --no-flash-attn "* ]]; then
+                  set -- --no-flash-attn "$@"
+                fi
+                exec "$VENV/bin/qwen-tts-demo" Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice "$@"
+              '';
+            in
+            "${script}/bin/qwen-tts-serve";
+        };
+
+        apps.higgs-tts-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "higgs-tts-serve" ''
+                ${gepard-rocm-env}
+                ${higgs-tts-venv-setup}
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                exec "$VENV/bin/python" ${./scripts/higgs_tts_serve.py} --host 0.0.0.0 --port 8095 "$@"
+              '';
+            in
+            "${script}/bin/higgs-tts-serve";
+        };
+
+        apps.neutts-2e-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "neutts-2e-serve" ''
+                export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
+                ${neutts-tts-venv-setup}
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                exec "$VENV/bin/python" ${./scripts/neutts_2e_serve.py} --host 0.0.0.0 --port 8096 "$@"
+              '';
+            in
+            "${script}/bin/neutts-2e-serve";
+        };
+
+        apps.dia2-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "dia2-serve" ''
+                ${gepard-rocm-env}
+                ${dia2-venv-setup}
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                exec "$VENV/bin/python" ${./scripts/dia2_serve.py} --host 0.0.0.0 --port 8097 "$@"
+              '';
+            in
+            "${script}/bin/dia2-serve";
+        };
+
+        apps.inflect-micro-v2-serve = {
+          type = "app";
+          program =
+            let
+              script = pkgs.writeShellScriptBin "inflect-micro-v2-serve" ''
+                ${gepard-rocm-env}
+                ${inflect-micro-v2-venv-setup}
+                if [ -f "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token" ]; then
+                    export HF_TOKEN="$(cat "''${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/token")"
+                fi
+                exec "$VENV/bin/python" ${./scripts/inflect_micro_v2_serve.py} --model-dir "$MODEL_DIR" --host 0.0.0.0 --port 8098 "$@"
+              '';
+            in
+            "${script}/bin/inflect-micro-v2-serve";
+        };
+
         # Development shell
         devShells.default = pkgs.mkShell {
           name = "llama-cpp-rocm-shell";
@@ -1622,6 +2357,8 @@
                                   echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic"
                                   echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp"
                       echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker"
+                                  echo "To run neutts-2e (NeuTTS-2E emotional TTS, 0.7B): nix run .#neutts-2e"
+                                  echo "To run nuextract3 (NuExtract3 4B document extraction VLM): nix run .#nuextract3"
                                   echo "To run speculative server: nix run .#omnicoder"
             echo "--- Supertonic 3 TTS ---"
             echo "To start TTS server: nix run .#supertonic-serve"
@@ -1631,8 +2368,29 @@
             echo "--- Gepard TTS (ROCm) ---"
             echo "To start Gepard server: nix run .#gepard-serve"
             echo "To speak with Gepard: nix run .#gepard-say -- 'Hello world'"
-                                  echo ""
-                                  echo "--- Hipfire (RDNA Native) ---"
+            echo ""
+            echo "--- OmniVoice TTS (ROCm) ---"
+            echo "To start OmniVoice server: nix run .#omnivoice-serve"
+            echo ""
+            echo "--- Fish Speech S2 Pro TTS (ROCm) ---"
+            echo "To start Fish Speech API server: nix run .#fish-speech-serve"
+            echo ""
+            echo "--- Qwen3-TTS (ROCm) ---"
+            echo "To start Qwen3-TTS server: nix run .#qwen-tts-serve"
+            echo ""
+            echo "--- Higgs Audio v3 TTS (ROCm) ---"
+            echo "To start Higgs TTS server: nix run .#higgs-tts-serve"
+            echo ""
+            echo "--- NeuTTS 2E TTS ---"
+            echo "To start NeuTTS-2E server: nix run .#neutts-2e-serve"
+            echo ""
+            echo "--- Dia2 TTS (ROCm) ---"
+            echo "To start Dia2 server: nix run .#dia2-serve"
+            echo ""
+            echo "--- Inflect-Micro-v2 TTS (ROCm) ---"
+            echo "To start Inflect-Micro-v2 server: nix run .#inflect-micro-v2-serve"
+            echo ""
+            echo "--- Hipfire (RDNA Native) ---"
                                   echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
                                   echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
                                   echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"
@@ -1665,13 +2423,21 @@
                                   echo "To run qwen36-12b-heretic (Qwen3.6 12B Heretic Uncensored): nix run .#qwen36-12b-heretic-vulkan"
                                   echo "To run qwen35-9b-mtp (Qwen3.5 9B MTP): nix run .#qwen35-9b-mtp-vulkan"
                       echo "To run vibe-thinker (VibeThinker 3B, fastest): nix run .#vibe-thinker-vulkan"
+                                  echo "To run neutts-2e (NeuTTS-2E emotional TTS, 0.7B): nix run .#neutts-2e-vulkan"
+                                  echo "To run nuextract3 (NuExtract3 4B document extraction VLM): nix run .#nuextract3-vulkan"
                                   echo "To run speculative server: nix run .#omnicoder-vulkan"
             echo "--- Supertonic 3 TTS ---"
             echo "To start TTS server: nix run .#supertonic-serve"
             echo "To speak text: nix run .#supertonic-say -- "Hello world""
             echo
-                                  echo ""
-                                  echo "--- Hipfire (RDNA Native) ---"
+            echo ""
+            echo "--- NeuTTS 2E TTS ---"
+            echo "To start NeuTTS-2E server: nix run .#neutts-2e-serve"
+            echo ""
+            echo "--- Inflect-Micro-v2 TTS ---"
+            echo "To start Inflect-Micro-v2 server: nix run .#inflect-micro-v2-serve --device cpu"
+            echo ""
+            echo "--- Hipfire (RDNA Native) ---"
                                   echo "To setup Qwen 3.5 9B: nix run .#hipfire-setup"
                                   echo "To run Qwen 3.5 9B (CLI): nix run .#hipfire-qwen"
                                   echo "To run Qwen 3.5 9B (Server): nix run .#hipfire-server"

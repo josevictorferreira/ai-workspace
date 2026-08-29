@@ -1,0 +1,35 @@
+pi:
+  command: pi
+  args:
+    [
+      "--model",
+      "omniroute/{model}",
+      "--print",
+      "--no-session",
+      "--approve",
+      "{prompt}",
+    ]
+run:
+  max_parallel: 2
+participants:
+  - id: glm-5-2
+    model: glm-5.2
+  - id: kimi-k3
+    model: kimi-k3
+  - id: deepseek-v4-flash
+    model: deepseek-v4-flash
+  - id: minimax-m3
+    model: minimax-m3
+  - id: radagast
+    model: radagast
+judges:
+  - id: sauron
+    model: sauron
+    weight: 1.0
+  - id: saruman
+    model: saruman
+    weight: 1.0
+  - id: gandalf
+    model: gandalf
+    weight: 1.0
+category_weights: [0.2, 0.2, 0.15, 0.15, 0.1, 0.1, 0.05, 0.00]

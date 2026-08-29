@@ -8,3 +8,8 @@ cache/
 __pycache__/
 comfyui/data/*
 ComfyUI
+.venv/
+venv/
+result
+result-*
+

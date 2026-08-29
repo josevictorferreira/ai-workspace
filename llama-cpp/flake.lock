@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "fish-speech-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780999423,
+        "narHash": "sha256-NuxMAau26WWBrqtcUIfB70qoKp3TsgpvK2QTs3ChsUg=",
+        "owner": "fishaudio",
+        "repo": "fish-speech",
+        "rev": "e5e292632cb11e7a27b2b7487f58f612bc101e13",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fishaudio",
+        "repo": "fish-speech",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -107,6 +123,7 @@
     },
     "root": {
       "inputs": {
+        "fish-speech-src": "fish-speech-src",
         "flake-utils": "flake-utils",
         "gepard-inference-src": "gepard-inference-src",
         "llama-cpp": "llama-cpp",

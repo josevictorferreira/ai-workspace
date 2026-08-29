@@ -220,6 +220,9 @@ generate_opencode_config() {
 				},
 				"bytedance-seed/seed-2.0-mini": {
 					"name": "Seed 2.0 Mini (OpenRouter)"
+				},
+				"ds90jrynmvi9qvgig2l75719vbykycvf-Ornith-1.5-9B-Q4_K_M.gguf": {
+					"name": "Ornith 1.5 9B Q4_K_M"
 				}
 			}
     },
@@ -230,6 +233,12 @@ generate_opencode_config() {
         "baseURL": "http://10.10.10.10:11434/v1"
       },
       "models": {
+				"whivngiyhrhpa0g2ljp2r8jikn4nv3b5-Ornith-1.5-35B-A3B-IQ2_XS.gguf": {
+					"name": "Ornith 1.5 35B Q4_K_M (Local)"
+				},
+				"ds90jrynmvi9qvgig2l75719vbykycvf-Ornith-1.5-9B-Q4_K_M.gguf": {
+					"name": "Ornith 1.5 9B Q4_K_M (Local)"
+				},
 				"12x596csad8ny9vvshzjaj7sqsf8c9r5-Tesslate_OmniCoder-9B-Q4_K_S.gguf": {
 					"name": "OmniCoder 9B Q4_K_M (Local)"
 				},
