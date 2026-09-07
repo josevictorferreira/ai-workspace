@@ -14,6 +14,8 @@ fi
 # Defaults
 worktree_root="$REPO_ROOT/worktrees-interactive"
 keep_worktrees=false
+plugins=""
+plugins_dir="${PI_PLUGINS_DIR:-$HOME/.pi/agent/extensions}"
 
 # Parse CLI args
 while [[ $# -gt 0 ]]; do
@@ -27,6 +29,16 @@ while [[ $# -gt 0 ]]; do
       worktree_root="$2"
       shift 2
       ;;
+    --plugins)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins requires an argument" >&2; exit 1; fi
+      plugins="$2"
+      shift 2
+      ;;
+    --plugins-dir)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins-dir requires an argument" >&2; exit 1; fi
+      plugins_dir="$2"
+      shift 2
+      ;;
     -h|--help)
       cat << 'EOF'
 Usage: ./bin/benchmark-interactive [options]
@@ -37,6 +49,8 @@ Useful for debugging why the agent is failing or testing pi manually.
 Options:
   --keep-worktrees
   --worktree-root PATH (default: worktrees-interactive)
+  --plugins NAME[,NAME...]|all  Load pi extensions from --plugins-dir (default: none)
+  --plugins-dir PATH (default: $PI_PLUGINS_DIR or ~/.pi/agent/extensions)
   -h, --help
 EOF
       exit 0
@@ -168,9 +182,39 @@ write_pi_models() {
   cp "$SCRIPT_DIR/benchmark-models.json" "$models_path"
 }
 
+# Expand "all" and validate names; result is a comma-separated list in $plugins.
+resolve_plugins() {
+  [[ -z "$plugins" ]] && return 0
+  if [[ "$plugins" == "all" ]]; then
+    plugins="$(cd "$plugins_dir" && ls -d */ | tr -d '/' | paste -sd,)"
+  fi
+  local name
+  for name in ${plugins//,/ }; do
+    if [[ ! -f "$plugins_dir/$name/index.ts" ]]; then
+      echo "Error: plugin '$name' not found in $plugins_dir" >&2
+      exit 1
+    fi
+  done
+}
+
+# pi auto-loads <agent_dir>/extensions/*/index.ts. Copy the whole tree so
+# cross-plugin imports (e.g. ../skill-state/tool-registry) resolve, then strip
+# index.ts from unselected plugins so pi skips them.
+write_pi_plugins() {
+  local agent_dir="$1"
+  [[ -z "$plugins" ]] && return 0
+  cp -rL --no-preserve=mode "$plugins_dir" "$agent_dir/extensions"
+  local dir name
+  for dir in "$agent_dir"/extensions/*/; do
+    name="$(basename "$dir")"
+    [[ ",$plugins," == *",$name,"* ]] || rm -f "$dir/index.ts"
+  done
+}
+
 main() {
   local wt_path="$worktree_root/interactive"
   mkdir -p "$worktree_root"
+  resolve_plugins
 
   worktrees_to_remove+=("$wt_path")
 
@@ -192,11 +236,14 @@ main() {
   local agent_dir="$sandbox_dir/.pi/agent"
 
   write_pi_models "$agent_dir/models.json"
+  write_pi_plugins "$agent_dir"
 
   echo ""
   echo "=================================================================="
   echo "🟢 Interactive Benchmark Environment Ready!"
   echo "=================================================================="
+  echo ""
+  echo "Plugins loaded: ${plugins:-none}"
   echo ""
   echo "You have been dropped into a bash shell inside the project workspace."
   echo "The environment is configured exactly how the agent runs it."

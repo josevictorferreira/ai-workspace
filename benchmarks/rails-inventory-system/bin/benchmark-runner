@@ -28,6 +28,8 @@ timeout_pi_sec=300
 timeout_rspec_sec=120
 require_envs=()
 print_names=false
+plugins=""
+plugins_dir="${PI_PLUGINS_DIR:-$HOME/.pi/agent/extensions}"
 
 # Parse CLI (portable long-opt parser)
 while [[ $# -gt 0 ]]; do
@@ -68,6 +70,16 @@ while [[ $# -gt 0 ]]; do
       print_names=true
       shift
       ;;
+    --plugins)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins requires an argument" >&2; exit 1; fi
+      plugins="$2"
+      shift 2
+      ;;
+    --plugins-dir)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins-dir requires an argument" >&2; exit 1; fi
+      plugins_dir="$2"
+      shift 2
+      ;;
     -h|--help)
       cat << EOF
 Benchmark Runner v0.1 (Foundation)
@@ -82,6 +94,8 @@ Options:
   --require-env VAR (repeatable)
   --print-names (debug: print derived names)
   --models-config FILE (pi models.json, default: bin/benchmark-models.json)
+  --plugins NAME[,NAME...]|all  Load pi extensions from --plugins-dir (default: none)
+  --plugins-dir PATH (default: $PI_PLUGINS_DIR or ~/.pi/agent/extensions)
   -h, --help
 
 Env: MODEL required (e.g. openrouter/qwen/qwen3.6-27b), pi in PATH
@@ -134,8 +148,43 @@ done
 # Model slugify: snake_case (lower, /:@->_, collapse repeats)
 model_slug() {
   local input="$1"
-  echo "$input" | tr '[:upper:] /:@-' '[:lower:]_' | sed 's/_\\+/_/g; s/^_\\?//; s/_$//'
+  local suffix=""
+  if [[ -n "$plugins" ]]; then
+    suffix="_plugins_$(echo "$plugins" | tr -c 'a-z0-9\n' '_')"
+  fi
+  echo "$(echo "$input" | tr '[:upper:] /:@-' '[:lower:]_' | sed 's/_\\+/_/g; s/^_\\?//; s/_$//')${suffix}"
 }
+
+# Expand "all" and validate names; result is a comma-separated list in $plugins.
+resolve_plugins() {
+  [[ -z "$plugins" ]] && return 0
+  if [[ "$plugins" == "all" ]]; then
+    plugins="$(cd "$plugins_dir" && ls -d */ | tr -d '/' | paste -sd,)"
+  fi
+  local name
+  for name in ${plugins//,/ }; do
+    if [[ ! -f "$plugins_dir/$name/index.ts" ]]; then
+      echo "Error: plugin '$name' not found in $plugins_dir" >&2
+      exit 1
+    fi
+  done
+}
+
+# pi auto-loads <agent_dir>/extensions/*/index.ts. Copy the whole tree so
+# cross-plugin imports (e.g. ../skill-state/tool-registry) resolve, then strip
+# index.ts from unselected plugins so pi skips them.
+write_pi_plugins() {
+  local agent_dir="$1"
+  [[ -z "$plugins" ]] && return 0
+  cp -rL --no-preserve=mode "$plugins_dir" "$agent_dir/extensions"
+  local dir name
+  for dir in "$agent_dir"/extensions/*/; do
+    name="$(basename "$dir")"
+    [[ ",$plugins," == *",$name,"* ]] || rm -f "$dir/index.ts"
+  done
+}
+
+resolve_plugins
 
 # Fix branch name: v1/fix/<fail_suffix>/<model_snake>
 fix_branch_name() {
@@ -242,6 +291,7 @@ fi
 # Debug: print names (no execution)
 if [[ "$print_names" == true ]]; then
   echo "MODEL: $MODEL"
+  echo "Plugins: ${plugins:-none}"
   echo "Slug: $(model_slug "$MODEL")"
   echo "Branches glob: $branches"
   echo "Filter: $filter"
@@ -262,8 +312,8 @@ results_init() {
     cat > "$RESULTS_FILE" << 'EOF'
 # Benchmark Results
 
-| Timestamp | Model | Fail Branch | Fix Branch | Pi RC | Pre RC | Post RC | Status | Commit | Log Dir |
-|-----------|-------|-------------|------------|-------------|--------|---------|--------|--------|---------|
+| Timestamp | Model | Plugins | Fail Branch | Fix Branch | Pi RC | Pre RC | Post RC | Status | Commit | Log Dir |
+|-----------|-------|---------|-------------|------------|-------------|--------|---------|--------|--------|---------|
 EOF
   fi
 }
@@ -273,7 +323,7 @@ results_write_baseline() {
   local rc="$2"
   local log_dir="$3"
   local status=$( [[ "$rc" -eq 0 ]] && echo "PASS" || echo "FAIL" )
-  echo "| $(date +%Y%m%d-%H%M%S) | $model | v1/working | BASELINE | - | $rc | - | $status | - | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $(date +%Y%m%d-%H%M%S) | $model | ${plugins:-none} | v1/working | BASELINE | - | $rc | - | $status | - | $log_dir |" >> "$RESULTS_FILE"
 }
 
 results_add_row() {
@@ -287,7 +337,7 @@ results_add_row() {
   local status="$8"
   local commit_sha="$9"
   local log_dir="${10}"
-  echo "| $timestamp | $model | $fail_branch | $fix_branch | $pi_rc | $pre_rc | $post_rc | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $timestamp | $model | ${plugins:-none} | $fail_branch | $fix_branch | $pi_rc | $pre_rc | $post_rc | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
 }
 
 # Task 11: Main benchmark loop
@@ -569,6 +619,7 @@ pi_run() {
 
     mkdir -p "$agent_dir"
     cp "$models_config_path" "$agent_dir/models.json"
+    write_pi_plugins "$agent_dir"
 
     # JSONL event stream: readable with jq and gives an exact tool-call count.
     # stdin must be /dev/null or `pi -p` blocks waiting on it.

@@ -17,6 +17,8 @@ timeout_pi_sec=3600
 timeout_rspec_sec=300
 keep_worktrees=true
 models_config_path="$SCRIPT_DIR/benchmark-models.json"
+plugins=""
+plugins_dir="${PI_PLUGINS_DIR:-$HOME/.pi/agent/extensions}"
 
 # Parse CLI args
 while [[ $# -gt 0 ]]; do
@@ -45,6 +47,16 @@ while [[ $# -gt 0 ]]; do
       models_config_path="$2"
       shift 2
       ;;
+    --plugins)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins requires an argument" >&2; exit 1; fi
+      plugins="$2"
+      shift 2
+      ;;
+    --plugins-dir)
+      if [[ -z "${2:-}" ]]; then echo "Error: --plugins-dir requires an argument" >&2; exit 1; fi
+      plugins_dir="$2"
+      shift 2
+      ;;
     -h|--help)
       cat << 'EOF'
 Usage: MODEL=<model> ./bin/benchmark-runner-fast [options]
@@ -57,6 +69,8 @@ Options:
   --timeout-pi-sec SEC (default: 3600)
   --timeout-rspec-sec SEC (default: 300)
   --models-config FILE (pi models.json, default: bin/benchmark-models.json)
+  --plugins NAME[,NAME...]|all  Load pi extensions from --plugins-dir (default: none)
+  --plugins-dir PATH (default: $PI_PLUGINS_DIR or ~/.pi/agent/extensions)
   -h, --help
 
 Env: MODEL required (e.g. openrouter/qwen/qwen3.6-27b), pi in PATH
@@ -81,8 +95,43 @@ if ! command -v pi >/dev/null 2>&1; then
   exit 1
 fi
 
+
+# Expand "all" and validate names; result is a comma-separated list in $plugins.
+resolve_plugins() {
+  [[ -z "$plugins" ]] && return 0
+  if [[ "$plugins" == "all" ]]; then
+    plugins="$(cd "$plugins_dir" && ls -d */ | tr -d '/' | paste -sd,)"
+  fi
+  local name
+  for name in ${plugins//,/ }; do
+    if [[ ! -f "$plugins_dir/$name/index.ts" ]]; then
+      echo "Error: plugin '$name' not found in $plugins_dir" >&2
+      exit 1
+    fi
+  done
+}
+
+# pi auto-loads <agent_dir>/extensions/*/index.ts. Copy the whole tree so
+# cross-plugin imports (e.g. ../skill-state/tool-registry) resolve, then strip
+# index.ts from unselected plugins so pi skips them.
+write_pi_plugins() {
+  local agent_dir="$1"
+  [[ -z "$plugins" ]] && return 0
+  cp -rL --no-preserve=mode "$plugins_dir" "$agent_dir/extensions"
+  local dir name
+  for dir in "$agent_dir"/extensions/*/; do
+    name="$(basename "$dir")"
+    [[ ",$plugins," == *",$name,"* ]] || rm -f "$dir/index.ts"
+  done
+}
+
+resolve_plugins
+
 # Compute derived values
 MODEL_SLUG="$(echo "$MODEL" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '_' | tr -s '_' | sed 's/^_\|_$//g')"
+if [[ -n "$plugins" ]]; then
+  MODEL_SLUG="${MODEL_SLUG}_plugins_$(echo "$plugins" | tr -c 'a-z0-9\n' '_')"
+fi
 FAIL_BRANCH="v1/failing"
 FIX_BRANCH="v1/fix/${MODEL_SLUG}"
 
@@ -166,8 +215,8 @@ results_init() {
     cat > "$RESULTS_FILE" << 'EOF'
 # Fast Benchmark Results
 
-| timestamp | model | pre_failures | post_failures | fixed | status | duration_sec | tool_calls | commit | log_dir |
-|-----------|-------|--------------|---------------|-------|--------|--------------|------------|--------|---------|
+| timestamp | model | plugins | pre_failures | post_failures | fixed | status | duration_sec | tool_calls | tools_used | commit | log_dir |
+|-----------|-------|---------|--------------|---------------|-------|--------|--------------|------------|------------|--------|---------|
 EOF
   fi
 }
@@ -183,8 +232,9 @@ results_add_row() {
   local tool_calls="$8"
   local commit="$9"
   local log_dir="${10}"
+  local tools_used="${11}"
 
-  echo "| $timestamp | $model | $pre | $post | $fixed | $status | $duration | $tool_calls | $commit | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $timestamp | $model | ${plugins:-none} | $pre | $post | $fixed | $status | $duration | $tool_calls | $tools_used | $commit | $log_dir |" >> "$RESULTS_FILE"
 }
 
 db_test_env_number() {
@@ -342,6 +392,7 @@ pi_run() {
   local agent_dir="$sandbox_dir/.pi/agent"
 
   write_pi_models "$agent_dir/models.json"
+  write_pi_plugins "$agent_dir"
 
   # JSONL event stream: readable with jq and gives an exact tool-call count.
   # stdin must be /dev/null or `pi -p` blocks waiting on it.
@@ -376,6 +427,15 @@ pi_tool_calls() {
   local count
   count=$(grep -c '"type":"tool_execution_start"' "$log_path" 2>/dev/null) || count=0
   echo "$count"
+}
+
+# Distinct tool names called, as name:count (e.g. "bash:12,edit:3")
+pi_tools_used() {
+  local log_path="$1"
+  local used
+  used=$(jq -r 'select(.type=="tool_execution_start") | .toolName' "$log_path" 2>/dev/null \
+    | sort | uniq -c | sort -rn | awk '{print $2":"$1}' | paste -sd,)
+  echo "${used:--}"
 }
 
 main() {
@@ -419,6 +479,7 @@ main() {
   local pi_result=$(pi_run "$wt_path" "$prompt_path" "$pi_log")
   local pi_duration=$(echo "$pi_result" | jq -r .elapsed_sec)
   local tool_calls=$(pi_tool_calls "$pi_log")
+  local tools_used=$(pi_tools_used "$pi_log")
 
   echo "=== RSpec POST ==="
   local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
@@ -431,17 +492,19 @@ main() {
     commit_sha=$(git_auto_commit "$wt_path" "$MODEL_SLUG")
   fi
 
-  results_add_row "$display_time" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$pi_duration" "$tool_calls" "$commit_sha" "$log_dir"
+  results_add_row "$display_time" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$pi_duration" "$tool_calls" "$commit_sha" "$log_dir" "$tools_used"
 
   db_drop "$wt_path" "$test_env"
 
   echo ""
   echo "=== Benchmark Final Results ==="
   echo "Model:         $MODEL"
+  echo "Plugins:       ${plugins:-none}"
   echo "Status:        $status"
   echo "Fixed:         $fixed / $pre_failures (remaining: $post_failures)"
   echo "Duration:      ${pi_duration}s"
   echo "Tool Calls:    $tool_calls"
+  echo "Tools Used:    $tools_used"
   if [[ -n "$commit_sha" ]]; then
     echo "Commit:        $commit_sha"
   fi

@@ -1,5 +1,15 @@
 # MODEL BENCHMARKS
 
+## Pi Agent Basic Tools (codegraph, lsp, search, context7)
+
+### Openrouter Mercury 2.5 Preview (Medium)
+- Time elapsed: 40s
+- Tests: 31/0 success/failures
+- Cost: 0.006
+- Context: 38k
+- Tool Calls: 20
+- Error Calls: 0
+
 ## Pi Agent Naked(No tools, no contexts loaded) Runs
 
 ### Openrouter Mercury 2.5 Preview (Medium)
