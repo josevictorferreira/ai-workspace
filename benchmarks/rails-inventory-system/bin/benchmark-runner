@@ -578,6 +578,7 @@ pi_run() {
         PI_CODING_AGENT_DIR="$agent_dir" \
         OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
         BAILIAN_CODING_PLAN_API_KEY="${BAILIAN_CODING_PLAN_API_KEY:-}" \
+        VELOX_API_KEY="${VELOX_API_KEY:-}" \
         timeout "${timeout_pi_sec}s" pi -p --mode json --no-session \
             --model "$MODEL" @"$prompt_path" "Fix the failing tests" \
             < /dev/null > "$log_path" 2>&1) || exit_code=$?

@@ -220,6 +220,7 @@ main() {
     RAILS_ENV="test" \
     OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
     BAILIAN_CODING_PLAN_API_KEY="${BAILIAN_CODING_PLAN_API_KEY:-}" \
+    VELOX_API_KEY="${VELOX_API_KEY:-}" \
     bash)
 
   echo "Exiting interactive environment..."

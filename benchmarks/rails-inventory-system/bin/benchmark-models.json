@@ -71,7 +71,10 @@
           "id": "qwen3.5-plus",
           "name": "Qwen3.5 Plus",
           "reasoning": true,
-          "input": ["text", "image"]
+          "input": [
+            "text",
+            "image"
+          ]
         },
         {
           "id": "qwen3-max-2026-01-23",
@@ -104,7 +107,177 @@
           "id": "kimi-k2.5",
           "name": "Kimi K2.5",
           "reasoning": true,
-          "input": ["text", "image"]
+          "input": [
+            "text",
+            "image"
+          ]
+        }
+      ]
+    },
+    "velox": {
+      "api": "openai-completions",
+      "baseUrl": "https://velox.josevictor.me/v1",
+      "apiKey": "$VELOX_API_KEY",
+      "models": [
+        {
+          "id": "deepseek-v4-flash",
+          "name": "DeepSeek V4 Flash (Velox)"
+        },
+        {
+          "id": "deepseek-v4-pro",
+          "name": "DeepSeek V4 Pro (Velox)"
+        },
+        {
+          "id": "gandalf",
+          "name": "Gandalf (Velox)"
+        },
+        {
+          "id": "gemini-3-1-pro",
+          "name": "Gemini 3.1 Pro (Velox)"
+        },
+        {
+          "id": "gemini-3-7-flash",
+          "name": "Gemini 3.7 Flash (Velox)"
+        },
+        {
+          "id": "gemini-3-8-flash",
+          "name": "Gemini 3.8 Flash (Velox)"
+        },
+        {
+          "id": "glm-5-1",
+          "name": "GLM 5.1 (Velox)"
+        },
+        {
+          "id": "glm-5-1-thinking",
+          "name": "GLM 5.1 Thinking (Velox)"
+        },
+        {
+          "id": "glm-5-2",
+          "name": "GLM 5.2 (Velox)"
+        },
+        {
+          "id": "glm-5-2-max",
+          "name": "GLM 5.2 Max (Velox)"
+        },
+        {
+          "id": "glm-5-3",
+          "name": "GLM 5.3 (Velox)"
+        },
+        {
+          "id": "glm-5-3-flash",
+          "name": "GLM 5.3 Flash (Velox)"
+        },
+        {
+          "id": "haldir",
+          "name": "Haldir (Velox)"
+        },
+        {
+          "id": "kimi-k2-5",
+          "name": "Kimi K2.5 (Velox)"
+        },
+        {
+          "id": "kimi-k2-6",
+          "name": "Kimi K2.6 (Velox)"
+        },
+        {
+          "id": "kimi-k2-7-code",
+          "name": "Kimi K2.7 Code (Velox)"
+        },
+        {
+          "id": "kimi-k3",
+          "name": "Kimi K3 (Velox)"
+        },
+        {
+          "id": "legolas",
+          "name": "Legolas (Velox)"
+        },
+        {
+          "id": "mimo-v2-5",
+          "name": "MiMo V2.5 (Velox)"
+        },
+        {
+          "id": "mimo-v2-5-pro",
+          "name": "MiMo V2.5 Pro (Velox)"
+        },
+        {
+          "id": "minimax-m2-5",
+          "name": "MiniMax M2.5 (Velox)"
+        },
+        {
+          "id": "minimax-m2-7",
+          "name": "MiniMax M2.7 (Velox)"
+        },
+        {
+          "id": "minimax-m3",
+          "name": "MiniMax M3 (Velox)"
+        },
+        {
+          "id": "pippin",
+          "name": "Pippin (Velox)"
+        },
+        {
+          "id": "qwen3-6-plus",
+          "name": "Qwen3.6 Plus (Velox)"
+        },
+        {
+          "id": "qwen3-7-max",
+          "name": "Qwen3.7 Max (Velox)"
+        },
+        {
+          "id": "qwen3-7-plus",
+          "name": "Qwen3.7 Plus (Velox)"
+        },
+        {
+          "id": "qwen3-8-max",
+          "name": "Qwen3.8 Max (Velox)"
+        },
+        {
+          "id": "radagast",
+          "name": "Radagast (Velox)"
+        },
+        {
+          "id": "samwise",
+          "name": "Samwise (Velox)"
+        },
+        {
+          "id": "gemini-flash-lite-puter",
+          "name": "Gemini Flash Lite Puter (Velox)"
+        },
+        {
+          "id": "gemma-4-bazaarlink",
+          "name": "Gemma 4 Bazaarlink (Velox)"
+        },
+        {
+          "id": "glm-4-5-air-zai",
+          "name": "GLM 4.5 Air ZAI (Velox)"
+        },
+        {
+          "id": "gpt-5-6-luna-codex",
+          "name": "GPT 5.6 Luna Codex (Velox)"
+        },
+        {
+          "id": "gpt-5-6-terra-codex",
+          "name": "GPT 5.6 Terra Codex (Velox)"
+        },
+        {
+          "id": "gpt-oss-120b-cerebras",
+          "name": "GPT-OSS 120B Cerebras (Velox)"
+        },
+        {
+          "id": "gpt-oss-120b-openrouter",
+          "name": "GPT-OSS 120B OpenRouter (Velox)"
+        },
+        {
+          "id": "mistral-medium",
+          "name": "Mistral Medium (Velox)"
+        },
+        {
+          "id": "nemotron-super-nvidia",
+          "name": "Nemotron Super Nvidia (Velox)"
+        },
+        {
+          "id": "qwen3-6-35b-yoloauto",
+          "name": "Qwen3.6 35B Yoloauto (Velox)"
         }
       ]
     }
