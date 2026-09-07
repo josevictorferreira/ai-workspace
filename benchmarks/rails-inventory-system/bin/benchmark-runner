@@ -8,12 +8,12 @@ set -euo pipefail
 #
 # Usage:
 #   MODEL=grok-4 ./bin/benchmark-runner --branches 'v1/fail/*' --filter 'order_spec' \\
-#     --worktree-root .sisyphus/worktrees --timeout-opencode-sec 300 --keep-worktrees
+#     --worktree-root .sisyphus/worktrees --timeout-pi-sec 300 --keep-worktrees
 #
 # Debug:
 #   ./bin/benchmark-runner --print-names --branches 'v1/fail/*'
 #
-# Required: MODEL env var, opencode in PATH
+# Required: MODEL env var (e.g. openrouter/qwen/qwen3.6-27b), pi in PATH
 # Optional: --require-env DB_HOST
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,7 +24,7 @@ branches="v1/fail/*"
 filter=""
 keep_worktrees=false
 worktree_root=".sisyphus/worktrees"
-timeout_opencode_sec=300
+timeout_pi_sec=300
 timeout_rspec_sec=120
 require_envs=()
 print_names=false
@@ -48,8 +48,8 @@ while [[ $# -gt 0 ]]; do
       worktree_root="$2"
       shift 2
       ;;
-    --timeout-opencode-sec)
-      timeout_opencode_sec="$2"
+    --timeout-pi-sec)
+      timeout_pi_sec="$2"
       shift 2
       ;;
     --timeout-rspec-sec)
@@ -60,8 +60,8 @@ while [[ $# -gt 0 ]]; do
       require_envs+=("$2")
       shift 2
       ;;
-    --opencode-config)
-      opencode_config_path="$2"
+    --models-config)
+      models_config_path="$2"
       shift 2
       ;;
     --print-names)
@@ -77,15 +77,15 @@ Options:
   --filter REGEX
   --keep-worktrees
   --worktree-root PATH (default: .sisyphus/worktrees)
-  --timeout-opencode-sec SEC (default: 300)
+  --timeout-pi-sec SEC (default: 300)
   --timeout-rspec-sec SEC (default: 120)
   --require-env VAR (repeatable)
   --print-names (debug: print derived names)
-  --opencode-config FILE (opencode.json format)
+  --models-config FILE (pi models.json, default: bin/benchmark-models.json)
   -h, --help
 
-Env: MODEL required, opencode in PATH
-Configure providers via opencode.json
+Env: MODEL required (e.g. openrouter/qwen/qwen3.6-27b), pi in PATH
+Configure providers and models via bin/benchmark-models.json
 EOF
       exit 0
       ;;
@@ -111,29 +111,17 @@ if [[ -z ${MODEL+x} ]]; then
   exit 1
 fi
 
-if ! command -v opencode >/dev/null 2>&1; then
-  echo "Error: opencode not in PATH" >&2
+if ! command -v pi >/dev/null 2>&1; then
+  echo "Error: pi not in PATH" >&2
   exit 1
 fi
 
-# Detect opencode run flags once at startup
-OPENCODE_RUN_HELP=$(opencode run --help 2>/dev/null)
-HAS_PROMPT_FILE=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt-file && echo true || echo false)
-HAS_PROMPT=$(echo "$OPENCODE_RUN_HELP" | grep -q -- --prompt && echo true || echo false)
-readonly HAS_PROMPT_FILE HAS_PROMPT
+models_config_path="${models_config_path:-$SCRIPT_DIR/benchmark-models.json}"
 
-opencode_config_path=""
-
-setup_opencode_config() {
-  local isolated_dir="$1"
-  local opencode_config_path="$2"
-  local config_dir="$isolated_dir/share/opencode"
-  mkdir -p "$config_dir"
-  if [[ -n "$opencode_config_path" && -f "$opencode_config_path" ]]; then
-    cp "$opencode_config_path" "$config_dir/opencode.json"
-    export OPENCODE_CONFIG="$config_dir/opencode.json"
-  fi
-}
+if [[ ! -f "$models_config_path" ]]; then
+  echo "Error: models config not found: $models_config_path" >&2
+  exit 1
+fi
 
 
 for var in "${require_envs[@]}"; do
@@ -258,7 +246,7 @@ if [[ "$print_names" == true ]]; then
   echo "Branches glob: $branches"
   echo "Filter: $filter"
   echo "Worktree root: $worktree_root"
-  echo "Timeouts: opencode=${timeout_opencode_sec}s, rspec=${timeout_rspec_sec}s"
+  echo "Timeouts: pi=${timeout_pi_sec}s, rspec=${timeout_rspec_sec}s"
   echo "Example: fail 'v1/fail/order_spec' -> fix '$(fix_branch_name 'v1/fail/order_spec')'"
   echo "Worktree path: $worktree_root/example"
   exit 0
@@ -274,7 +262,7 @@ results_init() {
     cat > "$RESULTS_FILE" << 'EOF'
 # Benchmark Results
 
-| Timestamp | Model | Fail Branch | Fix Branch | OpenCode RC | Pre RC | Post RC | Status | Commit | Log Dir |
+| Timestamp | Model | Fail Branch | Fix Branch | Pi RC | Pre RC | Post RC | Status | Commit | Log Dir |
 |-----------|-------|-------------|------------|-------------|--------|---------|--------|--------|---------|
 EOF
   fi
@@ -293,13 +281,13 @@ results_add_row() {
   local model="$2"
   local fail_branch="$3"
   local fix_branch="$4"
-  local opencode_rc="$5"
+  local pi_rc="$5"
   local pre_rc="$6"
   local post_rc="$7"
   local status="$8"
   local commit_sha="$9"
   local log_dir="${10}"
-  echo "| $timestamp | $model | $fail_branch | $fix_branch | $opencode_rc | $pre_rc | $post_rc | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
+  echo "| $timestamp | $model | $fail_branch | $fix_branch | $pi_rc | $pre_rc | $post_rc | $status | ${commit_sha:-N/A} | $log_dir |" >> "$RESULTS_FILE"
 }
 
 # Task 11: Main benchmark loop
@@ -380,11 +368,11 @@ main() {
     # Generate PROMPT.md
     generate_prompt_md "$wt_path" "$fail_branch" "$pre_log"
 
-    # Run opencode
-    echo "Running opencode..."
+    # Run pi
+    echo "Running pi..."
     local prompt_path="$wt_path/PROMPT.md"
-    local opencode_result=$(opencode_run "$wt_path" "$prompt_path")
-    local opencode_rc=$(echo "$opencode_result" | jq -r '.exit_code')
+    local pi_result=$(pi_run "$wt_path" "$prompt_path")
+    local pi_rc=$(echo "$pi_result" | jq -r '.exit_code')
 
     # RSpec POST
     echo "Running rspec (post)..."
@@ -399,7 +387,7 @@ main() {
     fi
 
     # Record results
-    results_add_row "$timestamp" "$MODEL" "$fail_branch" "$fix_branch" "$opencode_rc" "$pre_rc" "$post_rc" "$post_status" "$commit_sha" "$branch_log"
+    results_add_row "$timestamp" "$MODEL" "$fail_branch" "$fix_branch" "$pi_rc" "$pre_rc" "$post_rc" "$post_status" "$commit_sha" "$branch_log"
 
     # Cleanup DB
     db_drop "$wt_path" "$test_env" 2>/dev/null || true
@@ -413,10 +401,6 @@ main() {
   echo "Logs: $log_root"
 }
 
-# Run main (unless --print-names)
-if [[ "$print_names" != true ]]; then
-  main
-fi
 
 generate_prompt_md() {
   local worktree_path="$1"
@@ -567,7 +551,7 @@ rspec_run() {
     echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"status\":\"$status\",\"log_path\":\"$log_path\"}"
 }
 
-opencode_run() {
+pi_run() {
     local worktree_path="$1"
     local prompt_path="$2"
 
@@ -577,42 +561,35 @@ opencode_run() {
     local branch_name=$(basename "$worktree_path")
     local log_dir="$repo_root/.sisyphus/bench-logs/${timestamp}/${branch_name}"
     mkdir -p "$log_dir"
-    local log_path="${log_dir}/opencode.log"
+    local log_path="${log_dir}/pi.jsonl"
 
     local start_sec=$(date +%s)
+    local sandbox_dir="$worktree_path/.pi-isolated"
+    local agent_dir="$sandbox_dir/.pi/agent"
 
-    cd "$worktree_path" || {
-        echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
-        return 1
-    }
+    mkdir -p "$agent_dir"
+    cp "$models_config_path" "$agent_dir/models.json"
 
-    opencode_setup_isolation "$worktree_path"
+    # JSONL event stream: readable with jq and gives an exact tool-call count.
+    # stdin must be /dev/null or `pi -p` blocks waiting on it.
+    local exit_code=0
+    (cd "$worktree_path" && env \
+        HOME="$sandbox_dir" \
+        PI_CODING_AGENT_DIR="$agent_dir" \
+        OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
+        BAILIAN_CODING_PLAN_API_KEY="${BAILIAN_CODING_PLAN_API_KEY:-}" \
+        timeout "${timeout_pi_sec}s" pi -p --mode json --no-session \
+            --model "$MODEL" @"$prompt_path" "Fix the failing tests" \
+            < /dev/null > "$log_path" 2>&1) || exit_code=$?
 
-    if [[ "$HAS_PROMPT_FILE" == true ]]; then
-        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt-file "$prompt_path" --dir . > "$log_path" 2>&1
-    elif [[ "$HAS_PROMPT" == true ]]; then
-        local prompt_content
-        prompt_content=$(cat "$prompt_path")
-        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --prompt "$prompt_content" --dir . > "$log_path" 2>&1
-    else
-        timeout "${timeout_opencode_sec}s" opencode run --model "$MODEL" --dir . < "$prompt_path" > "$log_path" 2>&1
-    fi
-
-    local exit_code=$?
     local elapsed_sec=$(( $(date +%s) - start_sec ))
+
+    rm -rf "$sandbox_dir"
 
     echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
 }
 
-opencode_setup_isolation() {
-  local worktree_path="$1"
-  local isolated_dir="$worktree_path/.opencode-isolated"
-  mkdir -p "$isolated_dir"/{config,share,cache,state}
-  export HOME="$isolated_dir"
-  export XDG_CONFIG_HOME="$isolated_dir/config"
-  export XDG_DATA_HOME="$isolated_dir/share"
-  export XDG_CACHE_HOME="$isolated_dir/cache"
-  export XDG_STATE_HOME="$isolated_dir/state"
-  export OPENCODE_DISABLE_CLAUDE_CODE=1
-  setup_opencode_config "$isolated_dir" "$opencode_config_path"
-}
+# Run main (unless --print-names)
+if [[ "$print_names" != true ]]; then
+  main
+fi

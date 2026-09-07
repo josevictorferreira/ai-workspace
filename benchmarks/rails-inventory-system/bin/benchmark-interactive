@@ -32,7 +32,7 @@ while [[ $# -gt 0 ]]; do
 Usage: ./bin/benchmark-interactive [options]
 
 Sets up the benchmark environment on the v1/failing branch and drops you into a bash shell.
-Useful for debugging why the agent is failing or testing opencode manually.
+Useful for debugging why the agent is failing or testing pi manually.
 
 Options:
   --keep-worktrees
@@ -162,217 +162,10 @@ HEADER
   echo "Created PROMPT.md at $prompt_md"
 }
 
-generate_opencode_config() {
-  local config_path="$1"
-  mkdir -p "$(dirname "$config_path")"
-  cat > "$config_path" <<'EOF'
-{
-  "$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "inception": {
-      "options": {
-        "apiKey": "{env:INCEPTION_API_KEY}"
-      }
-    },
-    "openrouter": {
-			"npm": "@ai-sdk/openai-compatible",
-			"name": "OpenRouter",
-      "options": {
-				"baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}"
-      },
-			"models": {
-				"google/gemini-2.5-flash-lite-preview-09-2025": {
-					"name": "Gemini 2.5 Flash Lite Preview 09-2025 (OpenRouter)"
-				},
-				"inclusionai/ling-2.6-flash": {
-					"name": "Ling 2.6 Flash (OpenRouter)"
-				},
-				"openai/gpt-oss-20b": {
-					"name": "GPT OSS 20b (OpenRouter)"
-				},
-				"qwen/qwen3.6-35b-a3b": {
-					"name": "Qwen 3.6 35B A3B (OpenRouter)"
-				},
-				"qwen/qwen3.6-27b": {
-					"name": "Qwen 3.6 27B (OpenRouter)"
-				},
-				"arcee-ai/trinity-large-preview": {
-					"name": "Trinity Large Preview (OpenRouter)"
-				},
-				"kwaipilot/kat-coder-pro-v2": {
-					"name": "Kat Coder Pro v2 (OpenRouter)"
-				},
-				"google/gemini-2.5-flash-lite": {
-					"name": "Gemini 2.5 Flash Lite (OpenRouter)"
-				},
-				"inclusionai/ling-2.6-flash": {
-					"name": "Ling 2.6 Flash (OpenRouter)"
-				},
-				"deepseek/deepseek-v4-flash": {
-					"name": "DeepSeek V4 Flash (OpenRouter)"
-				},
-				"minimax/minimax-m2.7": {
-					"name": "MiniMax M2.7 (OpenRouter)"
-				},
-				"mistralai/mistral-small-3.1-24b-instruct": {
-					"name": "Mistral Small 3.1 24B Instruct (OpenRouter)"
-				},
-				"bytedance-seed/seed-2.0-mini": {
-					"name": "Seed 2.0 Mini (OpenRouter)"
-				},
-				"ds90jrynmvi9qvgig2l75719vbykycvf-Ornith-1.5-9B-Q4_K_M.gguf": {
-					"name": "Ornith 1.5 9B Q4_K_M"
-				}
-			}
-    },
-    "local": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Local",
-      "options": {
-        "baseURL": "http://10.10.10.10:11434/v1"
-      },
-      "models": {
-				"whivngiyhrhpa0g2ljp2r8jikn4nv3b5-Ornith-1.5-35B-A3B-IQ2_XS.gguf": {
-					"name": "Ornith 1.5 35B Q4_K_M (Local)"
-				},
-				"ds90jrynmvi9qvgig2l75719vbykycvf-Ornith-1.5-9B-Q4_K_M.gguf": {
-					"name": "Ornith 1.5 9B Q4_K_M (Local)"
-				},
-				"12x596csad8ny9vvshzjaj7sqsf8c9r5-Tesslate_OmniCoder-9B-Q4_K_S.gguf": {
-					"name": "OmniCoder 9B Q4_K_M (Local)"
-				},
-				"rws7jqi02i53zszzsl0vlp38d8a4l6zk-ornith-1.0-35b-Q4_K_M.gguf": {
-					"name": "Ornith 1.0 35B Q4_K_M (Local)"
-				},
-				"4j2993b3x6g8219d44zyfnyyb67bd9sd-gemma4-coding-Q4_K_M.gguf": {
-					"name": "Gemma 12B Coding Q4_K_M (Local)",
-					"limit": {
-						"context": 16384,
-						"output": 4096
-					}
-				},
-				"f2z0434wpz13hs8xf0f420i1vxhfcdsq-VibeThinker-3B.Q8_0.gguf": {
-					"name": "VibeThinker 3B Q8_0 (Local)"
-				},
-				"2pr8my8jfkfpsdh5ds04w0ifiam6id7b-gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf": {
-					"name": "Gemma 4 26B IT QAT (Local)"
-				},
-				"dhqls34cm9p68wy1ynr0c4hxm0rprpm3-Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf": {
-					"name": "Qwythos 9B Q4_K_M (Local)"
-				},
-				"fpxbjn3cys9vq8mifxmps3igwkra74h5-ornith-1.0-9b-Q4_K_M.gguf": {
-					"name": "Ornith 1.0 9B Q4_K_M (Local)"
-				}
-      }
-    },
-    "bailian-coding-plan": {
-      "npm": "@ai-sdk/anthropic",
-      "name": "Model Studio Coding Plan",
-      "options": {
-        "baseURL": "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1",
-        "apiKey": "{env:BAILIAN_CODING_PLAN_API_KEY}"
-      },
-      "models": {
-        "qwen3.5-plus": {
-          "name": "Qwen3.5 Plus",
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 1024
-            }
-          }
-        },
-        "qwen3-max-2026-01-23": {
-          "name": "Qwen3 Max 2026-01-23"
-        },
-        "qwen3-coder-next": {
-          "name": "Qwen3 Coder Next"
-        },
-        "qwen3-coder-plus": {
-          "name": "Qwen3 Coder Plus"
-        },
-        "MiniMax-M2.5": {
-          "name": "MiniMax M2.5",
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 1024
-            }
-          }
-        },
-        "glm-5": {
-          "name": "GLM-5",
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 1024
-            }
-          }
-        },
-        "glm-4.7": {
-          "name": "GLM-4.7",
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 1024
-            }
-          }
-        },
-        "kimi-k2.5": {
-          "name": "Kimi K2.5",
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 1024
-            }
-          }
-        }
-      }
-    }
-  },
-  "permission": {
-    "bash": {
-      "bundle install*": "deny",
-      "npm install*": "deny",
-      "yarn install*": "deny",
-			"git*": "deny",
-      "*": "allow"
-    },
-    "edit": "allow",
-    "write": "allow",
-    "read": "allow",
-    "list": "allow",
-    "glob": "allow",
-    "grep": "allow",
-    "lsp": "allow",
-    "skill": "allow",
-    "task": "deny",
-    "question": "deny",
-    "external_directory": "deny",
-    "external_bash": "deny"
-  },
-	"model": "openrouter/qwen/qwen3.5-9b"
-}
-EOF
+write_pi_models() {
+  local models_path="$1"
+  mkdir -p "$(dirname "$models_path")"
+  cp "$SCRIPT_DIR/benchmark-models.json" "$models_path"
 }
 
 main() {
@@ -386,9 +179,6 @@ main() {
   local project_path="$wt_path/$RELATIVE_PATH"
   local bundle_cache="$REPO_ROOT/bundle-cache"
 
-  # Remove local opencode.json to prevent it from overriding sandbox config
-  rm -f "$project_path/opencode.json"
-
   echo "Installing bundle..."
   (cd "$project_path" && BUNDLE_PATH="$bundle_cache" bundle install >/dev/null 2>&1) || {
     echo "Bundle install failed" >&2
@@ -398,12 +188,10 @@ main() {
   db_prepare "$wt_path"
   generate_prompt_md "$wt_path"
 
-  local sandbox_dir="/tmp/opencode-sandbox-interactive"
-  local config_dir="$sandbox_dir/config"
-  local config_file="$config_dir/opencode/opencode.json"
+  local sandbox_dir="/tmp/pi-sandbox-interactive"
+  local agent_dir="$sandbox_dir/.pi/agent"
 
-  mkdir -p "$config_dir/opencode"
-  generate_opencode_config "$config_file"
+  write_pi_models "$agent_dir/models.json"
 
   echo ""
   echo "=================================================================="
@@ -416,20 +204,22 @@ main() {
   echo ""
   echo "Available Commands:"
   echo "  - Run tests:  bundle exec rspec"
-  echo "  - Run agent:  opencode run \"Fix the failing tests\" --model openrouter/openai/gpt-oss-120b:exacto --dir . -f PROMPT.md"
+  echo "  - List models: pi --list-models"
+  echo "  - Run agent:   pi --model openrouter/openai/gpt-oss-120b @PROMPT.md \"Fix the failing tests\""
+  echo "  - Headless:    pi -p --model <provider>/<id> @PROMPT.md \"Fix the failing tests\" </dev/null"
   echo ""
   echo "Type 'exit' to leave this environment and clean up the worktree."
   echo "=================================================================="
   echo ""
 
-  (cd "$project_path" && env OPENCODE_DISABLE_PLUGINS=1 \
+  (cd "$project_path" && env \
     HOME="$sandbox_dir" \
-    XDG_CONFIG_HOME="$config_dir" \
-    XDG_DATA_HOME="$sandbox_dir/data" \
+    PI_CODING_AGENT_DIR="$agent_dir" \
     BUNDLE_PATH="$bundle_cache" \
     PATH="$bundle_cache/bin:$PATH" \
     RAILS_ENV="test" \
     OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
+    BAILIAN_CODING_PLAN_API_KEY="${BAILIAN_CODING_PLAN_API_KEY:-}" \
     bash)
 
   echo "Exiting interactive environment..."

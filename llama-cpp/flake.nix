@@ -212,6 +212,10 @@
             url = "https://huggingface.co/numind/NuExtract3-GGUF/resolve/main/mmproj-NuExtract3-BF16.gguf";
             sha256 = "sha256-mlBs5DVEaR9PVvFTN2j0PhiH72m4zXSy56RsTZoVWgE=";
           };
+          "Qwen3.8-27B-Uncensored-IQ2_M" = pkgs.fetchurl {
+            url = "https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF/resolve/main/Qwen3.8-27B-Uncensored-IQ2_M.gguf";
+            sha256 = "11zipq7irkk3zll6m1a8qxj3gn0a33js3hl6l0h84hq9xa7giq18";
+          };
         };
 
         # Create a directory containing all defined models
@@ -1660,6 +1664,40 @@
           ''}/bin/llama-qwopus-35b-vulkan";
         };
 
+        apps.qwen38-27b = {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-qwen38-27b" ''
+            exec ${llama-rocm}/bin/llama-server \
+              -m "${models."Qwen3.8-27B-Uncensored-IQ2_M"}" \
+              --parallel 1 \
+              --ctx-size "8192" \
+              --n-gpu-layers "99" \
+              --cache-type-k "q4_0" \
+              --cache-type-v "q4_0" \
+              --flash-attn on \
+              --host "0.0.0.0" \
+              --port "11434" \
+              "$@"
+          ''}/bin/llama-qwen38-27b";
+        };
+
+        apps.qwen38-27b-vulkan = {
+          type = "app";
+          program = "${pkgs.writeShellScriptBin "llama-qwen38-27b-vulkan" ''
+            exec ${llama-vulkan}/bin/llama-server \
+              -m "${models."Qwen3.8-27B-Uncensored-IQ2_M"}" \
+              --parallel 1 \
+              --ctx-size "8192" \
+              --n-gpu-layers "99" \
+              --cache-type-k "q4_0" \
+              --cache-type-v "q4_0" \
+              --flash-attn on \
+              --host "0.0.0.0" \
+              --port "11434" \
+              "$@"
+          ''}/bin/llama-qwen38-27b-vulkan";
+        };
+
         apps.qwen36-27b = {
           type = "app";
           program = "${pkgs.writeShellScriptBin "llama-qwen36-27b" ''
@@ -2349,6 +2387,7 @@
                                   echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5"
                                   echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k"
                                   echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b"
+                                  echo "To run qwen38-27b (Qwen3.8 27B Uncensored, 8k ctx): nix run .#qwen38-27b"
                                   echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b"
                                   echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed"
                                   echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp"
@@ -2415,6 +2454,7 @@
                                   echo "To run lfm2-5 (LFM2.5 8B-A1B MoE, 64k ctx): nix run .#lfm2-5-vulkan"
                                   echo "To run qwen-9b-glm (120k context, 12GB VRAM): nix run .#qwen-9b-glm-120k-vulkan"
                                   echo "To run qwopus-35b (Qwen3.6 35B Distilled): nix run .#qwopus-35b-vulkan"
+                                  echo "To run qwen38-27b (Qwen3.8 27B Uncensored, 8k ctx): nix run .#qwen38-27b-vulkan"
                                   echo "To run qwen36-27b (Quality, ~41 tok/s): nix run .#qwen36-27b-vulkan"
                                   echo "To run qwen36-27b-speed (Speed, 50+ tok/s): nix run .#qwen36-27b-speed-vulkan"
                                   echo "To run qwopus36-27b-mtp (Qwopus 3.6 27B MTP): nix run .#qwopus36-27b-mtp-vulkan"

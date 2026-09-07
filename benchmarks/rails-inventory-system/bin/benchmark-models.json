@@ -1,0 +1,112 @@
+{
+  "providers": {
+    "openrouter": {
+      "apiKey": "$OPENROUTER_API_KEY_BENCHMARK",
+      "models": [
+        {
+          "id": "google/gemini-2.5-flash-lite-preview-09-2025",
+          "name": "Gemini 2.5 Flash Lite Preview 09-2025 (OpenRouter)"
+        },
+        {
+          "id": "arcee-ai/trinity-large-preview",
+          "name": "Trinity Large Preview (OpenRouter)"
+        },
+        {
+          "id": "mistralai/mistral-small-3.1-24b-instruct",
+          "name": "Mistral Small 3.1 24B Instruct (OpenRouter)"
+        }
+      ]
+    },
+    "local": {
+      "api": "openai-completions",
+      "baseUrl": "http://10.10.10.10:11434/v1",
+      "apiKey": "local",
+      "models": [
+        {
+          "id": "whivngiyhrhpa0g2ljp2r8jikn4nv3b5-Ornith-1.5-35B-A3B-IQ2_XS.gguf",
+          "name": "Ornith 1.5 35B A3B IQ2_XS (Local)"
+        },
+        {
+          "id": "ds90jrynmvi9qvgig2l75719vbykycvf-Ornith-1.5-9B-Q4_K_M.gguf",
+          "name": "Ornith 1.5 9B Q4_K_M (Local)"
+        },
+        {
+          "id": "12x596csad8ny9vvshzjaj7sqsf8c9r5-Tesslate_OmniCoder-9B-Q4_K_S.gguf",
+          "name": "OmniCoder 9B Q4_K_S (Local)"
+        },
+        {
+          "id": "rws7jqi02i53zszzsl0vlp38d8a4l6zk-ornith-1.0-35b-Q4_K_M.gguf",
+          "name": "Ornith 1.0 35B Q4_K_M (Local)"
+        },
+        {
+          "id": "4j2993b3x6g8219d44zyfnyyb67bd9sd-gemma4-coding-Q4_K_M.gguf",
+          "name": "Gemma 4 Coding Q4_K_M (Local)",
+          "contextWindow": 16384,
+          "maxTokens": 4096
+        },
+        {
+          "id": "f2z0434wpz13hs8xf0f420i1vxhfcdsq-VibeThinker-3B.Q8_0.gguf",
+          "name": "VibeThinker 3B Q8_0 (Local)"
+        },
+        {
+          "id": "2pr8my8jfkfpsdh5ds04w0ifiam6id7b-gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
+          "name": "Gemma 4 26B A4B IT QAT (Local)"
+        },
+        {
+          "id": "dhqls34cm9p68wy1ynr0c4hxm0rprpm3-Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf",
+          "name": "Qwythos 9B Q4_K_M (Local)"
+        },
+        {
+          "id": "fpxbjn3cys9vq8mifxmps3igwkra74h5-ornith-1.0-9b-Q4_K_M.gguf",
+          "name": "Ornith 1.0 9B Q4_K_M (Local)"
+        }
+      ]
+    },
+    "bailian-coding-plan": {
+      "api": "anthropic-messages",
+      "baseUrl": "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1",
+      "apiKey": "$BAILIAN_CODING_PLAN_API_KEY",
+      "models": [
+        {
+          "id": "qwen3.5-plus",
+          "name": "Qwen3.5 Plus",
+          "reasoning": true,
+          "input": ["text", "image"]
+        },
+        {
+          "id": "qwen3-max-2026-01-23",
+          "name": "Qwen3 Max 2026-01-23"
+        },
+        {
+          "id": "qwen3-coder-next",
+          "name": "Qwen3 Coder Next"
+        },
+        {
+          "id": "qwen3-coder-plus",
+          "name": "Qwen3 Coder Plus"
+        },
+        {
+          "id": "MiniMax-M2.5",
+          "name": "MiniMax M2.5",
+          "reasoning": true
+        },
+        {
+          "id": "glm-5",
+          "name": "GLM-5",
+          "reasoning": true
+        },
+        {
+          "id": "glm-4.7",
+          "name": "GLM-4.7",
+          "reasoning": true
+        },
+        {
+          "id": "kimi-k2.5",
+          "name": "Kimi K2.5",
+          "reasoning": true,
+          "input": ["text", "image"]
+        }
+      ]
+    }
+  }
+}

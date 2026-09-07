@@ -13,10 +13,10 @@ fi
 
 # Defaults
 worktree_root="$REPO_ROOT/.sisyphus/worktrees-fast"
-timeout_opencode_sec=3600
+timeout_pi_sec=3600
 timeout_rspec_sec=300
 keep_worktrees=true
-opencode_config_path=""
+models_config_path="$SCRIPT_DIR/benchmark-models.json"
 
 # Parse CLI args
 while [[ $# -gt 0 ]]; do
@@ -30,9 +30,9 @@ while [[ $# -gt 0 ]]; do
       worktree_root="$2"
       shift 2
       ;;
-    --timeout-opencode-sec)
-      if [[ -z "${2:-}" ]]; then echo "Error: --timeout-opencode-sec requires an argument" >&2; exit 1; fi
-      timeout_opencode_sec="$2"
+    --timeout-pi-sec)
+      if [[ -z "${2:-}" ]]; then echo "Error: --timeout-pi-sec requires an argument" >&2; exit 1; fi
+      timeout_pi_sec="$2"
       shift 2
       ;;
     --timeout-rspec-sec)
@@ -40,9 +40,9 @@ while [[ $# -gt 0 ]]; do
       timeout_rspec_sec="$2"
       shift 2
       ;;
-    --opencode-config)
-      if [[ -z "${2:-}" ]]; then echo "Error: --opencode-config requires an argument" >&2; exit 1; fi
-      opencode_config_path="$2"
+    --models-config)
+      if [[ -z "${2:-}" ]]; then echo "Error: --models-config requires an argument" >&2; exit 1; fi
+      models_config_path="$2"
       shift 2
       ;;
     -h|--help)
@@ -54,12 +54,12 @@ Runs benchmark on v1/failing branch using specified model.
 Options:
   --keep-worktrees
   --worktree-root PATH (default: .sisyphus/worktrees-fast)
-  --timeout-opencode-sec SEC (default: 3600)
+  --timeout-pi-sec SEC (default: 3600)
   --timeout-rspec-sec SEC (default: 300)
-  --opencode-config FILE
+  --models-config FILE (pi models.json, default: bin/benchmark-models.json)
   -h, --help
 
-Env: MODEL required, opencode in PATH
+Env: MODEL required (e.g. openrouter/qwen/qwen3.6-27b), pi in PATH
 EOF
       exit 0
       ;;
@@ -76,8 +76,8 @@ if [[ -z "${MODEL:-}" ]]; then
   exit 1
 fi
 
-if ! command -v opencode >/dev/null 2>&1; then
-  echo "Error: opencode not in PATH" >&2
+if ! command -v pi >/dev/null 2>&1; then
+  echo "Error: pi not in PATH" >&2
   exit 1
 fi
 
@@ -324,96 +324,57 @@ HEADER
   echo "Created PROMPT.md at $prompt_md"
 }
 
-generate_opencode_config() {
-  local config_path="$1"
-  mkdir -p "$(dirname "$config_path")"
-  cat > "$config_path" <<'EOF'
-{
-  "$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "openrouter": {
-      "name": "OpenRouter",
-      "npm": "@ai-sdk/anthropic",
-      "options": {
-        "apiKey": "{env:OPENROUTER_API_KEY_BENCHMARK}",
-        "baseURL": "https://openrouter.ai/api/v1"
-      },
-      "models": {
-        "*": {
-          "options": {
-            "thinking": {
-              "type": "enabled",
-              "budgetTokens": 16384
-            }
-          }
-        }
-      }
-    }
-  },
-  "permission": {
-    "bash": {
-      "bundle install*": "deny",
-      "npm install*": "deny",
-      "yarn install*": "deny",
-      "*": "allow"
-    },
-    "edit": "allow",
-    "write": "allow",
-    "read": "allow",
-    "list": "allow",
-    "glob": "allow",
-    "grep": "allow",
-    "lsp": "allow",
-    "skill": "allow",
-    "task": "allow",
-    "question": "allow",
-    "external_directory": "allow",
-    "external_bash": "allow"
-  }
-}
-EOF
+write_pi_models() {
+  local models_path="$1"
+  mkdir -p "$(dirname "$models_path")"
+  cp "$models_config_path" "$models_path"
 }
 
-opencode_run() {
+pi_run() {
   local worktree_path="$1"
   local prompt_path="$2"
   local log_path="$3"
 
   local project_path="$worktree_path/$RELATIVE_PATH"
+  local bundle_cache="$REPO_ROOT/.sisyphus/bundle-cache"
   local start_sec=$(date +%s)
-  local sandbox_dir="/tmp/opencode-sandbox-$(date +%s)"
-  local config_dir="$sandbox_dir/config"
-  local config_file="$config_dir/opencode/opencode.json"
+  local sandbox_dir="/tmp/pi-sandbox-$(date +%s)"
+  local agent_dir="$sandbox_dir/.pi/agent"
 
-  mkdir -p "$config_dir/opencode"
-  generate_opencode_config "$config_file"
+  write_pi_models "$agent_dir/models.json"
 
-  cd "$project_path" || {
-    echo "{\"exit_code\":1,\"elapsed_sec\":0,\"log_path\":\"$log_path\"}"
-    return 1
-  }
-
-  # Run opencode with benchmark config (auto-allows edits, blocks git/web)
-  # Pass API key env vars explicitly
-  # Use -f flag to attach the prompt file
-  (cd "$project_path" && env OPENCODE_DISABLE_PLUGINS=1 \
+  # JSONL event stream: readable with jq and gives an exact tool-call count.
+  # stdin must be /dev/null or `pi -p` blocks waiting on it.
+  local exit_code=0
+  (cd "$project_path" && env \
     HOME="$sandbox_dir" \
-    XDG_CONFIG_HOME="$config_dir" \
-    XDG_DATA_HOME="$sandbox_dir/data" \
+    PI_CODING_AGENT_DIR="$agent_dir" \
+    BUNDLE_PATH="$bundle_cache" \
+    PATH="$bundle_cache/bin:$PATH" \
+    RAILS_ENV="test" \
     OPENROUTER_API_KEY_BENCHMARK="${OPENROUTER_API_KEY_BENCHMARK:-}" \
+    BAILIAN_CODING_PLAN_API_KEY="${BAILIAN_CODING_PLAN_API_KEY:-}" \
     OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
     ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
     GROQ_API_KEY="${GROQ_API_KEY:-}" \
     DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}" \
     XAI_API_KEY="${XAI_API_KEY:-}" \
-    timeout "${timeout_opencode_sec}s" opencode run "Fix the failing tests" --model "$MODEL" --dir . -f "$prompt_path") 2>&1 | tee "$log_path" >&2
+    timeout "${timeout_pi_sec}s" pi -p --mode json --no-session \
+      --model "$MODEL" @"$prompt_path" "Fix the failing tests" \
+      < /dev/null > "$log_path" 2>&1) || exit_code=$?
 
-  local exit_code=$?
   local elapsed_sec=$(( $(date +%s) - start_sec ))
 
   rm -rf "$sandbox_dir"
 
   echo "{\"exit_code\":$exit_code,\"elapsed_sec\":$elapsed_sec,\"log_path\":\"$log_path\"}"
+}
+
+pi_tool_calls() {
+  local log_path="$1"
+  local count
+  count=$(grep -c '"type":"tool_execution_start"' "$log_path" 2>/dev/null) || count=0
+  echo "$count"
 }
 
 main() {
@@ -451,12 +412,12 @@ main() {
 
   generate_prompt_md "$wt_path" "$pre_log"
 
-  echo "=== OpenCode ==="
-  local opencode_log="$log_dir/opencode.log"
+  echo "=== pi ==="
+  local pi_log="$log_dir/pi.jsonl"
   local prompt_path="$wt_path/$RELATIVE_PATH/PROMPT.md"
-  local opencode_result=$(opencode_run "$wt_path" "$prompt_path" "$opencode_log")
-  local opencode_duration=$(echo "$opencode_result" | jq -r .elapsed_sec)
-  local tool_calls=$(grep -ao 'to=functions\.[a-z]*' "$opencode_log" 2>/dev/null | wc -l || echo 0)
+  local pi_result=$(pi_run "$wt_path" "$prompt_path" "$pi_log")
+  local pi_duration=$(echo "$pi_result" | jq -r .elapsed_sec)
+  local tool_calls=$(pi_tool_calls "$pi_log")
 
   echo "=== RSpec POST ==="
   local post_result=$(rspec_run "$wt_path" "$test_env" "post" "$log_dir")
@@ -469,7 +430,7 @@ main() {
     commit_sha=$(git_auto_commit "$wt_path" "$MODEL_SLUG")
   fi
 
-  results_add_row "$display_time" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$opencode_duration" "$tool_calls" "$commit_sha" "$log_dir"
+  results_add_row "$display_time" "$MODEL" "$pre_failures" "$post_failures" "$fixed" "$status" "$pi_duration" "$tool_calls" "$commit_sha" "$log_dir"
 
   db_drop "$wt_path" "$test_env"
 
@@ -478,7 +439,7 @@ main() {
   echo "Model:         $MODEL"
   echo "Status:        $status"
   echo "Fixed:         $fixed / $pre_failures (remaining: $post_failures)"
-  echo "Duration:      ${opencode_duration}s"
+  echo "Duration:      ${pi_duration}s"
   echo "Tool Calls:    $tool_calls"
   if [[ -n "$commit_sha" ]]; then
     echo "Commit:        $commit_sha"

@@ -6,10 +6,10 @@ Complete guide for running the Rails benchmark with LLM-based test fixing.
 
 ```bash
 # 1. Export your API key
-export OPENAI_API_KEY="sk-..."
+export OPENROUTER_API_KEY_BENCHMARK="sk-or-v1-..."
 
 # 2. Run the fast benchmark (single branch)
-MODEL=openai/gpt-4o bin/benchmark-runner-fast
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast
 
 # 3. Check results
 cat .sisyphus/benchmark-results-fast.md
@@ -17,71 +17,79 @@ cat .sisyphus/benchmark-results-fast.md
 
 ## Files
 
+- `bin/benchmark-interactive` - Interactive sandbox for driving pi by hand
 - `bin/benchmark-runner` - Full multi-branch benchmark
 - `bin/benchmark-runner-fast` - Fast single-branch benchmark (v1/failing)
+- `bin/benchmark-models.json` - pi providers and models, shared by all three
 - `.sisyphus/benchmark-results.md` - Results from full runner
 - `.sisyphus/benchmark-results-fast.md` - Results from fast runner
 
 ## Prerequisites
 
 1. **Nix** installed with flakes enabled
-2. **opencode CLI** in PATH
+2. **pi CLI** in PATH
 3. **API key** for your preferred provider
 
 ## Step-by-Step Instructions
 
-### Step 1: Set Provider Credentials
+### Step 1: Configure Models and Credentials
 
-Choose ONE method:
+All three scripts read one file: `bin/benchmark-models.json`. It is a pi
+[`models.json`](https://github.com/earendil-works/pi-mono/blob/main/docs/models.md),
+copied into a throwaway agent dir on every run so your own `~/.pi/agent` is never touched.
 
-#### Method A: Environment Variables (Recommended)
+**Adding a model.** pi already ships the full OpenRouter catalog, so for an
+OpenRouter model you usually add nothing at all — just pass it:
 
 ```bash
-# For OpenAI
-export OPENAI_API_KEY="sk-your-key-here"
-
-# For Anthropic
-export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-
-# For Groq
-export GROQ_API_KEY="gsk-your-key-here"
-
-# For DeepSeek
-export DEEPSEEK_API_KEY="sk-your-key-here"
-
-# For OpenRouter
-export OPENROUTER_API_KEY="sk-or-v1-your-key-here"
-
-# For xAI
-export XAI_API_KEY="xai-your-key-here"
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast
 ```
 
-#### Method B: Provider Config File
+Check whether pi already knows a model:
 
-Create `~/benchmark-providers.json`:
+```bash
+pi --list-models | grep qwen3.6
+```
+
+If it is missing (a brand-new model, or your own endpoint), add an entry under the
+right provider in `bin/benchmark-models.json`:
 
 ```json
 {
-  "version": 1,
-  "credentials": [
-    {
-      "provider": "openai",
-      "type": "apiKey",
-      "key": "sk-your-key-here"
-    },
-    {
-      "provider": "anthropic",
-      "type": "apiKey",
-      "key": "sk-ant-your-key-here"
+  "providers": {
+    "openrouter": {
+      "apiKey": "$OPENROUTER_API_KEY_BENCHMARK",
+      "models": [
+        { "id": "vendor/brand-new-model", "name": "Brand New Model (OpenRouter)" }
+      ]
     }
-  ]
+  }
 }
 ```
 
-Then use `--provider-config`:
+Entries merge into pi's built-in catalog, so only declare what pi does not already
+know — declaring a known model replaces its real metadata (context window, thinking
+support) with generic defaults.
+
+**Adding a provider.** Give it a `baseUrl`, an `api`, and an `apiKey`:
+
+```json
+"my-endpoint": {
+  "api": "openai-completions",
+  "baseUrl": "http://10.10.10.10:11434/v1",
+  "apiKey": "local",
+  "models": [{ "id": "some-model.gguf", "name": "Some Model (Local)" }]
+}
+```
+
+`apiKey` supports `$ENV_VAR` interpolation and `!command` shell lookups. A provider
+whose key does not resolve is dropped silently — it will not appear in `pi --list-models`.
+
+**Credentials.** The catalog currently reads these from the environment:
 
 ```bash
-bin/benchmark-runner-fast --provider-config ~/benchmark-providers.json
+export OPENROUTER_API_KEY_BENCHMARK="sk-or-v1-..."
+export BAILIAN_CODING_PLAN_API_KEY="sk-..."
 ```
 
 ### Step 2: Choose Runner
@@ -92,15 +100,15 @@ Single branch (`v1/failing`) only, creates fix branch `v1/fix/{model}`.
 
 ```bash
 # Basic usage
-MODEL=openai/gpt-4o bin/benchmark-runner-fast
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast
 
 # With custom timeouts
-MODEL=anthropic/claude-sonnet-4-5 bin/benchmark-runner-fast \
-  --timeout-opencode-sec 3600 \
+MODEL=openrouter/anthropic/claude-sonnet-4-5 bin/benchmark-runner-fast \
+  --timeout-pi-sec 3600 \
   --timeout-rspec-sec 600
 
 # Keep worktrees for debugging
-MODEL=groq/llama-3.1-70b bin/benchmark-runner-fast --keep-worktrees
+MODEL=openrouter/openai/gpt-oss-20b bin/benchmark-runner-fast --keep-worktrees
 ```
 
 #### Full Runner (All fail branches)
@@ -109,14 +117,14 @@ Processes all `v1/fail/*` branches, creates fix branches `v1/fix/{suffix}/{model
 
 ```bash
 # Run all fail branches
-MODEL=openai/gpt-4o bin/benchmark-runner
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner
 
 # Run specific branch only
-MODEL=anthropic/claude-sonnet-4-5 bin/benchmark-runner \
+MODEL=openrouter/anthropic/claude-sonnet-4-5 bin/benchmark-runner \
   --filter "removing-transaction"
 
 # Skip existing fix branches
-MODEL=groq/llama-3.1-70b bin/benchmark-runner --skip-existing
+MODEL=openrouter/openai/gpt-oss-20b bin/benchmark-runner --skip-existing
 ```
 
 ### Step 3: Monitor Progress
@@ -130,7 +138,7 @@ Running rspec (baseline)... PASS
 === Processing: v1/fail/removing-transaction ===
 Running rspec (pre)... FAIL (15 failures)
 Generating PROMPT.md...
-Running opencode...
+Running pi...
 Running rspec (post)... PASS
 Auto-committing changes...
 Done: v1/fail/removing-transaction -> PASS
@@ -156,7 +164,7 @@ Results table format:
 
 | Timestamp | Model | Fail Branch | Fix Branch | Pre RC | Post RC | Status | Fixed |
 |-----------|-------|-------------|------------|--------|---------|--------|-------|
-| 2025-03-01-120000 | openai/gpt-4o | v1/fail/removing-transaction | v1/fix/removing-transaction/openai_gpt_4o | 1 | 0 | PASS | 15 |
+| 2025-03-01-120000 | openrouter/qwen/qwen3.6-27b | v1/fail/removing-transaction | v1/fix/removing-transaction/openai_gpt_4o | 1 | 0 | PASS | 15 |
 
 ### Step 5: Inspect Fix (Optional)
 
@@ -177,8 +185,8 @@ git worktree add ../fix-worktree v1/fix/removing-transaction/openai_gpt_4o
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--provider-config FILE` | JSON file with provider credentials | - |
-| `--timeout-opencode-sec SEC` | Timeout for opencode run | 1800 (fast), 300 (full) |
+| `--models-config FILE` | pi `models.json` with providers/models | `bin/benchmark-models.json` |
+| `--timeout-pi-sec SEC` | Timeout for the pi run | 3600 (fast), 300 (full) |
 | `--timeout-rspec-sec SEC` | Timeout for rspec | 300 (fast), 120 (full) |
 | `--keep-worktrees` | Don't remove worktrees after run | - |
 | `--worktree-root PATH` | Where to create worktrees | .sisyphus/worktrees* |
@@ -198,15 +206,12 @@ git worktree add ../fix-worktree v1/fix/removing-transaction/openai_gpt_4o
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `MODEL` | **Yes** | Model to use (e.g., `openai/gpt-4o`, `anthropic/claude-sonnet-4-5`) |
-| `OPENAI_API_KEY` | No* | OpenAI API key |
-| `ANTHROPIC_API_KEY` | No* | Anthropic API key |
-| `GROQ_API_KEY` | No* | Groq API key |
-| `DEEPSEEK_API_KEY` | No* | DeepSeek API key |
-| `OPENROUTER_API_KEY` | No* | OpenRouter API key |
-| `XAI_API_KEY` | No* | xAI API key |
+| `MODEL` | **Yes** | `<provider>/<model id>` as pi names it, e.g. `openrouter/qwen/qwen3.6-27b` |
+| `OPENROUTER_API_KEY_BENCHMARK` | No* | Key for the `openrouter` provider |
+| `BAILIAN_CODING_PLAN_API_KEY` | No* | Key for the `bailian-coding-plan` provider |
 
-*One provider credential is required, either via env var or `--provider-config`.
+*Whichever keys `bin/benchmark-models.json` references. Run `pi --list-models` to see
+which providers resolved.
 
 ## Troubleshooting
 
@@ -214,41 +219,42 @@ git worktree add ../fix-worktree v1/fix/removing-transaction/openai_gpt_4o
 
 Set the MODEL variable:
 ```bash
-MODEL=openai/gpt-4o bin/benchmark-runner-fast
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast
 ```
 
-### "Error: opencode not in PATH"
+### "Error: pi not in PATH"
 
-Install opencode CLI:
+Install the pi coding agent:
 ```bash
-npm install -g @opencode/cli
-# or
-yarn global add @opencode/cli
+npm install -g @earendil-works/pi-coding-agent
 ```
 
 ### Provider authentication fails
 
-Ensure your API key is set correctly:
-```bash
-# Test the key is set
-echo $OPENAI_API_KEY
+A provider whose `apiKey` does not resolve is dropped silently. Confirm it loaded:
 
-# If empty, set it again
-export OPENAI_API_KEY="sk-..."
+```bash
+pi --list-models | grep '^openrouter'
+```
+
+If nothing comes back, the key is unset:
+```bash
+echo $OPENROUTER_API_KEY_BENCHMARK
+export OPENROUTER_API_KEY_BENCHMARK="sk-or-v1-..."
 ```
 
 ### RSpec times out
 
 Increase timeout:
 ```bash
-MODEL=openai/gpt-4o bin/benchmark-runner-fast --timeout-rspec-sec 600
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast --timeout-rspec-sec 600
 ```
 
-### Opencode times out
+### pi times out
 
 Large models may need more time:
 ```bash
-MODEL=anthropic/claude-opus-4 bin/benchmark-runner-fast --timeout-opencode-sec 7200
+MODEL=openrouter/anthropic/claude-opus-4 bin/benchmark-runner-fast --timeout-pi-sec 7200
 ```
 
 ### Worktree already exists
@@ -274,16 +280,23 @@ nix --version  # Should show 2.4+
 cd /home/josevictor/Workspace/ai-workspace/benchmarks/rails-inventory-system
 
 # 2. Set your API key
-export ANTHROPIC_API_KEY="sk-ant-api03-..."
+export OPENROUTER_API_KEY_BENCHMARK="sk-or-v1-..."
 
-# 3. Run fast benchmark
-MODEL=anthropic/claude-sonnet-4-5 bin/benchmark-runner-fast
+# 3. Confirm pi can see the model
+pi --list-models | grep qwen3.6-27b
 
-# 4. View results
+# 4. Run fast benchmark
+MODEL=openrouter/qwen/qwen3.6-27b bin/benchmark-runner-fast
+
+# 5. View results
 cat .sisyphus/benchmark-results-fast.md
 
-# 5. Check the fix
-git log v1/fix/anthropic_claude_sonnet_4_5 --oneline -3
+# 6. Inspect what the agent did
+jq -r 'select(.type=="tool_execution_start") | .toolName' \
+  .sisyphus/bench-logs-fast/*/openrouter_qwen_qwen3_6_27b/pi.jsonl
+
+# 7. Check the fix
+git log v1/fix/openrouter_qwen_qwen3_6_27b --oneline -3
 ```
 
 ## Architecture
@@ -296,7 +309,7 @@ git log v1/fix/anthropic_claude_sonnet_4_5 --oneline -3
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Nix re-exec (enters devShell if not already)           │
-│     → Ruby, PostgreSQL, opencode available                 │
+│     → Ruby, PostgreSQL, pi available                       │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
@@ -307,9 +320,9 @@ git log v1/fix/anthropic_claude_sonnet_4_5 --oneline -3
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  3. Setup isolated opencode config                         │
-│     → XDG_* dirs in worktree/.opencode-isolated/           │
-│     → auth.json with provider credentials                  │
+│  3. Setup isolated pi agent dir                            │
+│     → HOME + PI_CODING_AGENT_DIR in a throwaway sandbox    │
+│     → models.json copied from bin/benchmark-models.json    │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
@@ -324,7 +337,7 @@ git log v1/fix/anthropic_claude_sonnet_4_5 --oneline -3
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  6. Run opencode (isolated, no user config)                │
+│  6. Run pi (isolated, no user config)                      │
 │     → LLM reads PROMPT.md and fixes code                   │
 └─────────────────────────────────────────────────────────────┘
                             │
@@ -351,8 +364,8 @@ The benchmark scripts ensure **complete isolation**:
 
 1. **Git isolation** - Worktrees keep repo changes separate
 2. **DB isolation** - TEST_ENV_NUMBER creates unique test databases
-3. **Opencode isolation** - XDG dirs redirected per worktree
-4. **No user config pollution** - ~/.config/opencode is never touched
-5. **Provider isolation** - auth.json created fresh each run
+3. **pi isolation** - `HOME` and `PI_CODING_AGENT_DIR` point at a throwaway sandbox
+4. **No user config pollution** - `~/.pi/agent` is never touched
+5. **Provider isolation** - `models.json` copied fresh from `bin/benchmark-models.json` each run
 
-Your existing opencode configuration in `~/.config/opencode` and credentials in `~/.local/share/opencode/auth.json` are **never modified** during benchmark runs.
+Your existing pi configuration and credentials in `~/.pi/agent` are **never modified** during benchmark runs.

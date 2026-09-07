@@ -1,7 +1,7 @@
 .PHONY: benchmark benchmark-manual clean-benchmark help
 
 # Default model if none is specified
-MODEL ?= openrouter/openai/gpt-oss-120b:exacto
+MODEL ?= openrouter/qwen/qwen3.6-27b
 
 # Compute the model slug for cleanup (matches script logic)
 MODEL_SLUG = $(shell echo "$(MODEL)" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '_' | tr -s '_' | sed 's/^_\|_$$//g')
@@ -14,8 +14,11 @@ help:
 	@echo "  make benchmark-manual"
 	@echo ""
 	@echo "Examples:"
-	@echo "  make benchmark MODEL=openrouter/openai/gpt-4o"
-	@echo "  make benchmark MODEL=openrouter/anthropic/claude-3.5-sonnet"
+	@echo "  make benchmark MODEL=openrouter/qwen/qwen3.6-27b"
+	@echo "  make benchmark MODEL=openrouter/anthropic/claude-sonnet-4-5"
+	@echo ""
+	@echo "Models and providers are configured in bin/benchmark-models.json"
+	@echo "List what pi can reach with: pi --list-models"
 	@echo ""
 	@echo "Targets:"
 	@echo "  benchmark        Clean old artifacts and run the automated benchmark for the specified MODEL"
