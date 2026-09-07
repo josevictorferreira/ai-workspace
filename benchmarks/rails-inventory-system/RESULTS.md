@@ -1,5 +1,15 @@
 # MODEL BENCHMARKS
 
+## Pi Agent Skill State Plugin Run
+
+### Openrouter Mercury 2.5 Preview (Medium)
+- Time elapsed: 3m 26s
+- Tests: 31/0 success/failures
+- Tokens: 117k in / 105k out
+- Cost: 0.0154
+- Re-reads: 22
+- Steps: 54
+
 ## Pi Agent Basic Tools (codegraph, lsp, search, context7)
 
 ### Openrouter Mercury 2.5 Preview (Medium)
